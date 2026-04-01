@@ -1,0 +1,67 @@
+Treatment,Drug,price(NTD)
+Chemotherapy,Epirubicin(50 mg/25 mL/vial) ,2492
+Chemotherapy,Epirubicin(10 mg/5 mL/vial),382
+Chemotherapy,Cyclophosphamide(500 mg/vial),188
+Chemotherapy,Cyclophosphamide(200 mg/vial),89
+Chemotherapy,Cyclophosphamide(50 mg/tab),15
+Chemotherapy,Taxotere (80 mg/4 mL/vial) ,9874
+Chemotherapy,Taxotere(20mg/vial),2802
+Chemotherapy,Carboplatin(450 mg/45 mL/vial),3195
+Chemotherapy,Carboplatin(150mg/15mL/vial),1442
+Chemotherapy,Phyxol(30 mg/5 mL/vial) ,509
+Chemotherapy,Phyxol(90 mg/15 mL/vial),894
+Chemotherapy,Lipo-Dox(20 mg/10 mL/vial) ,12684
+Chemotherapy,Navelbine(50mg/5 mL/vial) ,7238
+Chemotherapy,Navelbine(10mg/1 mL/vial) ,1290
+Chemotherapy,Navelbine (30mg/cap) ,3945
+Chemotherapy,Navelbine (20mg/cap) ,2727
+Chemotherapy,Xeloda (500 mg/tab),88
+Chemotherapy,Albumin-Bound Paclitaxel(Abraxane 100 mg/vial) ,9285
+Chemotherapy,TS-1 Capsule 20 mg/cap,168
+Chemotherapy,Sacituzumab Govitecan Trodelvy Injection 180 mg/vial IF.  ,31943
+Targettherapy,Enhertu Powder for Concentrate for Solution for Infusion 100 mg/vial (5.4 mg/kg q3w),29771
+Targettherapy,T-DM1(Kadcyla)(160 mg/vial ),56604
+Targettherapy,T-DM1(Kadcyla)(100 mg/vial ),35506
+Targettherapy,Herceptin SC (600 mg/5 mL/vial),26906
+Targettherapy,Herceptin(440mg/vial),32885
+Targettherapy,Perjeta(420 mg/14 mL/vial ),49966
+Targettherapy,Trastuzumab(Herzuma)(440 mg/vial) ,29895
+Targettherapy,Phesgo(loading),125306
+Targettherapy,Phesgo,76241
+Targettherapy,Avastin(100mg/4mL/vial),6810
+Targettherapy,Tykerb ( 250 mg/tab),351
+Targettherapy,Neratinib(Nerlynx 40 mg/tab),625
+immunotherapy,Pembrolizumab (Keytruda 100 mg/4 mL/vial),54267
+immunotherapy,Atezolizumab (Tecentriq 1200 mg/20 mL/vial),91584
+CDK 4/6 inhibitor,Palbociclib (Ibrance 125 mg/cap) ,3665
+CDK 4/6 inhibitor,Ribociclib  (Kisqali 200 mg/tab) ,1254
+CDK 4/6 inhibitor,Abemaciclib Verzenio 150 mg/tab ,1236
+BRCA mutation,Lynparza Film-coated Tablets 150 mg/tab ,1206
+PIK3CA mutation,"Piqray Film-Coated Tablets 250 mg Daily Dose (200 mg/tab+50 mg/tab), ??4 tab/box ",34104
+PIK3CA mutation,"Tucatinib/Tukysa Tablet 150 mg/tab, 120 tab/btl ",28800
+Antihormone therapy,Faslodex Injection 250 mg/5 mL/syringe ,17500
+Chemotherapy,Afinitor Tablet 5 mg/tab ,644
+ovarysupression,Zoladex Depot 3.6 mg/syringe ,3885
+ovarysupression,Zoladex LA Depot 10.8 mg/prefilled syringe ,10800
+ovarysupression,Leuplin 3.75 mg/1 mL/syringe ,4404
+ovarysupression,Diphereline P.R. 11.25 mg/vial ,11489
+Antihormone therapy,Aromasin ( 25 mg/tab),54
+Antihormone therapy,Femara = Lovizol Film-coated Tablets (2.5 mg/tab),44
+,Zobonic (4 mg/vial) ,3877
+RANKL inbitor, Xgeva 120 mg/1.7 mL/vial ,10638
+RANKL inbitor, Prolia (60 mg/1 mL/syrg) ,5402
+GCSF,Pegfilgrastim-biosimilar(Ziextenzo 6 mg/0.6 mL/syringe) ,9685
+GCSF,Pegfilgrastim-biosimilar(Fulphila  6 mg/0.6 mL/syringe),9685
+GCSF,Filgrastim (300 mcg/0.7 mL/amp ),1967
+GCSF,Granocyte (100 mcg /vial),733
+antiemetic,Zofran = Supren Injection ( 8 mg/4 mL /amp),99
+antiemetic,Zofran Tablet (8 mg/tab) ,139
+antiemetic,Aloxi (0.25 mg palonosetron/5 mL/vial) ,822
+antiemetic,Kytril Injection 3 mg granisetron/3 mL/amp ,359
+antiemetic,Kytril (1 mg granisetron/tab),194
+antiemetic,Emend (150 mg/vial) ,1803
+antiemetic,Emend Capsule (125 mg/cap),498
+antiemetic,Emend Capsule (80 mg/cap),498
+antiemetic,Zyprexa Zydis Orodispersible Tablet 5 mg/tab,43
+Genetic test,Oncotype DX,170000
+chemotherapy,ICE hat and glove,18850

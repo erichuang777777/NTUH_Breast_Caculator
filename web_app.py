@@ -151,6 +151,57 @@ tr.clickable:hover{background:#f8fafc}
 .icon-pay{color:var(--amber);font-weight:bold;font-size:.85rem}
 .empty{text-align:center;padding:2.5rem;color:var(--muted)}
 
+/* ── Inner Tabs ── */
+.inner-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:1rem}
+.inner-tab{padding:.6rem 1.2rem;border:none;background:none;font-size:.85rem;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all .15s}
+.inner-tab:hover{color:var(--primary)}
+.inner-tab.active{color:#be185d;border-bottom-color:#be185d}
+.tab-content{display:none}.tab-content.active{display:block}
+
+/* ── Regimen Calculator ── */
+.reg-section{margin-bottom:1.2rem}
+.reg-section h3{font-size:.9rem;font-weight:700;margin-bottom:.5rem;color:#1e293b}
+.patient-inputs{display:flex;gap:1rem;flex-wrap:wrap;align-items:end;background:var(--card);padding:1rem;border-radius:10px;border:1px solid var(--border)}
+.patient-inputs .field{flex:1;min-width:110px}
+.patient-inputs label{display:block;font-size:.73rem;font-weight:600;color:var(--muted);margin-bottom:.2rem}
+.patient-inputs input,.patient-inputs select{width:100%;padding:.4rem .5rem;border:2px solid var(--border);border-radius:6px;font-size:.85rem}
+.patient-inputs input:focus,.patient-inputs select:focus{border-color:#be185d;outline:none}
+.bsa-display{background:#fce7f3;color:#be185d;padding:.3rem .6rem;border-radius:6px;font-weight:700;font-size:.85rem;align-self:center}
+.condition-bar{display:flex;gap:.5rem;flex-wrap:wrap;margin:.5rem 0}
+.cond-btn{padding:.35rem .7rem;border-radius:18px;border:2px solid #e2e8f0;background:#fff;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .12s}
+.cond-btn:hover{border-color:#be185d;color:#be185d}
+.cond-btn.active{background:#be185d;color:#fff;border-color:#be185d}
+.regimen-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.6rem}
+.reg-card{background:var(--card);border:2px solid var(--border);border-radius:10px;padding:.8rem;cursor:pointer;transition:all .15s}
+.reg-card:hover{border-color:#be185d;box-shadow:0 2px 8px rgba(190,24,93,.12)}
+.reg-card.selected{border-color:#be185d;background:#fdf2f8}
+.reg-card h4{font-size:.82rem;margin-bottom:.2rem;color:#1e293b}
+.reg-card .reg-desc{font-size:.72rem;color:var(--muted)}
+.phase-box{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.8rem;margin-bottom:.8rem}
+.phase-box h4{font-size:.82rem;color:#6d28d9;margin-bottom:.5rem;display:flex;justify-content:space-between}
+.drug-row{display:flex;align-items:center;gap:.5rem;padding:.4rem 0;border-bottom:1px solid #f1f5f9;flex-wrap:wrap}
+.drug-row:last-child{border-bottom:none}
+.drug-row .drug-info{flex:1;min-width:180px}
+.drug-row .drug-name-r{font-weight:600;font-size:.82rem}
+.drug-row .drug-dose{font-size:.73rem;color:var(--muted)}
+.drug-row .vial-combo{font-size:.73rem;color:#6d28d9;font-weight:500}
+.drug-row .drug-cost{font-weight:700;font-size:.85rem;color:#7c3aed;min-width:100px;text-align:right}
+.nhi-toggle{display:inline-flex;border-radius:5px;overflow:hidden;border:1.5px solid #d1d5db;font-size:.7rem}
+.nhi-toggle button{padding:.15rem .45rem;border:none;background:#f8fafc;color:#64748b;cursor:pointer;font-weight:600;transition:.12s}
+.nhi-toggle button.on-nhi{background:#059669;color:#fff}
+.nhi-toggle button.on-self{background:#dc2626;color:#fff}
+.reg-summary{background:#fdf2f8;border:2px solid #f9a8d4;border-radius:12px;padding:1rem;margin-top:.5rem}
+.reg-summary .sum-line{display:flex;justify-content:space-between;padding:.2rem 0;font-size:.85rem}
+.reg-summary .sum-total{font-weight:700;font-size:1.05rem;border-top:2px solid #f9a8d4;margin-top:.3rem;padding-top:.5rem}
+.reg-summary .sum-nhi{color:#059669}
+.reg-summary .sum-self{color:#dc2626}
+.reg-summary .sum-grand{color:#6d28d9}
+.reg-summary .sum-note{font-size:.73rem;color:var(--muted);margin-top:.5rem;font-style:italic}
+.add-on-row{display:flex;align-items:center;gap:.8rem;padding:.3rem 0}
+.add-on-row input[type=checkbox]{width:16px;height:16px;accent-color:#be185d}
+.add-on-label{font-size:.82rem;flex:1}
+.add-on-price{font-size:.82rem;font-weight:600;color:#7c3aed}
+
 /* ── Modal ── */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;justify-content:center;align-items:center;padding:1rem}
 .modal-bg.show{display:flex}
@@ -212,6 +263,12 @@ tr.clickable:hover{background:#f8fafc}
         <button class="back-btn" onclick="showLanding()">&#8592; 返回首頁</button>
         <h2 style="margin:.5rem 0 1rem;color:var(--pink)">乳癌藥物給付查詢</h2>
 
+        <div class="inner-tabs">
+            <button class="inner-tab active" id="tabDrugs" onclick="switchBreastTab('drugs')">藥物查詢</button>
+            <button class="inner-tab" id="tabRegimen" onclick="switchBreastTab('regimen')">處方費用計算</button>
+        </div>
+
+        <div class="tab-content active" id="tabDrugsContent">
         <div class="filter-panel">
             <h3>臨床條件篩選</h3>
             <div class="search-row">
@@ -258,6 +315,11 @@ tr.clickable:hover{background:#f8fafc}
                 </tr></thead>
                 <tbody id="breastBody"></tbody>
             </table>
+        </div>
+        </div><!-- end tabDrugsContent -->
+
+        <div class="tab-content" id="tabRegimenContent">
+            <div id="regimenApp"></div>
         </div>
     </div>
 
@@ -369,8 +431,22 @@ async function showBreast(){
     document.getElementById('breastPage').classList.add('active');
     document.getElementById('hemePage').classList.remove('active');
     activeFilters={};
-    const r=await fetch('/api/drugs?category=oncology_breast'); breastDrugs=await r.json();
-    renderBreast(breastDrugs);
+    switchBreastTab('drugs');
+}
+function switchBreastTab(tab){
+    document.querySelectorAll('#breastPage .inner-tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('#breastPage .tab-content').forEach(c=>c.classList.remove('active'));
+    if(tab==='drugs'){
+        document.getElementById('tabDrugs').classList.add('active');
+        document.getElementById('tabDrugsContent').classList.add('active');
+        if(!breastDrugs.length){
+            fetch('/api/drugs?category=oncology_breast').then(r=>r.json()).then(d=>{breastDrugs=d;renderBreast(breastDrugs)});
+        }
+    } else {
+        document.getElementById('tabRegimen').classList.add('active');
+        document.getElementById('tabRegimenContent').classList.add('active');
+        if(!_regimenInited) initRegimenCalc();
+    }
 }
 async function showHeme(){
     document.getElementById('landingPage').style.display='none';
@@ -1051,6 +1127,530 @@ function calcCombo(comboId){
     </div>`;
 }
 
+// ══════════════════════════════════════════════════════
+// ── Regimen Calculator ──
+// ══════════════════════════════════════════════════════
+let _regimenInited = false;
+let _formulations = {};   // drug_key → [{dose_mg, nhi_price, ntuh_price, ...}]
+let _selectedRegimen = null;
+let _patientWt = 60, _patientHt = 165, _patientBSA = 1.66;
+let _regimenNHI = {};     // drug_key → true/false
+let _regimenAddOns = {};  // addon_key → true/false
+let _patientConditions = {};  // her2, hr, ln
+
+const REGIMENS = [
+  {
+    id:'ec_thp', name:'EC → THP → HP', tags:['HER2+','early'],
+    desc:'HER2+ 早期乳癌術前/術後輔助化療（標準18週期）',
+    phases:[
+      {name:'EC Phase', freq:'q3w', cycles:4, drugs:[
+        {key:'epirubicin', name:'Epirubicin', dose_type:'bsa', dose:90, unit:'mg/m²'},
+        {key:'cyclophosphamide', name:'Cyclophosphamide', dose_type:'bsa', dose:600, unit:'mg/m²'}
+      ]},
+      {name:'THP Phase', freq:'q3w', cycles:4, drugs:[
+        {key:'docetaxel', name:'Docetaxel', dose_type:'bsa', dose:75, unit:'mg/m²'},
+        {key:'trastuzumab', name:'Herceptin', dose_type:'kg', dose:6, loading:8, unit:'mg/kg'},
+        {key:'pertuzumab', name:'Perjeta', dose_type:'fixed', dose:420, loading:840, unit:'mg'}
+      ]},
+      {name:'HP 維持 Phase', freq:'q3w', cycles:10, drugs:[
+        {key:'trastuzumab', name:'Herceptin', dose_type:'kg', dose:6, unit:'mg/kg'},
+        {key:'pertuzumab', name:'Perjeta', dose_type:'fixed', dose:420, unit:'mg'}
+      ]}
+    ],
+    nhi_rules:{
+      'N+': {epirubicin:true,cyclophosphamide:true,docetaxel:true,trastuzumab:true,pertuzumab:false},
+      'N0': {epirubicin:true,cyclophosphamide:true,docetaxel:true,trastuzumab:false,pertuzumab:false}
+    }
+  },
+  {
+    id:'tchp', name:'TCHP → HP', tags:['HER2+','early'],
+    desc:'Docetaxel + Carboplatin + Herceptin + Perjeta',
+    phases:[
+      {name:'TCHP Phase', freq:'q3w', cycles:6, drugs:[
+        {key:'docetaxel', name:'Docetaxel', dose_type:'bsa', dose:75, unit:'mg/m²'},
+        {key:'carboplatin', name:'Carboplatin', dose_type:'auc', dose:6, unit:'AUC'},
+        {key:'trastuzumab', name:'Herceptin', dose_type:'kg', dose:6, loading:8, unit:'mg/kg'},
+        {key:'pertuzumab', name:'Perjeta', dose_type:'fixed', dose:420, loading:840, unit:'mg'}
+      ]},
+      {name:'HP 維持 Phase', freq:'q3w', cycles:12, drugs:[
+        {key:'trastuzumab', name:'Herceptin', dose_type:'kg', dose:6, unit:'mg/kg'},
+        {key:'pertuzumab', name:'Perjeta', dose_type:'fixed', dose:420, unit:'mg'}
+      ]}
+    ],
+    nhi_rules:{
+      'N+': {docetaxel:true,carboplatin:true,trastuzumab:true,pertuzumab:false},
+      'N0': {docetaxel:true,carboplatin:true,trastuzumab:false,pertuzumab:false}
+    }
+  },
+  {
+    id:'ec_t', name:'EC → T', tags:['HER2-','early'],
+    desc:'Epirubicin + Cyclophosphamide → Docetaxel',
+    phases:[
+      {name:'EC Phase', freq:'q3w', cycles:4, drugs:[
+        {key:'epirubicin', name:'Epirubicin', dose_type:'bsa', dose:90, unit:'mg/m²'},
+        {key:'cyclophosphamide', name:'Cyclophosphamide', dose_type:'bsa', dose:600, unit:'mg/m²'}
+      ]},
+      {name:'T Phase', freq:'q3w', cycles:4, drugs:[
+        {key:'docetaxel', name:'Docetaxel', dose_type:'bsa', dose:75, unit:'mg/m²'}
+      ]}
+    ],
+    nhi_rules:{'default':{epirubicin:true,cyclophosphamide:true,docetaxel:true}}
+  },
+  {
+    id:'tc', name:'TC', tags:['HER2-','early'],
+    desc:'Docetaxel + Cyclophosphamide × 4',
+    phases:[
+      {name:'TC Phase', freq:'q3w', cycles:4, drugs:[
+        {key:'docetaxel', name:'Docetaxel', dose_type:'bsa', dose:75, unit:'mg/m²'},
+        {key:'cyclophosphamide', name:'Cyclophosphamide', dose_type:'bsa', dose:600, unit:'mg/m²'}
+      ]}
+    ],
+    nhi_rules:{'default':{docetaxel:true,cyclophosphamide:true}}
+  },
+  {
+    id:'ac_wph', name:'AC → wPH', tags:['HER2+','early'],
+    desc:'AC × 4 → weekly Paclitaxel + Herceptin × 12 週',
+    phases:[
+      {name:'AC Phase', freq:'q3w', cycles:4, drugs:[
+        {key:'doxorubicin_lipo', name:'Lipo-Dox', dose_type:'bsa', dose:60, unit:'mg/m²'},
+        {key:'cyclophosphamide', name:'Cyclophosphamide', dose_type:'bsa', dose:600, unit:'mg/m²'}
+      ]},
+      {name:'wPH Phase (weekly × 12)', freq:'weekly', cycles:12, drugs:[
+        {key:'paclitaxel', name:'Paclitaxel', dose_type:'bsa', dose:80, unit:'mg/m²'},
+        {key:'trastuzumab', name:'Herceptin', dose_type:'kg', dose:2, loading:4, unit:'mg/kg'}
+      ]}
+    ],
+    nhi_rules:{
+      'N+': {doxorubicin_lipo:true,cyclophosphamide:true,paclitaxel:true,trastuzumab:true},
+      'N0': {doxorubicin_lipo:true,cyclophosphamide:true,paclitaxel:true,trastuzumab:false}
+    }
+  },
+  {
+    id:'tdm1', name:'T-DM1 (Kadcyla)', tags:['HER2+','metastatic'],
+    desc:'Trastuzumab emtansine 3.6mg/kg q3w（第二線）',
+    phases:[
+      {name:'T-DM1', freq:'q3w', cycles:14, drugs:[
+        {key:'trastuzumab_emtansine', name:'Kadcyla', dose_type:'kg', dose:3.6, unit:'mg/kg'}
+      ]}
+    ],
+    nhi_rules:{'default':{trastuzumab_emtansine:true}}
+  },
+  {
+    id:'trodelvy', name:'Trodelvy', tags:['TNBC','metastatic'],
+    desc:'Sacituzumab govitecan 10mg/kg d1,8 q3w',
+    phases:[
+      {name:'Trodelvy', freq:'q3w', cycles:8, admins_per_cycle:2, drugs:[
+        {key:'sacituzumab_govitecan', name:'Trodelvy', dose_type:'kg', dose:10, unit:'mg/kg'}
+      ]}
+    ],
+    nhi_rules:{'default':{sacituzumab_govitecan:true}}
+  },
+  {
+    id:'cdk_ai', name:'CDK4/6i + AI', tags:['HR+','HER2-','metastatic'],
+    desc:'CDK4/6 抑制劑 + 芳香環酶抑制劑（第一線荷爾蒙治療）',
+    phases:[
+      {name:'CDK4/6i + AI (28天/cycle)', freq:'q4w', cycles:12, drugs:[
+        {key:'palbociclib', name:'Ibrance (Palbociclib)', dose_type:'fixed_oral', dose:125, days:21, unit:'mg/day'},
+        {key:'letrozole', name:'Letrozole', dose_type:'fixed_oral', dose:2.5, days:28, unit:'mg/day'}
+      ]}
+    ],
+    nhi_rules:{'default':{palbociclib:true,letrozole:true}}
+  },
+  {
+    id:'xeloda', name:'Xeloda (Capecitabine)', tags:['metastatic'],
+    desc:'Capecitabine 1000mg/m² BID d1-14 q3w',
+    phases:[
+      {name:'Xeloda', freq:'q3w', cycles:8, drugs:[
+        {key:'capecitabine', name:'Xeloda', dose_type:'bsa_oral', dose:1000, days:14, freq_daily:2, unit:'mg/m² BID'}
+      ]}
+    ],
+    nhi_rules:{'default':{capecitabine:true}}
+  },
+  {
+    id:'enhertu', name:'Enhertu', tags:['HER2+','metastatic'],
+    desc:'Trastuzumab deruxtecan 5.4mg/kg q3w（非健保）',
+    phases:[
+      {name:'Enhertu', freq:'q3w', cycles:12, drugs:[
+        {key:'trastuzumab_deruxtecan', name:'Enhertu', dose_type:'kg', dose:5.4, unit:'mg/kg'}
+      ]}
+    ],
+    nhi_rules:{'default':{trastuzumab_deruxtecan:false}}
+  }
+];
+
+const ADDONS = [
+  {key:'antiemetic_high', name:'高致吐風險止吐（Emend + Aloxi + Dexamethasone）', price:2625, per:'cycle'},
+  {key:'antiemetic_mod', name:'中致吐風險止吐（Aloxi + Dexamethasone）', price:822, per:'cycle'},
+  {key:'gcsf', name:'GCSF (Pegfilgrastim/Ziextenzo)', price:9685, per:'cycle'},
+  {key:'zoladex', name:'卵巢抑制 Zoladex 3.6mg (q4w)', price:3885, per:'month'},
+  {key:'ice', name:'化療冷卻帽 + 手套', price:18850, per:'course'},
+  {key:'oncotype', name:'Oncotype DX 基因檢測', price:170000, per:'once'}
+];
+
+async function initRegimenCalc(){
+  _regimenInited = true;
+  // Load formulations from DB
+  try {
+    const r = await fetch('/api/formulations');
+    const data = await r.json();
+    _formulations = {};
+    data.forEach(f => {
+      if(!_formulations[f.drug_key]) _formulations[f.drug_key] = [];
+      _formulations[f.drug_key].push(f);
+    });
+  } catch(e){ console.error('Failed to load formulations', e); }
+
+  const app = document.getElementById('regimenApp');
+  app.innerHTML = `
+    <div class="reg-section">
+      <h3>患者資訊</h3>
+      <div class="patient-inputs">
+        <div class="field"><label>體重 (kg)</label><input type="number" id="regWt" value="60" min="30" max="150" onchange="updatePatient()"></div>
+        <div class="field"><label>身高 (cm)</label><input type="number" id="regHt" value="165" min="140" max="200" onchange="updatePatient()"></div>
+        <div class="bsa-display" id="regBSA">BSA: 1.66 m²</div>
+        <div class="field"><label>GFR (mL/min, for Carboplatin)</label><input type="number" id="regGFR" value="80" min="20" max="150" onchange="updatePatient()"></div>
+      </div>
+    </div>
+    <div class="reg-section">
+      <h3>疾病特徵</h3>
+      <div class="condition-bar">
+        <button class="cond-btn" data-g="her2" data-v="positive" onclick="toggleCond(this)">HER2+</button>
+        <button class="cond-btn" data-g="her2" data-v="negative" onclick="toggleCond(this)">HER2-</button>
+        <button class="cond-btn" data-g="hr" data-v="positive" onclick="toggleCond(this)">HR+</button>
+        <button class="cond-btn" data-g="hr" data-v="negative" onclick="toggleCond(this)">HR-</button>
+        <button class="cond-btn" data-g="ln" data-v="positive" onclick="toggleCond(this)">淋巴結轉移 N+</button>
+        <button class="cond-btn" data-g="ln" data-v="negative" onclick="toggleCond(this)">淋巴結無轉移 N0</button>
+        <button class="cond-btn" data-g="stage" data-v="early" onclick="toggleCond(this)">早期</button>
+        <button class="cond-btn" data-g="stage" data-v="metastatic" onclick="toggleCond(this)">轉移性</button>
+      </div>
+    </div>
+    <div class="reg-section">
+      <h3>選擇處方</h3>
+      <div class="regimen-cards" id="regimenCards"></div>
+    </div>
+    <div id="regimenDetail"></div>
+    <div class="reg-section" id="addonSection" style="display:none">
+      <h3>支持性治療（選填）</h3>
+      <div id="addonList"></div>
+    </div>
+    <div id="regimenSummary"></div>
+  `;
+  renderRegimenCards();
+  renderAddOns();
+  updatePatient();
+}
+
+function updatePatient(){
+  _patientWt = parseFloat(document.getElementById('regWt').value)||60;
+  _patientHt = parseFloat(document.getElementById('regHt').value)||165;
+  _patientBSA = Math.sqrt((_patientHt * _patientWt)/3600);
+  document.getElementById('regBSA').textContent = 'BSA: ' + _patientBSA.toFixed(2) + ' m²';
+  if(_selectedRegimen) calcRegimen();
+}
+
+function toggleCond(el){
+  const g = el.dataset.g, v = el.dataset.v;
+  // Deactivate siblings in same group
+  document.querySelectorAll('.cond-btn[data-g="'+g+'"]').forEach(b=>{
+    if(b!==el) b.classList.remove('active');
+  });
+  el.classList.toggle('active');
+  if(el.classList.contains('active')) _patientConditions[g]=v;
+  else delete _patientConditions[g];
+  renderRegimenCards();
+  if(_selectedRegimen) applyNHIRules();
+}
+
+function renderRegimenCards(){
+  const container = document.getElementById('regimenCards');
+  if(!container) return;
+  const conds = _patientConditions;
+  let html = '';
+  REGIMENS.forEach(reg => {
+    // Filter by conditions
+    let relevant = true;
+    if(conds.her2==='positive' && reg.tags.includes('HER2-') && !reg.tags.includes('HER2+')) relevant = false;
+    if(conds.her2==='negative' && reg.tags.includes('HER2+') && !reg.tags.includes('HER2-')) relevant = false;
+    if(conds.stage==='early' && reg.tags.includes('metastatic') && !reg.tags.includes('early')) relevant = false;
+    if(conds.stage==='metastatic' && reg.tags.includes('early') && !reg.tags.includes('metastatic')) relevant = false;
+    if(conds.hr==='negative' && reg.tags.includes('HR+') && !reg.tags.includes('HR-')) relevant = false;
+    const sel = _selectedRegimen && _selectedRegimen.id===reg.id ? ' selected':'';
+    const opacity = relevant ? '' : ' style="opacity:.4"';
+    html += `<div class="reg-card${sel}"${opacity} onclick="selectRegimen('${reg.id}')">
+      <h4>${reg.name}</h4>
+      <div class="reg-desc">${reg.desc}</div>
+      <div style="margin-top:.3rem">${reg.tags.map(t=>'<span class="badge badge-tag">'+t+'</span>').join(' ')}</div>
+    </div>`;
+  });
+  container.innerHTML = html;
+}
+
+function selectRegimen(id){
+  _selectedRegimen = REGIMENS.find(r=>r.id===id);
+  if(!_selectedRegimen) return;
+  renderRegimenCards();
+  applyNHIRules();
+  document.getElementById('addonSection').style.display='';
+}
+
+function applyNHIRules(){
+  if(!_selectedRegimen) return;
+  const rules = _selectedRegimen.nhi_rules;
+  const ln = _patientConditions.ln;
+  let ruleSet;
+  if(ln==='positive' && rules['N+']) ruleSet = rules['N+'];
+  else if(ln==='negative' && rules['N0']) ruleSet = rules['N0'];
+  else ruleSet = rules['default'] || rules['N+'] || Object.values(rules)[0] || {};
+  // Apply but allow override
+  Object.keys(ruleSet).forEach(k => { _regimenNHI[k] = ruleSet[k]; });
+  calcRegimen();
+}
+
+function toggleDrugNHI(drugKey){
+  _regimenNHI[drugKey] = !_regimenNHI[drugKey];
+  calcRegimen();
+}
+
+// Vial optimization: find cheapest combo of vials covering required dose
+function optimizeVials(doseMg, drugKey, useNHI){
+  const forms = (_formulations[drugKey]||[]).filter(f=>f.dose_mg > 0);
+  if(forms.length === 0) return {cost:0, combo:[], totalMg:doseMg};
+  const priceKey = useNHI ? 'nhi_price' : 'ntuh_price';
+  // Only use formulations with the relevant price
+  const available = forms.filter(f => f[priceKey] != null && f[priceKey] > 0)
+    .map(f => ({dose_mg:f.dose_mg, price:f[priceKey], desc:f.formulation, unit:f.dose_unit}))
+    .sort((a,b) => b.dose_mg - a.dose_mg);
+  if(available.length === 0){
+    // Fallback: use any price
+    const fb = forms.filter(f => (f.ntuh_price||f.nhi_price) > 0)
+      .map(f => ({dose_mg:f.dose_mg, price:f.ntuh_price||f.nhi_price, desc:f.formulation, unit:f.dose_unit}))
+      .sort((a,b) => b.dose_mg - a.dose_mg);
+    if(fb.length===0) return {cost:0, combo:[], totalMg:doseMg};
+    available.push(...fb);
+  }
+
+  let best = {cost:Infinity, combo:[], totalMg:0};
+  const large = available[0];
+  const small = available.length > 1 ? available[available.length-1] : large;
+
+  const maxLarge = Math.ceil(doseMg / large.dose_mg) + 1;
+  for(let nL=0; nL<=maxLarge; nL++){
+    const rem = doseMg - nL * large.dose_mg;
+    let nS = 0;
+    if(rem > 0 && large !== small) nS = Math.ceil(rem / small.dose_mg);
+    else if(rem > 0) continue; // only one size available, handled by nL
+    const total = nL * large.dose_mg + nS * small.dose_mg;
+    if(total < doseMg - 0.01) continue;
+    const cost = nL * large.price + nS * small.price;
+    if(cost < best.cost){
+      best = {cost, totalMg:total, combo:[]};
+      if(nL > 0) best.combo.push({count:nL, dose_mg:large.dose_mg, price:large.price, desc:large.desc, unit:large.unit});
+      if(nS > 0) best.combo.push({count:nS, dose_mg:small.dose_mg, price:small.price, desc:small.desc, unit:small.unit});
+    }
+  }
+  return best;
+}
+
+function calcRegimen(){
+  if(!_selectedRegimen) return;
+  const reg = _selectedRegimen;
+  let detailHtml = '';
+  let nhiTotal = 0, selfTotal = 0;
+  const gfr = parseFloat(document.getElementById('regGFR')?.value)||80;
+
+  reg.phases.forEach((phase, pi) => {
+    let phaseNHI = 0, phaseSelf = 0;
+    let drugRows = '';
+    const adminsPerCycle = phase.admins_per_cycle || 1;
+
+    phase.drugs.forEach(drug => {
+      const isNHI = _regimenNHI[drug.key] !== undefined ? _regimenNHI[drug.key] : true;
+      const nhiClass = isNHI ? 'on-nhi' : '';
+      const selfClass = isNHI ? '' : 'on-self';
+
+      // Calculate dose per administration
+      let doseMg = 0;
+      let doseLabel = '';
+      if(drug.dose_type === 'bsa'){
+        doseMg = drug.dose * _patientBSA;
+        doseLabel = drug.dose + drug.unit + ' = ' + Math.round(doseMg) + 'mg';
+      } else if(drug.dose_type === 'kg'){
+        doseMg = drug.dose * _patientWt;
+        doseLabel = drug.dose + drug.unit + ' = ' + Math.round(doseMg) + 'mg';
+      } else if(drug.dose_type === 'auc'){
+        doseMg = drug.dose * (gfr + 25); // Calvert formula
+        doseLabel = 'AUC ' + drug.dose + ' (GFR=' + gfr + ') = ' + Math.round(doseMg) + 'mg';
+      } else if(drug.dose_type === 'fixed'){
+        doseMg = drug.dose;
+        doseLabel = drug.dose + drug.unit;
+      } else if(drug.dose_type === 'fixed_oral'){
+        // Oral daily drug, dose is per day, calculate total for cycle
+        doseMg = drug.dose; // per day
+        const daysPerCycle = drug.days || 21;
+        doseLabel = drug.dose + drug.unit + ' × ' + daysPerCycle + '天';
+      } else if(drug.dose_type === 'bsa_oral'){
+        doseMg = drug.dose * _patientBSA;
+        const freqD = drug.freq_daily || 1;
+        doseLabel = drug.dose + drug.unit + ' = ' + Math.round(doseMg) + 'mg/次 × ' + freqD + '次/天 × ' + (drug.days||14) + '天';
+      }
+
+      // Loading dose for first cycle
+      let loadingMg = 0;
+      if(drug.loading){
+        if(drug.dose_type === 'kg') loadingMg = drug.loading * _patientWt;
+        else loadingMg = drug.loading;
+      }
+
+      // Calculate cost per cycle with vial optimization
+      let costPerCycle = 0, vialInfo = '';
+      const cycles = phase.cycles;
+
+      if(drug.dose_type === 'fixed_oral'){
+        // Oral: tablets per day × days per cycle
+        const tabsPerDay = Math.ceil(doseMg / getSmallestFormulation(drug.key));
+        const daysPerCycle = drug.days || 21;
+        const tabsPerCycle = tabsPerDay * daysPerCycle;
+        const tabPrice = getBestTabPrice(drug.key, isNHI);
+        costPerCycle = tabsPerCycle * tabPrice;
+        const totalTabs = tabsPerCycle * cycles;
+        vialInfo = tabsPerDay + ' 顆/天 × ' + daysPerCycle + '天 = ' + tabsPerCycle + ' 顆/cycle';
+        const totalCost = costPerCycle * cycles;
+        if(isNHI) phaseNHI += totalCost; else phaseSelf += totalCost;
+        drugRows += buildDrugRow(drug, doseLabel, vialInfo, costPerCycle, totalCost, cycles, isNHI, nhiClass, selfClass);
+        return;
+      }
+      if(drug.dose_type === 'bsa_oral'){
+        // Oral BSA: tablets per dose × freq × days per cycle
+        const dosePerAdmin = doseMg;
+        const smallest = getSmallestFormulation(drug.key);
+        const tabsPerAdmin = Math.ceil(dosePerAdmin / smallest);
+        const freqD = drug.freq_daily || 1;
+        const daysPerCycle = drug.days || 14;
+        const tabsPerCycle = tabsPerAdmin * freqD * daysPerCycle;
+        const tabPrice = getBestTabPrice(drug.key, isNHI);
+        costPerCycle = tabsPerCycle * tabPrice;
+        const totalTabs = tabsPerCycle * cycles;
+        vialInfo = tabsPerAdmin + '顆 × ' + freqD + '次/天 × ' + daysPerCycle + '天 = ' + tabsPerCycle + '顆/cycle';
+        const totalCost = costPerCycle * cycles;
+        if(isNHI) phaseNHI += totalCost; else phaseSelf += totalCost;
+        drugRows += buildDrugRow(drug, doseLabel, vialInfo, costPerCycle, totalCost, cycles, isNHI, nhiClass, selfClass);
+        return;
+      }
+
+      // IV drugs: vial optimization
+      if(loadingMg > 0 && cycles >= 1){
+        const loadOpt = optimizeVials(loadingMg, drug.key, isNHI);
+        const maintOpt = optimizeVials(doseMg, drug.key, isNHI);
+        const loadCost = loadOpt.cost * adminsPerCycle;
+        const maintCost = maintOpt.cost * adminsPerCycle;
+        const totalCost = loadCost + maintCost * (cycles - 1);
+        const loadCombo = loadOpt.combo.map(c=>c.count+'×'+c.dose_mg+'mg').join('+');
+        const maintCombo = maintOpt.combo.map(c=>c.count+'×'+c.dose_mg+'mg').join('+');
+        vialInfo = '首劑(' + loadCombo + ') + 後續(' + maintCombo + ')×' + (cycles-1);
+        if(adminsPerCycle > 1) vialInfo += ' [每週期'+adminsPerCycle+'次]';
+        costPerCycle = maintCost;
+        if(isNHI) phaseNHI += totalCost; else phaseSelf += totalCost;
+        drugRows += buildDrugRow(drug, doseLabel, vialInfo, costPerCycle, totalCost, cycles, isNHI, nhiClass, selfClass, loadCost);
+      } else {
+        const opt = optimizeVials(doseMg, drug.key, isNHI);
+        costPerCycle = opt.cost * adminsPerCycle;
+        const totalCost = costPerCycle * cycles;
+        const combo = opt.combo.map(c=>c.count+'×'+c.dose_mg+'mg').join(' + ');
+        vialInfo = combo || '—';
+        if(adminsPerCycle > 1) vialInfo += ' [每週期'+adminsPerCycle+'次]';
+        if(isNHI) phaseNHI += totalCost; else phaseSelf += totalCost;
+        drugRows += buildDrugRow(drug, doseLabel, vialInfo, costPerCycle, totalCost, cycles, isNHI, nhiClass, selfClass);
+      }
+    });
+
+    nhiTotal += phaseNHI; selfTotal += phaseSelf;
+    const cycleDays = phase.freq==='q3w'?21:phase.freq==='q4w'?28:phase.freq==='weekly'?7:21;
+    const months = (phase.cycles * cycleDays / 30).toFixed(1);
+    detailHtml += `<div class="phase-box">
+      <h4><span>${phase.name} (${phase.freq} × ${phase.cycles})</span><span style="font-size:.73rem;color:var(--muted)">~${months} 個月</span></h4>
+      ${drugRows}
+      <div style="display:flex;justify-content:space-between;font-size:.78rem;font-weight:600;margin-top:.4rem;padding-top:.4rem;border-top:1px dashed var(--border)">
+        <span>Phase 小計</span>
+        <span>${phaseNHI>0?'<span class="sum-nhi">健保 NT$'+phaseNHI.toLocaleString()+'</span> ':''}${phaseSelf>0?'<span class="sum-self">自費 NT$'+phaseSelf.toLocaleString()+'</span>':''}</span>
+      </div>
+    </div>`;
+  });
+
+  // Add-ons cost
+  let addonTotal = 0, addonHtml = '';
+  ADDONS.forEach(a => {
+    if(!_regimenAddOns[a.key]) return;
+    let cost = a.price;
+    if(a.per==='cycle'){
+      const totalCycles = reg.phases.reduce((s,p)=>s+p.cycles,0);
+      cost = a.price * totalCycles;
+    } else if(a.per==='month'){
+      const totalMonths = reg.phases.reduce((s,p)=>s+p.cycles*(p.freq==='q3w'?21:p.freq==='q4w'?28:7)/30,0);
+      cost = a.price * Math.ceil(totalMonths);
+    }
+    addonTotal += cost;
+    addonHtml += `<div class="sum-line"><span>${a.name}</span><span>NT$ ${cost.toLocaleString()}</span></div>`;
+  });
+  selfTotal += addonTotal;
+
+  const grandTotal = nhiTotal + selfTotal;
+  document.getElementById('regimenDetail').innerHTML = detailHtml;
+  document.getElementById('regimenSummary').innerHTML = `<div class="reg-summary">
+    <div class="sum-line" style="font-weight:700;font-size:.9rem;margin-bottom:.3rem"><span>${reg.name} 療程費用總計</span><span>體重 ${_patientWt}kg / BSA ${_patientBSA.toFixed(2)} m²</span></div>
+    ${nhiTotal>0?'<div class="sum-line sum-nhi"><span>健保給付</span><span>NT$ '+nhiTotal.toLocaleString()+'</span></div>':''}
+    ${addonHtml?'<div style="border-top:1px dashed #f9a8d4;margin:.3rem 0;padding-top:.3rem;font-size:.78rem;color:var(--muted)">支持性治療：</div>'+addonHtml:''}
+    <div class="sum-line sum-total sum-self"><span>患者自費總計</span><span>NT$ ${selfTotal.toLocaleString()}</span></div>
+    <div class="sum-line sum-total sum-grand"><span>全療程合計（含健保）</span><span>NT$ ${grandTotal.toLocaleString()}</span></div>
+    <div class="sum-note">* 此為依健保支付標準之估算，各醫院實際收費可能不同。藥價來源：115年健保藥價調整（115/04/01生效）、台大醫院藥品價目表（2024/12/05）。含首劑loading dose。藥品搭配以最經濟組合計算。</div>
+  </div>`;
+}
+
+function buildDrugRow(drug, doseLabel, vialInfo, costPerCycle, totalCost, cycles, isNHI, nhiClass, selfClass, loadCost){
+  return `<div class="drug-row">
+    <div class="drug-info">
+      <div class="drug-name-r">${drug.name}</div>
+      <div class="drug-dose">${doseLabel}</div>
+      <div class="vial-combo">${vialInfo}</div>
+    </div>
+    <div class="nhi-toggle">
+      <button class="${nhiClass}" onclick="_regimenNHI['${drug.key}']=true;calcRegimen()">健保</button>
+      <button class="${selfClass}" onclick="_regimenNHI['${drug.key}']=false;calcRegimen()">自費</button>
+    </div>
+    <div class="drug-cost">
+      ${loadCost?'<div style="font-size:.7rem;color:var(--muted)">首劑 NT$'+loadCost.toLocaleString()+'</div>':''}
+      <div>${cycles}次 = NT$ ${totalCost.toLocaleString()}</div>
+    </div>
+  </div>`;
+}
+
+function getSmallestFormulation(drugKey){
+  const forms = _formulations[drugKey]||[];
+  const valid = forms.filter(f=>f.dose_mg > 0);
+  if(valid.length===0) return 1;
+  return Math.min(...valid.map(f=>f.dose_mg));
+}
+
+function getBestTabPrice(drugKey, useNHI){
+  const forms = _formulations[drugKey]||[];
+  const pk = useNHI ? 'nhi_price' : 'ntuh_price';
+  const valid = forms.filter(f=>f[pk]>0);
+  if(valid.length===0){
+    const fb = forms.filter(f=>(f.ntuh_price||f.nhi_price)>0);
+    return fb.length>0 ? (fb[0].ntuh_price||fb[0].nhi_price) : 0;
+  }
+  return valid[0][pk];
+}
+
+function renderAddOns(){
+  const container = document.getElementById('addonList');
+  if(!container) return;
+  container.innerHTML = ADDONS.map(a => `<div class="add-on-row">
+    <input type="checkbox" id="addon_${a.key}" onchange="_regimenAddOns['${a.key}']=this.checked;if(_selectedRegimen)calcRegimen()">
+    <label class="add-on-label" for="addon_${a.key}">${a.name}</label>
+    <span class="add-on-price">NT$ ${a.price.toLocaleString()} / ${a.per==='cycle'?'每週期':a.per==='month'?'每月':a.per==='once'?'一次':a.per==='course'?'整個療程':a.per}</span>
+  </div>`).join('');
+}
+
 // ── Util ──
 function esc(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDetail();closeEdit()}});
@@ -1078,6 +1678,8 @@ class Handler(BaseHTTPRequestHandler):
             self._drug_detail(path.split('/')[-1])
         elif path == '/api/version':
             self._version()
+        elif path == '/api/formulations':
+            self._formulations(params)
         else:
             self._json(404, {'error': 'Not found'})
 
@@ -1104,6 +1706,20 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header('Content-Type', 'text/html; charset=utf-8')
         self.end_headers()
         self.wfile.write(HTML_PAGE.encode('utf-8'))
+
+    def _formulations(self, params):
+        c = get_db(); cur = c.cursor()
+        drug_key = params.get('drug', [''])[0]
+        sql = "SELECT * FROM drug_formulations"
+        p = []
+        if drug_key:
+            sql += " WHERE drug_key = ?"
+            p.append(drug_key)
+        sql += " ORDER BY drug_key, dose_mg DESC"
+        cur.execute(sql, p)
+        rows = [dict(r) for r in cur.fetchall()]
+        c.close()
+        self._json(200, rows)
 
     def _stats(self):
         c = get_db(); cur = c.cursor()
@@ -1231,7 +1847,11 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main():
-    host, port = '127.0.0.1', 8080
+    import argparse as _ap
+    _p = _ap.ArgumentParser()
+    _p.add_argument('--port', type=int, default=8080)
+    _a = _p.parse_args()
+    host, port = '127.0.0.1', _a.port
     print("=" * 60)
     print("  健保藥物給付規定查詢系統")
     print("=" * 60)
