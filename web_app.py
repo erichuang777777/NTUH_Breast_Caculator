@@ -9,7 +9,16 @@ import io
 import json
 import sqlite3
 import urllib.parse
+import urllib.request
+import urllib.error
+import time
+import socketserver
 from http.server import HTTPServer, BaseHTTPRequestHandler
+from concurrent.futures import ThreadPoolExecutor
+
+class ThreadingHTTPServer(socketserver.ThreadingMixIn, HTTPServer):
+    """Multi-threaded HTTP server so long API calls don't block the main thread"""
+    daemon_threads = True
 from pathlib import Path
 from datetime import datetime
 
@@ -27,6 +36,188 @@ def get_db():
         conn.execute('ALTER TABLE drugs ADD COLUMN drug_image_url TEXT')
         conn.commit()
     return conn
+
+
+# ─── Clinical Trials ──────────────────────────────────────────────
+
+_TRIALS_CACHE = {}
+_TRIALS_CACHE_TTL = 3600  # 1 hour
+
+
+def _ct_fetch(condition, location='', max_count=100):
+    """Fetch from ClinicalTrials.gov API v2 using urllib"""
+    p = {
+        'query.cond': condition,
+        'pageSize': str(max_count),
+        'format': 'json'
+    }
+    if location:
+        p['query.locn'] = location
+    url = f'https://clinicaltrials.gov/api/v2/studies?{urllib.parse.urlencode(p)}'
+    try:
+        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req, timeout=25) as resp:
+            data = json.loads(resp.read().decode('utf-8'))
+            return data.get('studies', [])
+    except Exception:
+        return []
+
+
+def _ct_extract(study):
+    """Extract relevant fields from a ClinicalTrials study object"""
+    proto = study.get('protocolSection', {})
+    id_mod = proto.get('identificationModule', {})
+    status_mod = proto.get('statusModule', {})
+    design_mod = proto.get('designModule', {})
+    contacts_mod = proto.get('contactsLocationsModule', {})
+    sponsor_mod = proto.get('sponsorCollaboratorsModule', {})
+    results_sec = study.get('resultsSection', {})
+    desc_mod = proto.get('descriptionModule', {})
+
+    locations = contacts_mod.get('locations', [])
+    tw_locs = [l for l in locations if l.get('country', '') == 'Taiwan']
+    tw_cities = sorted(set(l.get('city', '') for l in tw_locs if l.get('city')))
+    all_countries = sorted(set(l.get('country', '') for l in locations if l.get('country')))
+
+    # Prefer Taiwan site contacts over US-based centralContacts
+    tw_contacts = []
+    for loc in tw_locs:
+        for c in loc.get('contacts', []):
+            if c.get('name') or c.get('phone') or c.get('email'):
+                tw_contacts.append({
+                    'name': c.get('name', ''),
+                    'phone': c.get('phone', ''),
+                    'email': c.get('email', ''),
+                    'city': loc.get('city', ''),
+                    'facility': loc.get('facility', ''),
+                })
+
+    return {
+        'nct_id': id_mod.get('nctId', ''),
+        'title': id_mod.get('briefTitle', ''),
+        'status': status_mod.get('overallStatus', ''),
+        'phases': design_mod.get('phases', []),
+        'taiwan_cities': tw_cities,
+        'tw_contacts': tw_contacts,
+        'num_countries': len(all_countries),
+        'num_sites': len(locations),
+        'enrollment': design_mod.get('enrollmentInfo', {}).get('count', 0) or 0,
+        'sponsor': sponsor_mod.get('leadSponsor', {}).get('name', ''),
+        'has_results': bool(results_sec),
+        'brief_summary': desc_mod.get('briefSummary', '')[:300] if desc_mod.get('briefSummary') else '',
+    }
+
+
+def _ct_score_breast(t):
+    s, r = 0, []
+    if 'PHASE3' in t['phases']:
+        s += 30; r.append('Phase III (+30)')
+    elif 'PHASE2' in t['phases']:
+        s += 10; r.append('Phase II (+10)')
+    if t['num_countries'] >= 10:
+        s += 20; r.append(f"{t['num_countries']} 國跨國試驗 (+20)")
+    if t['num_sites'] >= 20:
+        s += 15; r.append(f"{t['num_sites']} 機構 (+15)")
+    if t['has_results']:
+        s += 20; r.append('已發表結果 (+20)')
+    if t['status'] == 'RECRUITING':
+        s += 15; r.append('積極招募中 (+15)')
+    return min(s, 100), r
+
+
+def _ct_score_heme(t):
+    s, r = 0, []
+    if 'PHASE3' in t['phases']:
+        s += 30; r.append('Phase III (+30)')
+    elif 'PHASE2' in t['phases']:
+        s += 10; r.append('Phase II (+10)')
+    if t['num_countries'] >= 10:
+        s += 20; r.append(f"{t['num_countries']} 國跨國試驗 (+20)")
+    enr = t.get('enrollment', 0)
+    if enr >= 500:
+        s += 15; r.append(f"大型收案 {enr} 例 (+15)")
+    elif enr >= 200:
+        s += 10; r.append(f"中型收案 {enr} 例 (+10)")
+    if t['has_results']:
+        s += 20; r.append('已發表結果 (+20)')
+    if t['status'] == 'RECRUITING':
+        s += 15; r.append('積極招募中 (+15)')
+    return min(s, 100), r
+
+
+def get_trials_data(specialty, location='Taiwan'):
+    """Get scored trials data with caching.
+    Patient view: location-filtered (Taiwan), shows Taiwan contacts.
+    Doctor view: global fetch, three categories.
+    """
+    key = f'{specialty}:{location}'
+    now = time.time()
+    if key in _TRIALS_CACHE and now - _TRIALS_CACHE[key]['ts'] < _TRIALS_CACHE_TTL:
+        return _TRIALS_CACHE[key]['data']
+
+    if specialty == 'breast':
+        condition = 'breast cancer'
+        score_fn = _ct_score_breast
+    elif specialty == 'hematology':
+        condition = 'lymphoma OR leukemia OR myeloma'
+        score_fn = _ct_score_heme
+    else:
+        return {'taiwan_trials': [], 'global_trials': [], 'stats': {}}
+
+    # Fetch Taiwan and global studies in parallel
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        tw_future = pool.submit(_ct_fetch, condition, 'Taiwan', 100)
+        gl_future = pool.submit(_ct_fetch, condition, '', 100)
+        tw_studies = tw_future.result()
+        gl_studies = gl_future.result()
+
+    def score_studies(studies):
+        result = []
+        for s in studies:
+            t = _ct_extract(s)
+            sc, reasons = score_fn(t)
+            t['score'] = sc
+            t['score_reasons'] = reasons
+            result.append(t)
+        return result
+
+    tw_trials = score_studies(tw_studies)
+    gl_trials = score_studies(gl_studies)
+
+    # Patient view: only recruiting Taiwan trials
+    patient_trials = [t for t in tw_trials if t['status'] == 'RECRUITING']
+
+    # Doctor view categories (global):
+    # 1. All ranked by score
+    all_ranked = sorted(gl_trials, key=lambda x: x['score'], reverse=True)
+    # 2. Published results
+    published = sorted([t for t in gl_trials if t['has_results']], key=lambda x: x['score'], reverse=True)
+    # 3. Actively recruiting (what topics are hot globally)
+    recruiting_global = sorted([t for t in gl_trials if t['status'] == 'RECRUITING'],
+                                key=lambda x: x['score'], reverse=True)
+
+    status_counts = {}
+    for t in gl_trials:
+        status_counts[t['status']] = status_counts.get(t['status'], 0) + 1
+
+    stats = {
+        'total': len(gl_trials),
+        'recruiting': status_counts.get('RECRUITING', 0),
+        'completed': status_counts.get('COMPLETED', 0),
+        'with_results': len(published),
+        'multinational': sum(1 for t in gl_trials if t['num_countries'] >= 3),
+        'taiwan_recruiting': len(patient_trials),
+    }
+
+    data = {
+        'patient_trials': patient_trials,
+        'all_ranked': all_ranked,
+        'published': published,
+        'recruiting_global': recruiting_global,
+        'stats': stats,
+    }
+    _TRIALS_CACHE[key] = {'ts': now, 'data': data}
+    return data
 
 
 # ─── HTML ─────────────────────────────────────────────────────────
@@ -60,6 +251,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans T
 .dept-card .count{font-size:2.5rem;font-weight:800;margin:.5rem 0}
 .dept-card.breast .count{color:var(--pink)}
 .dept-card.heme .count{color:var(--blue)}
+.dept-card.trials{border-top-color:#0d9488}
+.dept-card.trials .count{color:#0d9488;font-size:1.5rem}
 .dept-card .desc{color:var(--muted);font-size:.85rem}
 
 /* ── Department Page ── */
@@ -377,6 +570,52 @@ tr.clickable:hover{background:#f8fafc}
     </div>
 </div>
 
+<!-- ===== Clinical Trials Page ===== -->
+<div id="trialsPage" class="dept-page">
+    <button class="back-btn" onclick="showLanding()">&#8592; 返回首頁</button>
+    <h2 style="margin:.5rem 0 1rem;color:#0d9488">臨床試驗查詢</h2>
+
+    <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-bottom:1rem;background:var(--card);padding:1rem;border-radius:12px;box-shadow:0 1px 3px rgb(0 0 0/.1)">
+        <div>
+            <label style="font-size:.8rem;font-weight:600;color:var(--muted);margin-right:.5rem">科別：</label>
+            <span class="filter-chip active" id="trialSpecBreast" onclick="selectTrialSpec('breast')" style="cursor:pointer">&#127993; 乳癌</span>
+            <span class="filter-chip" id="trialSpecHeme" onclick="selectTrialSpec('hematology')" style="cursor:pointer">&#129656; 血液科</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.5rem">
+            <label style="font-size:.8rem;font-weight:600;color:var(--muted)">地區：</label>
+            <input type="text" id="trialLocation" value="Taiwan" style="padding:.35rem .6rem;border:2px solid var(--border);border-radius:8px;font-size:.85rem;width:110px;outline:none">
+        </div>
+        <button class="btn btn-primary" onclick="loadTrials()">載入試驗</button>
+        <span id="trialsCacheNote" style="font-size:.75rem;color:var(--muted);display:none">&#128337; 快取資料（1小時更新）</span>
+    </div>
+
+    <div class="inner-tabs">
+        <button class="inner-tab active" id="tabTrialPatient" onclick="switchTrialTab('patient')">&#128101; 患者版</button>
+        <button class="inner-tab" id="tabTrialRanked" onclick="switchTrialTab('ranked')">&#128202; 全部排名</button>
+        <button class="inner-tab" id="tabTrialPublished" onclick="switchTrialTab('published')">&#128196; 已發表結果</button>
+        <button class="inner-tab" id="tabTrialRecruiting" onclick="switchTrialTab('recruiting')">&#128300; 招募中課題</button>
+    </div>
+
+    <div id="trialsLoading" style="display:none;text-align:center;padding:3rem;color:var(--muted)">
+        <div style="font-size:2rem;margin-bottom:.5rem">&#8987;</div>
+        <div style="font-weight:600">載入臨床試驗資料中...</div>
+        <div style="font-size:.8rem;margin-top:.3rem">同步查詢台灣 + 全球資料，約需 10-20 秒</div>
+    </div>
+
+    <div class="tab-content active" id="trialsPatientContent">
+        <div id="trialsPatientBody"></div>
+    </div>
+    <div class="tab-content" id="trialsRankedContent">
+        <div id="trialsRankedBody"></div>
+    </div>
+    <div class="tab-content" id="trialsPublishedContent">
+        <div id="trialsPublishedBody"></div>
+    </div>
+    <div class="tab-content" id="trialsRecruitingContent">
+        <div id="trialsRecruitingBody"></div>
+    </div>
+</div>
+
 <!-- Detail Modal -->
 <div class="modal-bg" id="detailModal" onclick="if(event.target===this)closeDetail()">
     <div class="modal">
@@ -457,6 +696,12 @@ async function loadLanding(){
             <h2>血液腫瘤</h2>
             <div class="count">${d.heme}</div>
             <div class="desc">藥物 | CML/AML/CLL/淋巴瘤/骨髓瘤</div>
+        </div>
+        <div class="dept-card trials" onclick="showTrials()">
+            <div style="font-size:2.5rem">&#128300;</div>
+            <h2>臨床試驗</h2>
+            <div class="count">ClinicalTrials.gov</div>
+            <div class="desc">乳癌 / 血液科 ｜ 患者版 + 醫師版</div>
         </div>`;
 }
 
@@ -464,6 +709,7 @@ function showLanding(){
     document.getElementById('landingPage').style.display='';
     document.getElementById('breastPage').classList.remove('active');
     document.getElementById('hemePage').classList.remove('active');
+    document.getElementById('trialsPage').classList.remove('active');
 }
 async function showBreast(){
     document.getElementById('landingPage').style.display='none';
@@ -2043,6 +2289,226 @@ function renderAddOns(){
 // ── Util ──
 function esc(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDetail();closeEdit()}});
+
+// ── Clinical Trials ──
+let _trialSpec='breast', _trialTab='patient', _trialsData=null;
+
+const _STATUS_LABEL = {
+    'RECRUITING':'招募中','COMPLETED':'已完成','TERMINATED':'已終止',
+    'ACTIVE_NOT_RECRUITING':'進行中(暫停招募)','UNKNOWN_STATUS':'未知','NOT_YET_RECRUITING':'尚未開始招募'
+};
+function _sl(s){ return _STATUS_LABEL[s]||s; }
+function _scoreBadge(sc){
+    if(sc>=85) return ['&#128308;','#fee2e2','#991b1b','極高'];
+    if(sc>=70) return ['&#128992;','#ffedd5','#9a3412','高'];
+    if(sc>=50) return ['&#128993;','#fef9c3','#854d0e','中'];
+    return ['&#128994;','#f0fdf4','#166534','低'];
+}
+
+function showTrials(){
+    document.getElementById('landingPage').style.display='none';
+    document.getElementById('breastPage').classList.remove('active');
+    document.getElementById('hemePage').classList.remove('active');
+    document.getElementById('trialsPage').classList.add('active');
+    if(!_trialsData) loadTrials();
+}
+
+function selectTrialSpec(spec){
+    _trialSpec=spec;
+    document.getElementById('trialSpecBreast').classList.toggle('active',spec==='breast');
+    document.getElementById('trialSpecHeme').classList.toggle('active',spec==='hematology');
+    _trialsData=null;
+    loadTrials();
+}
+
+function switchTrialTab(tab){
+    _trialTab=tab;
+    document.querySelectorAll('#trialsPage .inner-tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('#trialsPage .tab-content').forEach(c=>c.classList.remove('active'));
+    const tabIds={patient:'tabTrialPatient',ranked:'tabTrialRanked',published:'tabTrialPublished',recruiting:'tabTrialRecruiting'};
+    const contentIds={patient:'trialsPatientContent',ranked:'trialsRankedContent',published:'trialsPublishedContent',recruiting:'trialsRecruitingContent'};
+    document.getElementById(tabIds[tab]).classList.add('active');
+    document.getElementById(contentIds[tab]).classList.add('active');
+    if(_trialsData) _renderTrialsTab(tab);
+}
+
+async function loadTrials(){
+    const loc=document.getElementById('trialLocation').value.trim()||'Taiwan';
+    document.getElementById('trialsLoading').style.display='block';
+    ['trialsPatientBody','trialsRankedBody','trialsPublishedBody','trialsRecruitingBody'].forEach(id=>{
+        document.getElementById(id).innerHTML='';
+    });
+    document.getElementById('trialsCacheNote').style.display='none';
+    try{
+        const r=await fetch('/api/trials?specialty='+_trialSpec+'&location='+encodeURIComponent(loc));
+        if(!r.ok) throw new Error('HTTP '+r.status);
+        _trialsData=await r.json();
+        document.getElementById('trialsLoading').style.display='none';
+        _renderTrialsTab(_trialTab);
+    }catch(e){
+        document.getElementById('trialsLoading').style.display='none';
+        const msg='<div class="empty">&#10060; 載入失敗：'+esc(String(e))+'<br><small>請確認網路連線，或稍後再試</small></div>';
+        ['trialsPatientBody','trialsRankedBody','trialsPublishedBody','trialsRecruitingBody'].forEach(id=>{
+            document.getElementById(id).innerHTML=msg;
+        });
+    }
+}
+
+function _renderTrialsTab(tab){
+    if(!_trialsData) return;
+    if(tab==='patient') _renderPatientTrials(_trialsData.patient_trials||[]);
+    else if(tab==='ranked') _renderDocList(_trialsData.all_ranked||[], 'trialsRankedBody', _trialsData.stats, '依重要性評分排名（全球）');
+    else if(tab==='published') _renderDocList(_trialsData.published||[], 'trialsPublishedBody', null, '已發表研究結果（全球）');
+    else if(tab==='recruiting') _renderRecruitingTopics(_trialsData.recruiting_global||[]);
+}
+
+// Patient view: Taiwan recruiting with Taiwan site contacts
+function _renderPatientTrials(trials){
+    const el=document.getElementById('trialsPatientBody');
+    if(!trials.length){
+        el.innerHTML='<div class="empty">&#9888; 目前查無台灣招募中的臨床試驗</div>';
+        return;
+    }
+    el.innerHTML=`<div style="font-size:.8rem;color:var(--muted);padding:.4rem 0 .8rem">
+        共 <strong>${trials.length}</strong> 個在台灣招募中的臨床試驗
+        <span style="margin-left:.5rem;color:#059669">&#9679; 聯絡資訊為各台灣收案機構連絡人</span>
+    </div>`+trials.map(t=>{
+        const twC = (t.tw_contacts||[]).filter(c=>c.name||c.phone||c.email);
+        return`<div class="table-wrap" style="margin-bottom:.75rem;padding:1rem">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:.5rem">
+                <div style="flex:1;min-width:200px">
+                    <div style="font-weight:700;font-size:.9rem;color:var(--text);margin-bottom:.25rem">${esc(t.title)}</div>
+                    <div style="font-size:.75rem;color:var(--muted);font-family:monospace">${esc(t.nct_id)}</div>
+                </div>
+                <span class="badge" style="background:#d1fae5;color:#065f46;white-space:nowrap">&#10003; 招募中</span>
+            </div>
+            <div style="margin-top:.6rem;display:flex;flex-wrap:wrap;gap:.5rem;font-size:.8rem">
+                ${t.taiwan_cities.length?`<span>&#128205; ${esc(t.taiwan_cities.join(', '))}</span>`:''}
+                ${t.phases.length?`<span style="color:#7c3aed">&#128300; ${esc(t.phases.join('/'))}</span>`:''}
+                ${t.enrollment?`<span style="color:var(--muted)">&#128100; 預計收案 ${t.enrollment} 例</span>`:''}
+                ${t.sponsor?`<span style="color:var(--muted)">&#127970; ${esc(t.sponsor)}</span>`:''}
+            </div>
+            ${twC.length?`
+            <div style="margin-top:.6rem;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:.6rem .8rem;font-size:.8rem">
+                <div style="font-weight:700;color:#166534;margin-bottom:.3rem">&#128222; 台灣收案聯絡人</div>
+                ${twC.map(c=>`<div style="padding:.2rem 0;border-bottom:1px solid #dcfce7;display:flex;flex-wrap:wrap;gap:.5rem;align-items:center">
+                    ${c.facility?`<span style="font-weight:600;color:#166534">${esc(c.city?c.city+' — ':'')}${esc(c.facility)}</span>`:(c.city?`<span style="font-weight:600;color:#166534">&#128205; ${esc(c.city)}</span>`:'')}
+                    ${c.name?`<span>&#128100; ${esc(c.name)}</span>`:''}
+                    ${c.phone?`<span>&#128222; ${esc(c.phone)}</span>`:''}
+                    ${c.email?`<span>&#9993; <a href="mailto:${esc(c.email)}" style="color:#059669">${esc(c.email)}</a></span>`:''}
+                </div>`).join('')}
+            </div>`:`<div style="margin-top:.5rem;font-size:.78rem;color:var(--muted)">&#9888; 尚無台灣收案聯絡資訊，請至 ClinicalTrials.gov 查詢</div>`}
+            ${t.brief_summary?`<div style="margin-top:.5rem;font-size:.78rem;color:var(--muted);line-height:1.5">${esc(t.brief_summary)}...</div>`:''}
+            <div style="margin-top:.6rem">
+                <a href="https://clinicaltrials.gov/study/${esc(t.nct_id)}" target="_blank" rel="noopener"
+                   style="font-size:.82rem;color:var(--primary);font-weight:600">
+                    &#8599; 完整試驗資訊 — ClinicalTrials.gov (${esc(t.nct_id)})
+                </a>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+// Doctor view: ranked list with collapsible detail
+function _renderDocList(trials, bodyId, stats, subtitle){
+    const el=document.getElementById(bodyId);
+    if(!trials.length){el.innerHTML='<div class="empty">無資料</div>';return;}
+
+    let statsHtml='';
+    if(stats){
+        statsHtml=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.6rem;margin-bottom:1rem">
+        ${[
+            ['全球試驗數',stats.total||0,''],
+            ['全球招募中',stats.recruiting||0,'color:#059669'],
+            ['已發表結果',stats.with_results||0,'color:#1e40af'],
+            ['台灣招募中',stats.taiwan_recruiting||0,'color:var(--pink)'],
+        ].map(([k,v,s])=>`<div class="table-wrap" style="padding:.7rem;text-align:center">
+            <div style="font-size:1.5rem;font-weight:800;${s}">${v}</div>
+            <div style="font-size:.72rem;color:var(--muted)">${k}</div>
+        </div>`).join('')}
+        </div>`;
+    }
+
+    el.innerHTML=statsHtml+`<div style="font-size:.8rem;color:var(--muted);margin-bottom:.6rem">&#9432; ${subtitle} — 共 ${trials.length} 筆 ｜ 點擊展開詳細資料</div>`
+    +trials.map((t,i)=>{
+        const[icon,bg,col,lbl]=_scoreBadge(t.score||0);
+        const statusColor={'RECRUITING':'#059669','COMPLETED':'#1e40af','TERMINATED':'#dc2626','ACTIVE_NOT_RECRUITING':'#d97706'}[t.status]||'var(--muted)';
+        return`<div class="table-wrap" style="margin-bottom:.5rem;border-left:4px solid ${col}">
+            <div onclick="this.parentElement.querySelector('.trial-detail').style.display=this.parentElement.querySelector('.trial-detail').style.display==='none'?'block':'none'"
+                 style="padding:.8rem 1rem;cursor:pointer;display:flex;gap:.75rem;align-items:center;flex-wrap:wrap">
+                <div style="background:${bg};color:${col};padding:.25rem .45rem;border-radius:6px;font-size:.78rem;font-weight:800;white-space:nowrap;text-align:center;min-width:48px;line-height:1.4">
+                    ${icon} ${t.score||0}
+                </div>
+                <div style="flex:1;min-width:200px">
+                    <div style="font-weight:600;font-size:.88rem">${esc(t.title)}</div>
+                    <div style="font-size:.72rem;color:var(--muted);margin-top:.1rem">
+                        <span style="font-family:monospace">${esc(t.nct_id)}</span>
+                        <span style="margin-left:.5rem;color:${statusColor};font-weight:600">${_sl(t.status)}</span>
+                        ${t.phases.length?`<span style="margin-left:.5rem">${esc(t.phases.join('/'))}</span>`:''}
+                    </div>
+                </div>
+                <span style="font-size:.75rem;color:var(--muted)">&#9660; 詳細</span>
+            </div>
+            <div class="trial-detail" style="display:none;padding:.75rem 1rem 1rem;border-top:1px solid var(--border)">
+                <div style="display:flex;flex-wrap:wrap;gap:.4rem;font-size:.78rem;margin-bottom:.6rem">
+                    ${t.num_countries?`<span class="badge badge-tag">&#127757; ${t.num_countries} 國</span>`:''}
+                    ${t.num_sites?`<span class="badge badge-tag">&#127973; ${t.num_sites} 機構</span>`:''}
+                    ${t.enrollment?`<span class="badge badge-tag">&#128100; ${t.enrollment} 例</span>`:''}
+                    ${t.sponsor?`<span class="badge badge-tag">&#127970; ${esc(t.sponsor.length>30?t.sponsor.slice(0,30)+'...':t.sponsor)}</span>`:''}
+                    ${t.has_results?`<span class="badge" style="background:#dbeafe;color:#1e40af">&#128196; 已發表結果</span>`:''}
+                    ${t.taiwan_cities.length?`<span class="badge" style="background:#fce7f3;color:#be185d">&#128205; 台灣：${esc(t.taiwan_cities.join(', '))}</span>`:''}
+                </div>
+                ${t.score_reasons&&t.score_reasons.length?`<div style="font-size:.75rem;color:var(--muted);margin-bottom:.5rem">&#128202; ${t.score_reasons.join(' ｜ ')}</div>`:''}
+                ${t.brief_summary?`<div style="font-size:.78rem;color:var(--text);line-height:1.5;margin-bottom:.6rem;background:#f8fafc;padding:.5rem;border-radius:6px">${esc(t.brief_summary)}...</div>`:''}
+                <a href="https://clinicaltrials.gov/study/${esc(t.nct_id)}" target="_blank" rel="noopener"
+                   style="font-size:.82rem;color:var(--primary);font-weight:600">
+                    &#8599; 完整資訊 — ClinicalTrials.gov (${esc(t.nct_id)})
+                </a>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+// Recruiting topics: compact card grid for scanning research landscape
+function _renderRecruitingTopics(trials){
+    const el=document.getElementById('trialsRecruitingBody');
+    if(!trials.length){el.innerHTML='<div class="empty">無全球招募中試驗資料</div>';return;}
+    el.innerHTML=`<div style="font-size:.8rem;color:var(--muted);margin-bottom:.8rem">
+        全球 <strong>${trials.length}</strong> 個招募中試驗 — 了解目前研究前線的熱門課題 ｜ 點擊展開詳情
+    </div>`+trials.map(t=>{
+        const[icon,bg,col,lbl]=_scoreBadge(t.score||0);
+        return`<div class="table-wrap" style="margin-bottom:.5rem;border-left:3px solid ${col}">
+            <div onclick="this.parentElement.querySelector('.trial-detail').style.display=this.parentElement.querySelector('.trial-detail').style.display==='none'?'block':'none'"
+                 style="padding:.7rem 1rem;cursor:pointer;display:flex;gap:.6rem;align-items:center;flex-wrap:wrap">
+                <div style="background:${bg};color:${col};padding:.2rem .4rem;border-radius:5px;font-size:.72rem;font-weight:700;white-space:nowrap">
+                    ${icon} ${t.score||0}
+                </div>
+                <div style="flex:1;min-width:200px">
+                    <div style="font-weight:600;font-size:.86rem">${esc(t.title)}</div>
+                    <div style="font-size:.72rem;color:var(--muted);margin-top:.1rem">
+                        <span style="font-family:monospace">${esc(t.nct_id)}</span>
+                        ${t.phases.length?`<span style="margin-left:.5rem;color:#7c3aed">${esc(t.phases.join('/'))}</span>`:''}
+                        ${t.num_countries?`<span style="margin-left:.5rem">&#127757; ${t.num_countries} 國</span>`:''}
+                        ${t.enrollment?`<span style="margin-left:.5rem">&#128100; ${t.enrollment} 例</span>`:''}
+                    </div>
+                </div>
+                <span style="font-size:.75rem;color:var(--muted)">&#9660;</span>
+            </div>
+            <div class="trial-detail" style="display:none;padding:.6rem 1rem .8rem;border-top:1px solid var(--border)">
+                ${t.brief_summary?`<div style="font-size:.78rem;color:var(--text);line-height:1.5;margin-bottom:.5rem">${esc(t.brief_summary)}...</div>`:''}
+                <div style="display:flex;flex-wrap:wrap;gap:.3rem;font-size:.76rem;margin-bottom:.5rem">
+                    ${t.sponsor?`<span class="badge badge-tag">&#127970; ${esc(t.sponsor)}</span>`:''}
+                    ${t.num_sites?`<span class="badge badge-tag">&#127973; ${t.num_sites} 機構</span>`:''}
+                    ${t.taiwan_cities.length?`<span class="badge" style="background:#fce7f3;color:#be185d">&#128205; 台灣：${esc(t.taiwan_cities.join(', '))}</span>`:''}
+                </div>
+                <a href="https://clinicaltrials.gov/study/${esc(t.nct_id)}" target="_blank" rel="noopener"
+                   style="font-size:.82rem;color:var(--primary);font-weight:600">
+                    &#8599; ClinicalTrials.gov (${esc(t.nct_id)})
+                </a>
+            </div>
+        </div>`;
+    }).join('');
+}
 </script>
 </body>
 </html>"""
@@ -2069,6 +2535,8 @@ class Handler(BaseHTTPRequestHandler):
             self._version()
         elif path == '/api/formulations':
             self._formulations(params)
+        elif path == '/api/trials':
+            self._trials(params)
         else:
             self._json(404, {'error': 'Not found'})
 
@@ -2199,6 +2667,17 @@ class Handler(BaseHTTPRequestHandler):
         c.commit(); c.close()
         self._json(200, {'ok': True})
 
+    def _trials(self, params):
+        specialty = params.get('specialty', ['breast'])[0]
+        location = params.get('location', ['Taiwan'])[0]
+        if specialty not in ('breast', 'hematology'):
+            specialty = 'breast'
+        try:
+            data = get_trials_data(specialty, location)
+            self._json(200, data)
+        except Exception as e:
+            self._json(500, {'error': str(e)})
+
     def _version(self):
         # Check if there's a newer version available (compare file dates)
         import os
@@ -2251,7 +2730,7 @@ def main():
     print(f"  資料庫：{DB_PATH}")
     print(f"\n  按 Ctrl+C 停止伺服器")
     print("=" * 60)
-    server = HTTPServer((host, port), Handler)
+    server = ThreadingHTTPServer((host, port), Handler)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
