@@ -67,14 +67,71 @@ def init_db(conn):
 
 # ─── 藥物清單來源 ─────────────────────────────────────
 
+# 資料庫 trade_names 欄位有誤的藥物 → 手動指定正確搜尋關鍵字
+HEME_SEARCH_OVERRIDES = {
+    'ara_c':          None,            # Ara-C 即 Cytarabine，以下 cytarabine 條目代替
+    'cytarabine':     'Cytarabine',    # trade_names 誤填 'AML'（疾病名稱）
+    'dexamethasone':  'Dexamethasone', # Ozurdex 是眼科品牌，血液科用學名搜尋
+    'fludara':        None,            # 與 fludarabine 重複，跳過
+}
+
+
 def load_drug_list(conn):
-    """從 drug_formulations 取得藥物清單（去重）"""
+    """從 drug_formulations（乳癌/支援）及 drugs.oncology_heme（血液科）取得藥物清單（去重）"""
+    # 1. 乳癌/支援性藥物（既有）
     rows = conn.execute("""
         SELECT DISTINCT drug_key, brand_name, formulation
         FROM drug_formulations
         ORDER BY drug_key
     """).fetchall()
-    return rows
+    result = [(r[0], r[1], r[2] or '') for r in rows]
+
+    # 已收錄的 drug_key 與 brand_name（小寫），用來避免重複
+    existing_keys   = {r[0] for r in result}
+    existing_brands = {r[1].lower() for r in result}
+
+    # 2. 血液科藥物 from drugs table
+    heme_rows = conn.execute("""
+        SELECT generic_name, trade_names
+        FROM drugs
+        WHERE specialty_id = 'oncology_heme'
+        ORDER BY generic_name
+    """).fetchall()
+
+    seen_search = set()
+    for row in heme_rows:
+        generic = (row[0] or '').strip()
+        trade   = (row[1] or '').strip()
+
+        # 排除 generic == trade 的重複項（品牌名誤存為學名）
+        if trade and generic.lower() == trade.lower():
+            continue
+
+        brand = trade if trade else generic
+
+        # 若此商品名在 drug_formulations 已有，跳過（避免重複搜尋）
+        if brand.lower() in existing_brands:
+            continue
+
+        # 搜尋關鍵字去重
+        if brand.lower() in seen_search:
+            continue
+        seen_search.add(brand.lower())
+
+        drug_key = re.sub(r'[^a-z0-9]+', '_', generic.lower()).strip('_')
+        if drug_key in existing_keys:
+            continue
+
+        # 手動修正（覆蓋資料庫錯誤的品牌名）
+        if drug_key in HEME_SEARCH_OVERRIDES:
+            override = HEME_SEARCH_OVERRIDES[drug_key]
+            if override is None:        # None = 跳過（重複項）
+                continue
+            brand = override
+
+        result.append((drug_key, brand, ''))
+
+    return result
 
 
 def get_existing_codes(conn):
