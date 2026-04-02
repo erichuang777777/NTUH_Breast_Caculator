@@ -4,5 +4,7 @@ __pycache__/
 *.pyd
 .claude/
 *.log
-validate_result_*.json
+*.docx
+*.odt
+*.pdf
 /tmp/

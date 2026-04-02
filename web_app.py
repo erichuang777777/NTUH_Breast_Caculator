@@ -237,6 +237,7 @@ tr.clickable:hover{background:#f8fafc}
 </style>
 </head>
 <body>
+<div id="offlineBar" style="display:none;background:#f59e0b;color:#fff;text-align:center;padding:0.4rem;font-size:0.85rem;font-weight:600">離線模式 — 使用快取資料，部分功能可能受限</div>
 <div class="header">
     <h1>健保藥物給付規定查詢系統</h1>
     <p>衛生福利部中央健康保險署 — 腫瘤科藥物給付資料庫</p>
@@ -254,7 +255,7 @@ tr.clickable:hover{background:#f8fafc}
         <div class="landing" id="landingCards"></div>
         <div style="text-align:center;margin-top:1rem">
             <button class="btn btn-outline" onclick="openAddDrug()">新增藥物</button>
-            <button class="btn btn-outline" onclick="openEditModal(null)">管理工具</button>
+            <button class="btn btn-outline" onclick="openManageTools()">管理工具</button>
         </div>
     </div>
 
@@ -278,26 +279,27 @@ tr.clickable:hover{background:#f8fafc}
             </div>
             <div class="filter-group">
                 <label>疾病分期</label>
-                <div class="filter-chip" data-f="stage" data-v="early" onclick="toggleChip(this)">早期乳癌（第1-2期）</div>
-                <div class="filter-chip" data-f="stage" data-v="metastatic" onclick="toggleChip(this)">轉移性乳癌（第4期）</div>
+                <div class="filter-chip" data-f="stage" data-v="early" onclick="toggleChip(this)">eBC 早期乳癌（Stage I-II）</div>
+                <div class="filter-chip" data-f="stage" data-v="advanced" onclick="toggleChip(this)">LABC 局部晚期（Stage III）</div>
+                <div class="filter-chip" data-f="stage" data-v="metastatic" onclick="toggleChip(this)">mBC 轉移性乳癌（Stage IV）</div>
             </div>
             <div class="filter-group">
-                <label>HER2 狀態</label>
-                <div class="filter-chip" data-f="her2" data-v="positive" onclick="toggleChip(this)">HER2 陽性（IHC3+/FISH+）</div>
-                <div class="filter-chip" data-f="her2" data-v="negative" onclick="toggleChip(this)">HER2 陰性</div>
-            </div>
-            <div class="filter-group">
-                <label>荷爾蒙受體</label>
+                <label>受體狀態（ER / PR / HER2）</label>
                 <div class="filter-chip" data-f="er_pr" data-v="positive" onclick="toggleChip(this)">ER/PR 陽性</div>
                 <div class="filter-chip" data-f="er_pr" data-v="negative" onclick="toggleChip(this)">ER/PR 陰性</div>
+                <div class="filter-chip" data-f="her2" data-v="positive" onclick="toggleChip(this)">HER2 陽性（IHC3+/FISH+）</div>
+                <div class="filter-chip" data-f="her2" data-v="negative" onclick="toggleChip(this)">HER2 陰性</div>
+                <span id="tnbcBadge" style="display:none;background:#dc3545;color:#fff;padding:0.25rem 0.75rem;border-radius:1rem;font-size:0.85rem;font-weight:600;margin-left:0.5rem;vertical-align:middle">TNBC 三陰性乳癌</span>
             </div>
             <div class="filter-group">
-                <label>其他條件</label>
+                <label>特殊條件</label>
                 <div class="filter-chip" data-f="ln" data-v="true" onclick="toggleChip(this)">淋巴結轉移</div>
-                <div class="filter-chip" data-f="tnbc" data-v="true" onclick="toggleChip(this)">三陰性乳癌</div>
+                <div class="filter-chip" data-f="tnbc" data-v="true" onclick="toggleChip(this)">TNBC 三陰性</div>
                 <div class="filter-chip" data-f="brca" data-v="true" onclick="toggleChip(this)">BRCA 突變</div>
-                <div class="filter-chip" data-f="menopause" data-v="post" onclick="toggleChip(this)">停經後</div>
+                <div class="filter-chip" data-f="esr1" data-v="true" onclick="toggleChip(this)">ESR1 突變</div>
+                <div class="filter-chip" data-f="pik3ca" data-v="true" onclick="toggleChip(this)">PIK3CA 突變</div>
                 <div class="filter-chip" data-f="menopause" data-v="pre" onclick="toggleChip(this)">停經前</div>
+                <div class="filter-chip" data-f="menopause" data-v="post" onclick="toggleChip(this)">停經後</div>
             </div>
         </div>
 
@@ -390,6 +392,33 @@ tr.clickable:hover{background:#f8fafc}
 let breastDrugs=[], hemeDrugs=[];
 let activeFilters={};
 
+// ── Offline Cache ──
+let _offlineMode = false;
+async function cachedFetch(url, opts){
+    const key = 'nhi_cache_' + url;
+    try {
+        const r = await fetch(url, opts);
+        if(r.ok && (!opts || !opts.method || opts.method==='GET')){
+            const data = await r.json();
+            try{ localStorage.setItem(key, JSON.stringify(data)); }catch(e){}
+            return {ok:true, json:()=>Promise.resolve(data)};
+        }
+        return r;
+    } catch(e) {
+        // Offline fallback
+        const cached = localStorage.getItem(key);
+        if(cached){
+            if(!_offlineMode){
+                _offlineMode = true;
+                const bar=document.getElementById('offlineBar');
+                if(bar) bar.style.display='block';
+            }
+            return {ok:true, json:()=>Promise.resolve(JSON.parse(cached))};
+        }
+        throw e;
+    }
+}
+
 // ── Init ──
 document.addEventListener('DOMContentLoaded',()=>{
     loadLanding();
@@ -401,11 +430,16 @@ document.addEventListener('DOMContentLoaded',()=>{
         }
     });
     checkVersion();
+    // Pre-cache all data for offline use
+    cachedFetch('/api/stats');
+    cachedFetch('/api/drugs?specialty=oncology_breast');
+    cachedFetch('/api/drugs?specialty=oncology_heme');
+    cachedFetch('/api/formulations');
 });
 
 // ── Landing ──
 async function loadLanding(){
-    const r=await fetch('/api/stats'); const d=await r.json();
+    const r=await cachedFetch('/api/stats'); const d=await r.json();
     document.getElementById('landingCards').innerHTML=`
         <div class="dept-card breast" onclick="showBreast()">
             <div style="font-size:2.5rem">&#127993;</div>
@@ -440,7 +474,7 @@ function switchBreastTab(tab){
         document.getElementById('tabDrugs').classList.add('active');
         document.getElementById('tabDrugsContent').classList.add('active');
         if(!breastDrugs.length){
-            fetch('/api/drugs?category=oncology_breast').then(r=>r.json()).then(d=>{breastDrugs=d;renderBreast(breastDrugs)});
+            cachedFetch('/api/drugs?category=oncology_breast').then(r=>r.json()).then(d=>{breastDrugs=d;renderBreast(breastDrugs)});
         }
     } else {
         document.getElementById('tabRegimen').classList.add('active');
@@ -453,7 +487,7 @@ async function showHeme(){
     document.getElementById('hemePage').classList.add('active');
     document.getElementById('breastPage').classList.remove('active');
     activeFilters={};
-    const r=await fetch('/api/drugs?category=oncology_heme'); hemeDrugs=await r.json();
+    const r=await cachedFetch('/api/drugs?category=oncology_heme'); hemeDrugs=await r.json();
     renderHeme(hemeDrugs);
 }
 
@@ -463,6 +497,15 @@ function toggleChip(el){
     const f=el.dataset.f, v=el.dataset.v;
     if(el.classList.contains('active')){activeFilters[f]=v}
     else{delete activeFilters[f]}
+    // TNBC auto-detection
+    const tnbc=document.getElementById('tnbcBadge');
+    if(tnbc){
+        if(activeFilters.er_pr==='negative' && activeFilters.her2==='negative'){
+            tnbc.style.display='inline-block';
+        } else {
+            tnbc.style.display='none';
+        }
+    }
     // Determine which page
     if(document.getElementById('breastPage').classList.contains('active'))filterBreast();
     else filterHeme();
@@ -523,11 +566,15 @@ function resetHemeFilters(){
 
 // ── Render ──
 function stageLabel(s){
-    if(!s)return'-';
-    const m={'early':'早期','metastatic':'轉移','advanced':'晚期'};
+    if(!s)return'<span style="color:var(--muted)">*待確認</span>';
+    const m={'early':'eBC(I-II)','advanced':'LABC(III)','metastatic':'mBC(IV)'};
     return s.split(',').map(x=>m[x]||x).join('、');
 }
-function lineLabel(n){return n?'第'+n+'線':'-'}
+function lineLabel(n){
+    if(!n) return '-';
+    if(n<=2) return '<span class="badge" style="background:#d1fae5;color:#065f46">第'+n+'線</span>';
+    return '<span class="badge" style="background:#fef3c7;color:#92400e">第'+n+'線</span>';
+}
 
 function renderBreast(list){
     const hasF=hasAnyFilter();
@@ -625,9 +672,172 @@ function renderTagBadges(tags,type){
     return badges.join(' ')||'-';
 }
 
+// ── Drug Interactions ──
+const DRUG_INTERACTIONS = {
+  'Tamoxifen':{
+    interactions:[
+      {drug:'Paroxetine / Fluoxetine (CYP2D6 強效抑制劑)',severity:'high',desc:'CYP2D6 抑制劑會降低 Tamoxifen 轉化為活性代謝物 Endoxifen，顯著降低療效。應避免併用，改用 Venlafaxine 或 Escitalopram。'},
+      {drug:'Warfarin',severity:'moderate',desc:'Tamoxifen 可能增強 Warfarin 抗凝效果，需密切監測 INR。'},
+      {drug:'Letrozole / Anastrozole',severity:'high',desc:'不建議與 AI 類藥物同時使用，會相互抵消作用。'}
+    ]
+  },
+  'Capecitabine':{
+    interactions:[
+      {drug:'Warfarin',severity:'high',desc:'Capecitabine 顯著增強 Warfarin 抗凝作用，可能導致致命性出血。需密切監測 INR 或改用 LMWH。'},
+      {drug:'Phenytoin',severity:'moderate',desc:'可能增加 Phenytoin 血中濃度，需監測藥物濃度。'},
+      {drug:'Allopurinol',severity:'moderate',desc:'可能降低 Capecitabine 活性，應避免併用。'}
+    ]
+  },
+  'Palbociclib':{
+    interactions:[
+      {drug:'CYP3A4 強效抑制劑 (Ketoconazole, Itraconazole)',severity:'high',desc:'顯著增加 Palbociclib 血中濃度。若需併用，Palbociclib 應減量至 75mg。'},
+      {drug:'CYP3A4 強效誘導劑 (Rifampin, Phenytoin)',severity:'high',desc:'顯著降低 Palbociclib 血中濃度，應避免併用。'},
+      {drug:'PPI / H2 blocker',severity:'moderate',desc:'胃酸抑制劑可能降低吸收，建議與食物同服。'}
+    ]
+  },
+  'Ribociclib':{
+    interactions:[
+      {drug:'QTc 延長藥物 (Ondansetron, Azithromycin)',severity:'high',desc:'Ribociclib 本身可延長 QTc，與其他 QTc 延長藥物併用風險增加。需定期監測心電圖。'},
+      {drug:'CYP3A4 強效抑制劑',severity:'high',desc:'顯著增加血中濃度，需減量。'},
+      {drug:'CYP3A4 強效誘導劑',severity:'high',desc:'顯著降低血中濃度，應避免併用。'}
+    ]
+  },
+  'Abemaciclib':{
+    interactions:[
+      {drug:'CYP3A4 強效抑制劑 (Ketoconazole)',severity:'high',desc:'增加血中濃度，需減量至 100mg BID。'},
+      {drug:'CYP3A4 強效誘導劑',severity:'high',desc:'降低血中濃度，應避免併用。'}
+    ]
+  },
+  'Lapatinib':{
+    interactions:[
+      {drug:'CYP3A4 抑制劑 / 誘導劑',severity:'high',desc:'CYP3A4 抑制劑增加暴露量；誘導劑降低療效。需調整劑量。'},
+      {drug:'PPI / H2 blocker',severity:'moderate',desc:'減少 Lapatinib 溶解度與吸收，應避免併用。'},
+      {drug:'葡萄柚汁',severity:'moderate',desc:'CYP3A4 抑制，增加 Lapatinib 暴露量。'}
+    ]
+  },
+  'Olaparib':{
+    interactions:[
+      {drug:'CYP3A4 強效抑制劑',severity:'high',desc:'增加 Olaparib 暴露量，需減量至 150mg BID。'},
+      {drug:'CYP3A4 強效誘導劑',severity:'high',desc:'顯著降低療效，應避免併用。'}
+    ]
+  },
+  'Docetaxel':{
+    interactions:[
+      {drug:'CYP3A4 抑制劑 (Ketoconazole, Erythromycin)',severity:'moderate',desc:'可能增加 Docetaxel 暴露量及毒性，需密切監測。'},
+      {drug:'Platinum compounds',severity:'low',desc:'先給予 Docetaxel 再給 Cisplatin/Carboplatin 可降低骨髓抑制。'}
+    ]
+  },
+  'Paclitaxel':{
+    interactions:[
+      {drug:'Cisplatin',severity:'moderate',desc:'先給 Paclitaxel 再給 Cisplatin，順序影響骨髓毒性程度。'},
+      {drug:'CYP2C8 / CYP3A4 抑制劑',severity:'moderate',desc:'可能增加 Paclitaxel 暴露量。'}
+    ]
+  },
+  'Letrozole':{
+    interactions:[
+      {drug:'Tamoxifen',severity:'high',desc:'不應同時併用，會降低 Letrozole 血中濃度。'},
+      {drug:'CYP2A6 / CYP3A4 強效抑制劑',severity:'moderate',desc:'可能影響 Letrozole 代謝。'}
+    ]
+  },
+  'Everolimus':{
+    interactions:[
+      {drug:'CYP3A4 / P-gp 強效抑制劑',severity:'high',desc:'顯著增加暴露量。若需併用，Everolimus 減量至 2.5mg/day。'},
+      {drug:'CYP3A4 強效誘導劑',severity:'high',desc:'顯著降低暴露量，應避免併用或加倍劑量。'},
+      {drug:'活疫苗',severity:'high',desc:'免疫抑制狀態下禁止接種活疫苗。'}
+    ]
+  },
+  'Pembrolizumab':{
+    interactions:[
+      {drug:'全身性類固醇 (>10mg Prednisone/day)',severity:'moderate',desc:'高劑量類固醇可能降低免疫治療效果。若可能，應在開始 Pembrolizumab 前停用。'},
+      {drug:'免疫抑制劑',severity:'moderate',desc:'可能降低免疫治療效果，應盡量避免。'}
+    ]
+  }
+};
+
+// ── Side Effects ──
+const SIDE_EFFECTS = {
+  'Epirubicin':{common:['噁心/嘔吐','骨髓抑制(白血球低下)','落髮','口腔黏膜炎'],serious:['心臟毒性(累積劑量>900mg/m²)','嚴重嗜中性白血球低下併發燒'],management:'監測LVEF(每3個月)。累積劑量需記錄。使用止吐藥預防。'},
+  'Cyclophosphamide':{common:['噁心/嘔吐','骨髓抑制','落髮','出血性膀胱炎'],serious:['嚴重骨髓抑制','出血性膀胱炎'],management:'充足水分攝取。高劑量時需使用 Mesna 預防膀胱炎。'},
+  'Docetaxel':{common:['骨髓抑制','落髮','水腫/體液滯留','周邊神經病變','甲床變化'],serious:['嚴重嗜中性白血球低下','過敏反應'],management:'需前給藥 Dexamethasone 預防水腫及過敏。監測周邊神經症狀。GCSF 預防嗜中性低下。'},
+  'Paclitaxel':{common:['骨髓抑制','周邊神經病變','關節痛/肌肉痛','落髮','過敏反應'],serious:['嚴重過敏/呼吸困難','嚴重周邊神經病變'],management:'需前給藥(Dexamethasone+Diphenhydramine+Famotidine)。監測神經症狀，Grade 2 以上考慮減量。'},
+  'Carboplatin':{common:['骨髓抑制(血小板低下為主)','噁心/嘔吐','腎功能異常','疲倦'],serious:['嚴重血小板低下','過敏反應(重複暴露後)'],management:'依 GFR 調整劑量(Calvert formula)。監測 CBC、腎功能。重複療程注意過敏反應。'},
+  'Capecitabine':{common:['手足症候群','腹瀉','噁心','口腔黏膜炎','疲倦'],serious:['嚴重手足症候群','嚴重腹瀉脫水','DPD缺乏致命毒性'],management:'手足症候群：使用潤膚膏、避免壓力。Grade 2 停藥至恢復後減量。監測腹瀉。DPD 基因檢測建議。'},
+  'Trastuzumab':{common:['輸注反應(寒顫/發燒)','疲倦','腹瀉','頭痛'],serious:['心臟毒性(LVEF下降)','嚴重輸注反應'],management:'每3個月監測 LVEF。LVEF<45% 暫停治療。首次輸注速度緩慢。避免與 Anthracycline 同時使用。'},
+  'Pertuzumab':{common:['腹瀉','落髮','噁心','疲倦','皮疹'],serious:['心臟毒性(與Trastuzumab加乘)','嚴重腹瀉'],management:'與 Trastuzumab 合用時加強 LVEF 監測。腹瀉嚴重時給予 Loperamide。'},
+  'Trastuzumab emtansine':{common:['疲倦','噁心','肌肉骨骼疼痛','血小板低下','肝功能異常'],serious:['肝毒性','血小板低下出血','心臟毒性','間質性肺炎'],management:'每次給藥前監測血小板及肝功能。血小板<50000 延遲治療。監測 LVEF。'},
+  'Sacituzumab govitecan':{common:['嗜中性白血球低下','腹瀉','噁心/嘔吐','落髮','疲倦'],serious:['嚴重嗜中性低下','嚴重腹瀉'],management:'考慮預防性 GCSF。腹瀉時早期使用 Loperamide+Atropine。UGT1A1*28 基因型影響毒性。'},
+  'Palbociclib':{common:['嗜中性白血球低下','疲倦','噁心','口腔黏膜炎','落髮','腹瀉'],serious:['嚴重嗜中性低下(Grade 3/4 常見)','肺栓塞'],management:'每月監測 CBC（前6個月每2週）。Grade 3 嗜中性低下：暫停至恢復>1000再減量。與食物同服增加吸收。'},
+  'Ribociclib':{common:['嗜中性白血球低下','噁心','疲倦','腹瀉','肝功能異常'],serious:['QTc 延長','嚴重肝毒性','嗜中性低下'],management:'前2個月每2週監測 CBC、肝功能、心電圖。QTc>500ms 停藥。避免併用 QTc 延長藥物。'},
+  'Abemaciclib':{common:['腹瀉(最常見,>80%)','嗜中性低下','噁心','疲倦','腹痛'],serious:['嚴重腹瀉脫水','肝毒性','靜脈血栓','間質性肺炎'],management:'第一次腹瀉立即開始 Loperamide。Grade 2 腹瀉持續>24hr 考慮減量。每月監測 CBC 及肝功能。'},
+  'Tamoxifen':{common:['熱潮紅','陰道分泌物','月經不規則','疲倦'],serious:['子宮內膜癌(長期使用)','靜脈血栓/肺栓塞','中風'],management:'定期婦科檢查(每年子宮超音波)。有異常出血立即就醫。有血栓史者考慮改用 AI。'},
+  'Letrozole':{common:['關節痛/肌肉痛','熱潮紅','骨質疏鬆','疲倦','膽固醇升高'],serious:['骨折(骨密度下降)','心血管事件'],management:'定期骨密度檢測(DEXA)。補充鈣+維他命D。關節痛可用運動/物理治療緩解。監測血脂。'},
+  'Exemestane':{common:['關節痛','熱潮紅','疲倦','多汗','失眠'],serious:['骨質疏鬆/骨折'],management:'同 Letrozole：骨密度監測、鈣+維D補充。'},
+  'Fulvestrant':{common:['注射部位疼痛','噁心','骨骼疼痛','熱潮紅','疲倦'],serious:['肝功能異常','血栓事件'],management:'注射速度緩慢(1-2分鐘/邊)，兩側臀部各一針。監測肝功能。'},
+  'Olaparib':{common:['噁心','疲倦','貧血','嘔吐','腹瀉'],serious:['骨髓增生不良症候群(MDS)/急性骨髓性白血病(AML)','嚴重貧血'],management:'每月監測 CBC。貧血需排除 MDS/AML。噁心可用止吐藥預防。避免與 CYP3A4 抑制劑併用。'},
+  'Pembrolizumab':{common:['疲倦','皮疹/搔癢','腹瀉','關節痛'],serious:['免疫相關副作用：肺炎/肝炎/腸炎/內分泌疾病/皮膚毒性','心肌炎'],management:'每次治療前監測甲狀腺功能、肝功能。教育病人辨識免疫副作用症狀。Grade 2 以上給予類固醇。'},
+  'Everolimus':{common:['口腔潰瘍/口腔炎','皮疹','疲倦','腹瀉','食慾下降'],serious:['間質性肺炎','嚴重感染','高血糖'],management:'預防性使用 Dexamethasone 漱口水。監測空腹血糖、血脂、CBC。出現咳嗽/呼吸困難需排除肺炎。'},
+  'Enhertu':{common:['噁心/嘔吐','疲倦','落髮','白血球低下','便秘'],serious:['間質性肺疾病(ILD，致命風險)','嗜中性低下'],management:'每次治療前評估肺部症狀。出現咳嗽/呼吸困難立即胸部CT。Grade 1 ILD 停藥觀察；Grade 2+ 永久停藥。'},
+  'Lapatinib':{common:['腹瀉','手足症候群','皮疹','噁心','疲倦'],serious:['肝毒性','QTc延長','間質性肺炎'],management:'監測肝功能（治療前及每4-6週）。空腹服用。腹瀉管理同其他標靶藥。'},
+  'Vinorelbine':{common:['骨髓抑制','便秘','噁心','注射部位刺激','周邊神經病變'],serious:['嚴重嗜中性低下','嚴重便秘/腸阻塞'],management:'靜脈注射需確認管路通暢，避免外漏。預防便秘。監測 CBC。'},
+  'Doxorubicin':{common:['噁心/嘔吐','骨髓抑制','落髮','口腔黏膜炎'],serious:['心臟毒性(累積劑量>550mg/m²)','嚴重骨髓抑制'],management:'監測LVEF。記錄累積劑量。Liposomal 劑型心毒性較低。'}
+};
+
+// ── Renal Dose Adjustments ──
+const RENAL_ADJUSTMENTS = {
+  'Carboplatin':{method:'calvert',note:'使用 Calvert formula: Dose(mg) = AUC × (GFR + 25)。GFR 以實測或估算值計算。'},
+  'Capecitabine':{
+    adjustments:[
+      {gfr_min:51,gfr_max:999,pct:100,note:'正常劑量'},
+      {gfr_min:30,gfr_max:50,pct:75,note:'減量至75%'},
+      {gfr_min:0,gfr_max:29,pct:0,note:'禁用 (CrCl < 30)'}
+    ],
+    note:'CrCl 30-50 mL/min：起始劑量減至 75%。CrCl < 30：禁忌使用。'
+  },
+  'Cisplatin':{
+    adjustments:[
+      {gfr_min:60,gfr_max:999,pct:100,note:'正常劑量'},
+      {gfr_min:46,gfr_max:59,pct:75,note:'減量至75%'},
+      {gfr_min:31,gfr_max:45,pct:50,note:'減量至50%'},
+      {gfr_min:0,gfr_max:30,pct:0,note:'禁用'}
+    ],
+    note:'腎毒性高，需充分水化。CrCl < 60 考慮改用 Carboplatin。'
+  },
+  'Methotrexate':{
+    adjustments:[
+      {gfr_min:61,gfr_max:999,pct:100,note:'正常劑量'},
+      {gfr_min:31,gfr_max:60,pct:50,note:'減量至50%'},
+      {gfr_min:0,gfr_max:30,pct:0,note:'禁用'}
+    ],
+    note:'腎功能不全時排除延遲，毒性顯著增加。需監測藥物濃度。'
+  },
+  'Olaparib':{
+    adjustments:[
+      {gfr_min:51,gfr_max:999,pct:100,note:'正常劑量 (300mg BID)'},
+      {gfr_min:31,gfr_max:50,pct:67,note:'減量至 200mg BID'},
+      {gfr_min:0,gfr_max:30,pct:0,note:'不建議使用（資料不足）'}
+    ],
+    note:'CrCl 31-50：減量至 200mg BID。CrCl < 30：不建議。'
+  },
+  'Pemetrexed':{
+    adjustments:[
+      {gfr_min:45,gfr_max:999,pct:100,note:'正常劑量'},
+      {gfr_min:0,gfr_max:44,pct:0,note:'不建議使用'}
+    ],
+    note:'CrCl < 45 mL/min 不建議使用。'
+  },
+  'Etoposide':{
+    adjustments:[
+      {gfr_min:51,gfr_max:999,pct:100,note:'正常劑量'},
+      {gfr_min:16,gfr_max:50,pct:75,note:'減量至75%'},
+      {gfr_min:0,gfr_max:15,pct:50,note:'減量至50%'}
+    ],
+    note:'腎功能不全時需減量，密切監測骨髓抑制。'
+  }
+};
+
 // ── Detail ──
 async function showDetail(id){
-    const r=await fetch('/api/drug/'+id);const d=await r.json();
+    const r=await cachedFetch('/api/drug/'+id);const d=await r.json();
     const tags=typeof d.clinical_tags==='string'?JSON.parse(d.clinical_tags||'{}'):d.clinical_tags||{};
     const cat=d.specialty_id==='oncology_breast'?'<span class="badge badge-breast">乳癌</span>':'<span class="badge badge-heme">血液腫瘤</span>';
     const line=d.therapy_line?'<span class="badge badge-line">第'+d.therapy_line+'線</span>':'<span style="color:var(--muted)">未指定</span>';
@@ -650,6 +860,50 @@ async function showDetail(id){
     }
     if(d.conditions){
         h+=`<div class="detail-sec"><h3>給付條件</h3>${d.conditions.split(' | ').map(p=>'<p>'+esc(p)+'</p>').join('')}</div>`;
+    }
+    // Side effects card
+    const drugName = d.generic_name || d.trade_names || '';
+    const seKey = Object.keys(SIDE_EFFECTS).find(k=>drugName.toLowerCase().includes(k.toLowerCase())||k.toLowerCase().includes(drugName.toLowerCase()));
+    if(seKey){
+        const se=SIDE_EFFECTS[seKey];
+        h+=`<div class="detail-sec"><h3>副作用速查</h3>
+            <div style="display:grid;gap:0.5rem">
+                <div><strong>常見副作用：</strong><span style="color:#666">${se.common.join('、')}</span></div>
+                <div><strong style="color:#dc3545">嚴重副作用：</strong><span style="color:#dc3545">${se.serious.join('、')}</span></div>
+                <div style="background:#f0fdf4;padding:0.5rem 0.75rem;border-radius:0.5rem;border-left:3px solid #22c55e"><strong>處置建議：</strong>${se.management}</div>
+            </div>
+        </div>`;
+    }
+    // Drug interactions
+    const iaKey = Object.keys(DRUG_INTERACTIONS).find(k=>drugName.toLowerCase().includes(k.toLowerCase())||k.toLowerCase().includes(drugName.toLowerCase()));
+    if(iaKey){
+        const ia=DRUG_INTERACTIONS[iaKey];
+        let iaHtml='';
+        ia.interactions.forEach(i=>{
+            const sev=i.severity==='high'?'background:#fef2f2;border-left:3px solid #dc3545;':'background:#fffbeb;border-left:3px solid #f59e0b;';
+            const sevLabel=i.severity==='high'?'<span style="color:#dc3545;font-weight:700">高風險</span>':'<span style="color:#f59e0b;font-weight:700">中風險</span>';
+            iaHtml+=`<div style="${sev}padding:0.5rem 0.75rem;border-radius:0.5rem;margin-bottom:0.4rem">
+                <div style="display:flex;justify-content:space-between;align-items:center"><strong>${i.drug}</strong>${sevLabel}</div>
+                <div style="font-size:0.85rem;color:#555;margin-top:0.2rem">${i.desc}</div>
+            </div>`;
+        });
+        h+=`<div class="detail-sec"><h3>藥物交互作用</h3>${iaHtml}</div>`;
+    }
+    // Renal dose adjustment
+    const raKey = Object.keys(RENAL_ADJUSTMENTS).find(k=>drugName.toLowerCase().includes(k.toLowerCase())||k.toLowerCase().includes(drugName.toLowerCase()));
+    if(raKey){
+        const ra=RENAL_ADJUSTMENTS[raKey];
+        let raHtml=`<div style="background:#eff6ff;padding:0.5rem 0.75rem;border-radius:0.5rem;border-left:3px solid #3b82f6;margin-bottom:0.5rem"><strong>腎功能調整：</strong>${ra.note}</div>`;
+        if(ra.adjustments){
+            raHtml+='<table style="width:100%;border-collapse:collapse;font-size:0.85rem"><tr style="background:#f1f5f9"><th style="padding:0.4rem;text-align:left">CrCl (mL/min)</th><th style="padding:0.4rem;text-align:center">劑量調整</th><th style="padding:0.4rem;text-align:left">備註</th></tr>';
+            ra.adjustments.forEach(a=>{
+                const range=a.gfr_max>=999?'≥'+a.gfr_min:a.gfr_min+'-'+a.gfr_max;
+                const pctColor=a.pct===100?'#22c55e':a.pct>0?'#f59e0b':'#dc3545';
+                raHtml+=`<tr style="border-bottom:1px solid #e2e8f0"><td style="padding:0.4rem">${range}</td><td style="padding:0.4rem;text-align:center;font-weight:600;color:${pctColor}">${a.pct>0?a.pct+'%':'禁用'}</td><td style="padding:0.4rem;color:#666">${a.note}</td></tr>`;
+            });
+            raHtml+='</table>';
+        }
+        h+=`<div class="detail-sec"><h3>腎功能劑量調整</h3>${raHtml}</div>`;
     }
     // Cost calculator — combo takes priority for HP dual-blockade drugs
     const combo = getComboForDrug(d.generic_name, d.trade_names);
@@ -681,7 +935,7 @@ function closeDetail(){document.getElementById('detailModal').classList.remove('
 
 // ── Edit Drug ──
 async function openEditDrug(id){
-    const r=await fetch('/api/drug/'+id);const d=await r.json();
+    const r=await cachedFetch('/api/drug/'+id);const d=await r.json();
     document.getElementById('editBody').innerHTML=`
         <h2>編輯藥物</h2>
         <div class="edit-form">
@@ -690,6 +944,24 @@ async function openEditDrug(id){
             <div class="form-row"><label>分類</label><select id="eS">
                 <option value="oncology_breast" ${d.specialty_id==='oncology_breast'?'selected':''}>乳癌</option>
                 <option value="oncology_heme" ${d.specialty_id==='oncology_heme'?'selected':''}>血液腫瘤</option>
+                <option value="oncology_other" ${d.specialty_id==='oncology_other'?'selected':''}>其他腫瘤</option>
+            </select></div>
+            <div class="form-row"><label>疾病分期</label><select id="eStage">
+                <option value="" ${!d.stage?'selected':''}>未指定</option>
+                <option value="early" ${d.stage==='early'?'selected':''}>eBC 早期 (Stage I-II)</option>
+                <option value="advanced" ${d.stage==='advanced'?'selected':''}>LABC 局部晚期 (Stage III)</option>
+                <option value="metastatic" ${d.stage==='metastatic'?'selected':''}>mBC 轉移性 (Stage IV)</option>
+                <option value="early,advanced" ${d.stage==='early,advanced'?'selected':''}>早期+局部晚期</option>
+                <option value="early,metastatic" ${d.stage==='early,metastatic'?'selected':''}>早期+轉移性</option>
+                <option value="early,metastatic,advanced" ${d.stage==='early,metastatic,advanced'?'selected':''}>全分期</option>
+                <option value="metastatic,advanced" ${d.stage==='metastatic,advanced'?'selected':''}>晚期+轉移性</option>
+            </select></div>
+            <div class="form-row"><label>療程線</label><select id="eLine">
+                <option value="" ${!d.therapy_line?'selected':''}>未指定</option>
+                <option value="1" ${d.therapy_line==1?'selected':''}>第1線</option>
+                <option value="2" ${d.therapy_line==2?'selected':''}>第2線</option>
+                <option value="3" ${d.therapy_line==3?'selected':''}>第3線</option>
+                <option value="4" ${d.therapy_line==4?'selected':''}>第4線</option>
             </select></div>
             <div class="form-row"><label>適應症</label><textarea id="eI" rows="4">${esc(d.indication||'')}</textarea></div>
             <div class="form-row"><label>給付條件</label><textarea id="eC" rows="4">${esc(d.conditions||'')}</textarea></div>
@@ -706,6 +978,8 @@ async function saveDrug(id){
         generic_name:document.getElementById('eN').value,
         trade_names:document.getElementById('eT').value,
         specialty_id:document.getElementById('eS').value,
+        stage:document.getElementById('eStage').value,
+        therapy_line:document.getElementById('eLine').value||null,
         indication:document.getElementById('eI').value,
         conditions:document.getElementById('eC').value,
     };
@@ -736,6 +1010,24 @@ function openAddDrug(){
             <div class="form-row"><label>分類</label><select id="eS">
                 <option value="oncology_breast">乳癌</option>
                 <option value="oncology_heme">血液腫瘤</option>
+                <option value="oncology_other">其他腫瘤</option>
+            </select></div>
+            <div class="form-row"><label>疾病分期</label><select id="eStage">
+                <option value="">未指定</option>
+                <option value="early">eBC 早期 (Stage I-II)</option>
+                <option value="advanced">LABC 局部晚期 (Stage III)</option>
+                <option value="metastatic">mBC 轉移性 (Stage IV)</option>
+                <option value="early,advanced">早期+局部晚期</option>
+                <option value="early,metastatic">早期+轉移性</option>
+                <option value="early,metastatic,advanced">全分期</option>
+                <option value="metastatic,advanced">晚期+轉移性</option>
+            </select></div>
+            <div class="form-row"><label>療程線</label><select id="eLine">
+                <option value="">未指定</option>
+                <option value="1">第1線</option>
+                <option value="2">第2線</option>
+                <option value="3">第3線</option>
+                <option value="4">第4線</option>
             </select></div>
             <div class="form-row"><label>適應症</label><textarea id="eI" rows="3"></textarea></div>
             <div class="form-row"><label>給付條件</label><textarea id="eC" rows="3"></textarea></div>
@@ -751,12 +1043,61 @@ async function addDrug(){
         generic_name:document.getElementById('eN').value,
         trade_names:document.getElementById('eT').value,
         specialty_id:document.getElementById('eS').value,
+        stage:document.getElementById('eStage').value,
+        therapy_line:document.getElementById('eLine').value||null,
         indication:document.getElementById('eI').value,
         conditions:document.getElementById('eC').value,
     };
     if(!body.generic_name){alert('請輸入藥物名稱');return}
     await fetch('/api/drugs',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     closeEdit();alert('已新增');loadLanding();
+}
+// ── Manage Tools ──
+function openManageTools(){
+    document.getElementById('editBody').innerHTML=`
+        <h2>管理工具</h2>
+        <div class="edit-form">
+            <div style="display:grid;gap:0.75rem">
+                <button class="btn btn-outline" onclick="closeEdit();openAddDrug()">新增藥物</button>
+                <button class="btn btn-outline" onclick="closeEdit();exportDrugList()">匯出藥物清單</button>
+                <button class="btn btn-outline" onclick="closeEdit();showDownloads()">資料來源下載</button>
+            </div>
+            <div class="btn-row" style="margin-top:1rem">
+                <button class="btn btn-outline btn-sm" onclick="closeEdit()">關閉</button>
+            </div>
+        </div>`;
+    document.getElementById('editModal').classList.add('show');
+}
+async function exportDrugList(){
+    const r=await cachedFetch('/api/drugs');const drugs=await r.json();
+    let csv='藥物名稱,商品名,分類,分期,適應症\\n';
+    drugs.forEach(d=>{csv+='"'+d.generic_name+'","'+(d.trade_names||'')+'","'+d.specialty_id+'","'+(d.stage||'')+'","'+(d.indication||'').replace(/"/g,'""')+'"\\n'});
+    const blob=new Blob(['\\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='NHI_drug_list.csv';a.click();
+}
+function showDownloads(){
+    document.getElementById('editBody').innerHTML=`
+        <h2>資料來源與下載</h2>
+        <div class="edit-form" style="font-size:0.95rem">
+            <p style="color:#666;margin-bottom:1rem">以下為本系統使用之原始資料，供使用者核對參考：</p>
+            <table style="width:100%;border-collapse:collapse">
+                <tr style="border-bottom:1px solid #eee"><td style="padding:0.5rem"><strong>健保藥品給付規定</strong></td>
+                    <td style="padding:0.5rem;color:#666">115/03/23 版本</td></tr>
+                <tr style="border-bottom:1px solid #eee"><td style="padding:0.5rem"><strong>健保藥價</strong></td>
+                    <td style="padding:0.5rem;color:#666">115 年藥品支付價格（115/04/01 生效）</td></tr>
+                <tr style="border-bottom:1px solid #eee"><td style="padding:0.5rem"><strong>台大醫院藥價</strong></td>
+                    <td style="padding:0.5rem;color:#666">2024/12/05 更新，66 品項</td></tr>
+                <tr style="border-bottom:1px solid #eee"><td style="padding:0.5rem"><strong>SQLite 資料庫</strong></td>
+                    <td style="padding:0.5rem"><code>nhi_drug_coverage.db</code></td></tr>
+                <tr><td style="padding:0.5rem"><strong>台大藥價原始檔</strong></td>
+                    <td style="padding:0.5rem"><code>2024_12_5_price.csv</code></td></tr>
+            </table>
+            <p style="color:#999;margin-top:1rem;font-size:0.85rem">本系統僅供參考，實際給付以健保署公告為準。藥價依健保支付標準，自費藥品市場價格可能不同。</p>
+            <div class="btn-row" style="margin-top:1rem">
+                <button class="btn btn-outline btn-sm" onclick="closeEdit()">關閉</button>
+            </div>
+        </div>`;
+    document.getElementById('editModal').classList.add('show');
 }
 
 // ── Version Check ──
@@ -1291,7 +1632,7 @@ async function initRegimenCalc(){
   _regimenInited = true;
   // Load formulations from DB
   try {
-    const r = await fetch('/api/formulations');
+    const r = await cachedFetch('/api/formulations');
     const data = await r.json();
     _formulations = {};
     data.forEach(f => {
@@ -1602,6 +1943,9 @@ function calcRegimen(){
     <div class="sum-line sum-total sum-self"><span>患者自費總計</span><span>NT$ ${selfTotal.toLocaleString()}</span></div>
     <div class="sum-line sum-total sum-grand"><span>全療程合計（含健保）</span><span>NT$ ${grandTotal.toLocaleString()}</span></div>
     <div class="sum-note">* 此為依健保支付標準之估算，各醫院實際收費可能不同。藥價來源：115年健保藥價調整（115/04/01生效）、台大醫院藥品價目表（2024/12/05）。含首劑loading dose。藥品搭配以最經濟組合計算。</div>
+    <div style="text-align:center;margin-top:0.75rem">
+      <button class="btn btn-outline btn-sm" onclick="printRegimen()">列印 / 匯出 PDF</button>
+    </div>
   </div>`;
 }
 
@@ -1621,6 +1965,40 @@ function buildDrugRow(drug, doseLabel, vialInfo, costPerCycle, totalCost, cycles
       <div>${cycles}次 = NT$ ${totalCost.toLocaleString()}</div>
     </div>
   </div>`;
+}
+
+function printRegimen(){
+  const detail = document.getElementById('regimenDetail').innerHTML;
+  const summary = document.getElementById('regimenSummary').innerHTML;
+  const w = window.open('','_blank','width=800,height=600');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>療程費用試算</title>
+    <style>
+      body{font-family:'Noto Sans TC','Microsoft JhengHei',sans-serif;padding:2rem;max-width:700px;margin:0 auto;color:#1e293b;font-size:13px}
+      h2{text-align:center;margin-bottom:0.5rem}
+      .phase-box{border:1px solid #e2e8f0;border-radius:8px;padding:0.75rem;margin-bottom:0.75rem}
+      .phase-box h4{display:flex;justify-content:space-between;margin:0 0 0.5rem}
+      .drug-row{display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px solid #f1f5f9;gap:0.5rem}
+      .drug-info{flex:1} .drug-name-r{font-weight:600} .drug-dose,.vial-combo{font-size:0.8rem;color:#666}
+      .drug-cost{text-align:right;font-weight:600;white-space:nowrap}
+      .nhi-toggle{display:none}
+      .reg-summary{border:2px solid #7c3aed;border-radius:8px;padding:1rem;margin-top:1rem}
+      .sum-line{display:flex;justify-content:space-between;padding:0.2rem 0}
+      .sum-nhi{color:#22c55e} .sum-self{color:#dc3545}
+      .sum-total{border-top:1px solid #e2e8f0;padding-top:0.3rem;margin-top:0.3rem;font-weight:700}
+      .sum-grand{font-size:1.05rem;color:#7c3aed}
+      .sum-note{font-size:0.75rem;color:#999;margin-top:0.5rem}
+      .print-footer{text-align:center;margin-top:1.5rem;font-size:0.75rem;color:#aaa;border-top:1px solid #eee;padding-top:0.5rem}
+      button{display:none}
+      @media print{body{padding:0.5rem}}
+    </style>
+  </head><body>
+    <h2>健保腫瘤藥物療程費用試算</h2>
+    <div style="text-align:center;color:#666;margin-bottom:1rem">列印日期：${new Date().toLocaleDateString('zh-TW')}</div>
+    ${detail}${summary}
+    <div class="print-footer">NHI Oncology Drug Calculator — 本資料僅供參考，實際給付以健保署公告為準</div>
+  </body></html>`);
+  w.document.close();
+  setTimeout(()=>w.print(),300);
 }
 
 function getSmallestFormulation(drugKey){
@@ -1784,19 +2162,21 @@ class Handler(BaseHTTPRequestHandler):
 
     def _update_drug(self, drug_id, body):
         c = get_db(); cur = c.cursor()
-        cur.execute("UPDATE drugs SET generic_name=?, trade_names=?, specialty_id=?, indication=? WHERE id=?",
-                    (body['generic_name'], body.get('trade_names', ''), body['specialty_id'], body.get('indication', ''), drug_id))
+        cur.execute("UPDATE drugs SET generic_name=?, trade_names=?, specialty_id=?, indication=?, stage=? WHERE id=?",
+                    (body['generic_name'], body.get('trade_names', ''), body['specialty_id'], body.get('indication', ''), body.get('stage', ''), drug_id))
         if body.get('conditions') is not None:
             cur.execute("UPDATE coverage_rules SET condition=? WHERE drug_id=?", (body['conditions'], drug_id))
+        if body.get('therapy_line') is not None:
+            cur.execute("UPDATE coverage_rules SET therapy_line=? WHERE drug_id=?", (body['therapy_line'], drug_id))
         c.commit(); c.close()
         self._json(200, {'ok': True})
 
     def _add_drug(self, body):
         c = get_db(); cur = c.cursor()
-        cur.execute("INSERT INTO drugs (generic_name, trade_names, specialty_id, indication, created_date) VALUES (?,?,?,?,?)",
-                    (body['generic_name'], body.get('trade_names', ''), body['specialty_id'], body.get('indication', ''), datetime.now().date()))
+        cur.execute("INSERT INTO drugs (generic_name, trade_names, specialty_id, indication, stage, created_date) VALUES (?,?,?,?,?,?)",
+                    (body['generic_name'], body.get('trade_names', ''), body['specialty_id'], body.get('indication', ''), body.get('stage', ''), datetime.now().date()))
         drug_id = cur.lastrowid
-        cur.execute("INSERT INTO coverage_rules (drug_id, condition) VALUES (?,?)", (drug_id, body.get('conditions', '')))
+        cur.execute("INSERT INTO coverage_rules (drug_id, condition, therapy_line) VALUES (?,?,?)", (drug_id, body.get('conditions', ''), body.get('therapy_line')))
         c.commit(); c.close()
         self._json(201, {'ok': True, 'id': drug_id})
 
