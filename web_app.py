@@ -21,6 +21,11 @@ DB_PATH = Path(__file__).parent / "nhi_drug_coverage.db"
 def get_db():
     conn = sqlite3.connect(str(DB_PATH))
     conn.row_factory = sqlite3.Row
+    # 自動補欄位（相容舊資料庫）
+    cols = [r[1] for r in conn.execute('PRAGMA table_info(drugs)').fetchall()]
+    if 'drug_image_url' not in cols:
+        conn.execute('ALTER TABLE drugs ADD COLUMN drug_image_url TEXT')
+        conn.commit()
     return conn
 
 
@@ -912,8 +917,14 @@ async function showDetail(id){
     } else if(d.nhi_price && dosage){
         h+=buildCostCalc(d, dosage);
     }
+    const infoUrl = d.drug_image_url ||
+        `https://www.nhi.gov.tw/QueryPharmacy/Drug_List.aspx?n1=${encodeURIComponent(d.trade_names||d.generic_name)}`;
     h+=`<div class="btn-row">
         <button class="btn btn-outline btn-sm" onclick="closeDetail();openEditDrug(${d.id})">編輯此藥物</button>
+        <a class="btn btn-outline btn-sm" href="${infoUrl}" target="_blank" rel="noopener noreferrer"
+           style="text-decoration:none;display:inline-flex;align-items:center;gap:.3rem">
+           查看藥品說明書 ↗
+        </a>
     </div>`;
     // Cache dosage info for single-drug calculator
     if(d.nhi_price && dosage && !combo){
@@ -2158,6 +2169,7 @@ class Handler(BaseHTTPRequestHandler):
             'conditions': r['conditions'],
             'nhi_price': r['nhi_price'], 'price_unit': r['price_unit'] or '',
             'dosage_info': r['dosage_info'] or '',
+            'drug_image_url': r['drug_image_url'] or '',
         })
 
     def _update_drug(self, drug_id, body):
