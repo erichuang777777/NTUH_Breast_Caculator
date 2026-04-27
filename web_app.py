@@ -765,25 +765,37 @@ function toggleChip(el){
 function matchesFilters(drug, filters){
     const tags=drug.clinical_tags||{};
     const stage=drug.stage||'';
-    for(const[f,v] of Object.entries(filters)){
+    // HER2 and ER/PR are independent axes — use OR among receptor filters
+    const receptorKeys=['her2','er_pr'];
+    const receptorFilters=Object.fromEntries(Object.entries(filters).filter(([k])=>receptorKeys.includes(k)));
+    const otherFilters=Object.fromEntries(Object.entries(filters).filter(([k])=>!receptorKeys.includes(k)));
+    // AND logic for non-receptor filters
+    for(const[f,v] of Object.entries(otherFilters)){
         if(f==='stage'){
             if(!stage.includes(v))return false;
         } else if(f==='disease'){
             if(!tags.disease||!tags.disease.includes(v))return false;
         } else if(f==='phase'){
             if(!tags.phase||!tags.phase.includes(v))return false;
-        } else if(f==='her2'){
-            if(!tags.her2)return false;
-            if(tags.her2!==v && tags.her2!=='both')return false;
-        } else if(f==='er_pr'){
-            if(!tags.er_pr)return false;
-            if(tags.er_pr!==v && tags.er_pr!=='both')return false;
         } else if(f==='menopause'){
             if(!tags.menopause)return false;
             if(tags.menopause!==v && tags.menopause!=='both')return false;
         } else {
             if(!tags[f])return false;
         }
+    }
+    // OR logic for receptor filters: patient may be HER2+/ER+ simultaneously
+    if(Object.keys(receptorFilters).length>0){
+        let match=false;
+        if(receptorFilters.her2!==undefined){
+            const v=receptorFilters.her2;
+            if(tags.her2&&(tags.her2===v||tags.her2==='both'))match=true;
+        }
+        if(receptorFilters.er_pr!==undefined){
+            const v=receptorFilters.er_pr;
+            if(tags.er_pr&&(tags.er_pr===v||tags.er_pr==='both'))match=true;
+        }
+        if(!match)return false;
     }
     return true;
 }
