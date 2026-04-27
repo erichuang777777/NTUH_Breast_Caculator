@@ -1227,9 +1227,11 @@ async function showHeme(){
 
 // ── Filters ──
 function toggleChip(el){
-    el.classList.toggle('active');
     const f=el.dataset.f, v=el.dataset.v;
-    if(el.classList.contains('active')){activeFilters[f]=v}
+    const wasActive=el.classList.contains('active');
+    document.querySelectorAll(`.filter-chip[data-f="${f}"]`).forEach(c=>{if(c!==el)c.classList.remove('active');});
+    el.classList.toggle('active');
+    if(!wasActive){activeFilters[f]=v}
     else{delete activeFilters[f]}
     // TNBC auto-detection
     const tnbc=document.getElementById('tnbcBadge');
@@ -1312,7 +1314,7 @@ function resetHemeFilters(){
 
 // ── Render ──
 function stageLabel(s){
-    if(!s)return'<span style="color:var(--muted)">*待確認</span>';
+    if(!s)return'<span style="color:var(--text-muted)">*待確認</span>';
     const m={'early':'eBC(I-II)','advanced':'LABC(III)','metastatic':'mBC(IV)'};
     return s.split(',').map(x=>m[x]||x).join('、');
 }
@@ -1337,7 +1339,7 @@ function renderBreast(list){
         const tagBadges=renderTagBadges(tags,'breast');
         const line=lineLabel(d.therapy_line);
         const auth=d.prior_auth?'<span class="badge badge-auth">需審查</span>':'-';
-        const priceHtml=d.nhi_price?`<span class="price-tag">$${Number(d.nhi_price).toLocaleString()}</span><span class="price-unit">${esc(d.price_unit||'')}</span>`:'<span style="color:var(--muted)">-</span>';
+        const priceHtml=d.nhi_price?`<span class="price-tag">$${Number(d.nhi_price).toLocaleString()}</span><span class="price-unit">${esc(d.price_unit||'')}</span>`:'<span style="color:var(--text-muted)">-</span>';
         const cmpActive=compareList.some(x=>x.id===d.id)?'active':'';
         return `<tr class="clickable" onclick="showDetail(${d.id})" style="${ok===false?'opacity:.6':''}">
             <td>${icon}</td>
@@ -1379,7 +1381,7 @@ function renderHeme(list){
         const diseaseStr=(tags.disease||[]).join('、')||'-';
         const line=lineLabel(d.therapy_line);
         const auth=d.prior_auth?'<span class="badge badge-auth">需審查</span>':'-';
-        const priceHtml=d.nhi_price?`<span class="price-tag">$${Number(d.nhi_price).toLocaleString()}</span><span class="price-unit">${esc(d.price_unit||'')}</span>`:'<span style="color:var(--muted)">-</span>';
+        const priceHtml=d.nhi_price?`<span class="price-tag">$${Number(d.nhi_price).toLocaleString()}</span><span class="price-unit">${esc(d.price_unit||'')}</span>`:'<span style="color:var(--text-muted)">-</span>';
         const cmpActive=compareList.some(x=>x.id===d.id)?'active':'';
         return `<tr class="clickable" onclick="showDetail(${d.id})" style="${ok===false?'opacity:.6':''}">
             <td>${icon}</td>
@@ -1590,7 +1592,7 @@ async function showDetail(id){
     const r=await cachedFetch('/api/drug/'+id);const d=await r.json();
     const tags=typeof d.clinical_tags==='string'?JSON.parse(d.clinical_tags||'{}'):d.clinical_tags||{};
     const cat=d.specialty_id==='oncology_breast'?'<span class="badge badge-breast">乳癌</span>':'<span class="badge badge-heme">血液腫瘤</span>';
-    const line=d.therapy_line?'<span class="badge badge-line">第'+d.therapy_line+'線</span>':'<span style="color:var(--muted)">未指定</span>';
+    const line=d.therapy_line?'<span class="badge badge-line">第'+d.therapy_line+'線</span>':'<span style="color:var(--text-muted)">未指定</span>';
     const auth=d.prior_auth?'<span class="badge badge-auth">需事前審查</span>':'<span style="color:var(--green);font-weight:600">無需事前審查</span>';
     const priceStr=d.nhi_price?`NT$ ${Number(d.nhi_price).toLocaleString()} / ${esc(d.price_unit||'')}`:'尚無藥價資料';
     let dosage=null;
@@ -2067,7 +2069,7 @@ function buildComboCalc(combo, currentDrugName){
   return `<div class="combo-box" id="comboBox_${combo.id}">
     <h3>🔗 ${combo.name}</h3>
     <div class="combo-desc">${combo.desc}</div>
-    <div style="margin-bottom:.5rem"><strong style="font-size:.78rem;color:var(--muted)">健保情境：</strong><br>
+    <div style="margin-bottom:.5rem"><strong style="font-size:.78rem;color:var(--text-muted)">健保情境：</strong><br>
       <div class="scenario-btns" style="margin-top:.3rem">${scenarioBtns}</div>
     </div>
     <div class="combo-drugs" id="comboDrugs_${combo.id}">
@@ -2184,7 +2186,7 @@ function calcCombo(comboId){
     const coverLabel = isNHI ? '<span style="color:#059669">健保給付</span>' : '<span style="color:#dc2626">自費</span>';
     drugLines += `<div class="cost-line">
       <span>${drug.name.split('(')[0].trim()} [${coverLabel}]<br>
-        <small style="color:var(--muted)">首劑${loadingVials}${unitLabel} + 後續${maintCycles}次×${maintVials}${unitLabel} = 共${totalVials}${unitLabel}</small>
+        <small style="color:var(--text-muted)">首劑${loadingVials}${unitLabel} + 後續${maintCycles}次×${maintVials}${unitLabel} = 共${totalVials}${unitLabel}</small>
       </span>
       <span>NT$ ${totalCost.toLocaleString()}</span>
     </div>`;
@@ -2659,7 +2661,7 @@ function calcRegimen(){
     const cycleDays = phase.freq==='q3w'?21:phase.freq==='q4w'?28:phase.freq==='weekly'?7:21;
     const months = (phase.cycles * cycleDays / 30).toFixed(1);
     detailHtml += `<div class="phase-box">
-      <h4><span>${phase.name} (${phase.freq} × ${phase.cycles})</span><span style="font-size:.73rem;color:var(--muted)">~${months} 個月</span></h4>
+      <h4><span>${phase.name} (${phase.freq} × ${phase.cycles})</span><span style="font-size:.73rem;color:var(--text-muted)">~${months} 個月</span></h4>
       ${drugRows}
       <div style="display:flex;justify-content:space-between;font-size:.78rem;font-weight:600;margin-top:.4rem;padding-top:.4rem;border-top:1px dashed var(--border)">
         <span>Phase 小計</span>
@@ -2690,7 +2692,7 @@ function calcRegimen(){
   document.getElementById('regimenSummary').innerHTML = `<div class="reg-summary">
     <div class="sum-line" style="font-weight:700;font-size:.9rem;margin-bottom:.3rem"><span>${reg.name} 療程費用總計</span><span>體重 ${_patientWt}kg / BSA ${_patientBSA.toFixed(2)} m²</span></div>
     ${nhiTotal>0?'<div class="sum-line sum-nhi"><span>健保給付</span><span>NT$ '+nhiTotal.toLocaleString()+'</span></div>':''}
-    ${addonHtml?'<div style="border-top:1px dashed #f9a8d4;margin:.3rem 0;padding-top:.3rem;font-size:.78rem;color:var(--muted)">支持性治療：</div>'+addonHtml:''}
+    ${addonHtml?'<div style="border-top:1px dashed #f9a8d4;margin:.3rem 0;padding-top:.3rem;font-size:.78rem;color:var(--text-muted)">支持性治療：</div>'+addonHtml:''}
     <div class="sum-line sum-total sum-self"><span>患者自費總計</span><span>NT$ ${selfTotal.toLocaleString()}</span></div>
     <div class="sum-line sum-total sum-grand"><span>全療程合計（含健保）</span><span>NT$ ${grandTotal.toLocaleString()}</span></div>
     <div class="sum-note">* 此為依健保支付標準之估算，各醫院實際收費可能不同。藥價來源：115年健保藥價調整（115/04/01生效）、台大醫院藥品價目表（2024/12/05）。含首劑loading dose。藥品搭配以最經濟組合計算。</div>
@@ -2712,7 +2714,7 @@ function buildDrugRow(drug, doseLabel, vialInfo, costPerCycle, totalCost, cycles
       <button class="${selfClass}" onclick="_regimenNHI['${drug.key}']=false;calcRegimen()">自費</button>
     </div>
     <div class="drug-cost">
-      ${loadCost?'<div style="font-size:.7rem;color:var(--muted)">首劑 NT$'+loadCost.toLocaleString()+'</div>':''}
+      ${loadCost?'<div style="font-size:.7rem;color:var(--text-muted)">首劑 NT$'+loadCost.toLocaleString()+'</div>':''}
       <div>${cycles}次 = NT$ ${totalCost.toLocaleString()}</div>
     </div>
   </div>`;
@@ -3002,7 +3004,7 @@ function updateCmpBar(){
     bar.classList.add('show');
     chips.innerHTML=compareList.map(d=>`<span class="cmp-chip">${esc(d.generic_name)}<button onclick="toggleCompare(${d.id})">&#x2715;</button></span>`).join('');
 }
-function clearCompare(){compareList=[];updateCmpBar();}
+function clearCompare(){compareList=[];document.querySelectorAll('.cmp-btn.active').forEach(b=>b.classList.remove('active'));updateCmpBar();}
 function closeCompareModal(){document.getElementById('cmpModal').classList.remove('show');}
 function openCompare(){
     if(compareList.length<2){alert('請至少選擇 2 種藥物進行比較');return;}
@@ -3034,8 +3036,11 @@ function renderCompare(){
 }
 function printCompare(){
     const today=new Date().toLocaleDateString('zh-TW');
-    const tbl=document.getElementById('cmpBody').querySelector('table').outerHTML;
+    const tblEl=document.getElementById('cmpBody').querySelector('table');
+    if(!tblEl){alert('請先開啟比較表');return;}
+    const tbl=tblEl.outerHTML;
     const w=window.open('','_blank','width=900,height=700');
+    if(!w){alert('請允許彈出視窗以列印');return;}
     w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>藥物費用比較 '+today+'<\/title><style>body{font-family:sans-serif;padding:2rem;font-size:13px;color:#0f172a}h1{font-size:1.1rem;margin-bottom:.3rem}.sub{color:#64748b;font-size:.82rem;margin-bottom:1.2rem}table{width:100%;border-collapse:collapse}th,td{padding:.45rem .65rem;border:1px solid #e2e8f0;vertical-align:top;text-align:left}th{background:#f1f5f9;font-weight:600}.footer{margin-top:1.5rem;font-size:.72rem;color:#94a3b8;border-top:1px solid #e2e8f0;padding-top:.6rem}@media print{body{padding:.5rem}}<\/style><\/head><body><h1>健保腫瘤藥物費用比較表<\/h1><div class="sub">列印日期：'+today+'<\/div>'+tbl+'<div class="footer">本資料僅供門診說明參考，實際給付以健保署公告為準。<\/div><\/body><\/html>');
     w.document.close();
     setTimeout(()=>w.print(),300);
@@ -3059,9 +3064,10 @@ function printPatientSummary(id){
         :'<p style="color:#047857;font-weight:600">&#10003; 無需事前審查<\/p>';
     const indicHtml=drug.indication?'<p>'+drug.indication.replace(/ \| /g,'；')+'<\/p>':'';
     const w=window.open('','_blank','width=680,height=820');
-    w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+drug.generic_name+' - 病患摘要<\/title><style>body{font-family:sans-serif;padding:2rem;color:#0f172a;font-size:14px;max-width:580px;margin:0 auto}h1{font-size:1.3rem;margin-bottom:.2rem}.trade{color:#64748b;font-size:.9rem;margin-bottom:.2rem}.date{font-size:.78rem;color:#94a3b8;margin-bottom:1.2rem;padding-bottom:.8rem;border-bottom:1px solid #e2e8f0}h2{font-size:.95rem;font-weight:700;margin:1.1rem 0 .35rem;color:#334155}p,li{line-height:1.7;font-size:.9rem}.footer{margin-top:2rem;font-size:.72rem;color:#94a3b8;border-top:1px solid #e2e8f0;padding-top:.6rem}@media print{body{padding:.8rem}}<\/style><\/head><body>');
-    w.document.write('<h1>'+drug.generic_name+'<\/h1>');
-    if(drug.trade_names)w.document.write('<div class="trade">商品名：'+drug.trade_names+'<\/div>');
+    if(!w){alert('請允許彈出視窗以列印');return;}
+    w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+esc(drug.generic_name)+' - 病患摘要<\/title><style>body{font-family:sans-serif;padding:2rem;color:#0f172a;font-size:14px;max-width:580px;margin:0 auto}h1{font-size:1.3rem;margin-bottom:.2rem}.trade{color:#64748b;font-size:.9rem;margin-bottom:.2rem}.date{font-size:.78rem;color:#94a3b8;margin-bottom:1.2rem;padding-bottom:.8rem;border-bottom:1px solid #e2e8f0}h2{font-size:.95rem;font-weight:700;margin:1.1rem 0 .35rem;color:#334155}p,li{line-height:1.7;font-size:.9rem}.footer{margin-top:2rem;font-size:.72rem;color:#94a3b8;border-top:1px solid #e2e8f0;padding-top:.6rem}@media print{body{padding:.8rem}}<\/style><\/head><body>');
+    w.document.write('<h1>'+esc(drug.generic_name)+'<\/h1>');
+    if(drug.trade_names)w.document.write('<div class="trade">商品名：'+esc(drug.trade_names)+'<\/div>');
     w.document.write('<div class="date">說明日期：'+today+'<\/div>');
     w.document.write('<h2>健保給付狀態<\/h2>'+coverageHtml);
     w.document.write('<h2>藥品費用<\/h2><p>健保藥價：'+priceHtml+'<\/p>');
