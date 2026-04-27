@@ -3,1101 +3,361 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>健保腫瘤藥物查詢系統</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>健保藥物給付規定查詢系統</title>
 <style>
-/* ── Reset & Tokens ── */
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
 :root {
-  /* Core palette */
-  --bg:         #F8F9FA;
-  --surface:    #FFFFFF;
-  --surface-2:  #F1F5F9;
-  --border:     #E2E8F0;
-  --border-2:   #CBD5E1;
-
-  /* Text */
-  --text:       #0F172A;
-  --text-2:     #334155;
-  --text-muted: #64748B;
-  --text-faint: #94A3B8;
-
-  /* Brand accents */
-  --breast:     #9D174D;
-  --breast-bg:  #FFF1F5;
-  --breast-border: #FBCFE8;
-  --heme:       #1E3A8A;
-  --heme-bg:    #EFF6FF;
-  --heme-border: #BFDBFE;
-
-  /* Status */
-  --nhi:        #047857;
-  --nhi-bg:     #ECFDF5;
-  --nhi-border: #6EE7B7;
-  --self:       #B91C1C;
-  --self-bg:    #FEF2F2;
-  --self-border:#FCA5A5;
-  --auth:       #B45309;
-  --auth-bg:    #FFFBEB;
-  --auth-border:#FDE68A;
-
-  /* Purple/calc */
-  --purple:     #6D28D9;
-  --purple-bg:  #F5F3FF;
-  --purple-border: #DDD6FE;
-
-  /* Interactive */
-  --primary:    #1D4ED8;
-  --primary-hover: #1E40AF;
-
-  /* Spacing */
-  --r-sm: 6px;
-  --r-md: 10px;
-  --r-lg: 14px;
-  --r-xl: 18px;
+    --primary:#2563eb; --primary-dark:#1d4ed8;
+    --bg:#f8fafc; --card:#fff; --text:#1e293b; --muted:#64748b; --border:#e2e8f0;
+    --pink:#be185d; --blue:#1e40af; --green:#059669; --red:#dc2626; --amber:#d97706;
 }
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans TC",sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+.header{background:linear-gradient(135deg,var(--primary),#7c3aed);color:#fff;padding:1.2rem 2rem;box-shadow:0 4px 6px -1px rgb(0 0 0/.1)}
+.header h1{font-size:1.4rem;font-weight:700}
+.header p{font-size:.8rem;opacity:.8;margin-top:.15rem}
+.container{max-width:1280px;margin:0 auto;padding:1.2rem}
 
-body {
-  font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.6;
-  font-size: 15px;
-}
+/* ── Landing Page ── */
+.landing{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;padding:2rem 0}
+.dept-card{background:var(--card);border-radius:16px;padding:2rem;width:340px;box-shadow:0 4px 12px rgb(0 0 0/.08);cursor:pointer;transition:transform .2s,box-shadow .2s;border-top:5px solid var(--primary);text-align:center}
+.dept-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgb(0 0 0/.12)}
+.dept-card.breast{border-top-color:var(--pink)}
+.dept-card.heme{border-top-color:var(--blue)}
+.dept-card h2{font-size:1.5rem;margin:.5rem 0}
+.dept-card .count{font-size:2.5rem;font-weight:800;margin:.5rem 0}
+.dept-card.breast .count{color:var(--pink)}
+.dept-card.heme .count{color:var(--blue)}
+.dept-card .desc{color:var(--muted);font-size:.85rem}
 
-/* ── Offline Bar ── */
-#offlineBar {
-  display: none;
-  background: #D97706;
-  color: #fff;
-  text-align: center;
-  padding: .4rem;
-  font-size: .82rem;
-  font-weight: 600;
-}
+/* ── Department Page ── */
+.dept-page{display:none}
+.dept-page.active{display:block}
+.back-btn{background:none;border:none;color:var(--primary);font-size:.9rem;cursor:pointer;padding:.5rem 0;font-weight:600}
+.back-btn:hover{text-decoration:underline}
 
-/* ── Header ── */
-.header {
-  background: #0F172A;
-  color: #fff;
-  padding: .9rem 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  box-shadow: 0 1px 0 rgba(255,255,255,.08);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-.header-title {
-  font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: -.01em;
-}
-.header-sub {
-  font-size: .75rem;
-  color: #94A3B8;
-  margin-top: .05rem;
-}
-.header-badge {
-  margin-left: auto;
-  background: rgba(255,255,255,.08);
-  color: #94A3B8;
-  font-size: .72rem;
-  padding: .25rem .65rem;
-  border-radius: 20px;
-  border: 1px solid rgba(255,255,255,.1);
-}
+/* ── Filter Panel ── */
+.filter-panel{background:var(--card);border-radius:12px;padding:1.25rem;margin-bottom:1.2rem;box-shadow:0 1px 3px rgb(0 0 0/.1)}
+.filter-panel h3{font-size:.85rem;font-weight:700;color:var(--muted);margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.05em}
+.filter-group{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.75rem}
+.filter-group label{font-size:.8rem;font-weight:600;color:var(--muted);width:100%;margin-bottom:.15rem}
+.filter-chip{padding:.35rem .8rem;border:2px solid var(--border);border-radius:8px;background:#fff;cursor:pointer;font-size:.8rem;font-weight:500;transition:all .15s;user-select:none}
+.filter-chip.active{border-color:var(--primary);background:#eff6ff;color:var(--primary)}
+.filter-chip:hover{border-color:var(--primary)}
+.filter-chip.positive{border-color:#86efac;background:#f0fdf4;color:#166534}
+.filter-chip.negative{border-color:#fca5a5;background:#fef2f2;color:#991b1b}
 
-/* ── Container ── */
-.container { max-width: 1300px; margin: 0 auto; padding: 1.25rem 1.5rem; }
+.search-row{display:flex;gap:.75rem;flex-wrap:wrap;align-items:end;margin-bottom:.75rem}
+.search-row input{flex:1;min-width:200px;padding:.5rem .8rem;border:2px solid var(--border);border-radius:8px;font-size:.9rem;outline:none}
+.search-row input:focus{border-color:var(--primary)}
+.btn{padding:.5rem 1.2rem;border:none;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .15s}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-sm{padding:.3rem .8rem;font-size:.75rem}
+.btn-outline{background:transparent;border:2px solid var(--border);color:var(--text)}
+.btn-outline:hover{border-color:var(--primary);color:var(--primary)}
+.btn-success{background:var(--green);color:#fff}
+.btn-danger{background:var(--red);color:#fff}
+
+/* ── Drug Table ── */
+.table-wrap{background:var(--card);border-radius:12px;box-shadow:0 1px 3px rgb(0 0 0/.1);overflow:hidden}
+.result-info{font-size:.8rem;color:var(--muted);padding:.6rem 1rem;border-bottom:1px solid var(--border)}
+table{width:100%;border-collapse:collapse}
+th{background:#f1f5f9;padding:.7rem .8rem;text-align:left;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;border-bottom:2px solid var(--border)}
+td{padding:.7rem .8rem;border-bottom:1px solid var(--border);font-size:.85rem}
+.price-tag{font-weight:600;color:#9333ea;font-size:.8rem;white-space:nowrap}
+.price-unit{font-size:.7rem;color:var(--muted);display:block}
+
+/* ── Cost Calculator ── */
+.calc-box{background:#faf5ff;border:2px solid #e9d5ff;border-radius:12px;padding:1.2rem;margin-top:.8rem}
+.calc-box h3{color:#7c3aed;margin-bottom:.8rem}
+.calc-row{display:flex;gap:.8rem;flex-wrap:wrap;margin-bottom:.6rem;align-items:end}
+.calc-row .field{flex:1;min-width:120px}
+.calc-row label{display:block;font-size:.75rem;font-weight:600;color:var(--muted);margin-bottom:.2rem}
+.calc-row input{width:100%;padding:.4rem .6rem;border:2px solid var(--border);border-radius:6px;font-size:.85rem}
+.calc-row input:focus{border-color:#7c3aed;outline:none}
+.calc-result{background:#fff;border-radius:8px;padding:1rem;margin-top:.8rem;border:1px solid #e9d5ff}
+.calc-result .cost-line{display:flex;justify-content:space-between;padding:.3rem 0;font-size:.85rem}
+.calc-result .cost-line.total{font-weight:700;font-size:1rem;color:#7c3aed;border-top:2px solid #e9d5ff;margin-top:.4rem;padding-top:.6rem}
+.calc-result .cost-note{font-size:.75rem;color:var(--muted);margin-top:.5rem;font-style:italic}
+/* ── Combo Calculator ── */
+.combo-box{background:#fdf4ff;border:2px solid #d8b4fe;border-radius:12px;padding:1.2rem;margin-top:.8rem}
+.combo-box h3{color:#6d28d9;margin-bottom:.5rem;font-size:1rem}
+.combo-desc{font-size:.8rem;color:var(--muted);margin-bottom:.8rem}
+.scenario-btns{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.8rem}
+.scenario-btn{padding:.3rem .8rem;border-radius:20px;border:2px solid #c4b5fd;background:#fff;color:#5b21b6;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .15s}
+.scenario-btn:hover,.scenario-btn.active{background:#7c3aed;color:#fff;border-color:#7c3aed}
+.combo-drugs{display:flex;gap:.8rem;flex-wrap:wrap;margin-bottom:.8rem}
+.combo-drug-card{flex:1;min-width:180px;background:#fff;border-radius:8px;padding:.8rem;border:2px solid #e9d5ff}
+.combo-drug-card.nhi-covered{border-color:#6ee7b7;background:#f0fdf4}
+.combo-drug-card.self-pay{border-color:#fca5a5;background:#fff7f7}
+.combo-drug-name{font-weight:700;font-size:.85rem;margin-bottom:.3rem}
+.coverage-toggle{display:flex;gap:0;border-radius:6px;overflow:hidden;border:1.5px solid #d8b4fe;margin-bottom:.6rem}
+.coverage-toggle button{flex:1;padding:.25rem .5rem;border:none;background:#f5f3ff;color:#5b21b6;font-size:.75rem;font-weight:600;cursor:pointer;transition:background .15s}
+.coverage-toggle button.active-nhi{background:#059669;color:#fff}
+.coverage-toggle button.active-self{background:#dc2626;color:#fff}
+.combo-drug-detail{font-size:.75rem;color:var(--muted)}
+.combo-inputs{display:flex;gap:.8rem;flex-wrap:wrap;align-items:flex-end;margin-bottom:.8rem}
+.combo-inputs .field{flex:1;min-width:120px}
+.combo-inputs label{display:block;font-size:.75rem;font-weight:600;color:var(--muted);margin-bottom:.2rem}
+.combo-inputs input,.combo-inputs select{width:100%;padding:.4rem .6rem;border:2px solid var(--border);border-radius:6px;font-size:.85rem}
+.combo-inputs input:focus,.combo-inputs select:focus{border-color:#7c3aed;outline:none}
+.combo-result{background:#fff;border-radius:8px;padding:1rem;margin-top:.6rem;border:1px solid #e9d5ff}
+.combo-result .cost-line{display:flex;justify-content:space-between;padding:.25rem 0;font-size:.85rem}
+.combo-result .nhi-line{color:#059669;font-weight:600}
+.combo-result .self-line{color:#dc2626;font-weight:600}
+.combo-result .total-line{font-weight:700;font-size:1rem;border-top:2px solid #e9d5ff;margin-top:.4rem;padding-top:.5rem}
+.combo-result .total-nhi{color:#059669}
+.combo-result .total-self{color:#dc2626}
+.combo-result .cost-note{font-size:.75rem;color:var(--muted);margin-top:.5rem;font-style:italic}
+tr.clickable{cursor:pointer}
+tr.clickable:hover{background:#f8fafc}
+.drug-name{font-weight:600;color:var(--primary)}
+.brand{font-size:.75rem;color:var(--muted)}
+.badge{display:inline-block;padding:.15rem .5rem;border-radius:9999px;font-size:.7rem;font-weight:600}
+.badge-breast{background:#fce7f3;color:#be185d}
+.badge-heme{background:#dbeafe;color:#1e40af}
+.badge-auth{background:#fee2e2;color:#991b1b}
+.badge-line{background:#d1fae5;color:#065f46}
+.badge-tag{background:#f1f5f9;color:#475569;margin:.1rem}
+.icon-ok{color:var(--green);font-weight:bold;font-size:1rem}
+.icon-pay{color:var(--amber);font-weight:bold;font-size:.85rem}
+.empty{text-align:center;padding:2.5rem;color:var(--muted)}
+
+/* ── Inner Tabs ── */
+.inner-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:1rem}
+.inner-tab{padding:.6rem 1.2rem;border:none;background:none;font-size:.85rem;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all .15s}
+.inner-tab:hover{color:var(--primary)}
+.inner-tab.active{color:#be185d;border-bottom-color:#be185d}
+.tab-content{display:none}.tab-content.active{display:block}
+
+/* ── Regimen Calculator ── */
+.reg-section{margin-bottom:1.2rem}
+.reg-section h3{font-size:.9rem;font-weight:700;margin-bottom:.5rem;color:#1e293b}
+.patient-inputs{display:flex;gap:1rem;flex-wrap:wrap;align-items:end;background:var(--card);padding:1rem;border-radius:10px;border:1px solid var(--border)}
+.patient-inputs .field{flex:1;min-width:110px}
+.patient-inputs label{display:block;font-size:.73rem;font-weight:600;color:var(--muted);margin-bottom:.2rem}
+.patient-inputs input,.patient-inputs select{width:100%;padding:.4rem .5rem;border:2px solid var(--border);border-radius:6px;font-size:.85rem}
+.patient-inputs input:focus,.patient-inputs select:focus{border-color:#be185d;outline:none}
+.bsa-display{background:#fce7f3;color:#be185d;padding:.3rem .6rem;border-radius:6px;font-weight:700;font-size:.85rem;align-self:center}
+.condition-bar{display:flex;gap:.5rem;flex-wrap:wrap;margin:.5rem 0}
+.cond-btn{padding:.35rem .7rem;border-radius:18px;border:2px solid #e2e8f0;background:#fff;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .12s}
+.cond-btn:hover{border-color:#be185d;color:#be185d}
+.cond-btn.active{background:#be185d;color:#fff;border-color:#be185d}
+.regimen-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.6rem}
+.reg-card{background:var(--card);border:2px solid var(--border);border-radius:10px;padding:.8rem;cursor:pointer;transition:all .15s}
+.reg-card:hover{border-color:#be185d;box-shadow:0 2px 8px rgba(190,24,93,.12)}
+.reg-card.selected{border-color:#be185d;background:#fdf2f8}
+.reg-card h4{font-size:.82rem;margin-bottom:.2rem;color:#1e293b}
+.reg-card .reg-desc{font-size:.72rem;color:var(--muted)}
+.phase-box{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.8rem;margin-bottom:.8rem}
+.phase-box h4{font-size:.82rem;color:#6d28d9;margin-bottom:.5rem;display:flex;justify-content:space-between}
+.drug-row{display:flex;align-items:center;gap:.5rem;padding:.4rem 0;border-bottom:1px solid #f1f5f9;flex-wrap:wrap}
+.drug-row:last-child{border-bottom:none}
+.drug-row .drug-info{flex:1;min-width:180px}
+.drug-row .drug-name-r{font-weight:600;font-size:.82rem}
+.drug-row .drug-dose{font-size:.73rem;color:var(--muted)}
+.drug-row .vial-combo{font-size:.73rem;color:#6d28d9;font-weight:500}
+.drug-row .drug-cost{font-weight:700;font-size:.85rem;color:#7c3aed;min-width:100px;text-align:right}
+.nhi-toggle{display:inline-flex;border-radius:5px;overflow:hidden;border:1.5px solid #d1d5db;font-size:.7rem}
+.nhi-toggle button{padding:.15rem .45rem;border:none;background:#f8fafc;color:#64748b;cursor:pointer;font-weight:600;transition:.12s}
+.nhi-toggle button.on-nhi{background:#059669;color:#fff}
+.nhi-toggle button.on-self{background:#dc2626;color:#fff}
+.reg-summary{background:#fdf2f8;border:2px solid #f9a8d4;border-radius:12px;padding:1rem;margin-top:.5rem}
+.reg-summary .sum-line{display:flex;justify-content:space-between;padding:.2rem 0;font-size:.85rem}
+.reg-summary .sum-total{font-weight:700;font-size:1.05rem;border-top:2px solid #f9a8d4;margin-top:.3rem;padding-top:.5rem}
+.reg-summary .sum-nhi{color:#059669}
+.reg-summary .sum-self{color:#dc2626}
+.reg-summary .sum-grand{color:#6d28d9}
+.reg-summary .sum-note{font-size:.73rem;color:var(--muted);margin-top:.5rem;font-style:italic}
+.add-on-row{display:flex;align-items:center;gap:.8rem;padding:.3rem 0}
+.add-on-row input[type=checkbox]{width:16px;height:16px;accent-color:#be185d}
+.add-on-label{font-size:.82rem;flex:1}
+.add-on-price{font-size:.82rem;font-weight:600;color:#7c3aed}
+
+/* ── Modal ── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;justify-content:center;align-items:center;padding:1rem}
+.modal-bg.show{display:flex}
+.modal{background:#fff;border-radius:16px;max-width:780px;width:100%;max-height:88vh;overflow-y:auto;padding:1.8rem;box-shadow:0 25px 50px rgb(0 0 0/.25)}
+.modal h2{font-size:1.3rem;margin-bottom:.2rem}
+.modal .sub{color:var(--muted);font-size:.85rem;margin-bottom:1.2rem}
+.detail-sec{margin-bottom:1.1rem}
+.detail-sec h3{font-size:.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.4rem;padding-bottom:.3rem;border-bottom:2px solid var(--border)}
+.detail-sec p{font-size:.85rem;line-height:1.7;margin-bottom:.3rem}
+.close-x{float:right;background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--muted);padding:.2rem}
+.close-x:hover{color:var(--text)}
+
+/* ── Edit Modal ── */
+.edit-form textarea{width:100%;min-height:100px;padding:.6rem;border:2px solid var(--border);border-radius:8px;font-size:.85rem;font-family:inherit;resize:vertical}
+.edit-form textarea:focus{border-color:var(--primary);outline:none}
+.edit-form .form-row{margin-bottom:.8rem}
+.edit-form label{display:block;font-size:.8rem;font-weight:600;color:var(--muted);margin-bottom:.3rem}
+.edit-form input,.edit-form select{width:100%;padding:.5rem;border:2px solid var(--border);border-radius:8px;font-size:.85rem}
+.edit-form input:focus,.edit-form select:focus{border-color:var(--primary);outline:none}
+.btn-row{display:flex;gap:.5rem;justify-content:flex-end;margin-top:1rem}
 
 /* ── Version Banner ── */
-.version-banner {
-  display: none;
-  background: var(--auth-bg);
-  border: 1px solid var(--auth-border);
-  border-radius: var(--r-md);
-  padding: .65rem 1rem;
-  margin-bottom: 1rem;
-  font-size: .82rem;
-  color: #92400E;
-  gap: .5rem;
-  align-items: center;
-}
-.version-banner.show { display: flex; }
+.version-banner{background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:.6rem 1rem;margin-bottom:1rem;font-size:.8rem;color:#92400e;display:none}
+.version-banner.show{display:flex;align-items:center;gap:.5rem}
 
-/* ── LANDING PAGE ── */
-.landing-wrap {
-  max-width: 860px;
-  margin: 2.5rem auto 0;
-  padding: 0 1rem;
-}
-.landing-hero {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-.landing-hero h1 {
-  font-size: 1.7rem;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: .4rem;
-  letter-spacing: -.02em;
-}
-.landing-hero p {
-  color: var(--text-muted);
-  font-size: .9rem;
-}
-
-/* Global search */
-.global-search {
-  position: relative;
-  margin: 1.5rem 0 2rem;
-}
-.global-search input {
-  width: 100%;
-  padding: .85rem 1rem .85rem 3rem;
-  border: 2px solid var(--border);
-  border-radius: var(--r-xl);
-  font-size: 1rem;
-  font-family: inherit;
-  background: var(--surface);
-  color: var(--text);
-  transition: border-color .15s, box-shadow .15s;
-  outline: none;
-}
-.global-search input:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(29,78,216,.1);
-}
-.global-search .search-icon {
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-faint);
-  font-size: 1.1rem;
-  pointer-events: none;
-}
-.search-hint {
-  text-align: center;
-  font-size: .78rem;
-  color: var(--text-faint);
-  margin-top: .4rem;
-}
-
-/* Dept cards */
-.dept-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-.dept-card {
-  background: var(--surface);
-  border: 2px solid var(--border);
-  border-radius: var(--r-xl);
-  padding: 1.6rem 1.5rem;
-  cursor: pointer;
-  transition: transform .18s, box-shadow .18s, border-color .18s;
-  position: relative;
-  overflow: hidden;
-}
-.dept-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 4px;
-}
-.dept-card.breast::before { background: var(--breast); }
-.dept-card.heme::before { background: var(--heme); }
-.dept-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
-.dept-card.breast:hover { border-color: var(--breast-border); }
-.dept-card.heme:hover { border-color: var(--heme-border); }
-.dept-card-label {
-  font-size: .72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .07em;
-  margin-bottom: .35rem;
-}
-.dept-card.breast .dept-card-label { color: var(--breast); }
-.dept-card.heme .dept-card-label { color: var(--heme); }
-.dept-card h2 {
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin-bottom: .4rem;
-  color: var(--text);
-}
-.dept-card .count {
-  font-size: 2.4rem;
-  font-weight: 800;
-  line-height: 1;
-  margin-bottom: .25rem;
-}
-.dept-card.breast .count { color: var(--breast); }
-.dept-card.heme .count { color: var(--heme); }
-.dept-card .desc { font-size: .82rem; color: var(--text-muted); }
-
-.landing-actions {
-  text-align: center;
-  padding: .5rem 0 2rem;
-}
-
-/* ── DEPARTMENT PAGE ── */
-.dept-page { display: none; }
-.dept-page.active { display: block; }
-
-.page-topbar {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
-}
-.page-topbar h2 {
-  font-size: 1.2rem;
-  font-weight: 700;
-}
-.page-topbar.breast h2 { color: var(--breast); }
-.page-topbar.heme h2 { color: var(--heme); }
-
-.back-btn {
-  background: none;
-  border: 1.5px solid var(--border);
-  color: var(--text-2);
-  font-size: .82rem;
-  cursor: pointer;
-  padding: .35rem .8rem;
-  border-radius: var(--r-sm);
-  font-weight: 600;
-  transition: all .15s;
-  font-family: inherit;
-  white-space: nowrap;
-}
-.back-btn:hover { border-color: var(--primary); color: var(--primary); }
-
-/* Inner tabs */
-.inner-tabs {
-  display: flex;
-  gap: 0;
-  border-bottom: 2px solid var(--border);
-  margin-bottom: 1.25rem;
-}
-.inner-tab {
-  padding: .6rem 1.3rem;
-  border: none;
-  background: none;
-  font-size: .88rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  cursor: pointer;
-  border-bottom: 3px solid transparent;
-  margin-bottom: -2px;
-  transition: all .15s;
-  font-family: inherit;
-}
-.inner-tab:hover { color: var(--text); }
-.inner-tab.active { color: var(--breast); border-bottom-color: var(--breast); }
-.tab-content { display: none; }
-.tab-content.active { display: block; }
-
-/* ── TWO-COLUMN LAYOUT ── */
-.content-layout {
-  display: grid;
-  grid-template-columns: 270px 1fr;
-  gap: 1.25rem;
-  align-items: start;
-}
-
-/* ── FILTER SIDEBAR ── */
-.filter-sidebar {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  padding: 1.1rem;
-  position: sticky;
-  top: 70px;
-}
-.sidebar-title {
-  font-size: .7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .07em;
-  color: var(--text-faint);
-  margin-bottom: .9rem;
-}
-.search-row {
-  display: flex;
-  gap: .5rem;
-  margin-bottom: 1rem;
-}
-.search-row input {
-  flex: 1;
-  padding: .5rem .7rem;
-  border: 1.5px solid var(--border);
-  border-radius: var(--r-sm);
-  font-size: .88rem;
-  font-family: inherit;
-  outline: none;
-  background: var(--bg);
-  color: var(--text);
-}
-.search-row input:focus { border-color: var(--primary); background: var(--surface); }
-
-.filter-section { margin-bottom: 1rem; }
-.filter-section-label {
-  font-size: .72rem;
-  font-weight: 700;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: .05em;
-  margin-bottom: .5rem;
-  display: flex;
-  align-items: center;
-  gap: .3rem;
-}
-.filter-chips { display: flex; flex-wrap: wrap; gap: .4rem; }
-.filter-chip {
-  padding: .28rem .65rem;
-  border: 1.5px solid var(--border);
-  border-radius: 20px;
-  background: var(--bg);
-  cursor: pointer;
-  font-size: .76rem;
-  font-weight: 500;
-  color: var(--text-2);
-  transition: all .15s;
-  user-select: none;
-  line-height: 1.4;
-}
-.filter-chip:hover { border-color: var(--primary); color: var(--primary); background: #EFF6FF; }
-.filter-chip.active { border-color: var(--primary); background: #1D4ED8; color: #fff; font-weight: 600; }
-
-#tnbcBadge {
-  display: none;
-  background: var(--self-bg);
-  color: var(--self);
-  padding: .2rem .6rem;
-  border-radius: 20px;
-  font-size: .76rem;
-  font-weight: 700;
-  margin-top: .4rem;
-}
-
-.filter-divider { border: none; border-top: 1px solid var(--border); margin: .75rem 0; }
-
-.sidebar-actions { display: flex; gap: .4rem; margin-top: .75rem; }
-
-/* ── DRUG LIST ── */
-.content-main {}
-
-.result-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: .75rem;
-  padding: 0 .25rem;
-}
-.result-count {
-  font-size: .8rem;
-  color: var(--text-muted);
-}
-
-.drug-list { display: flex; flex-direction: column; gap: .5rem; }
-
-.drug-item {
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-radius: var(--r-lg);
-  padding: 1rem 1.1rem;
-  cursor: pointer;
-  transition: border-color .15s, box-shadow .15s;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: .5rem;
-  align-items: start;
-}
-.drug-item:hover {
-  border-color: var(--primary);
-  box-shadow: 0 2px 8px rgba(29,78,216,.07);
-}
-.drug-item-left {}
-.drug-item-right { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: .35rem; }
-
-.drug-name-main {
-  font-size: .95rem;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: .1rem;
-}
-.drug-name-trade {
-  font-size: .78rem;
-  color: var(--text-muted);
-  font-weight: 400;
-}
-.drug-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .3rem;
-  margin-top: .5rem;
-}
-
-/* Tags / Badges */
-.tag {
-  display: inline-flex;
-  align-items: center;
-  padding: .15rem .5rem;
-  border-radius: 20px;
-  font-size: .7rem;
-  font-weight: 600;
-  line-height: 1.4;
-}
-.tag-stage { background: var(--surface-2); color: var(--text-2); border: 1px solid var(--border); }
-.tag-line  { background: #EFF6FF; color: #1E40AF; }
-.tag-auth  { background: var(--auth-bg); color: var(--auth); }
-.tag-nhi   { background: var(--nhi-bg); color: var(--nhi); }
-.tag-breast { background: var(--breast-bg); color: var(--breast); }
-.tag-heme   { background: var(--heme-bg); color: var(--heme); }
-.tag-marker { background: #F5F3FF; color: var(--purple); }
-
-/* Price display */
-.price-display {
-  text-align: right;
-}
-.price-main {
-  font-size: .95rem;
-  font-weight: 700;
-  color: var(--purple);
-}
-.price-unit {
-  font-size: .7rem;
-  color: var(--text-faint);
-  display: block;
-}
-.price-na {
-  font-size: .78rem;
-  color: var(--text-faint);
-  font-style: italic;
-}
-
-/* NHI indicator */
-.nhi-indicator {
-  font-size: .7rem;
-  font-weight: 600;
-  padding: .15rem .45rem;
-  border-radius: 4px;
-}
-.nhi-indicator.covered { background: var(--nhi-bg); color: var(--nhi); }
-.nhi-indicator.auth-req { background: var(--auth-bg); color: var(--auth); }
-
-/* Empty state */
-.empty-state {
-  text-align: center;
-  padding: 3rem 1rem;
-  color: var(--text-muted);
-}
-.empty-state .empty-icon { font-size: 2.5rem; margin-bottom: .75rem; opacity: .4; }
-.empty-state p { font-size: .9rem; }
-
-/* ── TABLE fallback (kept for JS compatibility, hidden by default) ── */
-/* We render drug items via renderDrugItem() but JS still builds table rows */
-/* We'll override the table with a styled version */
-.table-wrap { display: none; }
-
-/* ── MODAL ── */
-.modal-bg {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(15,23,42,.6);
-  backdrop-filter: blur(4px);
-  z-index: 1000;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 2rem 1rem;
-  overflow-y: auto;
-}
-.modal-bg.show { display: flex; }
-.modal {
-  background: var(--surface);
-  border-radius: var(--r-xl);
-  max-width: 800px;
-  width: 100%;
-  padding: 2rem;
-  box-shadow: 0 25px 60px rgba(0,0,0,.25);
-  margin: auto;
-  position: relative;
-}
-.modal h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: .2rem; }
-.modal .sub { color: var(--text-muted); font-size: .85rem; margin-bottom: 1.4rem; }
-.close-x {
-  position: absolute;
-  top: 1.2rem;
-  right: 1.2rem;
-  background: var(--surface-2);
-  border: none;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  font-size: 1.1rem;
-  cursor: pointer;
-  color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background .15s;
-}
-.close-x:hover { background: var(--border); color: var(--text); }
-
-.detail-sec { margin-bottom: 1.2rem; }
-.detail-sec h3 {
-  font-size: .72rem;
-  font-weight: 700;
-  color: var(--text-faint);
-  text-transform: uppercase;
-  letter-spacing: .06em;
-  margin-bottom: .5rem;
-  padding-bottom: .4rem;
-  border-bottom: 1px solid var(--border);
-}
-.detail-sec p {
-  font-size: .88rem;
-  line-height: 1.75;
-  color: var(--text-2);
-  margin-bottom: .3rem;
-}
-
-/* ── CALC BOX (in modal) ── */
-.calc-box {
-  background: var(--purple-bg);
-  border: 1.5px solid var(--purple-border);
-  border-radius: var(--r-lg);
-  padding: 1.2rem;
-  margin-top: 1rem;
-}
-.calc-box h3 { color: var(--purple); font-size: .9rem; margin-bottom: .8rem; }
-.calc-row {
-  display: flex;
-  gap: .75rem;
-  flex-wrap: wrap;
-  margin-bottom: .6rem;
-  align-items: flex-end;
-}
-.calc-row .field { flex: 1; min-width: 110px; }
-.calc-row label { display: block; font-size: .73rem; font-weight: 600; color: var(--text-muted); margin-bottom: .2rem; }
-.calc-row input {
-  width: 100%;
-  padding: .42rem .6rem;
-  border: 1.5px solid var(--border);
-  border-radius: var(--r-sm);
-  font-size: .88rem;
-  font-family: inherit;
-  outline: none;
-}
-.calc-row input:focus { border-color: var(--purple); }
-.calc-result {
-  background: var(--surface);
-  border-radius: var(--r-sm);
-  padding: 1rem;
-  margin-top: .75rem;
-  border: 1px solid var(--purple-border);
-}
-.calc-result .cost-line {
-  display: flex;
-  justify-content: space-between;
-  padding: .28rem 0;
-  font-size: .85rem;
-  color: var(--text-2);
-  border-bottom: 1px solid var(--surface-2);
-}
-.calc-result .cost-line:last-of-type { border-bottom: none; }
-.calc-result .cost-line.total {
-  font-weight: 700;
-  font-size: 1rem;
-  color: var(--purple);
-  border-top: 2px solid var(--purple-border);
-  margin-top: .4rem;
-  padding-top: .6rem;
-}
-.calc-result .cost-note {
-  font-size: .72rem;
-  color: var(--text-faint);
-  margin-top: .6rem;
-  font-style: italic;
-  line-height: 1.6;
-}
-
-/* ── COMBO BOX ── */
-.combo-box {
-  background: #FAF5FF;
-  border: 1.5px solid var(--purple-border);
-  border-radius: var(--r-lg);
-  padding: 1.2rem;
-  margin-top: 1rem;
-}
-.combo-box h3 { color: #5B21B6; margin-bottom: .4rem; font-size: .95rem; }
-.combo-desc { font-size: .8rem; color: var(--text-muted); margin-bottom: .8rem; }
-.scenario-btns { display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: .75rem; }
-.scenario-btn {
-  padding: .28rem .75rem;
-  border-radius: 20px;
-  border: 1.5px solid #C4B5FD;
-  background: var(--surface);
-  color: #5B21B6;
-  font-size: .76rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all .15s;
-  font-family: inherit;
-}
-.scenario-btn:hover, .scenario-btn.active { background: var(--purple); color: #fff; border-color: var(--purple); }
-.combo-drugs { display: flex; gap: .75rem; flex-wrap: wrap; margin-bottom: .75rem; }
-.combo-drug-card {
-  flex: 1; min-width: 180px;
-  background: var(--surface);
-  border-radius: var(--r-md);
-  padding: .85rem;
-  border: 1.5px solid var(--purple-border);
-}
-.combo-drug-card.nhi-covered { border-color: var(--nhi-border); background: var(--nhi-bg); }
-.combo-drug-card.self-pay { border-color: var(--self-border); background: var(--self-bg); }
-.combo-drug-name { font-weight: 700; font-size: .85rem; margin-bottom: .35rem; }
-.coverage-toggle {
-  display: flex;
-  border-radius: var(--r-sm);
-  overflow: hidden;
-  border: 1.5px solid var(--purple-border);
-  margin-bottom: .5rem;
-}
-.coverage-toggle button {
-  flex: 1; padding: .25rem .4rem;
-  border: none; background: var(--surface-2); color: var(--text-muted);
-  font-size: .73rem; font-weight: 600; cursor: pointer; transition: .12s; font-family: inherit;
-}
-.coverage-toggle button.active-nhi { background: var(--nhi); color: #fff; }
-.coverage-toggle button.active-self { background: var(--self); color: #fff; }
-.combo-drug-detail { font-size: .74rem; color: var(--text-muted); }
-.combo-inputs { display: flex; gap: .75rem; flex-wrap: wrap; align-items: flex-end; margin-bottom: .75rem; }
-.combo-inputs .field { flex: 1; min-width: 120px; }
-.combo-inputs label { display: block; font-size: .73rem; font-weight: 600; color: var(--text-muted); margin-bottom: .2rem; }
-.combo-inputs input, .combo-inputs select {
-  width: 100%; padding: .4rem .6rem;
-  border: 1.5px solid var(--border); border-radius: var(--r-sm);
-  font-size: .88rem; font-family: inherit; outline: none;
-}
-.combo-inputs input:focus { border-color: var(--purple); }
-.combo-result {
-  background: var(--surface);
-  border-radius: var(--r-md);
-  padding: .9rem 1rem;
-  margin-top: .5rem;
-  border: 1px solid var(--purple-border);
-}
-.combo-result .cost-line {
-  display: flex; justify-content: space-between;
-  padding: .25rem 0; font-size: .85rem; color: var(--text-2);
-}
-.combo-result .nhi-line { color: var(--nhi); font-weight: 600; }
-.combo-result .self-line { color: var(--self); font-weight: 600; }
-.combo-result .total-line {
-  font-weight: 700; font-size: 1rem;
-  border-top: 2px solid var(--purple-border);
-  margin-top: .4rem; padding-top: .5rem;
-}
-.combo-result .total-self { color: var(--self); }
-.combo-result .total-nhi { color: var(--nhi); }
-.combo-result .cost-note { font-size: .72rem; color: var(--text-faint); margin-top: .5rem; font-style: italic; }
-
-/* ── EDIT MODAL ── */
-.edit-form textarea {
-  width: 100%; min-height: 100px;
-  padding: .6rem;
-  border: 1.5px solid var(--border);
-  border-radius: var(--r-md);
-  font-size: .85rem; font-family: inherit; resize: vertical;
-  outline: none;
-}
-.edit-form textarea:focus { border-color: var(--primary); }
-.edit-form .form-row { margin-bottom: .8rem; }
-.edit-form label { display: block; font-size: .78rem; font-weight: 600; color: var(--text-muted); margin-bottom: .3rem; }
-.edit-form input, .edit-form select {
-  width: 100%; padding: .5rem .7rem;
-  border: 1.5px solid var(--border); border-radius: var(--r-md);
-  font-size: .88rem; font-family: inherit; outline: none;
-}
-.edit-form input:focus, .edit-form select:focus { border-color: var(--primary); }
-.btn-row { display: flex; gap: .5rem; justify-content: flex-end; margin-top: 1rem; }
-
-/* ── BUTTONS ── */
-.btn {
-  padding: .48rem 1.1rem;
-  border: none;
-  border-radius: var(--r-sm);
-  font-size: .85rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all .15s;
-  font-family: inherit;
-  white-space: nowrap;
-}
-.btn-primary { background: var(--primary); color: #fff; }
-.btn-primary:hover { background: var(--primary-hover); }
-.btn-outline {
-  background: transparent;
-  border: 1.5px solid var(--border);
-  color: var(--text-2);
-}
-.btn-outline:hover { border-color: var(--primary); color: var(--primary); }
-.btn-sm { padding: .3rem .75rem; font-size: .78rem; }
-.btn-success { background: var(--nhi); color: #fff; }
-.btn-danger { background: var(--self); color: #fff; }
-
-/* ── REGIMEN CALCULATOR ── */
-.reg-section { margin-bottom: 1.2rem; }
-.reg-section h3 { font-size: .9rem; font-weight: 700; margin-bottom: .6rem; color: var(--text); }
-.patient-inputs {
-  display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;
-  background: var(--surface); padding: 1rem; border-radius: var(--r-lg);
-  border: 1.5px solid var(--border);
-}
-.patient-inputs .field { flex: 1; min-width: 110px; }
-.patient-inputs label { display: block; font-size: .72rem; font-weight: 600; color: var(--text-muted); margin-bottom: .2rem; }
-.patient-inputs input, .patient-inputs select {
-  width: 100%; padding: .42rem .55rem;
-  border: 1.5px solid var(--border); border-radius: var(--r-sm);
-  font-size: .88rem; font-family: inherit; outline: none;
-}
-.patient-inputs input:focus, .patient-inputs select:focus { border-color: var(--breast); }
-.bsa-display {
-  background: var(--breast-bg);
-  color: var(--breast);
-  padding: .35rem .7rem;
-  border-radius: var(--r-sm);
-  font-weight: 700;
-  font-size: .85rem;
-  align-self: center;
-  border: 1px solid var(--breast-border);
-}
-.condition-bar { display: flex; gap: .4rem; flex-wrap: wrap; margin: .5rem 0; }
-.cond-btn {
-  padding: .3rem .7rem;
-  border-radius: 20px;
-  border: 1.5px solid var(--border);
-  background: var(--surface);
-  font-size: .78rem; font-weight: 600;
-  cursor: pointer; transition: all .13s; font-family: inherit; color: var(--text-2);
-}
-.cond-btn:hover { border-color: var(--breast); color: var(--breast); }
-.cond-btn.active { background: var(--breast); color: #fff; border-color: var(--breast); }
-.regimen-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: .6rem;
-}
-.reg-card {
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-radius: var(--r-md);
-  padding: .8rem;
-  cursor: pointer; transition: all .15s;
-}
-.reg-card:hover { border-color: var(--breast); box-shadow: 0 2px 8px rgba(157,23,77,.1); }
-.reg-card.selected { border-color: var(--breast); background: var(--breast-bg); }
-.reg-card h4 { font-size: .82rem; margin-bottom: .2rem; }
-.reg-card .reg-desc { font-size: .72rem; color: var(--text-muted); }
-.phase-box {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--r-md); padding: .85rem; margin-bottom: .75rem;
-}
-.phase-box h4 {
-  font-size: .82rem; color: var(--purple);
-  margin-bottom: .5rem; display: flex; justify-content: space-between;
-}
-.drug-row {
-  display: flex; align-items: center; gap: .5rem;
-  padding: .4rem 0; border-bottom: 1px solid var(--surface-2); flex-wrap: wrap;
-}
-.drug-row:last-child { border-bottom: none; }
-.drug-row .drug-info { flex: 1; min-width: 180px; }
-.drug-row .drug-name-r { font-weight: 600; font-size: .82rem; }
-.drug-row .drug-dose { font-size: .72rem; color: var(--text-muted); }
-.drug-row .vial-combo { font-size: .72rem; color: var(--purple); font-weight: 500; }
-.drug-row .drug-cost { font-weight: 700; font-size: .85rem; color: var(--purple); min-width: 100px; text-align: right; }
-.nhi-toggle {
-  display: inline-flex; border-radius: var(--r-sm);
-  overflow: hidden; border: 1.5px solid var(--border); font-size: .7rem;
-}
-.nhi-toggle button {
-  padding: .15rem .45rem; border: none; background: var(--surface-2);
-  color: var(--text-muted); cursor: pointer; font-weight: 600; transition: .12s; font-family: inherit;
-}
-.nhi-toggle button.on-nhi { background: var(--nhi); color: #fff; }
-.nhi-toggle button.on-self { background: var(--self); color: #fff; }
-.reg-summary {
-  background: var(--breast-bg);
-  border: 1.5px solid var(--breast-border);
-  border-radius: var(--r-lg); padding: 1.1rem; margin-top: .5rem;
-}
-.reg-summary .sum-line { display: flex; justify-content: space-between; padding: .2rem 0; font-size: .85rem; }
-.reg-summary .sum-total { font-weight: 700; font-size: 1.05rem; border-top: 2px solid var(--breast-border); margin-top: .3rem; padding-top: .5rem; }
-.reg-summary .sum-nhi { color: var(--nhi); }
-.reg-summary .sum-self { color: var(--self); }
-.reg-summary .sum-grand { color: var(--purple); }
-.reg-summary .sum-note { font-size: .72rem; color: var(--text-faint); margin-top: .5rem; font-style: italic; line-height: 1.6; }
-.add-on-row { display: flex; align-items: center; gap: .8rem; padding: .3rem 0; }
-.add-on-row input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--breast); }
-.add-on-label { font-size: .82rem; flex: 1; }
-.add-on-price { font-size: .82rem; font-weight: 600; color: var(--purple); }
-
-/* badge alias for regimen tags */
-.badge { display: inline-block; padding: .14rem .48rem; border-radius: 20px; font-size: .7rem; font-weight: 600; }
-.badge-breast { background: var(--breast-bg); color: var(--breast); }
-.badge-heme   { background: var(--heme-bg); color: var(--heme); }
-.badge-auth   { background: var(--auth-bg); color: var(--auth); }
-.badge-line   { background: var(--nhi-bg); color: var(--nhi); }
-.badge-tag    { background: var(--surface-2); color: var(--text-2); }
-
-/* ── Responsive ── */
-@media (max-width: 900px) {
-  .content-layout { grid-template-columns: 1fr; }
-  .filter-sidebar { position: static; }
-}
-@media (max-width: 640px) {
-  .container { padding: .75rem 1rem; }
-  .dept-grid { grid-template-columns: 1fr; }
-  .header { padding: .75rem 1rem; }
-  .drug-item { grid-template-columns: 1fr; }
-  .drug-item-right { text-align: left; align-items: flex-start; }
+@media(max-width:768px){
+    .container{padding:.6rem}
+    .landing{flex-direction:column;align-items:center}
+    .dept-card{width:100%}
+    .filter-group{gap:.3rem}
+    th,td{padding:.5rem .4rem;font-size:.78rem}
 }
 </style>
 </head>
 <body>
-
-<div id="offlineBar">離線模式 — 使用快取資料，部分功能可能受限</div>
-
-<header class="header">
-  <div>
-    <div class="header-title">健保腫瘤藥物查詢系統</div>
-    <div class="header-sub">NHI Oncology Drug Reference</div>
-  </div>
-  <div class="header-badge">藥價 115/04/01</div>
-</header>
-
+<div id="offlineBar" style="display:none;background:#f59e0b;color:#fff;text-align:center;padding:0.4rem;font-size:0.85rem;font-weight:600">離線模式 — 使用快取資料，部分功能可能受限</div>
+<div class="header">
+    <h1>健保藥物給付規定查詢系統</h1>
+    <p>衛生福利部中央健康保險署 — 腫瘤科藥物給付資料庫</p>
+</div>
 <div class="container">
+    <!-- Version Update Banner -->
+    <div class="version-banner" id="versionBanner">
+        <span>&#9888;</span>
+        <span id="versionMsg"></span>
+        <button class="btn btn-sm btn-primary" onclick="location.reload()">重新載入</button>
+    </div>
 
-  <!-- Version Banner -->
-  <div class="version-banner" id="versionBanner">
-    <span>⚠</span>
-    <span id="versionMsg"></span>
-    <button class="btn btn-sm btn-primary" onclick="location.reload()">重新載入</button>
-  </div>
-
-  <!-- ===== LANDING PAGE ===== -->
-  <div id="landingPage">
-    <div class="landing-wrap">
-      <div class="landing-hero">
-        <h1>健保腫瘤藥物查詢</h1>
-        <p>涵蓋乳癌與血液腫瘤科 86 種健保給付藥物・藥價・適應症・事前審查規定</p>
-      </div>
-
-      <div class="global-search">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="globalSearch" placeholder="輸入藥物名稱或適應症關鍵字…" autocomplete="off" oninput="handleGlobalSearch(this.value)">
-      </div>
-      <div class="search-hint">例如：Herceptin、CDK4/6、TNBC、PIK3CA</div>
-
-      <!-- Global search results (shown when typing) -->
-      <div id="globalResults" style="display:none; margin-bottom: 1.5rem;">
-        <div class="result-bar">
-          <span class="result-count" id="globalCount"></span>
+    <!-- ===== Landing Page ===== -->
+    <div id="landingPage">
+        <div class="landing" id="landingCards"></div>
+        <div style="text-align:center;margin-top:1rem">
+            <button class="btn btn-outline" onclick="openAddDrug()">新增藥物</button>
+            <button class="btn btn-outline" onclick="openManageTools()">管理工具</button>
         </div>
-        <div class="drug-list" id="globalList"></div>
-      </div>
+    </div>
 
-      <!-- Dept cards (shown when not searching) -->
-      <div id="deptSection">
-        <div class="dept-grid" id="landingCards"></div>
-        <div class="landing-actions">
-          <button class="btn btn-outline btn-sm" onclick="openAddDrug()">新增藥物</button>
-          &nbsp;
-          <button class="btn btn-outline btn-sm" onclick="openManageTools()">管理工具</button>
+    <!-- ===== Breast Cancer Page ===== -->
+    <div id="breastPage" class="dept-page">
+        <button class="back-btn" onclick="showLanding()">&#8592; 返回首頁</button>
+        <h2 style="margin:.5rem 0 1rem;color:var(--pink)">乳癌藥物給付查詢</h2>
+
+        <div class="inner-tabs">
+            <button class="inner-tab active" id="tabDrugs" onclick="switchBreastTab('drugs')">藥物查詢</button>
+            <button class="inner-tab" id="tabRegimen" onclick="switchBreastTab('regimen')">處方費用計算</button>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- ===== BREAST CANCER PAGE ===== -->
-  <div id="breastPage" class="dept-page">
-    <div class="page-topbar breast">
-      <button class="back-btn" onclick="showLanding()">← 返回</button>
-      <h2>乳癌藥物查詢</h2>
-    </div>
-
-    <div class="inner-tabs">
-      <button class="inner-tab active" id="tabDrugs" onclick="switchBreastTab('drugs')">藥物查詢</button>
-      <button class="inner-tab" id="tabRegimen" onclick="switchBreastTab('regimen')">處方費用計算</button>
-    </div>
-
-    <div class="tab-content active" id="tabDrugsContent">
-      <div class="content-layout">
-        <!-- Sidebar Filter -->
-        <aside class="filter-sidebar">
-          <div class="sidebar-title">篩選條件</div>
-          <div class="search-row">
-            <input type="text" id="breastSearch" placeholder="搜尋藥物…" autocomplete="off" oninput="filterBreast()">
-          </div>
-
-          <div class="filter-section">
-            <div class="filter-section-label">疾病分期</div>
-            <div class="filter-chips">
-              <div class="filter-chip" data-f="stage" data-v="early" onclick="toggleChip(this)">早期 Stage I-II</div>
-              <div class="filter-chip" data-f="stage" data-v="advanced" onclick="toggleChip(this)">局部晚期 III</div>
-              <div class="filter-chip" data-f="stage" data-v="metastatic" onclick="toggleChip(this)">轉移性 IV</div>
+        <div class="tab-content active" id="tabDrugsContent">
+        <div class="filter-panel">
+            <h3>臨床條件篩選</h3>
+            <div class="search-row">
+                <input type="text" id="breastSearch" placeholder="搜尋藥物名稱 ..." autocomplete="off">
+                <button class="btn btn-primary" onclick="filterBreast()">搜尋</button>
+                <button class="btn btn-outline" onclick="resetBreastFilters()">重置</button>
             </div>
-          </div>
-
-          <hr class="filter-divider">
-
-          <div class="filter-section">
-            <div class="filter-section-label">受體狀態</div>
-            <div class="filter-chips">
-              <div class="filter-chip" data-f="er_pr" data-v="positive" onclick="toggleChip(this)">ER/PR 陽性</div>
-              <div class="filter-chip" data-f="er_pr" data-v="negative" onclick="toggleChip(this)">ER/PR 陰性</div>
-              <div class="filter-chip" data-f="her2" data-v="positive" onclick="toggleChip(this)">HER2 陽性</div>
-              <div class="filter-chip" data-f="her2" data-v="negative" onclick="toggleChip(this)">HER2 陰性</div>
+            <div class="filter-group">
+                <label>疾病分期</label>
+                <div class="filter-chip" data-f="stage" data-v="early" onclick="toggleChip(this)">eBC 早期乳癌（Stage I-II）</div>
+                <div class="filter-chip" data-f="stage" data-v="advanced" onclick="toggleChip(this)">LABC 局部晚期（Stage III）</div>
+                <div class="filter-chip" data-f="stage" data-v="metastatic" onclick="toggleChip(this)">mBC 轉移性乳癌（Stage IV）</div>
             </div>
-            <div id="tnbcBadge" style="margin-top:.4rem">TNBC 三陰性乳癌</div>
-          </div>
-
-          <hr class="filter-divider">
-
-          <div class="filter-section">
-            <div class="filter-section-label">特殊條件</div>
-            <div class="filter-chips">
-              <div class="filter-chip" data-f="ln" data-v="true" onclick="toggleChip(this)">淋巴結轉移</div>
-              <div class="filter-chip" data-f="tnbc" data-v="true" onclick="toggleChip(this)">TNBC 三陰性</div>
-              <div class="filter-chip" data-f="brca" data-v="true" onclick="toggleChip(this)">BRCA 突變</div>
-              <div class="filter-chip" data-f="esr1" data-v="true" onclick="toggleChip(this)">ESR1 突變</div>
-              <div class="filter-chip" data-f="pik3ca" data-v="true" onclick="toggleChip(this)">PIK3CA 突變</div>
-              <div class="filter-chip" data-f="menopause" data-v="pre" onclick="toggleChip(this)">停經前</div>
-              <div class="filter-chip" data-f="menopause" data-v="post" onclick="toggleChip(this)">停經後</div>
+            <div class="filter-group">
+                <label>受體狀態（ER / PR / HER2）</label>
+                <div class="filter-chip" data-f="er_pr" data-v="positive" onclick="toggleChip(this)">ER/PR 陽性</div>
+                <div class="filter-chip" data-f="er_pr" data-v="negative" onclick="toggleChip(this)">ER/PR 陰性</div>
+                <div class="filter-chip" data-f="her2" data-v="positive" onclick="toggleChip(this)">HER2 陽性（IHC3+/FISH+）</div>
+                <div class="filter-chip" data-f="her2" data-v="negative" onclick="toggleChip(this)">HER2 陰性</div>
+                <span id="tnbcBadge" style="display:none;background:#dc3545;color:#fff;padding:0.25rem 0.75rem;border-radius:1rem;font-size:0.85rem;font-weight:600;margin-left:0.5rem;vertical-align:middle">TNBC 三陰性乳癌</span>
             </div>
-          </div>
-
-          <hr class="filter-divider">
-          <div class="sidebar-actions">
-            <button class="btn btn-primary btn-sm" onclick="filterBreast()" style="flex:1">搜尋</button>
-            <button class="btn btn-outline btn-sm" onclick="resetBreastFilters()">重置</button>
-          </div>
-        </aside>
-
-        <!-- Main content -->
-        <div class="content-main">
-          <div class="result-bar">
-            <span class="result-count" id="breastInfo"></span>
-          </div>
-          <!-- Drug list container -->
-          <div class="drug-list" id="breastList"></div>
-          <!-- Hidden table (JS compatibility) -->
-          <div class="table-wrap">
-            <table><thead><tr>
-              <th style="width:30px"></th>
-              <th>藥物名稱</th><th>分期</th><th>療程線</th>
-              <th>事前審查</th><th>藥價</th><th>臨床標記</th>
-            </tr></thead>
-            <tbody id="breastBody"></tbody></table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="tab-content" id="tabRegimenContent">
-      <div id="regimenApp"></div>
-    </div>
-  </div>
-
-  <!-- ===== HEME PAGE ===== -->
-  <div id="hemePage" class="dept-page">
-    <div class="page-topbar heme">
-      <button class="back-btn" onclick="showLanding()">← 返回</button>
-      <h2>血液腫瘤藥物查詢</h2>
-    </div>
-
-    <div class="content-layout">
-      <!-- Sidebar -->
-      <aside class="filter-sidebar">
-        <div class="sidebar-title">篩選條件</div>
-        <div class="search-row">
-          <input type="text" id="hemeSearch" placeholder="搜尋藥物…" autocomplete="off" oninput="filterHeme()">
+            <div class="filter-group">
+                <label>特殊條件</label>
+                <div class="filter-chip" data-f="ln" data-v="true" onclick="toggleChip(this)">淋巴結轉移</div>
+                <div class="filter-chip" data-f="tnbc" data-v="true" onclick="toggleChip(this)">TNBC 三陰性</div>
+                <div class="filter-chip" data-f="brca" data-v="true" onclick="toggleChip(this)">BRCA 突變</div>
+                <div class="filter-chip" data-f="esr1" data-v="true" onclick="toggleChip(this)">ESR1 突變</div>
+                <div class="filter-chip" data-f="pik3ca" data-v="true" onclick="toggleChip(this)">PIK3CA 突變</div>
+                <div class="filter-chip" data-f="menopause" data-v="pre" onclick="toggleChip(this)">停經前</div>
+                <div class="filter-chip" data-f="menopause" data-v="post" onclick="toggleChip(this)">停經後</div>
+            </div>
         </div>
 
-        <div class="filter-section">
-          <div class="filter-section-label">疾病類型</div>
-          <div class="filter-chips">
-            <div class="filter-chip" data-f="disease" data-v="CML" onclick="toggleChip(this)">CML</div>
-            <div class="filter-chip" data-f="disease" data-v="AML" onclick="toggleChip(this)">AML</div>
-            <div class="filter-chip" data-f="disease" data-v="CLL" onclick="toggleChip(this)">CLL</div>
-            <div class="filter-chip" data-f="disease" data-v="ALL" onclick="toggleChip(this)">ALL</div>
-            <div class="filter-chip" data-f="disease" data-v="lymphoma" onclick="toggleChip(this)">淋巴瘤</div>
-            <div class="filter-chip" data-f="disease" data-v="myeloma" onclick="toggleChip(this)">骨髓瘤</div>
-            <div class="filter-chip" data-f="disease" data-v="MDS" onclick="toggleChip(this)">MDS</div>
-          </div>
-        </div>
-
-        <hr class="filter-divider">
-
-        <div class="filter-section">
-          <div class="filter-section-label">治療階段</div>
-          <div class="filter-chips">
-            <div class="filter-chip" data-f="phase" data-v="initial" onclick="toggleChip(this)">第一線</div>
-            <div class="filter-chip" data-f="phase" data-v="relapsed" onclick="toggleChip(this)">復發/難治</div>
-          </div>
-        </div>
-
-        <hr class="filter-divider">
-        <div class="sidebar-actions">
-          <button class="btn btn-primary btn-sm" onclick="filterHeme()" style="flex:1">搜尋</button>
-          <button class="btn btn-outline btn-sm" onclick="resetHemeFilters()">重置</button>
-        </div>
-      </aside>
-
-      <!-- Main content -->
-      <div class="content-main">
-        <div class="result-bar">
-          <span class="result-count" id="hemeInfo"></span>
-        </div>
-        <div class="drug-list" id="hemeList"></div>
-        <!-- Hidden table for JS compatibility -->
         <div class="table-wrap">
-          <table><thead><tr>
-            <th style="width:30px"></th>
-            <th>藥物名稱</th><th>適用疾病</th><th>療程線</th>
-            <th>事前審查</th><th>藥價</th><th>臨床標記</th>
-          </tr></thead>
-          <tbody id="hemeBody"></tbody></table>
+            <div class="result-info" id="breastInfo"></div>
+            <table>
+                <thead><tr>
+                    <th style="width:30px"></th>
+                    <th>藥物名稱</th>
+                    <th>分期</th>
+                    <th>療程線</th>
+                    <th>事前審查</th>
+                    <th>藥價</th>
+                    <th>臨床標記</th>
+                </tr></thead>
+                <tbody id="breastBody"></tbody>
+            </table>
         </div>
-      </div>
-    </div>
-  </div>
+        </div><!-- end tabDrugsContent -->
 
-</div><!-- /container -->
+        <div class="tab-content" id="tabRegimenContent">
+            <div id="regimenApp"></div>
+        </div>
+    </div>
+
+    <!-- ===== Hematologic Page ===== -->
+    <div id="hemePage" class="dept-page">
+        <button class="back-btn" onclick="showLanding()">&#8592; 返回首頁</button>
+        <h2 style="margin:.5rem 0 1rem;color:var(--blue)">血液腫瘤藥物給付查詢</h2>
+
+        <div class="filter-panel">
+            <h3>臨床條件篩選</h3>
+            <div class="search-row">
+                <input type="text" id="hemeSearch" placeholder="搜尋藥物名稱 ..." autocomplete="off">
+                <button class="btn btn-primary" onclick="filterHeme()">搜尋</button>
+                <button class="btn btn-outline" onclick="resetHemeFilters()">重置</button>
+            </div>
+            <div class="filter-group">
+                <label>疾病類型</label>
+                <div class="filter-chip" data-f="disease" data-v="CML" onclick="toggleChip(this)">CML 慢性骨髓性白血病</div>
+                <div class="filter-chip" data-f="disease" data-v="AML" onclick="toggleChip(this)">AML 急性骨髓性白血病</div>
+                <div class="filter-chip" data-f="disease" data-v="CLL" onclick="toggleChip(this)">CLL 慢性淋巴性白血病</div>
+                <div class="filter-chip" data-f="disease" data-v="ALL" onclick="toggleChip(this)">ALL 急性淋巴性白血病</div>
+                <div class="filter-chip" data-f="disease" data-v="lymphoma" onclick="toggleChip(this)">淋巴瘤</div>
+                <div class="filter-chip" data-f="disease" data-v="myeloma" onclick="toggleChip(this)">多發性骨髓瘤</div>
+                <div class="filter-chip" data-f="disease" data-v="MDS" onclick="toggleChip(this)">MDS 骨髓化生不良</div>
+            </div>
+            <div class="filter-group">
+                <label>治療階段</label>
+                <div class="filter-chip" data-f="phase" data-v="initial" onclick="toggleChip(this)">初診斷/第一線</div>
+                <div class="filter-chip" data-f="phase" data-v="relapsed" onclick="toggleChip(this)">復發/難治</div>
+            </div>
+        </div>
+
+        <div class="table-wrap">
+            <div class="result-info" id="hemeInfo"></div>
+            <table>
+                <thead><tr>
+                    <th style="width:30px"></th>
+                    <th>藥物名稱</th>
+                    <th>適用疾病</th>
+                    <th>療程線</th>
+                    <th>事前審查</th>
+                    <th>藥價</th>
+                    <th>臨床標記</th>
+                </tr></thead>
+                <tbody id="hemeBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
 <!-- Detail Modal -->
 <div class="modal-bg" id="detailModal" onclick="if(event.target===this)closeDetail()">
-  <div class="modal">
-    <button class="close-x" onclick="closeDetail()">&times;</button>
-    <div id="detailBody"></div>
-  </div>
+    <div class="modal">
+        <button class="close-x" onclick="closeDetail()">&times;</button>
+        <div id="detailBody"></div>
+    </div>
 </div>
 
 <!-- Edit Modal -->
 <div class="modal-bg" id="editModal" onclick="if(event.target===this)closeEdit()">
-  <div class="modal">
-    <button class="close-x" onclick="closeEdit()">&times;</button>
-    <div id="editBody"></div>
-  </div>
+    <div class="modal">
+        <button class="close-x" onclick="closeEdit()">&times;</button>
+        <div id="editBody"></div>
+    </div>
 </div>
 
 <script>
@@ -1233,37 +493,25 @@ function toggleChip(el){
 function matchesFilters(drug, filters){
     const tags=drug.clinical_tags||{};
     const stage=drug.stage||'';
-    // HER2 and ER/PR are independent axes — use OR among receptor filters
-    const receptorKeys=['her2','er_pr'];
-    const receptorFilters=Object.fromEntries(Object.entries(filters).filter(([k])=>receptorKeys.includes(k)));
-    const otherFilters=Object.fromEntries(Object.entries(filters).filter(([k])=>!receptorKeys.includes(k)));
-    // AND logic for non-receptor filters
-    for(const[f,v] of Object.entries(otherFilters)){
+    for(const[f,v] of Object.entries(filters)){
         if(f==='stage'){
             if(!stage.includes(v))return false;
         } else if(f==='disease'){
             if(!tags.disease||!tags.disease.includes(v))return false;
         } else if(f==='phase'){
             if(!tags.phase||!tags.phase.includes(v))return false;
+        } else if(f==='her2'){
+            if(!tags.her2)return false;
+            if(tags.her2!==v && tags.her2!=='both')return false;
+        } else if(f==='er_pr'){
+            if(!tags.er_pr)return false;
+            if(tags.er_pr!==v && tags.er_pr!=='both')return false;
         } else if(f==='menopause'){
             if(!tags.menopause)return false;
             if(tags.menopause!==v && tags.menopause!=='both')return false;
         } else {
             if(!tags[f])return false;
         }
-    }
-    // OR logic for receptor filters: patient may be HER2+/ER+ simultaneously
-    if(Object.keys(receptorFilters).length>0){
-        let match=false;
-        if(receptorFilters.her2!==undefined){
-            const v=receptorFilters.her2;
-            if(tags.her2&&(tags.her2===v||tags.her2==='both'))match=true;
-        }
-        if(receptorFilters.er_pr!==undefined){
-            const v=receptorFilters.er_pr;
-            if(tags.er_pr&&(tags.er_pr===v||tags.er_pr==='both'))match=true;
-        }
-        if(!match)return false;
     }
     return true;
 }
@@ -2764,183 +2012,5 @@ function renderAddOns(){
 function esc(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDetail();closeEdit()}});
 </script>
-
-<script>
-// ── Patch: render drug items as cards instead of table rows ──
-// Override the table-based render with card-based render
-
-const _origBreastBody_setter = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'innerHTML');
-
-function renderDrugCards(drugs, containerId, infoId, specialty) {
-  const list = document.getElementById(containerId);
-  const info = document.getElementById(infoId);
-  if(!list) return;
-  
-  if(info) {
-    const filtered = drugs.filter(d => d.specialty_id === specialty || specialty === 'all');
-    // info text set by caller
-  }
-
-  list.innerHTML = drugs.map(d => {
-    const stages = d.stage ? d.stage.split(',') : [];
-    const stageMap = {early:'早期',advanced:'局部晚期',metastatic:'轉移性'};
-    const stageTags = stages.map(s => `<span class="tag tag-stage">${stageMap[s]||s}</span>`).join('');
-    const lineTags = d.therapy_line ? `<span class="tag tag-line">${d.therapy_line}L</span>` : '';
-    const authTag = d.prior_auth ? '<span class="tag tag-auth">事前審查</span>' : '';
-    const specTag = d.specialty_id==='oncology_breast' 
-      ? '<span class="tag tag-breast">乳癌</span>' 
-      : d.specialty_id==='oncology_heme' 
-        ? '<span class="tag tag-heme">血腫</span>' : '';
-    
-    // Clinical marker tags
-    const tags = d.clinical_tags || {};
-    let markerTags = '';
-    if(tags.brca) markerTags += '<span class="tag tag-marker">BRCA</span>';
-    if(tags.pik3ca) markerTags += '<span class="tag tag-marker">PIK3CA</span>';
-    if(tags.esr1) markerTags += '<span class="tag tag-marker">ESR1</span>';
-    if(tags.tnbc) markerTags += '<span class="tag tag-marker">TNBC</span>';
-    if(tags.ln) markerTags += '<span class="tag tag-marker">N+</span>';
-    if(tags.her2==='positive') markerTags += '<span class="tag tag-marker">HER2+</span>';
-    if(tags.er_pr==='positive') markerTags += '<span class="tag tag-marker">ER+</span>';
-    if(tags.flt3) markerTags += '<span class="tag tag-marker">FLT3</span>';
-    if(tags.ph_positive) markerTags += '<span class="tag tag-marker">Ph+</span>';
-
-    const priceHtml = d.nhi_price 
-      ? `<div class="price-display">
-          <div class="price-main">NT$ ${d.nhi_price.toLocaleString()}</div>
-          <span class="price-unit">${d.price_unit||''}</span>
-        </div>`
-      : '<span class="price-na">詢價</span>';
-
-    const nhiInd = d.prior_auth 
-      ? '<span class="nhi-indicator auth-req">需事前審查</span>'
-      : '<span class="nhi-indicator covered">健保給付</span>';
-
-    const tradeName = d.trade_names ? `<span class="drug-name-trade"> / ${d.trade_names}</span>` : '';
-
-    return `<div class="drug-item" onclick="openDetail(${d.id})">
-      <div class="drug-item-left">
-        <div class="drug-name-main">${d.generic_name}${tradeName}</div>
-        <div class="drug-tags">
-          ${specTag}${stageTags}${lineTags}${authTag}${markerTags}
-        </div>
-      </div>
-      <div class="drug-item-right">
-        ${priceHtml}
-        ${nhiInd}
-      </div>
-    </div>`;
-  }).join('') || '<div class="empty-state"><div class="empty-icon">💊</div><p>找不到符合條件的藥物</p></div>';
-}
-
-// Global search across all drugs
-function handleGlobalSearch(val) {
-  const q = val.trim().toLowerCase();
-  const results = document.getElementById('globalResults');
-  const deptSection = document.getElementById('deptSection');
-  const list = document.getElementById('globalList');
-  const count = document.getElementById('globalCount');
-
-  if(!q) {
-    results.style.display = 'none';
-    deptSection.style.display = '';
-    return;
-  }
-
-  deptSection.style.display = 'none';
-  results.style.display = '';
-
-  const hits = _STATIC_DRUGS.filter(d => 
-    (d.generic_name||'').toLowerCase().includes(q) ||
-    (d.trade_names||'').toLowerCase().includes(q) ||
-    (d.indication||'').toLowerCase().includes(q)
-  );
-
-  count.textContent = `找到 ${hits.length} 筆結果`;
-  renderDrugCards(hits, 'globalList', null, 'all');
-}
-
-// Override filterBreast to also update card list
-const _origFilterBreast = filterBreast;
-filterBreast = function() {
-  _origFilterBreast();
-  // After table is updated, sync to card list
-  syncTableToCards('breastBody', 'breastList', 'breastInfo');
-};
-
-const _origFilterHeme = filterHeme;
-filterHeme = function() {
-  _origFilterHeme();
-  syncTableToCards('hemeBody', 'hemeList', 'hemeInfo');
-};
-
-function syncTableToCards(tableBodyId, listId, infoId) {
-  const tbody = document.getElementById(tableBodyId);
-  const list = document.getElementById(listId);
-  if(!tbody || !list) return;
-
-  // Extract drug IDs from hidden table rows (they have onclick="openDetail(N)")
-  const rows = Array.from(tbody.querySelectorAll('tr[onclick]'));
-  const ids = rows.map(r => {
-    const m = r.getAttribute('onclick').match(/(?:openDetail|showDetail)\((\d+)\)/);
-    return m ? parseInt(m[1]) : null;
-  }).filter(Boolean);
-
-  const drugs = ids.map(id => _STATIC_DRUGS.find(d => d.id === id)).filter(Boolean);
-  
-  // Update count display
-  const infoEl = document.getElementById(infoId);
-  if(infoEl) infoEl.textContent = `共 ${drugs.length} 筆藥物`;
-
-  list.innerHTML = drugs.map(d => {
-    const stages = d.stage ? d.stage.split(',') : [];
-    const stageMap = {early:'早期',advanced:'局部晚期',metastatic:'轉移性'};
-    const stageTags = stages.map(s => `<span class="tag tag-stage">${stageMap[s]||s}</span>`).join('');
-    const lineTags = d.therapy_line ? `<span class="tag tag-line">${d.therapy_line}L</span>` : '';
-    const authTag = d.prior_auth ? '<span class="tag tag-auth">事前審查</span>' : '';
-    const ctags = d.clinical_tags || {};
-    let markerTags = '';
-    if(ctags.brca) markerTags += '<span class="tag tag-marker">BRCA</span>';
-    if(ctags.pik3ca) markerTags += '<span class="tag tag-marker">PIK3CA</span>';
-    if(ctags.esr1) markerTags += '<span class="tag tag-marker">ESR1</span>';
-    if(ctags.tnbc) markerTags += '<span class="tag tag-marker">TNBC</span>';
-    if(ctags.ln) markerTags += '<span class="tag tag-marker">N+</span>';
-    if(ctags.her2==='positive') markerTags += '<span class="tag tag-marker">HER2+</span>';
-    if(ctags.er_pr==='positive') markerTags += '<span class="tag tag-marker">ER+</span>';
-    if(ctags.flt3) markerTags += '<span class="tag tag-marker">FLT3</span>';
-    if(ctags.ph_positive) markerTags += '<span class="tag tag-marker">Ph+</span>';
-    if(Array.isArray(ctags.disease)) ctags.disease.slice(0,2).forEach(x => { markerTags += `<span class="tag tag-marker">${x}</span>`; });
-
-    const priceHtml = d.nhi_price 
-      ? `<div class="price-display"><div class="price-main">NT$ ${d.nhi_price.toLocaleString()}</div><span class="price-unit">${d.price_unit||''}</span></div>`
-      : '<span class="price-na">詢價</span>';
-    const nhiInd = d.prior_auth 
-      ? '<span class="nhi-indicator auth-req">需事前審查</span>'
-      : '<span class="nhi-indicator covered">健保給付</span>';
-    const tradeName = d.trade_names ? `<span class="drug-name-trade"> / ${d.trade_names}</span>` : '';
-
-    return `<div class="drug-item" onclick="openDetail(${d.id})">
-      <div class="drug-item-left">
-        <div class="drug-name-main">${d.generic_name}${tradeName}</div>
-        <div class="drug-tags">${stageTags}${lineTags}${authTag}${markerTags}</div>
-      </div>
-      <div class="drug-item-right">${priceHtml}${nhiInd}</div>
-    </div>`;
-  }).join('') || '<div class="empty-state"><div class="empty-icon">💊</div><p>找不到符合條件的藥物</p></div>';
-}
-
-// Hook into showBreast/showHeme to init card lists
-const _origShowBreast = showBreast;
-showBreast = function() {
-  _origShowBreast();
-  setTimeout(() => syncTableToCards('breastBody', 'breastList', 'breastInfo'), 50);
-};
-const _origShowHeme = showHeme;
-showHeme = function() {
-  _origShowHeme();
-  setTimeout(() => syncTableToCards('hemeBody', 'hemeList', 'hemeInfo'), 50);
-};
-</script>
-
 </body>
 </html>

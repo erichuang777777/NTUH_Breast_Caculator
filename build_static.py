@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Build static index.html from web_app.py + SQLite DB for Netlify deployment.
+Build static index.html from NP_dashboard/NHI Drug Calculator.html + SQLite DB.
 Run: python build_static.py
 Output: index.html (self-contained, no backend needed)
 """
@@ -11,6 +11,7 @@ from pathlib import Path
 
 HERE = Path(__file__).parent
 DB_PATH = HERE / "nhi_drug_coverage.db"
+TEMPLATE = HERE / "NP_dashboard" / "NHI Drug Calculator.html"
 
 
 def export_data():
@@ -56,36 +57,43 @@ def export_data():
     return drugs, formulations
 
 
-STATIC_FETCH = """\
-// ── Static Fetch (replaces server API for Netlify) ──
-async function cachedFetch(url, opts){
-    if(url.startsWith('/api/stats')){
-        return {ok:true,json:()=>Promise.resolve(_STATIC_STATS)};
+FIXED_MATCHES_FILTERS = """\
+function matchesFilters(drug, filters){
+    const tags=drug.clinical_tags||{};
+    const stage=drug.stage||'';
+    // HER2 and ER/PR are independent axes — use OR among receptor filters
+    const receptorKeys=['her2','er_pr'];
+    const receptorFilters=Object.fromEntries(Object.entries(filters).filter(([k])=>receptorKeys.includes(k)));
+    const otherFilters=Object.fromEntries(Object.entries(filters).filter(([k])=>!receptorKeys.includes(k)));
+    // AND logic for non-receptor filters
+    for(const[f,v] of Object.entries(otherFilters)){
+        if(f==='stage'){
+            if(!stage.includes(v))return false;
+        } else if(f==='disease'){
+            if(!tags.disease||!tags.disease.includes(v))return false;
+        } else if(f==='phase'){
+            if(!tags.phase||!tags.phase.includes(v))return false;
+        } else if(f==='menopause'){
+            if(!tags.menopause)return false;
+            if(tags.menopause!==v && tags.menopause!=='both')return false;
+        } else {
+            if(!tags[f])return false;
+        }
     }
-    if(url.startsWith('/api/drugs')){
-        const qs=url.includes('?')?url.split('?')[1]:'';
-        const p=new URLSearchParams(qs);
-        let drugs=[..._STATIC_DRUGS];
-        const cat=p.get('category')||p.get('specialty');
-        const q=p.get('q');
-        if(cat) drugs=drugs.filter(d=>d.specialty_id===cat);
-        if(q){const ql=q.toLowerCase();drugs=drugs.filter(d=>(d.generic_name||'').toLowerCase().includes(ql)||(d.trade_names||'').toLowerCase().includes(ql));}
-        return {ok:true,json:()=>Promise.resolve(drugs)};
+    // OR logic for receptor filters: patient may be HER2+/ER+ simultaneously
+    if(Object.keys(receptorFilters).length>0){
+        let match=false;
+        if(receptorFilters.her2!==undefined){
+            const v=receptorFilters.her2;
+            if(tags.her2&&(tags.her2===v||tags.her2==='both'))match=true;
+        }
+        if(receptorFilters.er_pr!==undefined){
+            const v=receptorFilters.er_pr;
+            if(tags.er_pr&&(tags.er_pr===v||tags.er_pr==='both'))match=true;
+        }
+        if(!match)return false;
     }
-    if(url.startsWith('/api/drug/')){
-        const id=parseInt(url.split('/').pop());
-        const drug=_STATIC_DRUGS.find(d=>d.id===id)||null;
-        if(!drug) return {ok:false,status:404,json:()=>Promise.resolve({error:'Not found'})};
-        return {ok:true,json:()=>Promise.resolve(drug)};
-    }
-    if(url.startsWith('/api/formulations')){
-        const qs=url.includes('?')?url.split('?')[1]:'';
-        const dk=new URLSearchParams(qs).get('drug');
-        let f=[..._STATIC_FORMULATIONS];
-        if(dk) f=f.filter(x=>x.drug_key===dk);
-        return {ok:true,json:()=>Promise.resolve(f)};
-    }
-    throw new Error('Unknown API: '+url);
+    return true;
 }\
 """
 
@@ -99,48 +107,30 @@ def build():
         'heme': sum(1 for d in drugs if d['specialty_id'] == 'oncology_heme'),
     }
 
-    # Extract HTML from web_app.py
-    source = (HERE / "web_app.py").read_text(encoding='utf-8')
-    match = re.search(r'HTML_PAGE\s*=\s*r"""(.*?)"""', source, re.DOTALL)
-    if not match:
-        raise ValueError("Cannot find HTML_PAGE in web_app.py")
-    html = match.group(1)
+    html = TEMPLATE.read_text(encoding='utf-8')
 
-    # 1. Replace cachedFetch with static version
-    old_cache_marker = "// ── Offline Cache ──"
-    cache_start = html.find(old_cache_marker)
-    if cache_start == -1:
-        raise ValueError("Cannot find '// ── Offline Cache ──' in HTML")
+    # 1. Replace data block: from <script>\nconst _STATIC_DRUGS= ... up to let breastDrugs=
+    data_start = html.find('<script>\nconst _STATIC_DRUGS=')
+    data_end = html.find('let breastDrugs=')
+    if data_start == -1 or data_end == -1:
+        raise ValueError("Cannot find data injection anchors in template")
 
-    # Find the opening brace of the async function and walk to its closing brace
-    brace_pos = html.find('{', html.find('async function cachedFetch', cache_start))
-    depth, i = 0, brace_pos
-    while i < len(html):
-        if html[i] == '{':
-            depth += 1
-        elif html[i] == '}':
-            depth -= 1
-            if depth == 0:
-                cache_end = i + 1
-                break
-        i += 1
-
-    html = html[:cache_start] + STATIC_FETCH + html[cache_end:]
-
-    # 2. Inject static data right after opening <script> tag
-    script_anchor = '<script>\nlet breastDrugs=[], hemeDrugs=[];'
-    data_block = (
+    new_data_block = (
         '<script>\n'
         f'const _STATIC_DRUGS={json.dumps(drugs, ensure_ascii=False)};\n'
         f'const _STATIC_FORMULATIONS={json.dumps(formulations, ensure_ascii=False)};\n'
         f'const _STATIC_STATS={json.dumps(stats, ensure_ascii=False)};\n'
-        'let breastDrugs=[], hemeDrugs=[];'
     )
-    if script_anchor not in html:
-        raise ValueError("Cannot find script anchor in HTML")
-    html = html.replace(script_anchor, data_block, 1)
+    html = html[:data_start] + new_data_block + html[data_end:]
 
-    # 3. Disable write operations (read-only public deployment)
+    # 2. Apply OR logic fix for matchesFilters
+    old_fn_match = re.search(r'function matchesFilters\(drug, filters\)\{.*?\n\}', html, re.DOTALL)
+    if old_fn_match:
+        html = html[:old_fn_match.start()] + FIXED_MATCHES_FILTERS + html[old_fn_match.end():]
+    else:
+        raise ValueError("Cannot find matchesFilters in template")
+
+    # 3. Disable write operations
     html = html.replace(
         "await fetch('/api/drug/'+id,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});",
         "alert('本系統為唯讀模式，無法修改資料。'); return;"
@@ -154,7 +144,7 @@ def build():
         "alert('本系統為唯讀模式，無法修改資料。'); return;"
     )
 
-    # 4. Disable version check (no server)
+    # 4. Disable version check
     html = html.replace(
         "const r=await fetch('/api/version');const d=await r.json();",
         "return; // static mode"
@@ -165,6 +155,7 @@ def build():
     print(f"[OK] index.html generated ({len(html):,} chars)")
     print(f"  Drugs: {len(drugs)} | Formulations: {len(formulations)}")
     print(f"  Stats: {stats}")
+    print("  Template: NP_dashboard/NHI Drug Calculator.html")
     print("  Ready to deploy to Netlify!")
 
 
