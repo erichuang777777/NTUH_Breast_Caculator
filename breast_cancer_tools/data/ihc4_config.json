@@ -1,0 +1,31 @@
+{
+  "version": "1.0",
+  "description": "IHC4 Score 計算配置檔案",
+  "er_positive_cutoff": 10,
+  "pr_positive_cutoff": 10,
+  "her2_positive_cutoff": 2,
+  "ki67_cutoff_low": 13.25,
+  "ki67_cutoff_high": 30,
+  "coefficients": {
+    "er_coef": 0.8,
+    "pr_coef": 0.5,
+    "her2_coef": 0.4,
+    "ki67_coef": 1.2,
+    "intercept": -5.0,
+    "_note": "待從 Dowsett et al. 2010 論文驗證真實係數"
+  },
+  "risk_categories": {
+    "low_risk": {
+      "range": [-100, 2.0],
+      "description": "低風險，預後良好"
+    },
+    "intermediate_risk": {
+      "range": [2.0, 4.0],
+      "description": "中風險，預後中等"
+    },
+    "high_risk": {
+      "range": [4.0, 100],
+      "description": "高風險，預後不良"
+    }
+  }
+}

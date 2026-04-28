@@ -1,0 +1,82 @@
+{
+  "version": "9",
+  "description": "AJCC 9th Edition (2023) 乳癌分期表",
+  "note": "此為模板，實現時需填入完整的 TNM 到分期的映射",
+  "stages": {
+    "STAGE_0": {
+      "tnm": [
+        "Tis N0 M0"
+      ],
+      "criteria": "Non-invasive carcinoma",
+      "description": "原位癌"
+    },
+    "STAGE_IA": {
+      "tnm": [
+        "T1 N0 M0 (Grade 1-2, ER/PR+, HER2-)",
+        "T0 N1mi M0"
+      ],
+      "criteria": "Small tumor, no or only micrometastasis in lymph nodes",
+      "description": "腫瘤≤20mm，無或僅有淋巴結微轉移"
+    },
+    "STAGE_IB": {
+      "tnm": [
+        "T1 N1mi M0",
+        "T0 N1a M0"
+      ],
+      "criteria": "Micrometastasis in lymph nodes",
+      "description": "淋巴結微轉移"
+    },
+    "STAGE_IIA": {
+      "tnm": [
+        "T1 N1 M0 (特定條件)",
+        "T2 N0 M0"
+      ],
+      "criteria": "Tumor 20-50mm with or without limited node involvement",
+      "description": "腫瘤20-50mm"
+    },
+    "STAGE_IIB": {
+      "tnm": [
+        "T2 N1 M0 (特定條件)",
+        "T3 N0 M0"
+      ],
+      "criteria": "Larger tumor or more extensive node involvement",
+      "description": "較大腫瘤或淋巴結轉移"
+    },
+    "STAGE_IIIA": {
+      "tnm": [
+        "T1-3 N2 M0",
+        "T4a-c N1-2 M0"
+      ],
+      "criteria": "Extensive nodal involvement",
+      "description": "廣泛淋巴結轉移"
+    },
+    "STAGE_IIIB": {
+      "tnm": [
+        "T4a-d N0-2 M0"
+      ],
+      "criteria": "Chest wall or skin involvement",
+      "description": "胸壁或皮膚受累"
+    },
+    "STAGE_IIIC": {
+      "tnm": [
+        "Any T N3 M0"
+      ],
+      "criteria": "Supraclavicular or extensive nodal disease",
+      "description": "鎖骨上淋巴結或廣泛淋巴結疾病"
+    },
+    "STAGE_IV": {
+      "tnm": [
+        "Any T Any N M1"
+      ],
+      "criteria": "Distant metastasis",
+      "description": "遠端轉移"
+    }
+  },
+  "prognostic_groups": {
+    "note": "AJCC 9th Edition 引入生物標誌物加權的預後分組",
+    "PG1": "Excellent prognosis",
+    "PG2": "Good prognosis",
+    "PG3": "Intermediate prognosis",
+    "PG4": "Poor prognosis"
+  }
+}
