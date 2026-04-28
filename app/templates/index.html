@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NHI 藥品計算 + 臨床試驗分析</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: "Microsoft JhengHei", "微軟正黑體", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .controls {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            border-bottom: 1px solid #e0e0e0;
+            flex-wrap: wrap;
+        }
+        
+        .control-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .control-group label {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        select, input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        button {
+            padding: 8px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            font-family: inherit;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #5568d3;
+        }
+        
+        button:active {
+            transform: scale(0.98);
+        }
+        
+        .main-content {
+            display: flex;
+            min-height: 600px;
+        }
+        
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-right: 1px solid #e0e0e0;
+            flex-direction: column;
+            width: 200px;
+            min-width: 150px;
+        }
+        
+        .tab-button {
+            flex: 1;
+            padding: 20px 15px;
+            background: none;
+            border: none;
+            text-align: left;
+            border-left: 4px solid transparent;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .tab-button:hover {
+            background: #e8e9f3;
+            color: #333;
+        }
+        
+        .tab-button.active {
+            background: white;
+            color: #667eea;
+            border-left-color: #667eea;
+            font-weight: 600;
+        }
+        
+        .tab-content {
+            flex: 1;
+            display: none;
+            overflow-y: auto;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .content-wrapper {
+            padding: 30px;
+        }
+        
+        .specialty-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+        
+        .trials-list {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .trial-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            background: white;
+            transition: all 0.3s;
+        }
+        
+        .trial-card:hover {
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.15);
+            border-color: #667eea;
+        }
+        
+        .trial-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            gap: 15px;
+            margin-bottom: 12px;
+        }
+        
+        .trial-title {
+            font-weight: 600;
+            color: #333;
+            flex: 1;
+            font-size: 16px;
+            line-height: 1.4;
+        }
+        
+        .importance-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        
+        .importance-very-high {
+            background: #ffe0e0;
+            color: #c41e3a;
+        }
+        
+        .importance-high {
+            background: #fff3e0;
+            color: #e65100;
+        }
+        
+        .importance-medium {
+            background: #fff9e6;
+            color: #f57f17;
+        }
+        
+        .importance-low {
+            background: #e8f5e9;
+            color: #1b5e20;
+        }
+        
+        .trial-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+        
+        .trial-info-item {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .trial-info-label {
+            font-weight: 600;
+            color: #666;
+            min-width: 80px;
+        }
+        
+        .trial-info-value {
+            color: #333;
+        }
+        
+        .trial-contact {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+        
+        .trial-contact-label {
+            font-weight: 600;
+            color: #667eea;
+            display: block;
+            margin-bottom: 8px;
+        }
+        
+        .trial-contact-item {
+            margin: 4px 0;
+        }
+        
+        .trial-reasons {
+            background: #f0f4ff;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }
+        
+        .trial-reasons-title {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .trial-reasons-list {
+            list-style: none;
+            font-size: 12px;
+        }
+        
+        .trial-reasons-list li {
+            color: #555;
+            margin: 4px 0;
+            padding-left: 16px;
+            position: relative;
+        }
+        
+        .trial-reasons-list li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+        }
+        
+        .trial-link {
+            display: inline-block;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 13px;
+        }
+        
+        .trial-link:hover {
+            text-decoration: underline;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+        
+        .loading::after {
+            content: "";
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #ddd;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .error {
+            background: #ffebee;
+            color: #c41e3a;
+            padding: 15px 20px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border-left: 4px solid #c41e3a;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+        
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .tabs {
+                width: 100%;
+                flex-direction: row;
+                border-right: none;
+                border-bottom: 1px solid #e0e0e0;
+                overflow-x: auto;
+            }
+            
+            .tab-button {
+                border-left: none;
+                border-bottom: 4px solid transparent;
+            }
+            
+            .tab-button.active {
+                border-left: none;
+                border-bottom-color: #667eea;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .control-group {
+                width: 100%;
+            }
+            
+            select, input {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 臨床試驗分析平台</h1>
+            <p>搭配 NHI 藥品計算系統 | 醫師和患者統一視圖</p>
+        </div>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="specialty">科室選擇:</label>
+                <select id="specialty">
+                    <option value="breast">乳癌</option>
+                    <option value="hematology">血液科</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label for="location">地點:</label>
+                <input type="text" id="location" value="Taiwan" placeholder="預設: Taiwan">
+            </div>
+            
+            <button onclick="loadTrials()">🔄 重新載入</button>
+        </div>
+        
+        <div class="main-content">
+            <div class="tabs">
+                <button class="tab-button active" onclick="switchTab('patient')">
+                    👥 患者版
+                </button>
+                <button class="tab-button" onclick="switchTab('doctor')">
+                    👨‍⚕️ 醫師版
+                </button>
+            </div>
+            
+            <!-- 患者版標籤 -->
+            <div class="tab-content active" id="patient-tab">
+                <div class="content-wrapper">
+                    <div class="specialty-title">
+                        <span id="patient-specialty-icon">🎗️</span>
+                        <span id="patient-specialty-name">乳癌臨床試驗</span>
+                        <span style="font-weight: 400; color: #999; font-size: 16px;">- 患者招募版</span>
+                    </div>
+                    
+                    <div id="patient-content">
+                        <div class="loading">載入中...</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 醫師版標籤 -->
+            <div class="tab-content" id="doctor-tab">
+                <div class="content-wrapper">
+                    <div class="specialty-title">
+                        <span id="doctor-specialty-icon">🔬</span>
+                        <span id="doctor-specialty-name">乳癌臨床試驗</span>
+                        <span style="font-weight: 400; color: #999; font-size: 16px;">- 醫師分析版</span>
+                    </div>
+                    
+                    <div id="doctor-stats" class="stats"></div>
+                    
+                    <div id="doctor-content">
+                        <div class="loading">載入中...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const specialtyNames = {
+            'breast': '乳癌',
+            'hematology': '血液科'
+        };
+        
+        const specialtyIcons = {
+            'breast': '🎗️',
+            'hematology': '🩸'
+        };
+        
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tab + '-tab').classList.add('active');
+        }
+        
+        async function loadTrials() {
+            const specialty = document.getElementById('specialty').value;
+            const location = document.getElementById('location').value || 'Taiwan';
+            
+            // 更新標題
+            const name = specialtyNames[specialty];
+            const icon = specialtyIcons[specialty];
+            
+            document.getElementById('patient-specialty-icon').textContent = icon;
+            document.getElementById('patient-specialty-name').textContent = name;
+            document.getElementById('doctor-specialty-icon').textContent = '🔬';
+            document.getElementById('doctor-specialty-name').textContent = name;
+            
+            // 載入患者版
+            loadPatientView(specialty, location);
+            
+            // 載入醫師版
+            loadDoctorView(specialty, location);
+        }
+        
+        async function loadPatientView(specialty, location) {
+            const container = document.getElementById('patient-content');
+            container.innerHTML = '<div class="loading">載入中...</div>';
+            
+            try {
+                const response = await fetch(`/api/trials/${specialty}?location=${location}`);
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    container.innerHTML = `<div class="error">❌ ${data.error || '載入失敗'}</div>`;
+                    return;
+                }
+                
+                // 過濾患者版資料
+                const patientTrials = data.trials.filter(t => 
+                    t.recruitment_status === 'RECRUITING' && location in t.locations
+                ).slice(0, 20);
+                
+                if (patientTrials.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">😔</div><div>目前沒有正在招募中的試驗</div></div>';
+                    return;
+                }
+                
+                let html = `<div style="color: #999; margin-bottom: 20px;">✅ 找到 ${patientTrials.length} 項正在招募的試驗</div>`;
+                html += '<div class="trials-list">';
+                
+                patientTrials.forEach(trial => {
+                    const cities = Object.values(trial.locations).flat().join(', ');
+                    const contact = trial.contact_info || {};
+                    
+                    html += `
+                    <div class="trial-card">
+                        <div class="trial-header">
+                            <div class="trial-title">${trial.title}</div>
+                        </div>
+                        
+                        <div class="trial-info">
+                            <div class="trial-info-item">
+                                <span class="trial-info-label">試驗編號</span>
+                                <span class="trial-info-value">${trial.nct_id}</span>
+                            </div>
+                            <div class="trial-info-item">
+                                <span class="trial-info-label">收案地點</span>
+                                <span class="trial-info-value">${cities}</span>
+                            </div>
+                            <div class="trial-info-item">
+                                <span class="trial-info-label">贊助機構</span>
+                                <span class="trial-info-value">${trial.sponsor}</span>
+                            </div>
+                        </div>
+                        
+                        ${contact.name ? `
+                        <div class="trial-contact">
+                            <span class="trial-contact-label">📞 聯絡資訊</span>
+                            ${contact.name ? `<div class="trial-contact-item"><strong>${contact.name}</strong></div>` : ''}
+                            ${contact.phone ? `<div class="trial-contact-item">電話: ${contact.phone}</div>` : ''}
+                            ${contact.email ? `<div class="trial-contact-item">Email: ${contact.email}</div>` : ''}
+                        </div>
+                        ` : ''}
+                        
+                        <a href="https://clinicaltrials.gov/study/${trial.nct_id}" target="_blank" class="trial-link">
+                            查看詳情 →
+                        </a>
+                    </div>
+                    `;
+                });
+                
+                html += '</div>';
+                container.innerHTML = html;
+                
+            } catch (error) {
+                container.innerHTML = `<div class="error">❌ 載入失敗: ${error.message}</div>`;
+            }
+        }
+        
+        async function loadDoctorView(specialty, location) {
+            const container = document.getElementById('doctor-content');
+            const statsContainer = document.getElementById('doctor-stats');
+            
+            container.innerHTML = '<div class="loading">載入中...</div>';
+            statsContainer.innerHTML = '';
+            
+            try {
+                const response = await fetch(`/api/trials/${specialty}?location=${location}`);
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    container.innerHTML = `<div class="error">❌ ${data.error || '載入失敗'}</div>`;
+                    return;
+                }
+                
+                // 顯示統計信息
+                const stats = data.statistics;
+                let statsHtml = `
+                    <div class="stat-item">
+                        <div class="stat-number">${stats.phase1}</div>
+                        <div class="stat-label">Phase 1</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">${stats.phase2}</div>
+                        <div class="stat-label">Phase 2</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">${stats.phase3}</div>
+                        <div class="stat-label">Phase 3</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">${stats.with_results}</div>
+                        <div class="stat-label">已發表結果</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">${stats.recruiting}</div>
+                        <div class="stat-label">招募中</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">${stats.terminated}</div>
+                        <div class="stat-label">已終止</div>
+                    </div>
+                `;
+                statsContainer.innerHTML = statsHtml;
+                
+                // 顯示試驗列表（前10個）
+                const topTrials = data.trials.slice(0, 10);
+                
+                if (topTrials.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">😔</div><div>無試驗數據</div></div>';
+                    return;
+                }
+                
+                let html = '<div class="trials-list">';
+                
+                topTrials.forEach((trial, idx) => {
+                    const score = trial.score || 0;
+                    let importance, badgeClass;
+                    
+                    if (score >= 85) {
+                        importance = `🔴 非常重要 (${score}分)`;
+                        badgeClass = 'importance-very-high';
+                    } else if (score >= 70) {
+                        importance = `🟠 重要 (${score}分)`;
+                        badgeClass = 'importance-high';
+                    } else if (score >= 50) {
+                        importance = `🟡 中等 (${score}分)`;
+                        badgeClass = 'importance-medium';
+                    } else {
+                        importance = `🟢 一般 (${score}分)`;
+                        badgeClass = 'importance-low';
+                    }
+                    
+                    const phases = trial.phases.join(', ') || 'N/A';
+                    
+                    html += `
+                    <div class="trial-card">
+                        <div class="trial-header">
+                            <div style="flex: 1;">
+                                <div class="trial-title">${trial.title}</div>
+                                <div style="font-size: 12px; color: #999; margin-top: 4px;">NCT ID: ${trial.nct_id}</div>
+                            </div>
+                            <span class="importance-badge ${badgeClass}">${importance}</span>
+                        </div>
+                        
+                        <div class="trial-info">
+                            <div class="trial-info-item">
+                                <span class="trial-info-label">Phase</span>
+                                <span class="trial-info-value">${phases}</span>
+                            </div>
+                            <div class="trial-info-item">
+                                <span class="trial-info-label">狀態</span>
+                                <span class="trial-info-value">${trial.status}</span>
+                            </div>
+                            <div class="trial-info-item">
+                                <span class="trial-info-label">規模</span>
+                                <span class="trial-info-value">${trial.num_countries} 國, ${trial.num_sites} 地點</span>
+                            </div>
+                            <div class="trial-info-item">
+                                <span class="trial-info-label">入組數</span>
+                                <span class="trial-info-value">${trial.enrollment || 'N/A'}</span>
+                            </div>
+                            <div class="trial-info-item">
+                                <span class="trial-info-label">贊助</span>
+                                <span class="trial-info-value">${trial.sponsor}</span>
+                            </div>
+                            <div class="trial-info-item">
+                                <span class="trial-info-label">結果</span>
+                                <span class="trial-info-value">${trial.has_results ? '✅ 已發表' : '⏳ 進行中'}</span>
+                            </div>
+                        </div>
+                        
+                        ${trial.score_reasons && trial.score_reasons.length > 0 ? `
+                        <div class="trial-reasons">
+                            <div class="trial-reasons-title">📊 評分理由</div>
+                            <ul class="trial-reasons-list">
+                                ${trial.score_reasons.map(reason => `<li>${reason}</li>`).join('')}
+                            </ul>
+                        </div>
+                        ` : ''}
+                        
+                        <a href="https://clinicaltrials.gov/study/${trial.nct_id}" target="_blank" class="trial-link">
+                            查看詳情 →
+                        </a>
+                    </div>
+                    `;
+                });
+                
+                html += '</div>';
+                container.innerHTML = html;
+                
+            } catch (error) {
+                container.innerHTML = `<div class="error">❌ 載入失敗: ${error.message}</div>`;
+            }
+        }
+        
+        // 頁面載入時自動載入
+        window.addEventListener('DOMContentLoaded', loadTrials);
+        
+        // 選擇改變時重新載入
+        document.getElementById('specialty').addEventListener('change', loadTrials);
+    </script>
+</body>
+</html>
