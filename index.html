@@ -1078,16 +1078,30 @@ body {
           <div class="strat-section-title">生物標誌物 Biomarkers</div>
           <div class="strat-form-grid">
             <div class="strat-group">
-              <label>ER H-score (0–300)</label>
-              <input type="number" id="sER" min="0" max="300" value="" placeholder="0–300">
+              <label>ER % (0–100)</label>
+              <input type="number" id="sER" min="0" max="100" value="" placeholder="0–100">
             </div>
             <div class="strat-group">
-              <label>PR H-score (0–300)</label>
-              <input type="number" id="sPR" min="0" max="300" value="" placeholder="0–300">
+              <label>PR % (0–100)</label>
+              <input type="number" id="sPR" min="0" max="100" value="" placeholder="0–100">
             </div>
             <div class="strat-group">
-              <label>HER2 Score (0–300)</label>
-              <input type="number" id="sHER2" min="0" max="300" value="" placeholder="0–300">
+              <label>HER2 IHC</label>
+              <select id="sHER2" onchange="onHER2Change()">
+                <option value="">請選擇</option>
+                <option value="0">0 — 陰性</option>
+                <option value="1">1+ — 陰性</option>
+                <option value="2">2+ — 模糊 (需 FISH)</option>
+                <option value="3">3+ — 陽性</option>
+              </select>
+            </div>
+            <div class="strat-group" id="sFISHGroup" style="display:none">
+              <label>FISH 結果</label>
+              <select id="sFISH">
+                <option value="">請選擇</option>
+                <option value="pos">陽性 (amplified)</option>
+                <option value="neg">陰性 (not amplified)</option>
+              </select>
             </div>
             <div class="strat-group">
               <label>Ki-67 (%)</label>
@@ -3226,11 +3240,17 @@ let _ajccLookup = null;
 
 // ── Thresholds (St Gallen 2021) ──
 const STRAT_THRESHOLDS = {
-  ER: 100,    // H-score > 100 = ER+
-  PR: 100,    // H-score > 100 = PR+
-  HER2: 100,  // H-score > 100 = HER2+
-  KI67: 20    // Ki67 < 20% = low proliferation
+  ER: 1,    // ER% > 1% = ER+ (ASCO/CAP guideline)
+  PR: 1,    // PR% > 1% = PR+
+  KI67: 20  // Ki67 < 20% = low proliferation
 };
+
+// ── HER2 FISH Toggle ──
+function onHER2Change(){
+  const val = document.getElementById('sHER2').value;
+  document.getElementById('sFISHGroup').style.display = (val === '2') ? '' : 'none';
+  if(val !== '2') document.getElementById('sFISH').value = '';
+}
 
 // ── Load AJCC lookup table ──
 async function loadAjccLookup(){
@@ -3311,11 +3331,12 @@ function getSubtype(erPos, prPos, her2Pos, ki67){
 }
 
 // ── IHC4 Score Calculation (Dowsett et al. 2010) ──
-function calcIHC4(erScore, prScore, her2Score, ki67){
-  const erNorm  = erScore / 300;
-  const prNorm  = prScore / 300;
-  const her2Norm = her2Score / 300;
-  const ki67Log = Math.log10(Math.max(ki67, 1));
+// erScore: 0-100 (%), prScore: 0-100 (%), her2IHC: 0/1/2/3 (IHC grade)
+function calcIHC4(erScore, prScore, her2IHC, ki67){
+  const erNorm   = erScore / 100;   // normalize % to 0-1
+  const prNorm   = prScore / 100;   // normalize % to 0-1
+  const her2Norm = her2IHC / 3;     // normalize IHC 0-3 to 0-1
+  const ki67Log  = Math.log10(Math.max(ki67, 1));
 
   const coef = { er: 2.396, pr: -0.867, her2: 0.622, ki67: 1.185, intercept: -6.386 };
   const raw = coef.intercept + coef.er * erNorm + coef.pr * prNorm + coef.her2 * her2Norm + coef.ki67 * ki67Log;
@@ -3345,61 +3366,122 @@ function stageToNum(s){
 }
 
 // ── Confidence Level ──
-function calcConfidence(erScore, her2Score, age){
+// erScore: 0-100, her2IHC: 0/1/2/3
+function calcConfidence(erScore, her2IHC, age){
   let c = 0.7;
-  if((erScore < 10 || erScore > 200) && (her2Score < 20 || her2Score > 200)) c += 0.15;
+  // Clear biomarker status (strongly positive or negative) boosts confidence
+  if((erScore === 0 || erScore > 50) && (her2IHC === 0 || her2IHC === 3)) c += 0.15;
   if(age >= 30 && age <= 80) c += 0.05;
   return Math.min(Math.max(c, 0), 1);
+}
+
+// ── Anatomical Stage (TNM only, AJCC 8th Edition) ──
+function anatomicalStageRule(t, n, m){
+  if(m === 'M1') return 'IV';
+  const tStr = t.startsWith('T') ? t : 'T' + t;
+  if(tStr === 'Tis' && n === 'N0') return '0';
+
+  const tNum = tStr === 'Tis' ? -1 : tStr === 'T0' ? 0 : tStr === 'T1mi' ? 1 : parseInt(tStr[1]) || 1;
+  const nStr = n;
+  const nNum = nStr === 'N0' ? 0 : nStr === 'N1mi' ? 0.5 : parseInt(nStr[1]) || 1;
+
+  if(tNum <= 1 && nNum === 0) return 'IA';
+  if((tNum === 0 || tNum === 1) && nNum === 0.5) return 'IB';  // N1mi
+  if((tNum === 0 || tNum === 1) && nNum === 1) return 'IIA';
+  if(tNum === 2 && nNum === 0) return 'IIA';
+  if(tNum === 2 && nNum === 1) return 'IIB';
+  if(tNum === 3 && nNum === 0) return 'IIB';
+  if(tNum <= 2 && nNum === 2) return 'IIIA';
+  if(tNum === 3 && (nNum === 1 || nNum === 2)) return 'IIIA';
+  if(tNum === 4 && nNum <= 2) return 'IIIB';
+  if(nNum >= 3) return 'IIIC';
+  return 'IIIC';
 }
 
 // ── Main: Run Stratification ──
 function runStratification(){
   // Read inputs
-  const erScore  = parseInt(document.getElementById('sER').value);
-  const prScore  = parseInt(document.getElementById('sPR').value);
-  const her2Score = parseInt(document.getElementById('sHER2').value);
-  const ki67     = parseFloat(document.getElementById('sKi67').value);
-  const grade    = parseInt(document.getElementById('sGrade').value);
-  const age      = parseInt(document.getElementById('sAge').value);
-  const tumorCm  = parseFloat(document.getElementById('sTumor').value);
+  const erScore    = parseFloat(document.getElementById('sER').value);
+  const prScore    = parseFloat(document.getElementById('sPR').value);
+  const her2IHC    = document.getElementById('sHER2').value;   // "0","1","2","3"
+  const fishVal    = document.getElementById('sFISH').value;   // "pos","neg",""
+  const ki67       = parseFloat(document.getElementById('sKi67').value);
+  const grade      = parseInt(document.getElementById('sGrade').value);
+  const age        = parseInt(document.getElementById('sAge').value);
+  const tumorCm    = parseFloat(document.getElementById('sTumor').value);
   const nodeStatus = document.getElementById('sNode').value;
   const metastasis = document.getElementById('sMeta').value;
   const chestWall  = document.getElementById('sChest').checked;
 
   // Validate
   const missing = [];
-  if(isNaN(erScore))  missing.push('ER H-score');
-  if(isNaN(prScore))  missing.push('PR H-score');
-  if(isNaN(her2Score)) missing.push('HER2 Score');
-  if(isNaN(ki67))     missing.push('Ki-67');
-  if(isNaN(grade))    missing.push('Grade');
-  if(isNaN(age))      missing.push('年齡');
-  if(isNaN(tumorCm))  missing.push('腫瘤大小');
-  if(!nodeStatus)     missing.push('淋巴結狀態');
-  if(!metastasis)     missing.push('遠端轉移');
+  if(isNaN(erScore) || document.getElementById('sER').value === '')   missing.push('ER %');
+  if(isNaN(prScore) || document.getElementById('sPR').value === '')   missing.push('PR %');
+  if(!her2IHC)      missing.push('HER2 IHC');
+  if(her2IHC === '2' && !fishVal) missing.push('FISH 結果 (HER2 2+ 需確認)');
+  if(isNaN(ki67))   missing.push('Ki-67');
+  if(isNaN(grade))  missing.push('Grade');
+  if(isNaN(age))    missing.push('年齡');
+  if(isNaN(tumorCm)) missing.push('腫瘤大小');
+  if(!nodeStatus)   missing.push('淋巴結狀態');
+  if(!metastasis)   missing.push('遠端轉移');
   if(missing.length){ alert('請填寫以下欄位：\n' + missing.join('、')); return; }
 
-  // Calculate
-  const erPos  = erScore > STRAT_THRESHOLDS.ER;
-  const prPos  = prScore > STRAT_THRESHOLDS.PR;
-  const her2Pos = her2Score > STRAT_THRESHOLDS.HER2;
-  const erStatus  = erPos ? 'Pos' : 'Neg';
-  const prStatus  = prPos ? 'Pos' : 'Neg';
-  const her2Status = her2Pos ? 'Pos' : 'Neg';
-
-  const subtype = getSubtype(erPos, prPos, her2Pos, ki67);
-  const tClass  = tumorSizeToT(tumorCm, chestWall);
-  const stage   = lookupAjccStage(tClass, nodeStatus, metastasis, grade, her2Status, erStatus, prStatus);
-  const risk    = getRiskCategory(subtype, stage);
-  const confidence = calcConfidence(erScore, her2Score, age);
-
-  let ihc4 = null;
-  if(subtype.includes('Luminal')){
-    ihc4 = calcIHC4(erScore, prScore, her2Score, ki67);
+  // Determine HER2 positivity
+  const her2IHCNum = parseInt(her2IHC);
+  let her2Pos;
+  if(her2IHCNum === 3){
+    her2Pos = true;
+  } else if(her2IHCNum === 2){
+    her2Pos = (fishVal === 'pos');   // FISH resolves equivocal 2+
+  } else {
+    her2Pos = false;                 // 0 or 1+
   }
 
-  // Render results
-  renderStratResults({ subtype, stage, risk, ihc4, confidence, tClass, nodeStatus, metastasis, grade, erStatus, prStatus, her2Status, ki67, age });
+  // Determine ER/PR positivity (ASCO/CAP: ≥1% = positive)
+  const erPos  = erScore >= STRAT_THRESHOLDS.ER;
+  const prPos  = prScore >= STRAT_THRESHOLDS.PR;
+
+  const erStatus   = erPos   ? 'Pos' : 'Neg';
+  const prStatus   = prPos   ? 'Pos' : 'Neg';
+  const her2Status = her2Pos ? 'Pos' : 'Neg';
+
+  const subtype   = getSubtype(erPos, prPos, her2Pos, ki67);
+  const tClass    = tumorSizeToT(tumorCm, chestWall);
+
+  // Anatomical stage: TNM only (AJCC 8th Edition basis)
+  const anatStage = anatomicalStageRule(tClass, nodeStatus, metastasis);
+
+  // Prognostic stage: TNM + biomarkers lookup (AJCC 9th Edition)
+  const progStage = lookupAjccStage(tClass, nodeStatus, metastasis, grade, her2Status, erStatus, prStatus);
+
+  const risk       = getRiskCategory(subtype, progStage);
+  const confidence = calcConfidence(erScore, her2IHCNum, age);
+
+  // IHC4 only for Luminal subtypes
+  let ihc4 = null;
+  if(subtype.includes('Luminal')){
+    ihc4 = calcIHC4(erScore, prScore, her2IHCNum, ki67);
+  }
+
+  // Build risk source description
+  let riskSource;
+  if(subtype === 'HER2-enriched' || subtype === 'Triple Negative'){
+    riskSource = `亞型 (${subtype})`;
+  } else if(ihc4 !== null){
+    riskSource = `亞型 (${subtype}) + IHC4 = ${ihc4}`;
+  } else {
+    riskSource = `亞型 (${subtype}) + AJCC 分期`;
+  }
+
+  // HER2 display label
+  const her2Label = her2IHCNum === 2
+    ? `2+ / FISH ${fishVal === 'pos' ? '陽性 (amplified)' : '陰性 (not amplified)'}`
+    : ['0 — 陰性', '1+ — 陰性', '2+', '3+ — 陽性'][her2IHCNum];
+
+  renderStratResults({ subtype, anatStage, progStage, risk, riskSource, ihc4, confidence,
+    tClass, nodeStatus, metastasis, grade, erStatus, prStatus, her2Status,
+    her2Label, erScore, prScore, ki67, age });
 }
 
 // ── Render Results ──
@@ -3413,8 +3495,21 @@ function renderStratResults(r){
 
   let summaryHtml = `
     <div class="strat-card"><div class="strat-card-label">病理亞型 Subtype</div><div class="strat-card-value">${r.subtype}</div></div>
-    <div class="strat-card"><div class="strat-card-label">AJCC 分期 Stage</div><div class="strat-card-value">Stage ${r.stage}</div></div>
-    <div class="strat-card ${riskClass}"><div class="strat-card-label">風險分類 Risk</div><div class="strat-card-value">${riskLabel}</div></div>`;
+    <div class="strat-card">
+      <div class="strat-card-label">AJCC 解剖分期 (8th)</div>
+      <div class="strat-card-value">Stage ${r.anatStage}</div>
+      <div class="strat-card-note" style="font-size:.75rem;color:#64748b;margin-top:.25rem">基於 TNM (解剖)</div>
+    </div>
+    <div class="strat-card">
+      <div class="strat-card-label">AJCC 預後分期 (9th)</div>
+      <div class="strat-card-value">Stage ${r.progStage}</div>
+      <div class="strat-card-note" style="font-size:.75rem;color:#64748b;margin-top:.25rem">TNM + Grade + ER/PR/HER2</div>
+    </div>
+    <div class="strat-card ${riskClass}">
+      <div class="strat-card-label">風險分類 Risk</div>
+      <div class="strat-card-value">${riskLabel}</div>
+      <div class="strat-card-note" style="font-size:.75rem;opacity:.75;margin-top:.25rem">依據: ${r.riskSource}</div>
+    </div>`;
   if(r.ihc4 !== null){
     summaryHtml += `<div class="strat-card"><div class="strat-card-label">IHC4 Score</div><div class="strat-card-value">${r.ihc4}</div></div>`;
   }
@@ -3431,14 +3526,16 @@ function renderStratResults(r){
     '════════════════════════════════════════════════',
     '',
     `病理亞型:  ${r.subtype}`,
-    `AJCC 分期: Stage ${r.stage} (${r.tClass} ${r.nodeStatus} ${r.metastasis})`,
-    `風險分類:  ${riskLabel} (${r.risk})`,
+    `AJCC 解剖分期 (8th Edition): Stage ${r.anatStage}  ← 基於 TNM`,
+    `AJCC 預後分期 (9th Edition): Stage ${r.progStage}  ← TNM + Grade + ER/PR/HER2`,
+    `風險分類:  ${riskLabel}  (依據: ${r.riskSource})`,
     '',
-    `ER: ${r.erStatus === 'Pos' ? '陽性' : '陰性'}  |  PR: ${r.prStatus === 'Pos' ? '陽性' : '陰性'}  |  HER2: ${r.her2Status === 'Pos' ? '陽性' : '陰性'}`,
-    `Ki-67: ${r.ki67}%  |  Grade: ${r.grade}  |  年齡: ${r.age}`,
+    `ER: ${r.erScore}% (${r.erStatus === 'Pos' ? '陽性' : '陰性'})  |  PR: ${r.prScore}% (${r.prStatus === 'Pos' ? '陽性' : '陰性'})`,
+    `HER2: ${r.her2Label}  |  Ki-67: ${r.ki67}%  |  Grade: ${r.grade}`,
+    `TNM: ${r.tClass} ${r.nodeStatus} ${r.metastasis}  |  年齡: ${r.age}`,
     ''
   ];
-  if(r.ihc4 !== null) lines.push(`IHC4 預測分數: ${r.ihc4}`);
+  if(r.ihc4 !== null) lines.push(`IHC4 預測分數: ${r.ihc4}  (Dowsett et al. 2010)`);
   lines.push(`信心程度: ${(r.confidence*100).toFixed(0)}%`);
   lines.push('');
   lines.push('════════════════════════════════════════════════');
@@ -3452,8 +3549,9 @@ function renderStratResults(r){
 
 // ── Reset Form ──
 function resetStrat(){
-  ['sER','sPR','sHER2','sKi67','sAge','sTumor'].forEach(id => document.getElementById(id).value = '');
-  ['sGrade','sNode','sMeta'].forEach(id => document.getElementById(id).value = '');
+  ['sER','sPR','sKi67','sAge','sTumor'].forEach(id => document.getElementById(id).value = '');
+  ['sHER2','sFISH','sGrade','sNode','sMeta'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('sFISHGroup').style.display = 'none';
   document.getElementById('sChest').checked = false;
   document.getElementById('stratResults').classList.remove('show');
 }
