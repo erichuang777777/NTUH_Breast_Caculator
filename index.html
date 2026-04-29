@@ -3330,20 +3330,27 @@ function getSubtype(erPos, prPos, her2Pos, ki67){
   return 'Unknown';
 }
 
-// ── IHC4 Score Calculation (Dowsett et al. 2010) ──
-// erScore: 0-100 (%), prScore: 0-100 (%), her2IHC: 0/1/2/3 (IHC grade)
-function calcIHC4(erScore, prScore, her2IHC, ki67){
-  const erNorm   = erScore / 100;   // normalize % to 0-1
-  const prNorm   = prScore / 100;   // normalize % to 0-1
-  const her2Norm = her2IHC / 3;     // normalize IHC 0-3 to 0-1
-  const ki67Log  = Math.log10(Math.max(ki67, 1));
+// ── IHC4 Score Calculation (Cuzick et al. 2011, J Clin Oncol 29:4273-4278) ──
+// Formula: IHC4 = 94.7 × (−0.100×ER10 − 0.079×PGR10 + 0.586×HER2 + 0.240×ln(1+10×Ki67))
+// erPct  : ER%  (0-100 %)  → 使用者輸入百分比，內部轉換為 0-10 尺度 (÷10)
+// prPct  : PR%  (0-100 %)  → 同上
+// her2Pos: boolean          → 1 if HER2-positive (IHC 3+ or 2+/FISH+), 0 if negative
+// ki67   : Ki-67 % (0-100)
+// 輸出: 原始 IHC4 分數 (無界；分數愈高 = 預後愈差)
+// 典型範圍約 -50 ~ +50
+function calcIHC4(erPct, prPct, her2Pos, ki67){
+  const ER10  = erPct / 10;        // ER%  ÷ 10 → 0-10 scale (≈ H-score/30 近似)
+  const PGR10 = prPct / 10;        // PR%  ÷ 10 → 0-10 scale
+  const HER2  = her2Pos ? 1 : 0;   // binary
+  const ki67c = Math.max(ki67, 0); // clamp
 
-  const coef = { er: 2.396, pr: -0.867, her2: 0.622, ki67: 1.185, intercept: -6.386 };
-  const raw = coef.intercept + coef.er * erNorm + coef.pr * prNorm + coef.her2 * her2Norm + coef.ki67 * ki67Log;
-
-  // Sigmoid → 0-10 scale
-  const sigmoid = 1 / (1 + Math.exp(-raw));
-  return +(sigmoid * 10).toFixed(2);
+  const ihc4 = 94.7 * (
+    -0.100 * ER10
+    - 0.079 * PGR10
+    + 0.586 * HER2
+    + 0.240 * Math.log(1 + 10 * ki67c)  // 自然對數 (ln)
+  );
+  return +ihc4.toFixed(1);
 }
 
 // ── Risk Category ──
@@ -3458,10 +3465,10 @@ function runStratification(){
   const risk       = getRiskCategory(subtype, progStage);
   const confidence = calcConfidence(erScore, her2IHCNum, age);
 
-  // IHC4 only for Luminal subtypes
+  // IHC4 only for Luminal subtypes (Cuzick 2011: HER2 as binary 0/1)
   let ihc4 = null;
   if(subtype.includes('Luminal')){
-    ihc4 = calcIHC4(erScore, prScore, her2IHCNum, ki67);
+    ihc4 = calcIHC4(erScore, prScore, her2Pos, ki67);
   }
 
   // Build risk source description
@@ -3511,7 +3518,11 @@ function renderStratResults(r){
       <div class="strat-card-note" style="font-size:.75rem;opacity:.75;margin-top:.25rem">依據: ${r.riskSource}</div>
     </div>`;
   if(r.ihc4 !== null){
-    summaryHtml += `<div class="strat-card"><div class="strat-card-label">IHC4 Score</div><div class="strat-card-value">${r.ihc4}</div></div>`;
+    summaryHtml += `<div class="strat-card">
+      <div class="strat-card-label">IHC4 Score</div>
+      <div class="strat-card-value">${r.ihc4}</div>
+      <div class="strat-card-note" style="font-size:.75rem;color:#64748b;margin-top:.25rem">高分 = 預後較差 (Cuzick 2011)</div>
+    </div>`;
   }
   document.getElementById('stratSummary').innerHTML = summaryHtml;
 
