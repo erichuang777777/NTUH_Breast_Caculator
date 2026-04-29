@@ -1,0 +1,145 @@
+{
+  "version": "8",
+  "edition_year": 2017,
+  "description": "AJCC 8th Edition (2017) 乳癌分期表 - TNM 到 Stage 的映射",
+  "reference": "https://cancerstaging.org/",
+  "note": "8th edition uses similar staging rules but with less emphasis on biomarkers compared to 9th edition",
+  "stages": {
+    "0": {
+      "name": "Stage 0",
+      "description": "原位癌 (Non-invasive carcinoma)",
+      "tnm_patterns": [
+        {
+          "t": "Tis",
+          "n": "N0",
+          "m": "M0",
+          "notes": "導管內癌或小葉內癌"
+        }
+      ]
+    },
+    "IA": {
+      "name": "Stage IA",
+      "description": "小腫瘤，無淋巴結轉移",
+      "tnm_patterns": [
+        {
+          "t": "T1",
+          "n": "N0",
+          "m": "M0",
+          "notes": "≤20mm"
+        }
+      ]
+    },
+    "IB": {
+      "name": "Stage IB",
+      "description": "淋巴結微轉移",
+      "tnm_patterns": [
+        {
+          "t": "T0",
+          "n": "N1mi",
+          "m": "M0"
+        },
+        {
+          "t": "T1",
+          "n": "N1mi",
+          "m": "M0"
+        }
+      ]
+    },
+    "IIA": {
+      "name": "Stage IIA",
+      "description": "20-50mm 腫瘤或伴有限淋巴結轉移",
+      "tnm_patterns": [
+        {
+          "t": "T0",
+          "n": "N1a",
+          "m": "M0"
+        },
+        {
+          "t": "T1",
+          "n": "N1a",
+          "m": "M0"
+        },
+        {
+          "t": "T2",
+          "n": "N0",
+          "m": "M0"
+        }
+      ]
+    },
+    "IIB": {
+      "name": "Stage IIB",
+      "description": "較大腫瘤或更多淋巴結轉移",
+      "tnm_patterns": [
+        {
+          "t": "T2",
+          "n": "N1a",
+          "m": "M0"
+        },
+        {
+          "t": "T3",
+          "n": "N0",
+          "m": "M0"
+        }
+      ]
+    },
+    "IIIA": {
+      "name": "Stage IIIA",
+      "description": "廣泛淋巴結轉移",
+      "tnm_patterns": [
+        {
+          "t": "T0,T1,T2",
+          "n": "N2a",
+          "m": "M0"
+        },
+        {
+          "t": "T3",
+          "n": "N1a,N2a",
+          "m": "M0"
+        },
+        {
+          "t": "T4a",
+          "n": "N0,N1a,N2a",
+          "m": "M0"
+        }
+      ]
+    },
+    "IIIB": {
+      "name": "Stage IIIB",
+      "description": "胸壁或皮膚受累",
+      "tnm_patterns": [
+        {
+          "t": "T4b",
+          "n": "N0,N1a,N2a",
+          "m": "M0"
+        },
+        {
+          "t": "Any T",
+          "n": "N2b",
+          "m": "M0"
+        }
+      ]
+    },
+    "IIIC": {
+      "name": "Stage IIIC",
+      "description": "鎖骨上淋巴結轉移",
+      "tnm_patterns": [
+        {
+          "t": "Any T",
+          "n": "N3",
+          "m": "M0"
+        }
+      ]
+    },
+    "IV": {
+      "name": "Stage IV",
+      "description": "遠端轉移",
+      "tnm_patterns": [
+        {
+          "t": "Any T",
+          "n": "Any N",
+          "m": "M1"
+        }
+      ]
+    }
+  }
+}

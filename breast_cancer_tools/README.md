@@ -142,65 +142,36 @@ print(f"AJCC Stage: {ajcc_result.clinical_stage.value}")
 
 ---
 
-## 🔄 開發進度
+## 開發進度
 
-### 已完成 ✅
-- [x] 模塊架構設計
-- [x] API 規格文檔
-- [x] 實現指南
-- [x] Flask 集成指南
-- [x] 單元測試框架
+### Phase 1: 核心計算邏輯 ✅
+- [x] 實現 `IHC4Calculator.calculate()` — 17 tests passing
+- [x] 實現 `IHC4Calculator.get_subtype_classification()`
+- [x] 建立 `data/ihc4_coefficients.json`
+- [x] 寫單元測試 (test_ihc4.py)
 
-### 進行中 🔄
-- [ ] IHC4 計算邏輯實現
-- [ ] Predict Score 計算
-- [ ] AJCC 分期邏輯實現
-- [ ] 數據配置文件 (JSON)
-- [ ] 分層決策邏輯
-- [ ] 單元測試實現
+### Phase 2: AJCC 轉換 ✅
+- [x] 實現 `AJCCStageConverter.convert()` — 39 tests passing
+- [x] 實現 `AJCCStageConverter.get_prognostic_group()`
+- [x] 建立 `data/ajcc_staging_9.json` 和 `ajcc_staging_8.json`
+- [x] 官方參考查詢表 1,440 entries (台北榮總 AJCC 9th Edition)
+- [x] 寫單元測試 (test_ajcc.py)
 
-### 待進行 ⏳
-- [ ] 集成測試
-- [ ] 性能測試
-- [ ] 前端 UI 實現
-- [ ] 文檔補充
+### Phase 3: 分層決策 ✅
+- [x] 實現 `BreastCancerStratification.stratify()` — 25 tests passing
+- [x] 實現 `BreastCancerStratification.recommend_therapy()`
+- [x] 實現 `BreastCancerStratification.generate_report()`
+- [x] 寫單元測試 (test_stratification.py)
 
----
+### Phase 4: 前端 UI ✅
+- [x] 純前端 JavaScript 計算引擎（無需後端）
+- [x] 整合至 index.html「臨床分層」頁籤
+- [x] AJCC 1,440 entries 查詢表 (data/ajcc_lookup.json)
+- [x] 響應式設計
 
-## 🛠️ 開發檢查清單
-
-開發者可按以下步驟逐一實現：
-
-### Phase 1: 核心計算邏輯
-- [ ] 實現 `IHC4Calculator.calculate()`
-- [ ] 實現 `IHC4Calculator.get_subtype_classification()`
-- [ ] 建立 `data/ihc4_coefficients.json`
-- [ ] 寫單元測試 (test_ihc4.py)
-
-### Phase 2: AJCC 轉換
-- [ ] 實現 `AJCCStageConverter.convert()`
-- [ ] 實現 `AJCCStageConverter.get_prognostic_group()`
-- [ ] 建立 `data/ajcc_staging_9.json` 和 `ajcc_staging_8.json`
-- [ ] 建立 `data/therapy_guidelines.json`
-- [ ] 寫單元測試 (test_ajcc.py)
-
-### Phase 3: 分層決策
-- [ ] 實現 `BreastCancerStratification.stratify()`
-- [ ] 實現 `BreastCancerStratification.recommend_therapy()`
-- [ ] 實現 `BreastCancerStratification.generate_report()`
-- [ ] 寫單元測試 (test_stratification.py)
-
-### Phase 4: 集成和測試
-- [ ] 集成到 Flask 應用 (`app/app.py`)
-- [ ] 集成測試
-- [ ] 性能測試
-- [ ] 前端 UI
-
-### Phase 5: 部署和文檔
-- [ ] 補充 USAGE_GUIDE.md
-- [ ] 修改 requirements.txt (如有新依賴)
-- [ ] 提交到 GitHub
-- [ ] 部署到生產環境
+### Phase 5: 部署 ✅
+- [x] Netlify 靜態部署（netlify.toml）
+- [x] 總計 81 tests passing (Python backend)
 
 ---
 

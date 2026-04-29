@@ -77,22 +77,24 @@ class TestIHC4Input:
 class TestIHC4Calculation:
     """IHC4 計算測試"""
 
-    @pytest.mark.skip(reason="實現待完成")
     def test_luminal_a_low_risk(self):
         """
         測試 Luminal A 型（低風險）計算
 
-        特徵：
+        特徵（患者案例）：
         - ER+: 250 (強陽性)
         - PR+: 150 (中陽性)
         - HER2-: 0
         - Ki67: 10% (低)
         - 年齡: 50
+        - Grade: 2
+        - 腫瘤大小: 2.0 cm
 
-        預期：
-        - IHC4 Score: 低 (<2.0)
+        預期結果（根據 PREDICT 工具）：
+        - IHC4 Score: ~1.5-2.0（低風險）
         - 亞型: Luminal A
         - 風險: Low Risk
+        - 推薦: 激素治療為主
         """
         calculator = IHC4Calculator()
         result = calculator.calculate(
@@ -105,26 +107,40 @@ class TestIHC4Calculation:
             tumor_size_cm=2.0
         )
 
-        assert result.subtype == BreastCancerSubtype.LUMINAL_A
-        assert result.risk_category == "Low Risk"
-        assert result.ihc4_score < 2.0
+        # 驗證亞型分類
+        assert result.subtype == BreastCancerSubtype.LUMINAL_A, \
+            f"Expected Luminal A, got {result.subtype}"
 
-    @pytest.mark.skip(reason="實現待完成")
+        # 驗證風險分類
+        assert result.risk_category == "Low Risk", \
+            f"Expected Low Risk, got {result.risk_category}"
+
+        # 驗證 IHC4 評分範圍（低風險 < 2.0）
+        assert result.ihc4_score < 2.0, \
+            f"Expected IHC4 < 2.0 for Luminal A, got {result.ihc4_score}"
+
+        # 驗證臨床建議
+        assert "Hormone" in result.recommendation or "hormone" in result.recommendation, \
+            f"Expected hormone therapy in recommendation, got: {result.recommendation}"
+
     def test_luminal_b_intermediate_risk(self):
         """
         測試 Luminal B 型（中風險）計算
 
-        特徵：
+        特徵（患者案例）：
         - ER+: 200 (中陽性)
         - PR+: 50 (弱陽性)
         - HER2-: 0
         - Ki67: 25% (高)
         - 年齡: 45
+        - Grade: 3
+        - 腫瘤大小: 3.0 cm
 
-        預期：
-        - IHC4 Score: 中 (2.0-4.0)
+        預期結果：
+        - IHC4 Score: ~2.5-3.5（中風險）
         - 亞型: Luminal B
         - 風險: Intermediate Risk
+        - 推薦: 激素治療 + 化療考慮
         """
         calculator = IHC4Calculator()
         result = calculator.calculate(
@@ -137,11 +153,13 @@ class TestIHC4Calculation:
             tumor_size_cm=3.0
         )
 
-        assert result.subtype == BreastCancerSubtype.LUMINAL_B
-        assert result.risk_category == "Intermediate Risk"
-        assert 2.0 <= result.ihc4_score <= 4.0
+        assert result.subtype == BreastCancerSubtype.LUMINAL_B, \
+            f"Expected Luminal B, got {result.subtype}"
+        assert result.risk_category == "Intermediate Risk", \
+            f"Expected Intermediate Risk, got {result.risk_category}"
+        assert 2.0 <= result.ihc4_score <= 4.0, \
+            f"Expected IHC4 2.0-4.0 for Luminal B, got {result.ihc4_score}"
 
-    @pytest.mark.skip(reason="實現待完成")
     def test_her2_positive(self):
         """
         測試 HER2+ 型計算
@@ -164,7 +182,6 @@ class TestIHC4Calculation:
         # HER2+ 患者風險較高
         assert result.ihc4_score > 2.0
 
-    @pytest.mark.skip(reason="實現待完成")
     def test_triple_negative(self):
         """
         測試三陰性乳癌
@@ -192,7 +209,6 @@ class TestIHC4Calculation:
 class TestSubtypeClassification:
     """亞型分類測試"""
 
-    @pytest.mark.skip(reason="實現待完成")
     def test_classify_luminal_a(self):
         """測試 Luminal A 分類"""
         calculator = IHC4Calculator()
@@ -204,7 +220,6 @@ class TestSubtypeClassification:
         )
         assert subtype == BreastCancerSubtype.LUMINAL_A
 
-    @pytest.mark.skip(reason="實現待完成")
     def test_classify_luminal_b(self):
         """測試 Luminal B 分類"""
         calculator = IHC4Calculator()
@@ -216,7 +231,6 @@ class TestSubtypeClassification:
         )
         assert subtype == BreastCancerSubtype.LUMINAL_B
 
-    @pytest.mark.skip(reason="實現待完成")
     def test_classify_her2_enriched(self):
         """測試 HER2-enriched 分類"""
         calculator = IHC4Calculator()
@@ -228,7 +242,6 @@ class TestSubtypeClassification:
         )
         assert subtype == BreastCancerSubtype.HER2_ENRICHED
 
-    @pytest.mark.skip(reason="實現待完成")
     def test_classify_triple_negative(self):
         """測試三陰性分類"""
         calculator = IHC4Calculator()
@@ -244,7 +257,6 @@ class TestSubtypeClassification:
 class TestPredictScore:
     """Predict Score 計算測試"""
 
-    @pytest.mark.skip(reason="實現待完成")
     def test_predict_score_calculation(self):
         """測試 Predict Score 計算"""
         calculator = IHC4Calculator()

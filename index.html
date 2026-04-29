@@ -885,6 +885,43 @@ body {
   .header,.filter-panel,.back-btn,.btn-row,.cmp-bar,#offlineBar{display:none!important}
   body{background:#fff!important}
 }
+/* ── Stratification Tool ── */
+.strat-wrap{max-width:900px;margin:0 auto}
+.strat-form-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.8rem 1.2rem}
+.strat-group{display:flex;flex-direction:column;gap:.25rem}
+.strat-group label{font-size:.8rem;font-weight:600;color:var(--text-2)}
+.strat-group input,.strat-group select{padding:.5rem .65rem;border:1.5px solid var(--border);border-radius:var(--r-md);font-family:inherit;font-size:.9rem;background:var(--surface);color:var(--text);transition:border-color .15s}
+.strat-group input:focus,.strat-group select:focus{outline:none;border-color:var(--breast);box-shadow:0 0 0 3px rgba(157,23,77,.08)}
+.strat-group.full{grid-column:1/-1}
+.strat-check{display:flex;align-items:center;gap:.5rem;padding-top:1.4rem}
+.strat-check input[type=checkbox]{width:16px;height:16px;accent-color:var(--breast)}
+.strat-section{margin-bottom:1.2rem}
+.strat-section-title{font-size:.85rem;font-weight:700;color:var(--breast);margin-bottom:.7rem;padding-bottom:.35rem;border-bottom:2px solid var(--breast-border);letter-spacing:.02em}
+.strat-actions{display:flex;gap:.8rem;margin-top:1.2rem}
+.strat-btn{padding:.65rem 2rem;border:none;border-radius:var(--r-md);font-family:inherit;font-size:.95rem;font-weight:600;cursor:pointer;transition:all .15s}
+.strat-btn-primary{background:var(--breast);color:#fff}
+.strat-btn-primary:hover{background:#831843}
+.strat-btn-outline{background:none;border:1.5px solid var(--border-2);color:var(--text-2)}
+.strat-btn-outline:hover{border-color:var(--breast);color:var(--breast)}
+.strat-results{margin-top:1.5rem;display:none}
+.strat-results.show{display:block}
+.strat-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.8rem;margin-bottom:1.2rem}
+.strat-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:1rem;text-align:center;transition:border-color .15s}
+.strat-card-label{font-size:.72rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem}
+.strat-card-value{font-size:1.3rem;font-weight:700;color:var(--text)}
+.strat-card.risk-low{border-color:var(--nhi-border);background:var(--nhi-bg)}
+.strat-card.risk-low .strat-card-value{color:var(--nhi)}
+.strat-card.risk-intermediate{border-color:var(--auth-border);background:var(--auth-bg)}
+.strat-card.risk-intermediate .strat-card-value{color:var(--auth)}
+.strat-card.risk-high{border-color:var(--self-border);background:var(--self-bg)}
+.strat-card.risk-high .strat-card-value{color:var(--self)}
+.strat-report{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:1.2rem;margin-top:1.2rem}
+.strat-report pre{font-family:'Noto Sans TC',sans-serif;font-size:.82rem;white-space:pre-wrap;line-height:1.7;color:var(--text-2)}
+.strat-confidence{display:flex;align-items:center;gap:.6rem;margin-top:.3rem}
+.strat-conf-bar{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.strat-conf-fill{height:100%;background:var(--nhi);border-radius:3px;transition:width .4s}
+.strat-conf-text{font-size:.75rem;font-weight:600;color:var(--text-muted);min-width:40px}
+@media(max-width:640px){.strat-form-grid{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
@@ -952,6 +989,7 @@ body {
     <div class="inner-tabs">
       <button class="inner-tab active" id="tabDrugs" onclick="switchBreastTab('drugs')">藥物查詢</button>
       <button class="inner-tab" id="tabRegimen" onclick="switchBreastTab('regimen')">處方費用計算</button>
+      <button class="inner-tab" id="tabStrat" onclick="switchBreastTab('strat')">臨床分層</button>
     </div>
 
     <div class="tab-content active" id="tabDrugsContent">
@@ -1029,6 +1067,102 @@ body {
 
     <div class="tab-content" id="tabRegimenContent">
       <div id="regimenApp"></div>
+    </div>
+
+    <!-- Stratification Tool Tab -->
+    <div class="tab-content" id="tabStratContent">
+      <div class="strat-wrap">
+
+        <!-- Input Form -->
+        <div class="strat-section">
+          <div class="strat-section-title">生物標誌物 Biomarkers</div>
+          <div class="strat-form-grid">
+            <div class="strat-group">
+              <label>ER H-score (0–300)</label>
+              <input type="number" id="sER" min="0" max="300" value="" placeholder="0–300">
+            </div>
+            <div class="strat-group">
+              <label>PR H-score (0–300)</label>
+              <input type="number" id="sPR" min="0" max="300" value="" placeholder="0–300">
+            </div>
+            <div class="strat-group">
+              <label>HER2 Score (0–300)</label>
+              <input type="number" id="sHER2" min="0" max="300" value="" placeholder="0–300">
+            </div>
+            <div class="strat-group">
+              <label>Ki-67 (%)</label>
+              <input type="number" id="sKi67" min="0" max="100" step="0.1" value="" placeholder="0–100">
+            </div>
+            <div class="strat-group">
+              <label>組織學分級 Grade</label>
+              <select id="sGrade">
+                <option value="">請選擇</option>
+                <option value="1">Grade 1 (低)</option>
+                <option value="2">Grade 2 (中)</option>
+                <option value="3">Grade 3 (高)</option>
+              </select>
+            </div>
+            <div class="strat-group">
+              <label>年齡</label>
+              <input type="number" id="sAge" min="18" max="120" value="" placeholder="歲">
+            </div>
+          </div>
+        </div>
+
+        <div class="strat-section">
+          <div class="strat-section-title">腫瘤特徵 Tumor Characteristics</div>
+          <div class="strat-form-grid">
+            <div class="strat-group">
+              <label>腫瘤大小 (cm)</label>
+              <input type="number" id="sTumor" min="0" max="30" step="0.1" value="" placeholder="cm">
+            </div>
+            <div class="strat-group">
+              <label>淋巴結狀態</label>
+              <select id="sNode">
+                <option value="">請選擇</option>
+                <option value="N0">N0 — 無轉移</option>
+                <option value="N1mi">N1mi — 微轉移</option>
+                <option value="N1">N1 — 1-3 顆</option>
+                <option value="N2">N2 — 4-9 顆</option>
+                <option value="N3">N3 — ≥10 顆</option>
+              </select>
+            </div>
+            <div class="strat-group">
+              <label>遠端轉移</label>
+              <select id="sMeta">
+                <option value="">請選擇</option>
+                <option value="M0">M0 — 無遠端轉移</option>
+                <option value="M1">M1 — 有遠端轉移</option>
+              </select>
+            </div>
+            <div class="strat-check">
+              <input type="checkbox" id="sChest">
+              <label for="sChest" style="font-size:.85rem;color:var(--text-2);cursor:pointer">侵犯胸壁或皮膚 (T4)</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="strat-actions">
+          <button class="strat-btn strat-btn-primary" onclick="runStratification()">分析 Analyze</button>
+          <button class="strat-btn strat-btn-outline" onclick="resetStrat()">重置 Reset</button>
+        </div>
+
+        <!-- Results -->
+        <div class="strat-results" id="stratResults">
+          <div class="strat-section-title" style="margin-top:1.5rem">分析結果 Results</div>
+
+          <div class="strat-summary" id="stratSummary"></div>
+
+          <div class="strat-confidence" id="stratConfidence">
+            <span style="font-size:.78rem;color:var(--text-muted)">信心程度</span>
+            <div class="strat-conf-bar"><div class="strat-conf-fill" id="confFill"></div></div>
+            <span class="strat-conf-text" id="confText"></span>
+          </div>
+
+          <div class="strat-report" id="stratReport"></div>
+        </div>
+
+      </div>
     </div>
   </div>
 
@@ -1210,6 +1344,10 @@ function switchBreastTab(tab){
         if(!breastDrugs.length){
             cachedFetch('/api/drugs?category=oncology_breast').then(r=>r.json()).then(d=>{breastDrugs=d;renderBreast(breastDrugs)});
         }
+    } else if(tab==='strat'){
+        document.getElementById('tabStrat').classList.add('active');
+        document.getElementById('tabStratContent').classList.add('active');
+        if(!_ajccLookup) loadAjccLookup();
     } else {
         document.getElementById('tabRegimen').classList.add('active');
         document.getElementById('tabRegimenContent').classList.add('active');
@@ -3077,6 +3215,247 @@ function printPatientSummary(id){
     w.document.write('<div class="footer">本資料僅供門診說明參考，實際給付以健保署公告為準。藥價依健保支付標準，自費藥品市場價格可能不同。<\/div>');
     w.document.write('<scr'+'ipt>window.onload=function(){window.print()}<\/scr'+'ipt><\/body><\/html>');
     w.document.close();
+}
+
+
+// ══════════════════════════════════════════════
+// ══  Breast Cancer Stratification Tool  ══════
+// ══════════════════════════════════════════════
+
+let _ajccLookup = null;
+
+// ── Thresholds (St Gallen 2021) ──
+const STRAT_THRESHOLDS = {
+  ER: 100,    // H-score > 100 = ER+
+  PR: 100,    // H-score > 100 = PR+
+  HER2: 100,  // H-score > 100 = HER2+
+  KI67: 20    // Ki67 < 20% = low proliferation
+};
+
+// ── Load AJCC lookup table ──
+async function loadAjccLookup(){
+  try {
+    const r = await fetch('data/ajcc_lookup.json');
+    _ajccLookup = await r.json();
+  } catch(e){
+    console.warn('AJCC lookup load failed, using rules only:', e);
+    _ajccLookup = {};
+  }
+}
+
+// ── Tumor size → T classification ──
+function tumorSizeToT(cm, chestWall){
+  if(chestWall) return 'T4';
+  if(cm <= 0)   return 'T0';
+  if(cm <= 0.1) return 'T1mi';
+  if(cm <= 2)   return 'T1';
+  if(cm <= 5)   return 'T2';
+  return 'T3';
+}
+
+// ── AJCC Stage Lookup ──
+function lookupAjccStage(t, n, m, grade, her2, er, pr){
+  if(m === 'M1') return 'IV';
+
+  if(_ajccLookup){
+    // Normalize N values for lookup
+    let nLookup = n;
+    if(n === 'N2a' || n === 'N2b') nLookup = 'N2';
+    if(n === 'N3a' || n === 'N3b' || n === 'N3c') nLookup = 'N3';
+
+    const key = `${t}|${nLookup}|${m}|${grade}|${her2}|${er}|${pr}`;
+    if(_ajccLookup[key]) return _ajccLookup[key];
+
+    // Try with base T classification
+    let tBase = t;
+    if(t.startsWith('T1') && t !== 'T1' && t !== 'T1mi') tBase = 'T1';
+    if(t.startsWith('T4')) tBase = 'T4';
+    const key2 = `${tBase}|${nLookup}|${m}|${grade}|${her2}|${er}|${pr}`;
+    if(_ajccLookup[key2]) return _ajccLookup[key2];
+  }
+
+  // Fallback rule-based staging
+  return ruleBasedStage(t, n, m);
+}
+
+function ruleBasedStage(t, n, m){
+  if(m === 'M1') return 'IV';
+  const tNum = t === 'Tis' ? -1 : t === 'T0' ? 0 : parseInt(t[1]) || 1;
+  const nNum = n === 'N0' ? 0 : parseInt(n[1]) || 1;
+
+  if(t === 'Tis' && nNum === 0) return '0';
+  if(tNum <= 1 && nNum === 0) return 'IA';
+  if(tNum <= 1 && n === 'N1mi') return 'IB';
+  if((tNum === 0 || tNum === 1) && nNum === 1) return 'IIA';
+  if(tNum === 2 && nNum === 0) return 'IIA';
+  if(tNum === 2 && nNum === 1) return 'IIB';
+  if(tNum === 3 && nNum === 0) return 'IIB';
+  if((tNum <= 2) && nNum === 2) return 'IIIA';
+  if(tNum === 3 && (nNum === 1 || nNum === 2)) return 'IIIA';
+  if(tNum === 4 && nNum <= 2) return 'IIIB';
+  if(nNum === 3) return 'IIIC';
+  return 'IIIC';
+}
+
+// ── Subtype Classification (St Gallen 2021) ──
+function getSubtype(erPos, prPos, her2Pos, ki67){
+  if(!erPos && !prPos && !her2Pos) return 'Triple Negative';
+  if(!erPos && !prPos && her2Pos)  return 'HER2-enriched';
+  const hrPos = erPos || prPos;
+  if(hrPos && her2Pos)  return 'Luminal B-like (HER2+)';
+  if(hrPos && !her2Pos){
+    if(erPos && prPos && ki67 < STRAT_THRESHOLDS.KI67) return 'Luminal A-like';
+    return 'Luminal B-like (HER2-)';
+  }
+  return 'Unknown';
+}
+
+// ── IHC4 Score Calculation (Dowsett et al. 2010) ──
+function calcIHC4(erScore, prScore, her2Score, ki67){
+  const erNorm  = erScore / 300;
+  const prNorm  = prScore / 300;
+  const her2Norm = her2Score / 300;
+  const ki67Log = Math.log10(Math.max(ki67, 1));
+
+  const coef = { er: 2.396, pr: -0.867, her2: 0.622, ki67: 1.185, intercept: -6.386 };
+  const raw = coef.intercept + coef.er * erNorm + coef.pr * prNorm + coef.her2 * her2Norm + coef.ki67 * ki67Log;
+
+  // Sigmoid → 0-10 scale
+  const sigmoid = 1 / (1 + Math.exp(-raw));
+  return +(sigmoid * 10).toFixed(2);
+}
+
+// ── Risk Category ──
+function getRiskCategory(subtype, stage){
+  const sNum = stageToNum(stage);
+  if(subtype === 'HER2-enriched' || subtype === 'Triple Negative') return 'High Risk';
+  if(sNum >= 3) return 'High Risk';
+  if(subtype === 'Luminal A-like' && sNum <= 1) return 'Low Risk';
+  if(subtype.includes('Luminal B') && sNum <= 2) return 'Intermediate Risk';
+  if(sNum >= 2) return 'Intermediate Risk';
+  return 'Low Risk';
+}
+
+function stageToNum(s){
+  if(s.includes('IV'))  return 4;
+  if(s.includes('III')) return 3;
+  if(s.includes('II'))  return 2;
+  if(s.includes('I'))   return 1;
+  return 0;
+}
+
+// ── Confidence Level ──
+function calcConfidence(erScore, her2Score, age){
+  let c = 0.7;
+  if((erScore < 10 || erScore > 200) && (her2Score < 20 || her2Score > 200)) c += 0.15;
+  if(age >= 30 && age <= 80) c += 0.05;
+  return Math.min(Math.max(c, 0), 1);
+}
+
+// ── Main: Run Stratification ──
+function runStratification(){
+  // Read inputs
+  const erScore  = parseInt(document.getElementById('sER').value);
+  const prScore  = parseInt(document.getElementById('sPR').value);
+  const her2Score = parseInt(document.getElementById('sHER2').value);
+  const ki67     = parseFloat(document.getElementById('sKi67').value);
+  const grade    = parseInt(document.getElementById('sGrade').value);
+  const age      = parseInt(document.getElementById('sAge').value);
+  const tumorCm  = parseFloat(document.getElementById('sTumor').value);
+  const nodeStatus = document.getElementById('sNode').value;
+  const metastasis = document.getElementById('sMeta').value;
+  const chestWall  = document.getElementById('sChest').checked;
+
+  // Validate
+  const missing = [];
+  if(isNaN(erScore))  missing.push('ER H-score');
+  if(isNaN(prScore))  missing.push('PR H-score');
+  if(isNaN(her2Score)) missing.push('HER2 Score');
+  if(isNaN(ki67))     missing.push('Ki-67');
+  if(isNaN(grade))    missing.push('Grade');
+  if(isNaN(age))      missing.push('年齡');
+  if(isNaN(tumorCm))  missing.push('腫瘤大小');
+  if(!nodeStatus)     missing.push('淋巴結狀態');
+  if(!metastasis)     missing.push('遠端轉移');
+  if(missing.length){ alert('請填寫以下欄位：\n' + missing.join('、')); return; }
+
+  // Calculate
+  const erPos  = erScore > STRAT_THRESHOLDS.ER;
+  const prPos  = prScore > STRAT_THRESHOLDS.PR;
+  const her2Pos = her2Score > STRAT_THRESHOLDS.HER2;
+  const erStatus  = erPos ? 'Pos' : 'Neg';
+  const prStatus  = prPos ? 'Pos' : 'Neg';
+  const her2Status = her2Pos ? 'Pos' : 'Neg';
+
+  const subtype = getSubtype(erPos, prPos, her2Pos, ki67);
+  const tClass  = tumorSizeToT(tumorCm, chestWall);
+  const stage   = lookupAjccStage(tClass, nodeStatus, metastasis, grade, her2Status, erStatus, prStatus);
+  const risk    = getRiskCategory(subtype, stage);
+  const confidence = calcConfidence(erScore, her2Score, age);
+
+  let ihc4 = null;
+  if(subtype.includes('Luminal')){
+    ihc4 = calcIHC4(erScore, prScore, her2Score, ki67);
+  }
+
+  // Render results
+  renderStratResults({ subtype, stage, risk, ihc4, confidence, tClass, nodeStatus, metastasis, grade, erStatus, prStatus, her2Status, ki67, age });
+}
+
+// ── Render Results ──
+function renderStratResults(r){
+  const el = document.getElementById('stratResults');
+  el.classList.add('show');
+
+  // Summary cards
+  const riskClass = r.risk === 'Low Risk' ? 'risk-low' : r.risk === 'Intermediate Risk' ? 'risk-intermediate' : 'risk-high';
+  const riskLabel = r.risk === 'Low Risk' ? '低風險' : r.risk === 'Intermediate Risk' ? '中等風險' : '高風險';
+
+  let summaryHtml = `
+    <div class="strat-card"><div class="strat-card-label">病理亞型 Subtype</div><div class="strat-card-value">${r.subtype}</div></div>
+    <div class="strat-card"><div class="strat-card-label">AJCC 分期 Stage</div><div class="strat-card-value">Stage ${r.stage}</div></div>
+    <div class="strat-card ${riskClass}"><div class="strat-card-label">風險分類 Risk</div><div class="strat-card-value">${riskLabel}</div></div>`;
+  if(r.ihc4 !== null){
+    summaryHtml += `<div class="strat-card"><div class="strat-card-label">IHC4 Score</div><div class="strat-card-value">${r.ihc4}</div></div>`;
+  }
+  document.getElementById('stratSummary').innerHTML = summaryHtml;
+
+  // Confidence bar
+  document.getElementById('confFill').style.width = (r.confidence * 100) + '%';
+  document.getElementById('confText').textContent = (r.confidence * 100).toFixed(0) + '%';
+
+  // Report
+  const lines = [
+    '════════════════════════════════════════════════',
+    '        乳癌臨床分層決策報告',
+    '════════════════════════════════════════════════',
+    '',
+    `病理亞型:  ${r.subtype}`,
+    `AJCC 分期: Stage ${r.stage} (${r.tClass} ${r.nodeStatus} ${r.metastasis})`,
+    `風險分類:  ${riskLabel} (${r.risk})`,
+    '',
+    `ER: ${r.erStatus === 'Pos' ? '陽性' : '陰性'}  |  PR: ${r.prStatus === 'Pos' ? '陽性' : '陰性'}  |  HER2: ${r.her2Status === 'Pos' ? '陽性' : '陰性'}`,
+    `Ki-67: ${r.ki67}%  |  Grade: ${r.grade}  |  年齡: ${r.age}`,
+    ''
+  ];
+  if(r.ihc4 !== null) lines.push(`IHC4 預測分數: ${r.ihc4}`);
+  lines.push(`信心程度: ${(r.confidence*100).toFixed(0)}%`);
+  lines.push('');
+  lines.push('════════════════════════════════════════════════');
+  lines.push('本報告僅供臨床參考，最終治療決策請結合患者個體情況。');
+
+  document.getElementById('stratReport').innerHTML = `<pre>${lines.join('\n')}</pre>`;
+
+  // Scroll to results
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── Reset Form ──
+function resetStrat(){
+  ['sER','sPR','sHER2','sKi67','sAge','sTumor'].forEach(id => document.getElementById(id).value = '');
+  ['sGrade','sNode','sMeta'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('sChest').checked = false;
+  document.getElementById('stratResults').classList.remove('show');
 }
 
 </script>
