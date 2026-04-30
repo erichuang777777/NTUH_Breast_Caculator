@@ -1,6 +1,6 @@
 # NHI Oncology Drug Calculator
 
-台灣健保腫瘤科藥物查詢與療程費用試算系統。單一檔案 SPA，零依賴（純 Python 標準函式庫）。
+台灣健保腫瘤科藥物查詢與療程費用試算系統。主要查詢站維持單一檔案 SPA；乳癌臨床決策工具另外整理成可替換的 specialty module，方便單獨更新部件。
 
 ## 快速啟動
 
@@ -33,6 +33,9 @@ nhi_drug_coverage.db    ← SQLite 資料庫
 2024_12_5_price.csv     ← 台大藥價原始資料
 import_ntuh_prices.py   ← 台大藥價匯入工具（建立 drug_formulations 表）
 update_official_prices.py ← 健保藥價更新工具（115年官方藥價）
+core/specialty_loader.py ← 載入 disease-specific specialty modules
+specialties/breast/     ← 乳癌 specialty 包裝層（可單獨置換）
+breast_cancer_tools/    ← 乳癌演算法實作與測試
 ```
 
 ### 資料庫 Schema
