@@ -465,9 +465,37 @@ body {
   .nhi-elig-list { grid-template-columns: 1fr; }
 }
 
-/* ── Dark Mode Toggle Button ── */
-.dark-toggle { position: fixed; bottom: 1rem; right: 1rem; width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.1); z-index: 100; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: .2s; }
-.dark-toggle:hover { transform: scale(1.08); }
+/* ── Floating Toggle Buttons ── */
+.float-toggle { position: fixed; right: 1rem; width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.1); z-index: 100; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: .2s; }
+.float-toggle:hover { transform: scale(1.08); }
+.dark-toggle { bottom: 1rem; }
+.settings-toggle { bottom: 4rem; }
+.beta-badge { position: absolute; top: -3px; right: -3px; background: #f59e0b; color: white; font-size: .58rem; font-weight: 700; padding: 1px 5px; border-radius: 999px; }
+/* ── Settings Modal ── */
+.settings-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; align-items: center; justify-content: center; padding: 1rem; }
+.settings-modal.show { display: flex; }
+.settings-card { background: var(--surface); border-radius: var(--r-lg); max-width: 480px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 1.2rem; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
+.settings-card h2 { font-size: 1.1rem; margin: 0 0 .35rem; color: var(--text); display: flex; align-items: center; justify-content: space-between; }
+.settings-card .close-x { background: transparent; border: 0; font-size: 1.4rem; cursor: pointer; color: var(--text-muted); padding: 0 .3rem; }
+.settings-mode { display: flex; gap: .25rem; padding: .25rem; background: #f3f4f6; border-radius: var(--r-sm); margin: .85rem 0 1rem; }
+.settings-mode button { flex: 1; padding: .5rem; border: 0; background: transparent; border-radius: var(--r-sm); font-weight: 600; font-size: .85rem; color: var(--text-muted); cursor: pointer; }
+.settings-mode button.active { background: #06b6d4; color: white; }
+.settings-section { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-faint); margin: .8rem 0 .35rem; padding-bottom: .25rem; border-bottom: 1px solid var(--border); }
+.settings-section.beta { color: #b45309; }
+.settings-row { display: flex; align-items: flex-start; gap: .55rem; padding: .45rem .15rem; cursor: pointer; transition: background .12s; border-radius: var(--r-sm); }
+.settings-row:hover { background: var(--bg); }
+.settings-row input[type=checkbox] { width: 18px; height: 18px; cursor: pointer; margin-top: 1px; }
+.settings-row .row-text { flex: 1; }
+.settings-row .row-label { font-size: .88rem; color: var(--text); font-weight: 500; }
+.settings-row .row-note { font-size: .72rem; color: var(--text-muted); margin-top: .15rem; line-height: 1.4; }
+.settings-row .beta-tag { display: inline-block; font-size: .62rem; font-weight: 700; background: #fef3c7; color: #92400e; padding: 1px 5px; border-radius: 999px; margin-left: .35rem; vertical-align: middle; }
+.settings-actions { display: flex; gap: .5rem; margin-top: 1rem; padding-top: .8rem; border-top: 1px solid var(--border); }
+.settings-actions button { flex: 1; padding: .5rem; border-radius: var(--r-sm); border: 1px solid var(--border); background: var(--surface); cursor: pointer; font-weight: 600; font-size: .85rem; }
+.settings-actions button.primary { background: #06b6d4; color: white; border-color: #06b6d4; }
+.settings-info { font-size: .72rem; color: var(--text-muted); padding: .5rem .7rem; background: #fffbeb; border-left: 3px solid #f59e0b; border-radius: 0 var(--r-sm) var(--r-sm) 0; margin-top: .8rem; }
+body.dark .settings-card { background: #1e293b; }
+body.dark .settings-mode { background: #0f172a; }
+body.dark .settings-info { background: #422006; }
 /* ── Dark Mode Theme ── */
 body.dark { color-scheme: dark; }
 body.dark { --bg: #0f172a; --surface: #1e293b; --border: #334155; --text: #e2e8f0; --text-muted: #94a3b8; --text-faint: #64748b; }
@@ -1944,8 +1972,29 @@ body.dark .modal { background: #1e293b; }
     </div>
   </div><!-- /calcPage -->
 
-  <!-- Dark Mode Toggle -->
-  <button class="dark-toggle" id="darkToggle" onclick="toggleDarkMode()" title="切換深色模式 (Ctrl+D)">&#127769;</button>
+  <!-- Floating Toggles -->
+  <button class="float-toggle settings-toggle" onclick="showSettings()" title="設定 / 功能開關">&#9881;&#65039;</button>
+  <button class="float-toggle dark-toggle" id="darkToggle" onclick="toggleDarkMode()" title="切換深色模式 (Ctrl+D)">&#127769;</button>
+
+  <!-- Settings Modal -->
+  <div class="settings-modal" id="settingsModal" onclick="if(event.target===this)hideSettings()">
+    <div class="settings-card">
+      <h2>&#9881;&#65039; 設定 / 功能開關 <button class="close-x" onclick="hideSettings()">&times;</button></h2>
+      <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:.4rem">控制顯示哪些功能。Beta 功能為實驗性，可能不穩定。設定會自動儲存。</div>
+      <div class="settings-mode">
+        <button id="modeBtn-stable" onclick="setDevMode(false)">正式版 (Stable)</button>
+        <button id="modeBtn-dev" onclick="setDevMode(true)">開發版 (Beta)</button>
+      </div>
+      <div id="settingsContent"></div>
+      <div class="settings-info">
+        &#9432; <strong>給同事測試</strong>：請他們點齒輪 → 切換「開發版」，即可看到所有實驗功能。或在網址後加 <code>?dev=1</code>。
+      </div>
+      <div class="settings-actions">
+        <button onclick="resetFeatureFlags()">重置為預設</button>
+        <button class="primary" onclick="hideSettings()">完成</button>
+      </div>
+    </div>
+  </div>
 
 </div><!-- /container -->
 
@@ -2023,61 +2072,63 @@ document.addEventListener('DOMContentLoaded',()=>{
 // ── Landing ──
 async function loadLanding(){
     const r=await cachedFetch('/api/stats'); const d=await r.json();
-    document.getElementById('landingCards').innerHTML=`
-        <div class="dept-card breast" onclick="showBreast()">
+    const F = FEATURE_FLAGS;
+    let html = '';
+    if(F.breast) html += `<div class="dept-card breast" onclick="showBreast()">
             <div style="font-size:2.5rem">&#127993;</div>
             <h2>乳癌</h2>
             <div class="count">${d.breast}</div>
             <div class="desc">藥物 | HER2/ER/PR 篩選 | 分期查詢</div>
-        </div>
-        <div class="dept-card inp" onclick="showInpatient()">
+        </div>`;
+    if(F.inpatient) html += `<div class="dept-card inp" onclick="showInpatient()">
             <div style="font-size:2.5rem">&#127973;</div>
             <h2>住院化療計算</h2>
             <div class="count" style="color:#0d9488">BSA / AUC</div>
             <div class="desc">劑量計算 | 安瓿優化 | EC/TC/TCH/TCHP…</div>
-        </div>
-        <div class="dept-card icd" onclick="showICD()">
+        </div>`;
+    if(F.icd) html += `<div class="dept-card icd" onclick="showICD()">
             <div style="font-size:2.5rem">&#128196;</div>
             <h2>ICD碼查詢</h2>
             <div class="count" style="color:#7c3aed">重大傷病</div>
             <div class="desc">C50 / D05 乳癌 ICD-10 碼 | 重大傷病申請</div>
-        </div>
-        <div class="dept-card surg" onclick="showSurgery()">
+        </div>`;
+    if(F.surgery) html += `<div class="dept-card surg" onclick="showSurgery()">
             <div style="font-size:2.5rem">&#129657;</div>
             <h2>手術醫材清單</h2>
             <div class="count" style="color:#059669">自費項目</div>
             <div class="desc">乳癌手術自費品項 | 勾選計算總價 | 匯出</div>
-        </div>
-        <div class="dept-card trial" onclick="showTrials()">
+        </div>`;
+    if(F.trials) html += `<div class="dept-card trial" onclick="showTrials()">
             <div style="font-size:2.5rem">&#128203;</div>
             <h2>臨床試驗搜尋</h2>
             <div class="count" style="color:#0369a1">ClinicalTrials.gov</div>
             <div class="desc">乳癌相關臨床試驗 | 台灣招募中</div>
-        </div>
-        <div class="dept-card nccn" onclick="window.open('nccn_viewer.html','_blank')">
+        </div>`;
+    if(F.nccn) html += `<div class="dept-card nccn" onclick="window.open('nccn_viewer.html','_blank')">
             <div style="font-size:2.5rem">&#128214;</div>
             <h2>NCCN 治療指引</h2>
             <div class="count" style="color:#7c3aed">流程圖</div>
             <div class="desc">NCCN 乳癌 2026 指引 | 決策流程圖 | 跨頁參照</div>
-        </div>
-        <div class="dept-card ajcc" onclick="showAJCC()">
+        </div>`;
+    if(F.ajcc) html += `<div class="dept-card ajcc" onclick="showAJCC()">
             <div style="font-size:2.5rem">&#127981;</div>
             <h2>AJCC 分期</h2>
             <div class="count" style="color:#b45309">第八版</div>
             <div class="desc">T/N/M 解剖期別計算 | 預後因子 | 重大傷病申請</div>
-        </div>
-        <div class="dept-card calc" onclick="showCalc()">
+        </div>`;
+    if(F.calculator) html += `<div class="dept-card calc" onclick="showCalc()">
             <div style="font-size:2.5rem">&#129518;</div>
             <h2>計算機 / Nomogram</h2>
-            <div class="count" style="color:#0e7490">CTS5 / PEPI / Magee</div>
-            <div class="desc">CTS5 | PEPI | Magee Equations | 外連 PREDICT/IBIS/BCRAT</div>
-        </div>
-        <div class="dept-card ws" onclick="showWorkspace()">
+            <div class="count" style="color:#0e7490">CTS5 / PEPI / Magee${F.predict?' / PREDICT':''}</div>
+            <div class="desc">CTS5 | PEPI | Magee${F.predict?' | PREDICT v2.3':''} | 外連 IBIS/BCRAT</div>
+        </div>`;
+    if(F.workspace) html += `<div class="dept-card ws" onclick="showWorkspace()">
             <div style="font-size:2.5rem">&#128100;</div>
             <h2>病人 Workspace</h2>
             <div class="count" style="color:#be185d">個案決策中心</div>
-            <div class="desc">輸入一次跨頁共享 | 健保給付反向查詢 | 整合摘要</div>
+            <div class="desc">輸入一次跨頁共享${F.nhiReverseLookup?' | 健保給付反向查詢':''} | 整合摘要</div>
         </div>`;
+    document.getElementById('landingCards').innerHTML = html;
 }
 
 function showLanding(){
@@ -2307,6 +2358,10 @@ function refreshNHIEligibility(){
     const p = _patient;
     const el = document.getElementById('ws_nhi_eligible');
     if(!el) return;
+    if(typeof FEATURE_FLAGS !== 'undefined' && !FEATURE_FLAGS.nhiReverseLookup){
+        el.innerHTML = '<div class="ws-empty">健保給付反向查詢為 Beta 功能，目前已關閉。請至齒輪設定開啟。</div>';
+        return;
+    }
     if(typeof breastDrugs==='undefined' || !breastDrugs.length){
         el.innerHTML = '<div class="ws-empty">藥物資料尚未載入</div>'; return;
     }
@@ -2495,7 +2550,15 @@ document.addEventListener('DOMContentLoaded', ()=>{
 });
 let _calcInited=false;
 function initCalcPage(){
-    calcPREDICT();
+    // Apply feature flags to tabs
+    const predictTab = document.querySelector('[data-tab="predict"]');
+    const predictPanel = document.getElementById('calcPanel-predict');
+    if(predictTab) predictTab.style.display = FEATURE_FLAGS.predict ? '' : 'none';
+    if(predictPanel) predictPanel.style.display = FEATURE_FLAGS.predict ? '' : 'none';
+    if(!FEATURE_FLAGS.predict && predictTab && predictTab.classList.contains('active')){
+        switchCalcTab('cts5');
+    }
+    if(FEATURE_FLAGS.predict) calcPREDICT();
     calcCTS5();
     calcPEPI();
     calcMagee();
@@ -2775,6 +2838,121 @@ function loadPredictFromWorkspace(){
     calcPREDICT();
 }
 
+// ── Feature Flags ──
+const FEATURE_FLAGS_DEFAULT = {
+    // Stable features (production-ready)
+    breast: true,
+    inpatient: true,
+    icd: true,
+    surgery: true,
+    trials: true,
+    nccn: true,
+    ajcc: true,
+    calculator: true,
+    workspace: true,
+    darkMode: true,
+    // Beta features (experimental, may not be fully validated)
+    predict: true,            // Beta: 估算可能與 NHS 官方有 ±5% 誤差
+    ajccPrognostic: true,     // Beta: 預後期別為簡化估算
+    nhiReverseLookup: true    // Beta: 給付規則需與健保署最新公告對照
+};
+const FEATURE_FLAGS_BETA_KEYS = ['predict','ajccPrognostic','nhiReverseLookup'];
+const FEATURE_FLAGS_KEY = '_feature_flags';
+let FEATURE_FLAGS = { ...FEATURE_FLAGS_DEFAULT };
+function loadFeatureFlags(){
+    try {
+        const saved = localStorage.getItem(FEATURE_FLAGS_KEY);
+        if(saved) FEATURE_FLAGS = { ...FEATURE_FLAGS_DEFAULT, ...JSON.parse(saved) };
+    } catch(e){ console.warn('Failed to load feature flags', e); }
+    // URL override: ?dev=1 enables all
+    try {
+        const params = new URLSearchParams(window.location.search);
+        if(params.get('dev')==='1'){
+            Object.keys(FEATURE_FLAGS).forEach(k => FEATURE_FLAGS[k] = true);
+        }
+        if(params.get('stable')==='1'){
+            FEATURE_FLAGS_BETA_KEYS.forEach(k => FEATURE_FLAGS[k] = false);
+        }
+    } catch(e){}
+}
+function saveFeatureFlags(){
+    try { localStorage.setItem(FEATURE_FLAGS_KEY, JSON.stringify(FEATURE_FLAGS)); } catch(e){}
+}
+function setFlag(name, value){
+    FEATURE_FLAGS[name] = !!value;
+    saveFeatureFlags();
+    if(typeof loadLanding === 'function') loadLanding();
+}
+function setDevMode(enableAll){
+    if(enableAll){
+        Object.keys(FEATURE_FLAGS_DEFAULT).forEach(k => FEATURE_FLAGS[k] = true);
+    } else {
+        Object.keys(FEATURE_FLAGS_DEFAULT).forEach(k => {
+            FEATURE_FLAGS[k] = !FEATURE_FLAGS_BETA_KEYS.includes(k);
+        });
+    }
+    saveFeatureFlags();
+    renderSettings();
+    if(typeof loadLanding === 'function') loadLanding();
+}
+function resetFeatureFlags(){
+    if(!confirm('重置為預設值（所有功能開啟）？')) return;
+    FEATURE_FLAGS = { ...FEATURE_FLAGS_DEFAULT };
+    localStorage.removeItem(FEATURE_FLAGS_KEY);
+    renderSettings();
+    if(typeof loadLanding === 'function') loadLanding();
+}
+function showSettings(){
+    document.getElementById('settingsModal').classList.add('show');
+    renderSettings();
+}
+function hideSettings(){
+    document.getElementById('settingsModal').classList.remove('show');
+}
+function renderSettings(){
+    const flags = [
+        {key:'breast', label:'乳癌藥物清單', stable:true},
+        {key:'inpatient', label:'住院化療計算', stable:true},
+        {key:'icd', label:'ICD 重大傷病', stable:true},
+        {key:'surgery', label:'手術自費清單', stable:true},
+        {key:'trials', label:'臨床試驗搜尋', stable:true},
+        {key:'nccn', label:'NCCN 治療指引', stable:true},
+        {key:'ajcc', label:'AJCC 第八版分期 (TNM 解剖期別)', stable:true},
+        {key:'calculator', label:'計算機 (CTS5 / PEPI / Magee)', stable:true},
+        {key:'workspace', label:'病人 Workspace', stable:true},
+        {key:'darkMode', label:'Dark Mode + 鍵盤快捷鍵', stable:true},
+        {key:'predict', label:'PREDICT v2.3', stable:false, note:'存活率估算，可能與 NHS 官方有 ±5% 誤差'},
+        {key:'ajccPrognostic', label:'AJCC 預後期別 (Clinical/Pathologic)', stable:false, note:'簡化估算，正式請參閱 AJCC 第八版手冊 Table 48.2'},
+        {key:'nhiReverseLookup', label:'健保給付反向查詢 (Workspace)', stable:false, note:'給付規則需驗證；以健保署最新公告為準'}
+    ];
+    let html = '';
+    // Determine current mode
+    const allStable = !FEATURE_FLAGS_BETA_KEYS.some(k => FEATURE_FLAGS[k]);
+    const allOn = Object.values(FEATURE_FLAGS).every(v => v);
+    const stableBtn = document.getElementById('modeBtn-stable');
+    const devBtn = document.getElementById('modeBtn-dev');
+    if(stableBtn) stableBtn.classList.toggle('active', allStable && !allOn);
+    if(devBtn) devBtn.classList.toggle('active', allOn);
+
+    html += '<div class="settings-section">穩定功能 (Stable)</div>';
+    flags.filter(f => f.stable).forEach(f => {
+        html += `<label class="settings-row">
+            <input type="checkbox" ${FEATURE_FLAGS[f.key]?'checked':''} onchange="setFlag('${f.key}',this.checked)">
+            <div class="row-text"><span class="row-label">${f.label}</span></div>
+        </label>`;
+    });
+    html += '<div class="settings-section beta">Beta / 實驗功能</div>';
+    flags.filter(f => !f.stable).forEach(f => {
+        html += `<label class="settings-row">
+            <input type="checkbox" ${FEATURE_FLAGS[f.key]?'checked':''} onchange="setFlag('${f.key}',this.checked)">
+            <div class="row-text"><span class="row-label">${f.label}<span class="beta-tag">BETA</span></span><div class="row-note">${f.note||''}</div></div>
+        </label>`;
+    });
+    document.getElementById('settingsContent').innerHTML = html;
+}
+// Init feature flags before any other code runs
+loadFeatureFlags();
+
 // ── Dark Mode ──
 function toggleDarkMode(){
     const isDark = document.body.classList.toggle('dark');
@@ -2904,8 +3082,8 @@ function calcAJCC(){
         <div style="font-size:2.4rem;font-weight:900;color:${c.col};line-height:1.1">第 ${stage} 期</div>
         <div style="font-size:.8rem;color:${c.col};opacity:.75;margin-top:.1rem">${c.lbl}</div>
         <div style="font-size:.7rem;color:var(--text-faint);margin-top:.35rem">${t} &nbsp;·&nbsp; ${n} &nbsp;·&nbsp; ${m}</div>`;
-    // Biomarker section: hidden for IV (always IV) and 0 (always 0)
-    document.getElementById('ajccBioSection').style.display=(stage==='IV'||stage==='0')?'none':'';
+    // Biomarker section: hidden for IV (always IV), 0 (always 0), or when flag is off
+    document.getElementById('ajccBioSection').style.display=(stage==='IV'||stage==='0'||!FEATURE_FLAGS.ajccPrognostic)?'none':'';
     // Highlight table rows
     document.querySelectorAll('#ajccRefTable tr[data-stage]').forEach(r=>r.classList.remove('ajcc-highlighted'));
     document.querySelectorAll(`#ajccRefTable tr[data-stage="${stage}"]`).forEach(r=>r.classList.add('ajcc-highlighted'));
@@ -3330,6 +3508,8 @@ const RENAL_ADJUSTMENTS = {
 };
 
 // ── Detail ──
+// Alias: drug cards use openDetail() onclick, but historically named showDetail()
+const openDetail = (id) => showDetail(id);
 async function showDetail(id){
     const r=await cachedFetch('/api/drug/'+id);const d=await r.json();
     const tags=typeof d.clinical_tags==='string'?JSON.parse(d.clinical_tags||'{}'):d.clinical_tags||{};
