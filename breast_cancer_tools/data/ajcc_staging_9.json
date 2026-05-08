@@ -1,0 +1,257 @@
+{
+  "version": "9",
+  "edition_year": 2023,
+  "description": "AJCC 9th Edition (2023) 乳癌分期表 - TNM 到 Stage 的完整映射",
+  "reference": "https://cancerstaging.org/",
+  "stages": {
+    "0": {
+      "name": "Stage 0",
+      "description": "原位癌 (Non-invasive carcinoma)",
+      "tnm_patterns": [
+        {
+          "t": "Tis",
+          "n": "N0",
+          "m": "M0",
+          "notes": "包括導管內癌和小葉內癌"
+        }
+      ],
+      "5yr_survival": 0.99
+    },
+    "IA": {
+      "name": "Stage IA",
+      "description": "小腫瘤，無淋巴結轉移或僅微轉移",
+      "tnm_patterns": [
+        {
+          "t": "T1",
+          "n": "N0",
+          "m": "M0",
+          "conditions": "Grade 1-2 或 ER/PR+",
+          "notes": "≤20mm 腫瘤"
+        },
+        {
+          "t": "T0",
+          "n": "N1mi",
+          "m": "M0",
+          "notes": "原位癌伴淋巴結微轉移"
+        }
+      ],
+      "5yr_survival": 0.98
+    },
+    "IB": {
+      "name": "Stage IB",
+      "description": "淋巴結微轉移或小腫瘤伴微轉移",
+      "tnm_patterns": [
+        {
+          "t": "T0",
+          "n": "N1a",
+          "m": "M0",
+          "notes": "無腫瘤，1-3 腋窩淋巴結"
+        },
+        {
+          "t": "T1",
+          "n": "N1mi",
+          "m": "M0",
+          "notes": "≤20mm，淋巴結微轉移"
+        }
+      ],
+      "5yr_survival": 0.97
+    },
+    "IIA": {
+      "name": "Stage IIA",
+      "description": "20-50mm 腫瘤，無或有限淋巴結轉移",
+      "tnm_patterns": [
+        {
+          "t": "T1",
+          "n": "N1a",
+          "m": "M0",
+          "notes": "≤20mm，1-3 腋窩淋巴結"
+        },
+        {
+          "t": "T2",
+          "n": "N0",
+          "m": "M0",
+          "notes": "20-50mm，無淋巴結轉移"
+        }
+      ],
+      "5yr_survival": 0.95
+    },
+    "IIB": {
+      "name": "Stage IIB",
+      "description": "20-50mm 腫瘤伴淋巴結轉移，或 >50mm 無淋巴結轉移",
+      "tnm_patterns": [
+        {
+          "t": "T2",
+          "n": "N1a",
+          "m": "M0",
+          "notes": "20-50mm，1-3 腋窩淋巴結"
+        },
+        {
+          "t": "T3",
+          "n": "N0",
+          "m": "M0",
+          "notes": ">50mm，無淋巴結轉移"
+        }
+      ],
+      "5yr_survival": 0.90
+    },
+    "IIIA": {
+      "name": "Stage IIIA",
+      "description": "廣泛淋巴結轉移或胸壁受累伴有限淋巴結轉移",
+      "tnm_patterns": [
+        {
+          "t": "T1",
+          "n": "N2a",
+          "m": "M0",
+          "notes": "≤20mm，4-9 腋窩淋巴結"
+        },
+        {
+          "t": "T2",
+          "n": "N2a",
+          "m": "M0",
+          "notes": "20-50mm，4-9 腋窩淋巴結"
+        },
+        {
+          "t": "T3",
+          "n": "N1a",
+          "m": "M0",
+          "notes": ">50mm，1-3 腋窩淋巴結"
+        },
+        {
+          "t": "T3",
+          "n": "N2a",
+          "m": "M0",
+          "notes": ">50mm，4-9 腋窩淋巴結"
+        },
+        {
+          "t": "T4a",
+          "n": "N0,N1a,N2a",
+          "m": "M0",
+          "notes": "胸壁受累，淋巴結 N0-N2a"
+        }
+      ],
+      "5yr_survival": 0.80
+    },
+    "IIIB": {
+      "name": "Stage IIIB",
+      "description": "胸壁或皮膚受累，或內乳淋巴結轉移",
+      "tnm_patterns": [
+        {
+          "t": "T1,T2,T3",
+          "n": "N2b",
+          "m": "M0",
+          "notes": "內乳淋巴結轉移"
+        },
+        {
+          "t": "T4b",
+          "n": "N0,N1a,N2a,N2b",
+          "m": "M0",
+          "notes": "皮膚受累"
+        }
+      ],
+      "5yr_survival": 0.75
+    },
+    "IIIC": {
+      "name": "Stage IIIC",
+      "description": "鎖骨上淋巴結轉移或廣泛淋巴結病變",
+      "tnm_patterns": [
+        {
+          "t": "Any T",
+          "n": "N3",
+          "m": "M0",
+          "notes": "包括鎖骨上、內乳和腋窩淋巴結廣泛病變"
+        }
+      ],
+      "5yr_survival": 0.65
+    },
+    "IV": {
+      "name": "Stage IV",
+      "description": "遠端轉移",
+      "tnm_patterns": [
+        {
+          "t": "Any T",
+          "n": "Any N",
+          "m": "M1",
+          "notes": "存在遠端轉移"
+        }
+      ],
+      "5yr_survival": 0.25
+    }
+  },
+  "prognostic_groups": {
+    "description": "AJCC 9th Edition 生物標誌物加權的預後分組",
+    "PG1": {
+      "name": "Excellent prognosis",
+      "description": "極佳預後",
+      "characteristics": [
+        "T1 N0 M0 with Grade 1 or 2, ER/PR+, HER2-, age ≥50",
+        "高內分泌反應率，低化療必要性"
+      ]
+    },
+    "PG2": {
+      "name": "Good prognosis",
+      "description": "良好預後",
+      "characteristics": [
+        "T1-2 N0-1 M0 with favorable biomarkers",
+        "Grade 2, ER/PR+, HER2-",
+        "適合激素治療為主"
+      ]
+    },
+    "PG3": {
+      "name": "Intermediate prognosis",
+      "description": "中等預後",
+      "characteristics": [
+        "T2-3 N0-2 M0 或 Grade 3 腫瘤",
+        "或 HER2+ 患者",
+        "需多模式治療"
+      ]
+    },
+    "PG4": {
+      "name": "Poor prognosis",
+      "description": "不佳預後",
+      "characteristics": [
+        "T4 腫瘤或 N3 淋巴結病變",
+        "三陰性乳癌",
+        "需積極多學科治療"
+      ]
+    }
+  },
+  "treatment_recommendations": {
+    "surgical": {
+      "lumpectomy_eligible": "Stage 0-IIA，腫瘤 ≤5cm，可進行部分切除術",
+      "mastectomy_indications": [
+        "多中心疾病",
+        "廣泛導管內癌",
+        "患者選擇",
+        "妊娠期患者"
+      ]
+    },
+    "radiation": {
+      "after_lumpectomy": "標準推薦",
+      "after_mastectomy": "Stage IIIA-IIIC 患者",
+      "regional_node": "N2-3 患者"
+    },
+    "systemic_therapy": {
+      "hormone_therapy": {
+        "indication": "ER/PR+ 患者",
+        "duration": "5-10 年"
+      },
+      "chemotherapy": {
+        "high_risk": "Grade 3, T3-T4, N2-3 或三陰性患者",
+        "her2_positive": "推薦紫杉類+蒽環類+HER2靶向"
+      },
+      "her2_targeted": {
+        "indication": "HER2+ 患者",
+        "agents": "曲妥珠單抗, 帕妥珠單抗, T-DM1, 雙特異性抗體"
+      }
+    }
+  },
+  "ajcc_8_vs_9_differences": {
+    "note": "9th Edition 引入生物標誌物基礎的預後分組",
+    "key_changes": [
+      "ER/PR/HER2 狀態更重要",
+      "Ki67 指標已納入指南",
+      "腫瘤大小閾值微調",
+      "淋巴結微轉移定義更清晰"
+    ]
+  }
+}

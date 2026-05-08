@@ -1,0 +1,75 @@
+{
+  "version": "1.0",
+  "description": "IHC4 Score 計算配置檔案",
+  "reference": "Dowsett et al. Prediction of endocrine therapy benefit from ER and HER2 status in breast cancer. J Natl Cancer Inst. 2010;102(21):1618-1632.",
+  "er_positive_cutoff": 10,
+  "pr_positive_cutoff": 10,
+  "her2_positive_cutoff": 2,
+  "ki67_cutoff_low": 13.25,
+  "ki67_cutoff_high": 30,
+  "normalization": {
+    "description": "標準化方法 - 將 H-score 或 IHC 轉換為 0-1 範圍",
+    "er_h_score_max": 300,
+    "pr_h_score_max": 300,
+    "her2_h_score_max": 300,
+    "ki67_percentage_max": 100
+  },
+  "coefficients": {
+    "description": "邏輯迴歸係數（基於 Dowsett et al. 2010）",
+    "er_coefficient": 2.396,
+    "pr_coefficient": -0.867,
+    "her2_coefficient": 0.622,
+    "ki67_coefficient": 1.185,
+    "intercept": -6.386,
+    "_calculation_note": "IHC4 = intercept + (ER_coef * ER_normalized) + (PR_coef * PR_normalized) + (HER2_coef * HER2_normalized) + (Ki67_coef * Ki67_log10)"
+  },
+  "subtype_classification": {
+    "description": "根據 St Gallen 2021 標準的亞型分類",
+    "luminal_a": {
+      "criteria": "ER+ or PR+, HER2-, Ki67 low (<13.25%)",
+      "prognosis": "Excellent"
+    },
+    "luminal_b_her2_negative": {
+      "criteria": "ER+, HER2-, Ki67 high (≥13.25%) OR PR-",
+      "prognosis": "Good"
+    },
+    "luminal_b_her2_positive": {
+      "criteria": "ER+ or PR+, HER2+",
+      "prognosis": "Intermediate"
+    },
+    "her2_enriched": {
+      "criteria": "ER-, PR-, HER2+",
+      "prognosis": "Intermediate"
+    },
+    "triple_negative": {
+      "criteria": "ER-, PR-, HER2-",
+      "prognosis": "Poor"
+    }
+  },
+  "risk_categories": {
+    "low_risk": {
+      "range": [-100, 2.0],
+      "description": "低風險，預後良好，適合激素治療",
+      "treatment": "Hormone therapy"
+    },
+    "intermediate_risk": {
+      "range": [2.0, 4.0],
+      "description": "中風險，預後中等，可考慮化療",
+      "treatment": "Hormone therapy ± Chemotherapy"
+    },
+    "high_risk": {
+      "range": [4.0, 100],
+      "description": "高風險，預後不良，建議化療",
+      "treatment": "Chemotherapy + Hormone therapy"
+    }
+  },
+  "predict_score": {
+    "description": "Predict Score 計算（用於估計內分泌治療獲益）",
+    "note": "基於 IHC4 加上臨床因素的調整",
+    "age_adjustment": {
+      "young": {"age_range": [18, 40], "adjustment_factor": 1.2},
+      "middle": {"age_range": [40, 60], "adjustment_factor": 1.0},
+      "elderly": {"age_range": [60, 120], "adjustment_factor": 0.8}
+    }
+  }
+}
