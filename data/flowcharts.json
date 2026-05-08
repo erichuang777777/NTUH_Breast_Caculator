@@ -1,0 +1,491 @@
+{
+  "BINV-10": {
+    "page_id": "BINV-10",
+    "title": "",
+    "mermaid_text": "graph TD\n    A[\"Ductal/NST^aa^, Lobular, Mixed, Micropapillary, Metaplastic^bb^\"] --> B[\"pT1, pT2, or pT3; and pN0 or pN1mi (≤2 mm axillary node metastasis)\"]\n    B --> C[\"pT1a (≤0.5 cm)\"]\n    B --> F[\"pT1b (0.6-1.0 cm)\"]\n    B --> G[\"pT1c-pT3 (>1 cm)\"]\n    B --> H[\"pN+ (≥1 ipsilateral metastases >2 mm)\"]\n    C --> D[\"pN0\"]\n    C --> E[\"pN1mi\"]\n    D --> I[\"No adjuvant therapy^ss^\"]\n    E --> J[\"Consider adjuvant chemotherapy^a,hh,kk^ and adjuvant olaparib if germline BRCA1/2 PV. Olaparib should be given after completion of RT, see BINV-I.\"]\n    F --> J\n    G --> K[\"Adjuvant chemotherapy^a,hh,kk^ (category 1) and adjuvant olaparib if germline BRCA1/2 PV. Olaparib should be given after completion of RT, see BINV-I.\"]\n    H --> K\n    I --> L[\"Adjuvant whole breast RT (BINV-2) or PMRT (BINV-3) as indicated. See BINV-I for sequencing of systemic therapy and RT and Follow-up (BINV-17)\"]\n    J --> L\n    K --> L",
+    "nodes": 19,
+    "edges": 15,
+    "cross_refs": [
+      "BINV-17",
+      "BINV-2",
+      "BINV-3",
+      "BINV-I"
+    ],
+    "source": "qwen3-vl"
+  },
+  "BINV-11": {
+    "page_id": "BINV-11",
+    "title": "",
+    "mermaid_text": "graph LR\nA[\"Pure tubular\\nPure mucinous\\nPure cribriform\"] --> C\nB[\"Adenoid cystic (conventional),\\nsecretory carcinoma, and\\nother salivary carcinomas\\nRare low-grade forms\\nof metaplastic carcinomaᵇᵇ\"] --> D\nC[\"ER-positive and/or\\nPR-positive, HER2-negativeᵈᵈ\"] --> E\nC --> F\nE[\"pT1, pT2, or pT3;\\nand pN0 or pN1mi\\n(≤2 mm axillary\\nnode metastasis)\"] -->|\"<1 cm\"| G\nE -->|\"1-2.9 cm\"| H\nE -->|\"≥3 cm\"| I\nF[\"pN+ (≥1 ipsilateral\\nmetastases >2 mm)\"] --> J\nD[\"ER-negative and PR-negative, HER2-negativeᵈᵈ\"] --> K\nG[\"Consider adjuvant endocrine\\ntherapy⁹⁹ for risk reduction\"] --> L\nH[\"Consider adjuvant endocrine\\ntherapy⁹⁹\"] --> L\nI[\"Adjuvant endocrine therapy⁹⁹,ᵏᵏ\"] --> L\nJ[\"Adjuvant endocrine therapy⁹⁹,ᵏᵏ\\n± adjuvant chemotherapyᵃ,ʰʰ\"] --> L\nK[\"Limited available data support local therapy\\nonly with consideration for systemic/targeted\\ntherapies only in pN+ disease\"] --> L\nL[\"Adjuvant whole breast RT (BINV-2)\\nor PMRT (BINV-3)\\nas indicated.\\nSee BINV-I for\\nsequencing of\\nsystemic therapy\\nand RT\\nand\\nFollow-up (BINV-17)\"]",
+    "nodes": 17,
+    "edges": 14,
+    "cross_refs": [
+      "BINV-17",
+      "BINV-2",
+      "BINV-3",
+      "BINV-I"
+    ],
+    "source": "qwen3-vl"
+  },
+  "BINV-12": {
+    "page_id": "BINV-12",
+    "title": "",
+    "mermaid_text": "graph LR\nA[\"c≥T2tt or cN+ and M0 or cT1c, cN0 HER2-positive disease or cT1c, cN0 TNBC (For preoperative systemic therapy criteria, see BINV-L 1)\"] --> B[\"ADDITIONAL WORKUPa\\n• Axillary assessment with exam\\n  ▸ Axillary ultrasound unless prior MRI demonstrated negative axillary nodes\\n  ▸ Percutaneous biopsy of suspicious nodesuu\\n• Complete blood count (CBC)\\n• Comprehensive metabolic panel, including liver function tests (LFTs) and alkaline phosphatase\\nAdditional tests to consider as clinically indicated\\n• Chest diagnostic CT ± contrast\\n• Abdomen ± pelvis diagnostic CT with contrast or MRI with contrast\\n• Bone scan or sodium fluoride PET/CT (category 2B)\\n• FDG-PET/CTvv\\n• Breast MRIb (optional), with special consideration for mammographically occult tumors, if not previously done\"]\nB --> C[\"For operable breast cancers: see Breast and Axillary Evaluation Prior to Preoperative Systemic Therapy (BINV-13)\"]\nB --> D[\"For inoperable breast cancers: see Preoperative Systemic Therapy (BINV-15)\"]",
+    "nodes": 10,
+    "edges": 3,
+    "cross_refs": [
+      "BINV-13",
+      "BINV-15",
+      "BINV-L"
+    ],
+    "source": "qwen3-vl"
+  },
+  "BINV-13": {
+    "page_id": "BINV-13",
+    "title": "",
+    "mermaid_text": "graph LR\nA[\"Prior to preoperative systemic therapy, perform:\\n• Core biopsy of breast with placement of image-detectable clips or marker(s), if not previously performed, should be performed prior to preoperative therapy to demarcate the tumor bed\\n• Axillary imaging with ultrasound or MRI (if not previously done)\\nand\\n• Biopsy + marker placement recommended of the most suspicious and/or clinically positive axillary lymph node, if not previously done; only the most suspicious node should be marked and retrieved along with SLNs\\ncategory 2A\"] --> B[\"Preoperative systemic therapy based on HR and HER2 status (BINV-L 1 and BINV-M)\\ncategory 2A\"]\nB --> C[\"Surgical Treatment and Adjuvant Therapy After Preoperative Systemic Therapy (BINV-14)\"]",
+    "nodes": 7,
+    "edges": 2,
+    "cross_refs": [
+      "BINV-14",
+      "BINV-L",
+      "BINV-M"
+    ],
+    "source": "qwen3-vl"
+  },
+  "BINV-14": {
+    "page_id": "BINV-14",
+    "title": "",
+    "mermaid_text": "graph TD\n    A[\"BCS possible\"] --> B[\"BCS with surgical axillary staging (BINV-D) ± oncoplastic reconstruction<sup>p,ww</sup>\"]\n    A --> C[\"BCS not possible\"]\n    C --> D[\"Mastectomy and surgical axillary staging (BINV-D) ± reconstruction<sup>w</sup>\"]\n    B --> E[\"Adjuvant systemic therapy (complete planned regimen course if not completed preoperatively) (BINV-16) + whole breast RT<sup>t</sup>\\n• Any cN0, ypN0: Adjuvant whole breast RT ± boost to tumor bed<sup>yy</sup>\\n• cN1 and ypN0: Adjuvant whole breast RT ± boost to the tumor bed<sup>yy</sup>. Comprehensive RNI is not routinely indicated\\n• cN2-3 and ypN0: Adjuvant whole breast RT ± boost to the tumor bed with comprehensive RNI including any portion of the axilla at risk\\n• Any ypN+: Adjuvant whole breast RT ± boost to the tumor bed<sup>yy</sup> with comprehensive RNI including any portion of the axilla at risk\\nCategory 2A\"]\n    D --> F[\"Adjuvant systemic therapy (complete planned regimen course if not completed preoperatively) (BINV-16) ± PMRT<sup>t</sup> + RNI (after axilla adequately assessed by SLNB, TAD, or ALND)<sup>xx</sup>\\n• cT1-T3, cN0, and ypN0: PMRT + RNI is not routinely indicated\\n• cT1-T3, cN1, and ypN0: PMRT + RNI is not routinely indicated<sup>zz</sup>\\n• cN2-3 and ypN0; any ypN+; cT4 any N: PMRT + comprehensive RNI with inclusion of any portion of the axilla at risk\\nCategory 2A\"]",
+    "nodes": 9,
+    "edges": 5,
+    "cross_refs": [
+      "BINV-16",
+      "BINV-D"
+    ],
+    "source": "qwen3-vl"
+  },
+  "BINV-15": {
+    "page_id": "BINV-15",
+    "title": "",
+    "mermaid_text": "graph LR\nA[\"Preoperative systemic therapy<u,hh> (BINV-L 1) category 2A\"] --> B[\"Response to preoperative systemic therapy<ww> and tumor is operable\"]\nA --> C[\"No response to preoperative systemic therapy<ww> and/or tumor remains inoperable\"]\nB --> D[\"Mastectomy and surgical axillary staging<m> ± reconstruction (optional)<w> or BCS with surgical axillary staging<m,aaa> ± oncoplastic reconstruction<p> category 2A\"]\nD --> E[\"Adjuvant systemic therapy (complete planned regimen course if not completed preoperatively) (BINV-16) and Adjuvant RT to the whole breast or chest wall and comprehensive RNI with inclusion of any portion of the axilla at risk category 2A\"]\nC --> F[\"Consider additional systemic therapy and/or preoperative radiation<t> category 2A\"]\nF --> G[\"Response to preoperative systemic therapy<ww> and tumor is operable\"]\nF --> H[\"No response to preoperative systemic therapy<ww> and tumor is inoperable\"]\nG --> I[\"Follow pathway above\"]\nH --> J[\"Individualize treatment\"]",
+    "nodes": 11,
+    "edges": 9,
+    "cross_refs": [
+      "BINV-16",
+      "BINV-L"
+    ],
+    "source": "qwen3-vl"
+  },
+  "BINV-16": {
+    "page_id": "BINV-16",
+    "title": "",
+    "mermaid_text": "graph TD\n    A[\"HR-positive/HER2-negative\"] --> B[\"ypT0N0 or pCR\"]\n    A --> C[\"ypT1-4,N0 or ypN≥1\"]\n    B --> D[\"Adjuvant endocrine therapy (category 1), consider ribociclib for eligible patients, see BINV-K 2 of 4 for eligibility criteria.\"]\n    C --> E[\"Adjuvant endocrine therapy (category 1) + adjuvant olaparib if germline BRCA1/2 PV (category 1). Consider adjuvant abemaciclib or ribociclib for eligible patients, see BINV-K 2 of 4 for eligibility criteria.\"]\n    D --> U[\"Follow-Up (BINV-17)\"]\n    E --> U\n\n    F[\"HR-negative/HER2-positive\"] --> G[\"ypT0N0 or pCR\"]\n    F --> H[\"ypT1-4,N0 or ypN≥1\"]\n    G --> I[\"Complete up to 1 year of HER2-targeted therapy with trastuzumab (category 1) ± pertuzumab. If node positive at initial staging, pertuzumab + trastuzumab (category 1).\"]\n    H --> J[\"Ado-trastuzumab emtansine (category 1) alone for 14 cycles. bbb If ado-trastuzumab emtansine discontinued for toxicity, then complete (up to) 1 year of HER2-directed therapy with trastuzumab (category 1) ± pertuzumab. If node positive at initial staging, pertuzumab + trastuzumab (category 1); or fam-trastuzumab deruxtecan-nxki (category 1) for those with high risk of recurrence (see BINV-M 4 of 10 for high-risk criteria) and if HR-positive, adjuvant endocrine therapyll (category 1)\"]\n    I --> U\n    J --> U\n\n    K[\"HR-positive/HER2-positive\"] --> L[\"ypT0N0 or pCR\"]\n    L --> M[\"Endocrine therapy (category 1) + complete (up to) 1 year of HER2-directed therapy with trastuzumab (category 1) ± pertuzumab. If node positive at initial staging, pertuzumab + trastuzumab (category 1)\"]\n    M --> U\n\n    N[\"HR-negative/HER2-negative\"] --> O[\"ypT0N0 or pCR\"]\n    N --> P[\"ypT1-4,N0 or ypN≥1\"]\n    O --> Q[\"For high risk: Adjuvant pembrolizumab (if pembrolizumab-containing regimen was given preoperatively)\"]\n    P --> R[\"Adjuvant pembrolizumab (if pembrolizumab-containing regimen was given preoperatively) (category 1)ccc\"]\n    P --> S[\"Adjuvant capecitabine (6-8 cycles)bbb,ccc\"]\n    P --> T[\"Adjuvant olaparib for 1 year if germline BRCA1/2 PVccc (category 1)\"]\n    Q --> U\n    R --> U\n    S --> U\n    T --> U",
+    "nodes": 30,
+    "edges": 25,
+    "cross_refs": [
+      "BINV-17",
+      "BINV-K",
+      "BINV-M"
+    ],
+    "source": "qwen3-vl"
+  },
+  "BINV-17": {
+    "page_id": "BINV-17",
+    "title": "",
+    "mermaid_text": "graph TD\nA[\"SURVEILLANCE/FOLLOW-UP\"] --> B[\"Exam: History and physical exam 1-4 times per year as clinically appropriate for 5 years, then annually\"]\nA --> C[\"Genetic screening: Periodic screening for changes in family history and genetic testing indications and referral to genetic counseling as indicated, see NCCN Guidelines for Genetic/Familial High-Risk Assessment: Breast, Ovarian, Pancreatic, and Prostate\"]\nA --> D[\"Post-surgical management: Educate, monitor, and refer for lymphedema management, see NCCN Guidelines for Survivorship: Lymphedema\"]\nA --> E[\"Breast imaging: Mammography every 12 months, beginning 6 months or more after completion of breast-conservation therapy^ddd\\nRoutine imaging of reconstructed breast is not indicated after mastectomy\\nFor patients with germline mutations or family history of breast cancer, please refer to NCCN Guidelines for Genetic/Familial High-Risk Assessment: Breast, Ovarian, Pancreatic, and Prostate\"]\nA --> F[\"Fertility, birth control, and sexual health (see BINV-C)\"]\nA --> G[\"Screening for metastases: In the absence of clinical signs and symptoms suggestive of recurrent disease, there is no indication for laboratory or imaging studies for metastases screening.\"]\nA --> H[\"Post-treatment monitoring: Cardiotoxicity monitoring for patients who received left-sided RT, anthracyclines, or HER2-targeted therapy. For anthracycline-induced toxicity, see NCCN Guidelines for Survivorship\\nProvide guidance on risk of comorbidities\"]\nA --> I[\"Endocrine therapy: Assess and encourage adherence to adjuvant endocrine therapy\"]\nA --> J[\"Patients on tamoxifen: Age-appropriate gynecologic screening\\nRoutine annual pelvis ultrasound is not recommended\"]\nA --> K[\"Patients on an aromatase inhibitor or who experience ovarian failure secondary to treatment should have monitoring of bone health with a bone mineral density (BMD) determination at baseline and periodically thereafter^eee\"]\nA --> L[\"Lifestyle: Evidence suggests that active lifestyle, healthy diet, limited alcohol intake, and achieving and maintaining an ideal body weight (20-25 body mass index [BMI]) may lead to optimal breast cancer outcomes. See NCCN Guidelines for Breast Cancer Risk Reduction\\nMenopausal hormone therapy is relatively contraindicated in survivors of hormonally mediated cancers; should be used with caution in those with increased genetic cancer risk. See NCCN Guidelines for Survivorship\"]\nA --> M[\"Psychosocial support: Survivors are at elevated risk for fear of recurrence, distress, anxiety, and depression that may persist for many years after diagnosis. Periodic screening and referral to mental health professionals if needed are recommended. See NCCN Guidelines for Survivorship\"]\nA --> N[\"Communication: Coordination of care between the primary care physician (PCP) and specialists is encouraged. Additionally, a personalized survivorship treatment plan including personalized treatment summary of possible long-term toxicity and clear follow-up recommendations is recommended. See NCCN Guidelines for Survivorship\"]\nA --> O[\"Engagement: Patients frequently require follow-up encouragement in order to improve adherence to ongoing screening and medication adherence. See NCCN Guidelines for Patients\"]\nA --> P[\"Recurrent Disease (BINV-18)\"]\nQ[\"ddd Studies indicate that annual mammograms are the appropriate frequency for surveillance of patients with breast cancer who have had BCS and RT with no clear advantage to shorter interval imaging. Patients should wait 6 to 12 months after the completion of RT to begin their annual mammogram surveillance. Suspicious findings on physical examination or surveillance imaging should warrant immediate follow-up/workup.\"]\nR[\"eee The use of estrogen, progesterone, or selective ER modulators to treat osteoporosis or osteopenia in patients with breast cancer is discouraged. The use of a bisphosphonate (oral/IV) or denosumab is acceptable to maintain or to improve BMD and reduce risk of fractures in postmenopausal (natural or induced) patients receiving adjuvant aromatase inhibitor therapy. Optimal duration of either therapy has not been established. Benefits of duration beyond 3 years or optimal duration beyond 3 years is not known. Factors to consider for duration of anti-osteoporosis therapy include BMD, response to therapy, and risk factors for continued bone loss or fracture. There are case reports of spontaneous fractures after denosumab discontinuation. Patients treated with a bisphosphonate or denosumab should undergo a dental examination with preventive dentistry prior to the initiation of therapy, and should take supplemental calcium and vitamin D.\"]\nS[\"Note: All recommendations are category 2A unless otherwise indicated.\"]",
+    "nodes": 25,
+    "edges": 15,
+    "cross_refs": [
+      "BINV-18",
+      "BINV-C"
+    ],
+    "source": "qwen3-vl"
+  },
+  "BINV-18": {
+    "page_id": "BINV-18",
+    "title": "",
+    "mermaid_text": "graph TD\nA[\"Stage IV (M1) or Recurrent\"] --> B[\"WORKUP^a\\n• History and physical exam\\n• Discuss goals of therapy, adopt shared decision-making, and document course of care\\n• CBC\\n• Comprehensive metabolic panel, including LFTs and alkaline phosphatase\\n• Imaging for systemic staging:\\n  › Chest diagnostic CT ± contrast\\n  › Abdomen ± pelvis diagnostic CT with contrast or MRI with contrast\\n  › Brain MRI with contrast if suspicious CNS symptoms^fff\\n  › Spine MRI with contrast if back pain or symptoms of cord compression\\n  › Bone scan or sodium fluoride PET/CT (category 2B)\\n  › Useful in certain circumstances:\\n    ◊ FDG-PET/CT (consider FES-PET/CT for ER-positive disease and lobular histology)\\n  › X-rays of symptomatic bones and long and weight-bearing bones abnormal on bone scan\\n• Biomarker testing:\\n  › Biopsy of at least first recurrence of disease (consider re-biopsy if progression)\\n  › Evaluation of ER/PR and HER2 status^e,999,hhh\\n  › Multigene panel testing (MGPT) (somatic and germline) to identify candidates for targeted therapies,^iii see BINV-Q 6 of 15\\n• Genetic counseling if patient is at risk^f for hereditary breast cancer\\n• Assess for distress^h\"]\nB --> C[\"Treatment of Local and Regional Recurrence (BINV-19) and Supportive care^jjj\"]\nB --> D[\"Systemic Treatment of Recurrent Unresectable (local or regional) or Stage IV (M1) (BINV-21) and Supportive care^jjj,kkk\"]",
+    "nodes": 9,
+    "edges": 3,
+    "cross_refs": [
+      "BINV-19",
+      "BINV-21",
+      "BINV-Q"
+    ],
+    "source": "qwen3-vl"
+  },
+  "BINV-19": {
+    "page_id": "BINV-19",
+    "title": "",
+    "mermaid_text": "graph LR\nA[\"BCS\"] --> C[\"No\"]\nA --> D[\"Yes\"]\nB[\"Mastectomy\"] --> E[\"No\"]\nB --> F[\"Yes\"]\nC --> G[\"Consider appropriate systemic therapy to best response if indicated and then repeat BCS or mastectomy + consider surgical axillary staging^mmm^ + RT^t^ after BCS and if indicated after mastectomy (BINV-3) category 2A\"]\nD --> H[\"Consider appropriate systemic therapy to best response if indicated and then total mastectomy^nnn^ + consider surgical axillary staging^nnn^ + repeat RT if feasible and indicated^t,ooo^ category 2A\"]\nE --> I[\"Consider appropriate systemic therapy to best response if indicated (BINV-K, BINV-M, BINV-P, BINV-Q), then surgical resection if feasible + consider surgical axillary staging^mmm^ + PMRT^t^ (BINV-3) category 2A\"]\nF --> J[\"Consider appropriate systemic therapy to best response if indicated (BINV-K, BINV-M, BINV-P, BINV-Q), then surgical resection if feasible + consider surgical axillary staging^mmm^ + repeat RT, if feasible and indicated^t,ooo^ category 2A\"]\nG --> K[\"Consider appropriate adjuvant systemic therapy as clinically indicated (BINV-K, BINV-M, BINV-P, BINV-Q) and Supportive Care^jjj^ and see Principles of Survivorship BINV-28 category 2A\"]\nH --> K\nI --> K\nJ --> K",
+    "nodes": 13,
+    "edges": 12,
+    "cross_refs": [
+      "BINV-28",
+      "BINV-3",
+      "BINV-K",
+      "BINV-M",
+      "BINV-P",
+      "BINV-Q"
+    ],
+    "source": "qwen3-vl"
+  },
+  "BINV-1": {
+    "page_id": "BINV-1",
+    "title": "",
+    "mermaid_text": "graph TD\n    A[\"Localized breast cancer: Invasive, non-inflammatory, non-metastatic (M0)\"] --> B[\"WORKUP^a\\n• History and physical exam\\n• Imaging:\\n  › Diagnostic bilateral mammogram\\n  › Breast ultrasound as necessary\\n    ◊ Axillary ultrasound if considering omission of surgical nodal staging^b\\n  › Breast MRI^c (optional), with special consideration for mammographically occult tumors\\n• Pathology review^d\\n• Estrogen/progesterone receptor (ER/PR) status and HER2 status^e\\n• Genetic counseling and testing if patient is at risk^f for hereditary breast cancer, has triple-negative breast cancer (TNBC) (at any age), or is a candidate for adjuvant olaparib\\n• Address fertility and sexual health concerns as appropriate^g\\n• Pregnancy test in all patients of childbearing potential^g (if pregnant, see PREG-1)\\n• Assess for distress^h\\n• Consider additional imaging studies only in the presence of signs and symptoms of metastatic disease and for patients who are clinically high risk (BINV-18)\\n• Consider baseline lymphedema screening, as per NCCN Guidelines for Survivorship\"]\n    B --> C[\"cT0,cN+,M0\"]\n    B --> E[\"cT1-T4, ≥cN0,M0\"]\n    C --> D[\"See NCCN Guidelines for Occult Primary\"]\n    E --> F[\"Criteria for preoperative systemic therapy (BINV-L)\"]\n    F --> G[\"Not considering preoperative systemic therapy\"]\n    F --> H[\"Considering preoperative systemic therapy\"]\n    G --> I[\"Locoregional treatment\\n• BCS ± surgical axillary staging ± RT (BINV-2)\\nor\\n• Mastectomy + surgical axillary staging ± post-mastectomy RT (PMRT) (BINV-3)\"]\n    H --> J[\"Additional Workup Prior to Preoperative Systemic Therapy (BINV-12)\"]\n    K[\"Inflammatory breast cancer (IBC)\"] --> L[\"Workup for IBC (IBC-1)\"]\n    M[\"Metastatic (M1) invasive breast cancer\"] --> N[\"Stage IV (M1) or Recurrent disease\"]\n    N --> O[\"Workup for Recurrent or Stage IV (M1) Disease (BINV-18)\"]",
+    "nodes": 28,
+    "edges": 12,
+    "cross_refs": [
+      "BINV-12",
+      "BINV-18",
+      "BINV-2",
+      "BINV-3",
+      "BINV-L",
+      "IBC-1",
+      "PREG-1"
+    ],
+    "source": "qwen3-vl"
+  },
+  "BINV-20": {
+    "page_id": "BINV-20",
+    "title": "",
+    "mermaid_text": "graph LR\n    A(\"Recurrent<br/>unresectable<br/>(local or<br/>regional) or<br/>stage IV (M1)<br/>disease<sup>kkk</sup>\")\n    \n    A --> B(\"Bone disease present\")\n    A --> C(\"Bone disease not present\")\n    \n    B --> D(\"Add denosumab,<br/>zoledronic acid, or<br/>pamidronate<sup>ppp</sup>\")\n    \n    D --> M[ ]\n    C --> M\n    \n    M --> E(\"ER- and/or PR-positive; HER2-negative<sup>e,ee,qqq</sup>\")\n    M --> F(\"ER- and/or PR-positive; HER2-positive<sup>e,ee,qqq</sup>\")\n    M --> G(\"ER- and PR-negative; HER2-positive<sup>e,ee</sup>\")\n    M --> H(\"ER- and PR-negative; HER2-negative<sup>e,ee</sup>\")\n    \n    E --> E1(\"BINV-22\")\n    F --> F1(\"BINV-24\")\n    G --> G1(\"BINV-26\")\n    H --> H1(\"BINV-27\")\n\n    style M width:0px,height:0px",
+    "nodes": 14,
+    "edges": 13,
+    "cross_refs": [
+      "BINV-22",
+      "BINV-24",
+      "BINV-26",
+      "BINV-27"
+    ],
+    "source": "llamaparse"
+  },
+  "BINV-21": {
+    "page_id": "BINV-21",
+    "title": "",
+    "mermaid_text": "graph TD\nA[\"Recurrent unresectable (local or regional) or stage IV (M1) disease^kkk\"] --> B[\"Bone disease present\"]\nA --> D[\"Bone disease not present\"]\nB --> C[\"Add denosumab, zoledronic acid, or pamidronate^PPP\"]\nC --> E[\"ER- and/or PR-positive; HER2-negative^e,ee,qqq\"]\nC --> F[\"ER- and/or PR-positive; HER2-positive^e,ee,qqq\"]\nC --> G[\"ER- and PR-negative; HER2-positive^e,ee\"]\nC --> H[\"ER- and PR-negative; HER2-negative^e,ee\"]\nD --> E\nD --> F\nD --> G\nD --> H\nE --> I[\"BINV-22\"]\nF --> J[\"BINV-24\"]\nG --> K[\"BINV-26\"]\nH --> L[\"BINV-27\"]",
+    "nodes": 13,
+    "edges": 15,
+    "cross_refs": [
+      "BINV-22",
+      "BINV-24",
+      "BINV-26",
+      "BINV-27"
+    ],
+    "source": "qwen3-vl"
+  },
+  "BINV-22": {
+    "page_id": "BINV-22",
+    "title": "",
+    "mermaid_text": "graph LR\nA[\"Visceral crisis\"] --> B[\"Cytotoxic therapy (see BINV-Q 2 of 15)sss,ttt,uuu<br/>Category 2A\"]\nC[\"No visceral crisis\"] --> D[\"Endocrine therapy within 1 y\"]\nC --> E[\"No prior endocrine therapy within 1 y\"]\nD --> F[\"Switch of endocrine therapy + CDK4/6i Or for PIK3CA activating mutation: Fulvestrant/inavolisib/palbociclib or if ESR1 mutations: ESR1 targeted therapy (if premenopausal,ff consider ovarian ablation or suppression)vvv (see BINV-P 2 of 15 for list of preferred and other recommended regimens) or Cytotoxic therapy (see BINV-Q 2 of 15)sss,ttt<br/>Category 2A\"]\nE --> G[\"Endocrine therapy + CDK4/6i (if premenopausal,ff consider ovarian ablation or suppression)vvv (see BINV-P 2 of 15 for list of preferred and other recommended regimens)<br/>Category 2A\"]\nF --> H[\"Continue systemic therapy until progressionwww or unacceptable toxicityxxx and See BINV-28 for Principles of Survivorship<br/>Category 2A\"]\nG --> H\nH --> I[\"Progression (BINV-23)\"]",
+    "nodes": 12,
+    "edges": 8,
+    "cross_refs": [
+      "BINV-23",
+      "BINV-28",
+      "BINV-P",
+      "BINV-Q"
+    ],
+    "source": "qwen3-vl"
+  },
+  "BINV-23": {
+    "page_id": "BINV-23",
+    "title": "",
+    "mermaid_text": "graph LR\nA[\"Progressionwww or unacceptable toxicity on first-line endocrine therapy\"] --> B[\"If not endocrine therapy refractory, consider: Alternate endocrine therapy999,vvv ± targeted therapy (if premenopausal,ff consider ovarian ablation or suppression)vvv (see second-line therapy options on BINV-P 2 of 15) or Cytotoxic therapy (see BINV-Q 2 of 15)sss,ttt\"]\nB --> C[\"No clinical benefit after up to 3 sequential endocrine therapy regimenswww or Symptomatic visceral disease\"]\nC --> D[\"Cytotoxic therapy (see BINV-Q 2 of 15)sss,,ttt,www\"]\nD --> G[\"Most patients will be candidates for multiple lines of systemic therapy to palliate advanced breast cancer. At each reassessment clinicians should assess value of ongoing treatment, the risks and benefits of an additional line of systemic therapy, patient performance status, and patient preferences through a shared decision-making process.\"]\nE[\"For those with visceral crisis: Progressionwww or unacceptable toxicity on first-line cytotoxic therapy\"] --> F[\"Alternate cytotoxic therapy (see BINV-Q 2 of 15)sss,ttt\"]\nF --> G\nG --> H[\"Consider no further cytotoxic therapyyyy and Continue supportive care (See NCCN Guidelines for Palliative Care and NCCN Guidelines for Supportive Care)\"]",
+    "nodes": 11,
+    "edges": 7,
+    "cross_refs": [
+      "BINV-P",
+      "BINV-Q"
+    ],
+    "source": "qwen3-vl"
+  },
+  "BINV-24": {
+    "page_id": "BINV-24",
+    "title": "",
+    "mermaid_text": "graph LR\nA[\"Cytotoxic therapy + HER2-targeted therapy (see BINV-Q 4 of 15)sss,ttt,vvv or Endocrine therapyzzz ± HER2-targeted therapy (see BINV-P 3 of 3 and BINV-Q 4 of 15 if premenopausal,ff consider ovarian ablation or suppression)vvv,aaaa category 2A\"] --> B[\"Continue therapy until progressionwww or unacceptable toxicity and See BINV-28 for Principles of Survivorship\"]\nB -->|\"Progression\"| C[\"Progression (BINV-25)\"]",
+    "nodes": 4,
+    "edges": 2,
+    "cross_refs": [
+      "BINV-25",
+      "BINV-28",
+      "BINV-P",
+      "BINV-Q"
+    ],
+    "source": "qwen3-vl"
+  },
+  "BINV-25": {
+    "page_id": "BINV-25",
+    "title": "",
+    "mermaid_text": "graph LR\n    A[\"Progressionwww on first-line endocrine therapy ± HER2-targeted therapy\"] --> B[\"Consider alternate endocrine therapy, if not endocrine refractoryggg,vvv ± HER2-targeted therapy (see BINV-P 3 of 3 and BINV-Q 4 of 15)sss\"]\n    B --> C[\"No clinical benefit after up to 3 sequential endocrine therapy regimens ± HER2-targeted therapywww or Symptomatic visceral disease\"]\n    C --> D[\"Cytotoxic therapyttt ± HER2-targeted therapy until progressionsss,www,bbbb\"]\n    D --> E[\"Most patients will be candidates for multiple lines of systemic therapy to palliate advanced breast cancer. At each reassessment clinicians should assess value of ongoing treatment, the risks and benefits of an additional line of systemic therapy, patient performance status, and patient preferences through a shared decision-making process.\"]\n    E --> F[\"Consider no further HER2-targeted therapyyyy and continue supportive care See NCCN Guidelines for Palliative Care and NCCN Guidelines for Supportive Care\"]\n    G[\"Progressionwww on cytotoxic therapyttt + HER2-targeted therapy\"] --> H[\"Alternate cytotoxic therapyttt + HER2-targeted therapy (see BINV-Q 4 of 15)sss\"]\n    H --> I[\"Continue HER2-targeted therapywww,bbbb until progression\"]\n    I --> E\n    Note[\"Note: All recommendations are category 2A unless otherwise indicated.\"]",
+    "nodes": 11,
+    "edges": 8,
+    "cross_refs": [
+      "BINV-P",
+      "BINV-Q"
+    ],
+    "source": "qwen3-vl"
+  },
+  "BINV-26": {
+    "page_id": "BINV-26",
+    "title": "",
+    "mermaid_text": "graph LR\nA[\"Cytotoxic therapy + HER2-targeted therapysss,ttt\"] --> B[\"Continue therapy until progressionwww or unacceptable toxicitybbbb and See BINV-28 for Principles of Survivorship\"]\nB --> C[\"Alternate cytotoxic therapy + HER2-targeted therapy until progression (see BINV-Q 4 of 15)sss,www,ttt,bbbb\"]\nC --> D[\"Most patients will be candidates for multiple lines of systemic therapy to palliate advanced breast cancer. At each reassessment clinicians should assess value of ongoing treatment, the risks and benefits of an additional line of systemic therapy, patient performance status, and patient preferences through a shared decision-making process.\"]\nD --> E[\"Consider no further HER2-targeted therapyyyy and continue supportive care NCCN Guidelines for Palliative Care and NCCN Guidelines for Supportive Care\"]",
+    "nodes": 5,
+    "edges": 4,
+    "cross_refs": [
+      "BINV-28",
+      "BINV-Q"
+    ],
+    "source": "qwen3-vl"
+  },
+  "BINV-27": {
+    "page_id": "BINV-27",
+    "title": "",
+    "mermaid_text": "graph LR\nA[\"Cytotoxic therapy^sss\"] --> B[\"Continue therapy until progression^www or unacceptable toxicity and See BINV-28 for Principles of Survivorship\"]\nB --> C[\"Alternative cytotoxic therapy (see BINV-Q 3 of 15)^sss,ttt\"]\nC --> D[\"Most patients will be candidates for multiple lines of systemic therapy to palliate advanced breast cancer. At each reassessment clinicians should assess value of ongoing treatment, the risks and benefits of an additional line of systemic therapy, patient performance status, and patient preferences through a shared decision-making process.\"]\nD --> E[\"Consider no further cytotoxic therapy^yyy and continue supportive care NCCN Guidelines for Palliative Care and NCCN Guidelines for Supportive Care\"]",
+    "nodes": 6,
+    "edges": 4,
+    "cross_refs": [
+      "BINV-28",
+      "BINV-Q"
+    ],
+    "source": "qwen3-vl"
+  },
+  "BINV-28": {
+    "page_id": "BINV-28",
+    "title": "",
+    "mermaid_text": "graph TD\nA[\"PRINCIPLES OF SURVIVORSHIP FOR THOSE LIVING WITH ADVANCED OR METASTATIC BREAST CANCER\"] --> B[\"General Principles\"]\nB --> B1[\"The management of unresectable, stage IV (M1) or metastatic disease requires a multifaceted approach, encompassing treatment and a comprehensive survivorship plan.\"]\nB --> B2[\"For principles of monitoring metastatic disease, see BINV-R.\"]\nB --> B3[\"Encourage patients to promptly report any new or worsening symptoms. A comprehensive evaluation is essential, as these symptoms could indicate disease progression, treatment effects, or other unrelated medical issues.\"]\nB --> B4[\"Additional health monitoring, management, and immunizations should be performed as appropriate to the prognosis under the care of a PCP.\"]\nB --> B5[\"Patients are encouraged to maintain a therapeutic relationship with a PCP throughout their lifetime.\"]\nB --> B6[\"All recommendations are category 2A unless otherwise indicated.\"]\n\nA --> C[\"Treatment Management and Supportive Care\"]\nC --> C1[\"Regular follow-up discussions about goals of care and care coordination may be necessary to improve both survival and quality of life. Engaging patients in these discussions, including therapy cessation, ensures that care aligns with their values and preferences.\"]\nC --> C2[\"Surveillance and follow-up plans should be individualized for all patients, particularly older patients, considering comorbidities, functional status, and life expectancy. Personalization of care is key to managing the complexities of older adults or disease in those with multiple medical comorbidities.\"]\nC --> C3[\"Patients should receive multidisciplinary and interprofessional care that seeks to prevent and/or manage morbidities associated with breast cancer or its treatment.\"]\nC --> C4[\"Patients often experience multiple transitions between different care settings and health care providers. Coordination between primary care providers and specialists is essential to ensure continuity of care.\"]\nC --> C5[\"Addressing all treatment options at each progression, including the option of supportive care alone or hospice care, is appropriate in patients with stage IV disease.\"]\nC --> C6[\"Early involvement of a palliative care team should be considered to provide advance care planning, goals of care discussions, care transitions, psychosocial support, and management of cancer and therapy-related symptoms.\"]\nC --> C7[\"Routine screening, evaluation, and assessment for supportive care interventions and referrals are necessary. Some of the symptoms are:\"]\nC7 --> C7a[\"Hormone-related symptoms (NCCN Guidelines for Survivorship)\"]\nC7 --> C7b[\"Cognitive dysfunction (NCCN Guidelines for Survivorship)\"]\nC7 --> C7c[\"Peripheral neuropathy\"]\nC7 --> C7d[\"Cancer-related pain (NCCN Guidelines for Adult Cancer Pain)\"]\nC7 --> C7e[\"Cancer-related fatigue (NCCN Guidelines for Cancer-Related Fatigue)\"]\nC7 --> C7f[\"Cancer-related infections (NCCN Guidelines for Prevention and Treatment of Cancer-Related Infections)\"]\nC7 --> C7g[\"Chemotherapy-induced anemia, neutropenia, and thrombocytopenia (NCCN Guidelines for Hematopoietic Growth Factors)\"]\nC7 --> C7h[\"Immunotherapy-related toxicities (NCCN Guidelines for Management of Immune Checkpoint Inhibitor-Related Toxicities)\"]\n\nA --> D[\"Cardiac monitoring for patients treated with anthracyclines or HER2-targeted therapy (NCCN Guidelines for Survivorship)\"]\nA --> E[\"Nausea/vomiting, anorexia, cachexia, diarrhea, dyspnea, malignant wounds, sleep-wake disturbances (NCCN Guidelines for Antiemesis and other NCCN Guidelines for Supportive Care)\"]\n\nA --> F[\"Lifestyle, Wellness, and Psychosocial Support\"]\nF --> F1[\"Patients should be encouraged to maintain a physically active lifestyle and a healthy diet whenever possible. See NCCN Guidelines for Survivorship.\"]\nF --> F2[\"Consider appropriate cancer and preventive health screenings per patient age and sex assigned at-birth. These decisions should be individualized according to the patient's prognosis.\"]\nF --> F3[\"Screen for anxiety, fear of progression, depression, and post-traumatic stress disorder (PTSD) related to cancer and its treatment. See NCCN Guidelines for Distress Management and NCCN Guidelines for Survivorship.\"]\nF --> F4[\"Social determinants of health monitoring and referrals\"]\nF4 --> F4a[\"Provide resources and assistance through financial navigators, social workers, or other specified personnel to address financial concerns, employment issues, and family support. Ensuring access to these services can alleviate significant stress for patients.\"]\nF4a --> F4a1[\"See NCCN Guidelines for Palliative Care: Social Support/Resource Management.\"]\nF4a --> F4a2[\"Financial Advocacy Services Guidelines (Association of Cancer Care Centers).\"]\nF4a --> F4a3[\"Financial Toxicity and Cancer Treatment (National Cancer Institute).\"]\nF4 --> F4b[\"See NCCN Guidelines for Distress Management.\"]\nF --> F5[\"Facilitate connections with consumer groups, support networks, and organizations that advocate for accessible and equitable care. Engagement with these groups can empower patients and provide additional support.\"]\nF --> F6[\"For any patients with sexual health concerns or for fertility and birth control in premenopausal patients, see BINV-C.\"]\n\nA --> G[\"Communication\"]\nG --> G1[\"Consistent and clear communication while acknowledging uncertainties of disease trajectory and prognosis is crucial.\"]\nG --> G2[\"Treatment goals, survivorship issues, and the specific roles of each provider should be communicated to the patient.\"]\n\nA --> H[\"Engagement\"]\nH --> H1[\"See NCCN Resources for Patients and Caregivers and Guidelines for Patients.\"]\nH --> H2[\"Address long-term survivorship issues specific to younger patients, such as psychosocial development and educational or vocational support. These patients may face unique challenges that require targeted interventions.\"]\nH --> H3[\"Living will/end-of-life planning should be discussed.\"]",
+    "nodes": 55,
+    "edges": 44,
+    "cross_refs": [
+      "BINV-C",
+      "BINV-R"
+    ],
+    "source": "qwen3-vl"
+  },
+  "BINV-2": {
+    "page_id": "BINV-2",
+    "title": "",
+    "mermaid_text": "graph LR\nA[\"BCSb,i,l ± surgical axillary staging (category 1)m,n,o ± oncoplastic reconstructionp\"] --> B[\"See BINV-4 to determine whether adjuvant systemic therapy is indicated. RT is typically given after systemic therapy. See BINV-I for sequencing of systemic therapy and RT.\"]\nA --> C[\"pN0 or cN0b,q\"]\nA --> D[\"pN1a (1-3 positive axillary nodes)\"]\nA --> E[\"pN2-3s (≥4 positive axillary nodes)\"]\nB --> C\nB --> D\nB --> E\nC --> F[\"Whole breast RT ± boostt to tumor bed, and consider comprehensive regional nodal irradiation (RNI) in patients with central/medial tumors, pT3 tumors, or pT2 tumors and one of the following high-risk features: grade 3, extensive lymphovascular invasion (LVI), or hormone-receptor (HR)-negative.u or Consider APBI/PBI for appropriately selected patients who are low risk (category 1)t,v or Consider omitting breast irradiation if adjuvant endocrine therapy is planned and the following criteria are met (category 1): 1) ≥70 y, HR+, HER2-negative, cN0, pT1 (≤2 cm)r,u 2) ≥65 y, HR+, HER2-negative, pN0, pT ≤3 cmu\"]\nD --> G[\"Meets ALL of the following criteria: • cT1-T3, cN0 • No preoperative chemotherapy • 1-2 positive sentinel lymph nodes (SLNs) • Whole breast RT planned\"]\nG -->|\"Yes to all\"| H[\"Whole breast RT ± boost (use of comprehensive RNI with or without intentional inclusion of axilla at the discretion of the radiation oncologist) (category 1)\"]\nG -->|\"No\"| I[\"Whole breast RT with inclusion of any portion of the undissected axilla at risk ± boostt to tumor bed (category 1). Strongly consider comprehensive RNI.\"]\nE --> J[\"Whole breast RT ± boostt to tumor bed (category 1) + comprehensive RNI, including any portion of the undissected axilla at risk (category 1)\"]",
+    "nodes": 21,
+    "edges": 12,
+    "cross_refs": [
+      "BINV-4",
+      "BINV-I"
+    ],
+    "source": "qwen3-vl"
+  },
+  "BINV-3": {
+    "page_id": "BINV-3",
+    "title": "",
+    "mermaid_text": "graph LR\n    A[\"Nipple-sparing, skin-sparing, or total mastectomy with surgical axillary stagingᵐ,ⁿ (category 1) ± reconstructionʷ\"] --> B[\"See BINV-4 to determine whether adjuvant systemic therapy is indicated. RT is typically given after systemic therapy. See BINV-I for sequencing of systemic therapy and RT.\"]\n    B --> C[\"Negative axillary nodes (pN0/pN0[i+]) and ≤pT2 (≤5 cm) and negative margins\"]\n    C --> D[\"No RTʸ\"]\n    B --> E[\"Negative axillary nodes and pT3 (>5 cm)\"]\n    E --> F[\"Consider PMRTᵗ to chest wall ± comprehensive RNI (including any portion of the undissected axilla at risk).ᶻ\"]\n    B --> G[\"1-3 positive axillary nodesˣ\"]\n    G --> H[\"Strongly consider PMRTᵗ to chest wall + comprehensive RNI (including any portion of the undissected axilla at risk).\"]\n    B --> I[\"≥4 positive axillary nodesˢ\"]\n    I --> J[\"PMRTᵗ to chest wall + comprehensive RNI (including any portion of the undissected axilla at risk) (category 1).\"]\n    B --> K[\"Any pT/pN with positive margins\"]\n    K --> L[\"Re-excision to negative margins is preferred. If not feasible, then strongly consider PMRTᵗ to chest wall ± comprehensive RNI (including any portion of the undissected axilla at risk).\"]",
+    "nodes": 18,
+    "edges": 11,
+    "cross_refs": [
+      "BINV-4",
+      "BINV-I"
+    ],
+    "source": "qwen3-vl"
+  },
+  "BINV-4": {
+    "page_id": "BINV-4",
+    "title": "",
+    "mermaid_text": "graph LR\nA[\"• Ductal/NST^aa^<br/>• Lobular<br/>• Mixed<br/>• Micropapillary<br/>• Metaplastic^bb^\"] --> C[\"ER-positive^dd,ee^ and/or PR-positive^dd,ee^\"]\nA --> D[\"ER-negative and PR-negative^dd,ee^\"]\nB[\"Favorable histologic type^cc^:<br/>• Pure tubular<br/>• Pure mucinous<br/>• Pure cribriform<br/>• Adenoid cystic (conventional), secretory carcinoma, and other salivary carcinomas<br/>• Rare low-grade forms of metaplastic carcinoma^bb^<br/>• Other rare forms\"] --> E[\"ER-positive^ee^ and/or PR-positive^ee^<br/>or<br/>ER-negative and PR-negative\"]\nC --> F[\"HER2-positive^dd^\"]\nC --> G[\"HER2-negative^dd^\"]\nD --> H[\"HER2-positive^dd^\"]\nD --> I[\"HER2-negative^dd^\"]\nF --> J[\"BINV-5\"]\nG --> K[\"Postmenopausal^ff^\"]\nG --> L[\"Premenopausal^ff^\"]\nH --> S[\"BINV-9\"]\nI --> T[\"BINV-10\"]\nK --> M[\"pT1-3 AND pN0 or pN+\"]\nL --> N[\"pT1-3 AND pN0\"]\nL --> O[\"pT1-3 AND pN+\"]\nM --> P[\"BINV-6\"]\nN --> Q[\"BINV-7\"]\nO --> R[\"BINV-8\"]\nE --> U[\"Favorable Histologies (BINV-11)\"]",
+    "nodes": 22,
+    "edges": 19,
+    "cross_refs": [
+      "BINV-10",
+      "BINV-11",
+      "BINV-5",
+      "BINV-6",
+      "BINV-7",
+      "BINV-8",
+      "BINV-9"
+    ],
+    "source": "qwen3-vl"
+  },
+  "BINV-5": {
+    "page_id": "BINV-5",
+    "title": "",
+    "mermaid_text": "graph LR\nA[\"Ductal/NST^aa\\n• Lobular\\n• Mixed\\n• Micropapillary\"] --> B[\"pT1, pT2, or pT3;\\nand pN0 or pN1mi\\n(≤2 mm axillary\\nnode metastasis)\"]\nA --> H[\"pN+ (≥1 ipsilateral\\nmetastases >2 mm)\"]\nB --> C[\"pT1a (≤0.5 cm)\"]\nB --> F[\"pT1b (0.6-1.0 cm)\"]\nB --> G[\"pT1c-pT3 (>1 cm)\"]\nC --> D[\"pN0\"]\nC --> E[\"pN1mi\"]\nD --> I[\"Consider adjuvant endocrine therapy^gg\\nor\\nConsider adjuvant chemotherapy^a,hh\\nwith trastuzumab^ii,jj (category 2B) and\\nendocrine therapy^ii,jj\"]\nE --> J[\"Adjuvant endocrine therapy^ii,jj\\nor\\nAdjuvant chemotherapy^a,gg,hh with\\ntrastuzumab^ii and endocrine therapy^gg,kk\"]\nF --> J\nG --> K[\"Adjuvant chemotherapy^a,hh with\\ntrastuzumab (category 1) (± pertuzumab\\nfor pT2-T3) and endocrine therapy^gg,kk\"]\nH --> L[\"Adjuvant chemotherapy^a,hh with\\npertuzumab^mm + trastuzumab (category 1,\\npreferred) and endocrine therapy^hh,kk,ll\\nor\\nAdjuvant chemotherapy^a,hh with trastuzumab\\n(category 1) and endocrine therapy^hh,kk,ll\"]\nI --> M[\"Adjuvant whole\\nbreast RT (BINV-2)\\nor PMRT (BINV-3)\\nas indicated.\\nSee BINV-1 for\\nsequencing of\\nsystemic therapy\\nand RT.\\nand\\nFollow-up (BINV-17)\"]\nJ --> M\nK --> M\nL --> M",
+    "nodes": 21,
+    "edges": 16,
+    "cross_refs": [
+      "BINV-1",
+      "BINV-17",
+      "BINV-2",
+      "BINV-3"
+    ],
+    "source": "qwen3-vl"
+  },
+  "BINV-6": {
+    "page_id": "BINV-6",
+    "title": "",
+    "mermaid_text": "graph LR\n    A[\"pT1a (≤0.5 cm) and pN0\"] --> B[\"Consider adjuvant endocrine<br/>therapy (category 2B)<sup>gg</sup>\"]\n    \n    C[\"• Ductal/NST<sup>aa</sup><br/>• Lobular<br/>• Mixed<br/>• Micropapillary\"] --- D[\"pT1b-T3 (>0.5 cm)<br/>and pN0\"]\n    \n    D --> E[\"Determine if<br/>candidate for<br/>chemotherapy\"]\n    \n    E --> F[\"Not a<br/>candidate for<br/>chemotherapy\"]\n    \n    F --> G[\"Adjuvant endocrine therapy<sup>gg,kk</sup> ± ovarian<br/>suppression/ablation.<sup>gg,kk</sup> Consider<br/>adjuvant ribociclib for eligible patients.<sup>gg</sup><br/>See BINV-K 3 of 4 for eligibility criteria.\"]\n    \n    E --> H[\"If candidate for<br/>chemotherapy:<br/>Strongly<br/>consider 21-<br/>gene RT-PCR<br/>assay<br/>(category 1)<sup>oo,pp</sup>\"]\n    \n    H --> I[\"Not done\"]\n    \n    I --> J[\"Adjuvant chemotherapy<sup>hh</sup> followed<br/>by endocrine therapy<sup>gg,kk</sup> ± ovarian<br/>suppression/ablation (category 1). Consider<br/>adjuvant ribociclib for eligible patients.<sup>gg</sup><br/>See BINV-K 3 of 4 for eligibility criteria.\"]\n    \n    I --> L[\"Adjuvant endocrine therapy<sup>gg,kk</sup> ± ovarian<br/>suppression/ablation.<sup>gg,kk</sup> Consider<br/>adjuvant ribociclib for eligible patients.<sup>gg</sup><br/>See BINV-K 3 of 4 for eligibility criteria.\"]\n\n    H --> K[\"Recurrence<br/>score ≤15<sup>qq</sup>\"]\n    \n    K --> L\n    \n    H --> M[\"Recurrence<br/>score 16–25<sup>qq</sup>\"]\n    \n    M --> J\n    M --> L\n    \n    H --> O[\"Recurrence<br/>score ≥26\"]\n    \n    O --> N[\"Adjuvant chemotherapy<sup>hh</sup> followed<br/>by endocrine therapy<sup>gg,kk</sup> ± ovarian<br/>suppression/ablation.<br/>Consider adjuvant ribociclib for eligible<br/>patients.<sup>gg</sup> See BINV-K 3 of 4 for<br/>eligibility criteria.\"]\n    \n    B --> P[\"Adjuvant whole<br/>breast RT (BINV-2)<br/>or PMRT (BINV-3)<br/>as indicated.<br/>See BINV-I for<br/>sequencing of<br/>systemic therapy<br/>and RT.<br/>and<br/>Follow-up (BINV-17)\"]\n    G --> P\n    J --> P\n    L --> P\n    N --> P",
+    "nodes": 23,
+    "edges": 20,
+    "cross_refs": [
+      "BINV-17",
+      "BINV-2",
+      "BINV-3",
+      "BINV-I",
+      "BINV-K"
+    ],
+    "source": "llamaparse"
+  },
+  "BINV-7": {
+    "page_id": "BINV-7",
+    "title": "",
+    "mermaid_text": "graph LR\nA[\"pT1a (≤0.5 cm) and pN0\"] --> G[\"Consider adjuvant endocrine therapy (category 2B)^gg\"]\nC[\"Ductal/NST^aa\\n• Lobular\\n• Mixed\\n• Micropapillary\"] --> B[\"pT1b-T3 (>0.5 cm) and pN0\"]\nB --> D[\"Determine if candidate for chemotherapy\"]\nD --> E[\"If candidate for chemotherapy: Strongly consider 21-gene RT-PCR assay (category 1)^oo,pp\"]\nD --> F[\"Not a candidate for chemotherapy\"]\nF --> H[\"Adjuvant endocrine therapy^gg,kk ± ovarian suppression/ablation. Consider adjuvant ribociclib for eligible patients.^gg See BINV-K 3 of 4 for eligibility criteria.\"]\nE --> L[\"Not done\"]\nE --> M[\"Recurrence score ≤15^gg\"]\nE --> N[\"Recurrence score 16–25^gg\"]\nE --> O[\"Recurrence score ≥26\"]\nL --> I[\"Adjuvant chemotherapy^hh followed by endocrine therapy^gg,kk ± ovarian suppression/ablation (category 1). Consider adjuvant ribociclib for eligible patients.^gg See BINV-K 3 of 4 for eligibility criteria.\"]\nM --> J[\"Adjuvant endocrine therapy^gg,kk ± ovarian suppression/ablation. Consider adjuvant ribociclib for eligible patients.^gg See BINV-K 3 of 4 for eligibility criteria.\"]\nN --> K[\"Adjuvant chemotherapy^hh followed by endocrine therapy^gg,kk ± ovarian suppression/ablation. Consider adjuvant ribociclib for eligible patients.^gg See BINV-K 3 of 4 for eligibility criteria.\"]\nO --> K\nG --> P[\"Adjuvant whole breast RT (BINV-2) or PMRT (BINV-3) as indicated. See BINV-I for sequencing of systemic therapy and RT. and Follow-up (BINV-17)\"]\nH --> P\nI --> P\nJ --> P\nK --> P",
+    "nodes": 24,
+    "edges": 19,
+    "cross_refs": [
+      "BINV-17",
+      "BINV-2",
+      "BINV-3",
+      "BINV-I",
+      "BINV-K"
+    ],
+    "source": "qwen3-vl"
+  },
+  "BINV-8": {
+    "page_id": "BINV-8",
+    "title": "",
+    "mermaid_text": "graph LR\nA[\"• Ductal/NST<sup>aa</sup><br/>• Lobular<br/>• Mixed<br/>• Micropapillary\"] --> B[\"pN1mi (≤2 mm axillary node metastasis)<br/>or<br/>pN1 (1-3 positive nodes)\"]\nA --> C[\"pN2/pN3 (≥4 ipsilateral metastases >2 mm)<sup>nn</sup>\"]\nB --> D[\"Determine if candidate for chemotherapy\"]\nD --> E[\"Not a candidate for chemotherapy\"]\nD --> F[\"If candidate for chemotherapy:<br/>consider gene expression assay to assess prognosis<sup>qq,rr</sup>\"]\nE --> G[\"Adjuvant endocrine therapy ± ovarian suppression/ablation.<sup>gg,kk</sup> Consider adjuvant abemaciclib or ribociclib for eligible patients. See BINV-K 3 of 4 for eligibility criteria.\"]\nF --> H[\"Adjuvant chemotherapy<sup>hh</sup> followed by endocrine therapy ± ovarian suppression/ablation.<sup>gg,kk</sup> Consider adjuvant abemaciclib or ribociclib for eligible patients. See BINV-K 3 of 4 for eligibility criteria.<br/>or<br/>Adjuvant endocrine therapy + ovarian suppression/ablation.<sup>gg,kk</sup> Consider adjuvant abemaciclib or ribociclib for eligible patients. See BINV-K 3 of 4 for eligibility criteria.\"]\nC --> I[\"Adjuvant chemotherapy<sup>hh</sup> followed by endocrine therapy ± ovarian suppression/ablation<sup>gg,kk</sup> (category 1). Consider adjuvant abemaciclib or ribociclib and/or adjuvant olaparib if germline BRCA1/2 PV for eligible patients. See BINV-K 3 of 4 and BINV-M for eligibility criteria.\"]\nG --> J[\"Adjuvant whole breast RT (BINV-2)<br/>or PMRT (BINV-3)<br/>as indicated.<br/>See BINV-I for sequencing of systemic therapy and RT<br/>and<br/>Follow-up (BINV-17)\"]\nH --> J\nI --> J",
+    "nodes": 16,
+    "edges": 11,
+    "cross_refs": [
+      "BINV-17",
+      "BINV-2",
+      "BINV-3",
+      "BINV-I",
+      "BINV-K",
+      "BINV-M"
+    ],
+    "source": "qwen3-vl"
+  },
+  "BINV-9": {
+    "page_id": "BINV-9",
+    "title": "",
+    "mermaid_text": "graph LR\nA[\"• Ductal/NST^aa\\n• Lobular\\n• Mixed\\n• Micropapillary\"] --> B[\"pT1, pT2, or pT3; and\\npN0 or pN1mi (≤2 mm\\naxillary node metastasis)\"]\nA --> C[\"pN+ (≥1 ipsilateral metastases >2 mm)\"]\nB --> D[\"pT1a (≤0.5 cm)\"]\nB --> E[\"pT1b (0.6–1.0 cm)\"]\nB --> F[\"pT1c–T3 (>1 cm)\"]\nD --> G[\"pN0\"]\nD --> H[\"pN1mi\"]\nG --> I[\"Consider adjuvant chemotherapy^a,hh\\nwith trastuzumab^ii (category 2B)\"]\nH --> J[\"Consider adjuvant chemotherapy^a,hh\\nwith trastuzumab^ii,kk\"]\nE --> K[\"Consider adjuvant chemotherapy^a,hh\\nwith trastuzumab^ii,kk\"]\nF --> L[\"Adjuvant chemotherapy^a,hh\\nwith trastuzumab^kk (category 1)\\n(± pertuzumab for pT2–T3)\"]\nC --> M[\"Adjuvant chemotherapy^a,hh with\\npertuzumab^mm + trastuzumab^kk\\n(category 1, preferred)\\nor\\nAdjuvant chemotherapy^a,hh with\\ntrastuzumab^kk (category 1)\"]\nI --> N[\"Adjuvant whole\\nbreast RT (BINV-2)\\nor PMRT (BINV-3)\\nas indicated.\\nSee BINV-1 for\\nsequencing of\\nsystemic therapy\\nand RT\\nand\\nFollow-up (BINV-17)\"]\nJ --> N\nK --> N\nL --> N\nM --> N",
+    "nodes": 24,
+    "edges": 17,
+    "cross_refs": [
+      "BINV-1",
+      "BINV-17",
+      "BINV-2",
+      "BINV-3"
+    ],
+    "source": "qwen3-vl"
+  },
+  "DCIS-1": {
+    "page_id": "DCIS-1",
+    "title": "",
+    "mermaid_text": "graph LR\nA[\"DCIS Tis,N0,M0, Encapsulated or solid papillary carcinoma (SPC)ᵃ\"] --> B[\"• History and physical exam\\n• Diagnostic bilateral mammogram\\n• Pathology reviewᵇ\\n• Determination of tumor estrogen receptor (ER) status\\n• Genetic counseling for patients at riskᶜ of hereditary breast cancer\\n• Breast MRIᵈᵉ as indicated\\n• Assess for distressᶠ\"]\nB --> C[\"Breast-conserving surgeryᵍ (BCS) without lymph node surgeryʰ\"]\nB --> D[\"Total mastectomy with sentinel lymph node biopsy (SLNB)ⁱ ± reconstructionʲ\"]\nC --> E1[\"Whole breast radiation therapy (RT) (category 1) with or without boost to tumor bedᵏˡᵐⁿ\"]\nC --> E2[\"Accelerated partial breast irradiation/partial breast radiation (APBI/PBI)ᵏˡᵐ\"]\nC --> E3[\"No RTᵏˡⁿ (category 2B)\"]\nE1 --> F[\"Postsurgical Treatment (DCIS-2)\"]\nE2 --> F\nE3 --> F\nD --> F",
+    "nodes": 16,
+    "edges": 10,
+    "cross_refs": [
+      "DCIS-2"
+    ],
+    "source": "qwen3-vl"
+  },
+  "DCIS-2": {
+    "page_id": "DCIS-2",
+    "title": "",
+    "mermaid_text": "graph LR\n    A[\"DCIS POSTSURGICAL TREATMENT\"] --> B[\"Risk reduction therapy for ipsilateral breast:\"]\n    B --> C[\"Consider endocrine therapy for 5 years for patients with ER-positive DCIS, if:\"]\n    C --> D[\"Treated with BCS and RT⁰ (category 1)\"]\n    C --> E[\"Treated with excision aloneᵖ\"]\n    B --> F[\"Endocrine therapy⁹:\"]\n    F --> G[\"Tamoxifen⁰,ʳ for premenopausal patients\"]\n    F --> H[\"Tamoxifen⁰,ʳ or aromatase inhibitor for postmenopausal patients with some advantage for aromatase inhibitor therapy in patients <60 years or with concerns for thromboembolism\"]\n    A --> I[\"Risk reduction therapy for contralateral breast:\"]\n    I --> J[\"Counseling regarding risk reduction\"]\n    A -->|\"After treatment\"| K[\"SURVEILLANCE/FOLLOW-UP\"]\n    K --> L[\"Interval history and physical exam every 6-12 mo for 5 y, then annually\"]\n    K --> M[\"First mammogram 6-12 mo, after end of RT, if given, or after BCS (category 2B) if no RT is given and annually thereafter\"]",
+    "nodes": 15,
+    "edges": 12,
+    "cross_refs": [],
+    "source": "qwen3-vl"
+  },
+  "PHYLL-1": {
+    "label": "PHYLL-1",
+    "pdf_page": 107,
+    "source": "qwen3-vl",
+    "mermaid_text": "graph LR\n    N01[\"Clinical suspicion of phyllodes:\\n• Palpable mass\\n• Rapid growth\\n• Large size (>3 cm)\\n• Imaging with ultrasound\\nsuggestive of\\nfibroadenoma\\nexcept for size\\nand/or history of\\ngrowth\"] --> N02[\"• History and\\nphysical exam\\n• Ultrasound\\n• Mammogram for\\npatients ≥30 y\\n• Assess for\\ndistress^a\"]\n    N02 --> N03[\"Core needle\\nbiopsy^b\"]\n    N03 --> N04[\"Indeterminate\\nor suspicious\\nfor a benign\\nphyllodes^c\"]\n    N03 --> N05[\"Suspicious\\nfor\\nborderline/\\nmalignant\\nphyllodes^c\"]\n    N03 --> N06[\"Invasive or\\nin situ cancer\"]\n    N04 --> N07[\"Excisional\\nbiopsy^d\"]\n    N07 --> N08[\"Fibroadenoma\\nor fibroepithelial\\nlesion\"]\n    N08 --> N09[\"Observe\"]\n    N07 --> N10[\"Benign phyllodes^c,e\"]\n    N10 --> N11[\"Clinical\\nfollow-up for\\n3 y (no RT)^f\"]\n    N07 --> N12[\"Phyllodes, borderline\\nor malignant^c,e\"]\n    N12 --> N13[\"See NCCN\\nGuidelines for\\nSoft Tissue\\nSarcoma\\n(Page\\nPHYLLSARC-1)\"]\n    N05 --> N13\n    N06 --> N15[\"See NCCN Guidelines for Noninvasive Breast Cancer\\nfor DCIS (DCIS-1) or Invasive Breast Cancer (BINV-1)\"]",
+    "nodes": 19,
+    "edges": 14,
+    "cross_refs": [
+      "BINV-1",
+      "DCIS-1"
+    ],
+    "elapsed_sec": 61.5,
+    "raw_response": "```mermaid\ngraph LR\n    N01[\"Clinical suspicion of phyllodes:\\n• Palpable mass\\n• Rapid growth\\n• Large size (>3 cm)\\n• Imaging with ultrasound\\nsuggestive of\\nfibroadenoma\\nexcept for size\\nand/or history of\\ngrowth\"] --> N02[\"• History and\\nphysical exam\\n• Ultrasound\\n• Mammogram for\\npatients ≥30 y\\n• Assess for\\ndistress^a\"]\n    N02 --> N03[\"Core needle\\nbiopsy^b\"]\n    N03 --> N04[\"Indeterminate\\nor suspicious\\nfor a benign\\nphyllodes^c\"]\n    N03 --> N05[\"Suspicious\\nfor\\nborderline/\\nmalignant\\nphyllodes^c\"]\n    N03 --> N06[\"Invasive or\\nin situ cancer\"]\n    N04 --> N07[\"Excisional\\nbiopsy^d\"]\n    N07 --> N08[\"Fibroadenoma\\nor fibroepithelial\\nlesion\"]\n    N08 --> N09[\"Observe\"]\n    N07 --> N10[\"Benign phyllodes^c,e\"]\n    N10 --> N11[\"Clinical\\nfollow-up for\\n3 y (no RT)^f\"]\n    N07 --> N12[\"Phyllodes, borderline\\nor malignant^c,e\"]\n    N12 --> N13[\"See NCCN\\nGuidelines for\\nSoft Tissue\\nSarcoma\\n(Page\\nPHYLLSARC-1)\"]\n    N05 --> N13\n    N06 --> N15[\"See NCCN Guidelines for Noninvasive Breast Cancer\\nfor DCIS (DCIS-1) or Invasive Breast Cancer (BINV-1)\"]\n```"
+  },
+  "PREG-1": {
+    "label": "PREG-1",
+    "pdf_page": 110,
+    "source": "qwen3-vl",
+    "mermaid_text": "graph LR\n    N01[\"If indicated^a: Chest x-ray (with abdominal shielding) Abdominal ultrasound to assess liver metastases Consider non-contrast MRI of spine if indicated to assess for bone metastases Assess for distress^b\"] --> N02[\"If pregnant with confirmed breast cancer; No distant metastases on staging\"]\n    N02 --> N03[\"First trimester^c\"]\n    N02 --> N07[\"Second trimester/Early third trimester\"]\n    N02 --> N10[\"Late third trimester\"]\n    N03 --> N04[\"Discuss termination: Non-therapeutic\"]\n    N04 --> N05[\"Continuing pregnancy\"]\n    N05 --> N06[\"Mastectomy^d + axillary staging (see PREG-2)\"]\n    N06 --> N12[\"Begin adjuvant chemotherapy in second trimester ± RT postpartum ± Adjuvant endocrine therapy postpartum (see PREG-2)\"]\n    N07 --> N08[\"Mastectomy or BCS^d + axillary staging (see PREG-2)\"]\n    N07 --> N09[\"Preoperative chemotherapy, mastectomy, or BCS^d + axillary staging (see PREG-2)\"]\n    N08 --> N13[\"Adjuvant chemotherapy ± RT postpartum ± Adjuvant endocrine therapy postpartum (see PREG-2)\"]\n    N09 --> N14[\"± RT postpartum ± Adjuvant endocrine therapy postpartum (see PREG-2)\"]\n    N10 --> N11[\"Mastectomy^c or BCS^d + axillary staging (see PREG-2)\"]\n    N11 --> N15[\"Adjuvant chemotherapy ± RT postpartum ± Adjuvant endocrine therapy postpartum (see PREG-2)\"]",
+    "nodes": 18,
+    "edges": 14,
+    "cross_refs": [
+      "PREG-2"
+    ],
+    "elapsed_sec": 43.9,
+    "raw_response": "```mermaid\ngraph LR\n    N01[\"If indicated^a: Chest x-ray (with abdominal shielding) Abdominal ultrasound to assess liver metastases Consider non-contrast MRI of spine if indicated to assess for bone metastases Assess for distress^b\"] --> N02[\"If pregnant with confirmed breast cancer; No distant metastases on staging\"]\n    N02 --> N03[\"First trimester^c\"]\n    N02 --> N07[\"Second trimester/Early third trimester\"]\n    N02 --> N10[\"Late third trimester\"]\n    N03 --> N04[\"Discuss termination: Non-therapeutic\"]\n    N04 --> N05[\"Continuing pregnancy\"]\n    N05 --> N06[\"Mastectomy^d + axillary staging (see PREG-2)\"]\n    N06 --> N12[\"Begin adjuvant chemotherapy in second trimester ± RT postpartum ± Adjuvant endocrine therapy postpartum (see PREG-2)\"]\n    N07 --> N08[\"Mastectomy or BCS^d + axillary staging (see PREG-2)\"]\n    N07 --> N09[\"Preoperative chemotherapy, mastectomy, or BCS^d + axillary staging (see PREG-2)\"]\n    N08 --> N13[\"Adjuvant chemotherapy ± RT postpartum ± Adjuvant endocrine therapy postpartum (see PREG-2)\"]\n    N09 --> N14[\"± RT postpartum ± Adjuvant endocrine therapy postpartum (see PREG-2)\"]\n    N10 --> N11[\"Mastectomy^c or BCS^d + axillary staging (see PREG-2)\"]\n    N11 --> N15[\"Adjuvant chemotherapy ± RT postpartum ± Adjuvant endocrine therapy postpartum (see PREG-2)\"]\n```"
+  },
+  "PREG-2": {
+    "label": "PREG-2",
+    "pdf_page": 111,
+    "source": "qwen3-vl",
+    "mermaid_text": "graph LR\n    N01[\"NCCN Guidelines Version 2.2026\\nBreast Cancer During Pregnancy\"] --> N02[\"GENERAL CONSIDERATIONS FOR MANAGEMENT OF BREAST CANCER DURING PREGNANCY¹⁻³\"]\n    N02 --> N03[\"General Considerations\\n• Considerations and selection of optimal local therapy and systemic therapy are similar to that recommended in non–pregnancy-associated breast cancer.\\n• The selection and timing of chemotherapy, endocrine therapy, and RT are different for pregnancy-associated breast cancer compared to non–pregnancy-associated breast cancer.\\n• BCS during the first trimester of pregnancy can be considered in those who will require adjuvant chemotherapy and can have adjuvant RT delayed until after delivery.\\n• Chemotherapy should not be administered during the first trimester of pregnancy.\\n• RT should not be administered during any trimester of pregnancy.\\n• Coordination is recommended between the oncology and obstetrics teams to plan the optimal timing of systemic therapy administration during pregnancy.\\n• Considerations for postpartum chemotherapy are the same as for non–pregnancy-associated breast cancer.\"]\n    N03 --> N04[\"Considerations for Systemic Therapy\\n• A fetal examination with ultrasound should be performed prior to systemic therapy administration to exclude pre-existing abnormalities.\\n• Standard-dose chemotherapy should be used based on actual weight.\\n• Anthracycline, cyclophosphamide, and taxanes appear to be safe during the second and third trimesters.\\n  ▸ Doxorubicin/cyclophosphamide every 3 weeks is preferred. Limited data suggest that dd AC with granulocyte colony-stimulating factor (G-CSF) use during pregnancy appears to be safe.\\n  ▸ Weekly paclitaxel is preferred.\\n• Avoid chemotherapy after 35 weeks to allow maternal bone marrow to recover before the delivery.\\n• The following agents are contraindicated:\\n  ▸ Anti-HER2 therapies: trastuzumab, pertuzumab, ado-trastuzumab emtansine, fam-trastuzumab-deruxtecan-nxki, neratinib, lapatinib, tucatinib\\n  ▸ CDK4/6 inhibitors (there are no data on safety)\\n  ▸ Antibody-drug conjugates (ADCs): fam trastuzumab-deruxtecan-nxki, datopotamab deruxtecan-dlnk, sacituzumab govitecan-hziy\\n  ▸ Endocrine therapy: tamoxifen, aromatase inhibitor, gonadotropin-releasing hormone agonists/antagonists\\n  ▸ PARP inhibitors\\n  ▸ Immune checkpoint inhibitors\"]\n    N04 --> N05[\"Supportive Care Considerations\\n• Antiemetics: Ondansetron and metoclopramide are considered safe.\\n• NK1 inhibitors: Avoid using these, as data from human studies are lacking.\\n• Steroids:\\n  ▸ Methylprednisolone, prednisolone, or hydrocortisone are preferred.\\n  ▸ Avoid dexamethasone or betamethasone if possible.\\n• G-CSF: Use with caution. There are insufficient data to support G-CSF use, but it appears to be safe during pregnancy.\"]\n    N05 --> N06[\"¹ Kesireddy M, Krishnamurthy J. Pregnancy-associated breast cancer: Key concepts for optimizing diagnosis and treatment. JCO Oncol Pract 2025;21:275-277.\\n² Poggio F, Tagliamento M, Pirrone C, et al. Update on the management of breast cancer during pregnancy. Cancers 2020;12:3616.\\n³ Boere I, Lok C, Poortmans P, et al. Breast cancer during pregnancy: epidemiology, phenotypes, presentation during pregnancy and therapeutic modalities. Best Pract Res Clin Obstet Gynaecol 2022;82:46-59.\"]\n    N06 --> N07[\"Note: All recommendations are category 2A unless otherwise indicated.\"]",
+    "nodes": 10,
+    "edges": 6,
+    "cross_refs": [],
+    "elapsed_sec": 131.8,
+    "raw_response": "```mermaid\ngraph LR\n    N01[\"NCCN Guidelines Version 2.2026\\nBreast Cancer During Pregnancy\"] --> N02[\"GENERAL CONSIDERATIONS FOR MANAGEMENT OF BREAST CANCER DURING PREGNANCY¹⁻³\"]\n    N02 --> N03[\"General Considerations\\n• Considerations and selection of optimal local therapy and systemic therapy are similar to that recommended in non–pregnancy-associated breast cancer.\\n• The selection and timing of chemotherapy, endocrine therapy, and RT are different for pregnancy-associated breast cancer compared to non–pregnancy-associated breast cancer.\\n• BCS during the first trimester of pregnancy can be considered in those who will require adjuvant chemotherapy and can have adjuvant RT delayed until after delivery.\\n• Chemotherapy should not be administered during the first trimester of pregnancy.\\n• RT should not be administered during any trimester of pregnancy.\\n• Coordination is recommended between the oncology and obstetrics teams to plan the optimal timing of systemic therapy administration during pregnancy.\\n• Considerations for postpartum chemotherapy are the same as for non–pregnancy-associated breast cancer.\"]\n    N03 --> N04[\"Considerations for Systemic Therapy\\n• A fetal examination with ultrasound should be performed prior to systemic therapy administration to exclude pre-existing abnormalities.\\n• Standard-dose chemotherapy should be used based on actual weight.\\n• Anthracycline, cyclophosphamide, and taxanes appear to be safe during the second and third trimesters.\\n  ▸ Doxorubicin/cyclophosphamide every 3 weeks is preferred. Limited data suggest that dd AC with granulocyte colony-stimulating factor (G-CSF) use during pregnancy appears to be safe.\\n  ▸ Weekly paclitaxel is preferred.\\n• Avoid chemotherapy after 35 weeks to allow maternal bone marrow to recover before the delivery.\\n• The following agents are contraindicated:\\n  ▸ Anti-HER2 therapies: trastuzumab, pertuzumab, ado-trastuzumab emtansine, fam-trastuzumab-deruxtecan-nxki, neratinib, lapatinib, tucatinib\\n  ▸ CDK4/6 inhibitors (there are no data on safety)\\n  ▸ Antibody-drug conjugates (ADCs): fam trastuzumab-deruxtecan-nxki, datopotamab deruxtecan-dlnk, sacituzumab govitecan-hziy\\n  ▸ Endocrine therapy: tamoxifen, aromatase inhibitor, gonadotropin-releasing hormone agonists/antagonists\\n  ▸ PARP inhibitors\\n  ▸ Immune checkpoint inhibitors\"]\n    N04 --> N05[\"Supportive Care Considerations\\n• Antiemetics: Ondansetron and metoclopramide are considered safe.\\n• NK1 inhibitors: Avoid using these, as data from human studies are lacking.\\n• Steroids:\\n  ▸ Methylprednisolone, prednisolone, or hydrocortisone are preferred.\\n  ▸ Avoid dexamethasone or betamethasone if possible.\\n• G-CSF: Use with caution. There are insufficient data to support G-CSF use, but it appears to be safe during pregnancy.\"]\n    N05 --> N06[\"¹ Kesireddy M, Krishnamurthy J. Pregnancy-associated breast cancer: Key concepts for optimizing diagnosis and treatment. JCO Oncol Pract 2025;21:275-277.\\n² Poggio F, Tagliamento M, Pirrone C, et al. Update on the management of breast cancer during pregnancy. Cancers 2020;12:3616.\\n³ Boere I, Lok C, Poortmans P, et al. Breast cancer during pregnancy: epidemiology, phenotypes, presentation during pregnancy and therapeutic modalities. Best Pract Res Clin Obstet Gynaecol 2022;82:46-59.\"]\n    N06 --> N07[\"Note: All recommendations are category 2A unless otherwise indicated.\"]\n```"
+  },
+  "IBC-1": {
+    "label": "IBC-1",
+    "pdf_page": 112,
+    "source": "qwen3-vl",
+    "mermaid_text": "graph LR\n    N01[\"Clinical pathologic diagnosis of IBC\"] --> N02[\"WORKUP\\n• History and physical exam by multidisciplinary team and obtain medical photography\\n• CBC\\n• Comprehensive metabolic panel, including LFTs and alkaline phosphatase\\n• Pathology review^b\\n• Determination of tumor ER/PR status and HER2 status^c\\n• Fertility counseling if premenopausal^d\\n• Genetic counseling if patient is at risk^e for hereditary breast cancer\\n• Assess for distress^f\\n• Imaging:\\n  ▸ Bilateral diagnostic mammogram, ultrasound as necessary\\n  ▸ Chest diagnostic CT ± contrast\\n  ▸ Abdomen ± pelvis diagnostic CT with contrast or MRI with contrast\\n  ▸ Bone scan or FDG-PET/CT^g,h\\n  ▸ Breast MRI (optional)\"]\n    N02 --> N03[\"Preoperative/Adjuvant Therapy Regimens (BINV-L)\"]\n    N03 --> N04[\"See IBC-2\"]",
+    "nodes": 6,
+    "edges": 3,
+    "cross_refs": [
+      "BINV-L",
+      "IBC-2"
+    ],
+    "elapsed_sec": 38.8,
+    "raw_response": "```mermaid\ngraph LR\n    N01[\"Clinical pathologic diagnosis of IBC\"] --> N02[\"WORKUP\\n• History and physical exam by multidisciplinary team and obtain medical photography\\n• CBC\\n• Comprehensive metabolic panel, including LFTs and alkaline phosphatase\\n• Pathology review^b\\n• Determination of tumor ER/PR status and HER2 status^c\\n• Fertility counseling if premenopausal^d\\n• Genetic counseling if patient is at risk^e for hereditary breast cancer\\n• Assess for distress^f\\n• Imaging:\\n  ▸ Bilateral diagnostic mammogram, ultrasound as necessary\\n  ▸ Chest diagnostic CT ± contrast\\n  ▸ Abdomen ± pelvis diagnostic CT with contrast or MRI with contrast\\n  ▸ Bone scan or FDG-PET/CT^g,h\\n  ▸ Breast MRI (optional)\"]\n    N02 --> N03[\"Preoperative/Adjuvant Therapy Regimens (BINV-L)\"]\n    N03 --> N04[\"See IBC-2\"]\n```"
+  },
+  "IBC-2": {
+    "label": "IBC-2",
+    "pdf_page": 113,
+    "source": "qwen3-vl",
+    "mermaid_text": "graph LR\n    N01[\"RESPONSE TO PREOPERATIVE THERAPY\"] --> N02[\"Response\"]\n    N01 --> N05[\"No response\"]\n    N02 --> N03[\"Total mastectomy (skin-sparing and nipple-sparing mastectomy are contraindicated) + level I/II axillary dissection + RT to chest wall and comprehensive RNI with inclusion of any portion of the undissected axilla at risk ± delayed breast reconstruction\"]\n    N03 --> N04[\"Complete planned cytotoxic regimen course if not completed preoperatively plus endocrine treatment if ER-positive and/or PR-positive (sequential chemotherapy followed by endocrine therapy). Complete up to one year of HER2-targeted therapy if HER2-positive (category 1). May be administered concurrently with RT and with endocrine therapy if indicated.\"]\n    N05 --> N06[\"Consider additional cytotoxic chemotherapy and/or preoperative radiation\"]\n    N06 --> N07[\"Patients may be candidates for multiple lines of cytotoxic therapy to palliate advanced breast cancer. At each reassessment clinicians should assess value of ongoing treatment, the risks and benefits of an additional line of cytotoxic therapy, patient performance status, and patient preferences through a shared decision-making process.\"]\n    N07 -->|\"Response\"| N09[\"See above pathway\"]\n    N07 -->|\"No response\"| N11[\"Individualized treatment\"]",
+    "nodes": 11,
+    "edges": 8,
+    "cross_refs": [],
+    "elapsed_sec": 62.4,
+    "raw_response": "```mermaid\ngraph LR\n    N01[\"RESPONSE TO PREOPERATIVE THERAPY\"] --> N02[\"Response\"]\n    N01 --> N05[\"No response\"]\n    N02 --> N03[\"Total mastectomy (skin-sparing and nipple-sparing mastectomy are contraindicated) + level I/II axillary dissection + RT to chest wall and comprehensive RNI with inclusion of any portion of the undissected axilla at risk ± delayed breast reconstruction\"]\n    N03 --> N04[\"Complete planned cytotoxic regimen course if not completed preoperatively plus endocrine treatment if ER-positive and/or PR-positive (sequential chemotherapy followed by endocrine therapy). Complete up to one year of HER2-targeted therapy if HER2-positive (category 1). May be administered concurrently with RT and with endocrine therapy if indicated.\"]\n    N05 --> N06[\"Consider additional cytotoxic chemotherapy and/or preoperative radiation\"]\n    N06 --> N07[\"Patients may be candidates for multiple lines of cytotoxic therapy to palliate advanced breast cancer. At each reassessment clinicians should assess value of ongoing treatment, the risks and benefits of an additional line of cytotoxic therapy, patient performance status, and patient preferences through a shared decision-making process.\"]\n    N07 -->|\"Response\"| N09[\"See above pathway\"]\n    N07 -->|\"No response\"| N11[\"Individualized treatment\"]\n```"
+  },
+  "PAGET-1": {
+    "label": "PAGET-1",
+    "pdf_page": 108,
+    "source": "qwen3-vl",
+    "mermaid_text": "```mermaid\ngraph LR\n    N01[\"Clinical suspicion of Paget disease^a\"] --> N02[\"• Clinical breast exam\\n• Diagnostic bilateral mammogram, ultrasound as necessary\\n• Assess for distress^b\"]\n    N02 --> N03[\"Examination or Breast Imaging Reporting and Data System (BI-RADS) 4 or 5 imaging\"]\n    N02 --> N04[\"Examination and imaging negative for breast lesion\"]\n    N03 --> N05[\"PAGET-2\"]\n    N04 --> N05\n```",
+    "nodes": 6,
+    "edges": 5,
+    "cross_refs": [
+      "PAGET-2"
+    ],
+    "elapsed_sec": 35.0,
+    "raw_response": "```mermaid\ngraph LR\n    N01[\"Clinical suspicion of Paget disease^a\"] --> N02[\"• Clinical breast exam\\n• Diagnostic bilateral mammogram, ultrasound as necessary\\n• Assess for distress^b\"]\n    N02 --> N03[\"Examination or Breast Imaging Reporting and Data System (BI-RADS) 4 or 5 imaging\"]\n    N02 --> N04[\"Examination and imaging negative for breast lesion\"]\n    N03 --> N05[\"PAGET-2\"]\n    N04 --> N05\n```"
+  },
+  "PAGET-2": {
+    "label": "PAGET-2",
+    "pdf_page": 109,
+    "source": "qwen3-vl",
+    "mermaid_text": "```mermaid\ngraph LR\n    N01[\"Examination or BI-RADS 4 or 5 imaging\"] --> N02[\"Core biopsy of breast lesion and full-thickness skin biopsy of involved NAC\"]\n    N02 --> N03[\"Breast and NAC biopsy negative\"]\n    N02 --> N04[\"Breast DCIS and NAC Paget\"]\n    N02 --> N05[\"Breast invasive cancer and NAC Paget\"]\n    N02 --> N06[\"Breast negative for cancer and positive NAC Paget\"]\n    N07[\"Examination and imaging negative for breast lesion\"] --> N08[\"Full-thickness skin biopsy of involved NAC\"]\n    N08 --> N09[\"NAC biopsy positive for Paget\"]\n    N08 --> N10[\"NAC biopsy negative for Paget\"]\n    N03 --> N11[\"Clinical follow-up Re-biopsy if not healing\"]\n    N10 --> N11\n    N04 --> N12[\"Consider breast MRI and tissue sampling, if indicated\"]\n    N05 --> N12\n    N06 --> N12\n    N12 --> N13[\"Central lumpectomy including NAC ± SLNB with whole breast RT\"]\n    N12 --> N14[\"Total mastectomy including NAC ± SLNB with or without breast reconstruction\"]\n    N13 --> N15[\"If DCIS or invasive breast cancer, appropriate systemic adjuvant therapy as clinically indicated\"]\n    N14 --> N15\n    N15 --> N16[\"See NCCN Guidelines for DCIS or Invasive Breast Cancer\"]\n    N17[\"c Principles of Dedicated Breast MRI Testing (BINV-B).\"]\n    N18[\"d Mastectomy is always an option with any manifestation of Paget disease (Discussion).\"]\n    N19[\"Note: All recommendations are category 2A unless otherwise indicated.\"]\n```",
+    "nodes": 21,
+    "edges": 18,
+    "cross_refs": [
+      "BINV-B"
+    ],
+    "elapsed_sec": 50.3,
+    "raw_response": "```mermaid\ngraph LR\n    N01[\"Examination or BI-RADS 4 or 5 imaging\"] --> N02[\"Core biopsy of breast lesion and full-thickness skin biopsy of involved NAC\"]\n    N02 --> N03[\"Breast and NAC biopsy negative\"]\n    N02 --> N04[\"Breast DCIS and NAC Paget\"]\n    N02 --> N05[\"Breast invasive cancer and NAC Paget\"]\n    N02 --> N06[\"Breast negative for cancer and positive NAC Paget\"]\n    N07[\"Examination and imaging negative for breast lesion\"] --> N08[\"Full-thickness skin biopsy of involved NAC\"]\n    N08 --> N09[\"NAC biopsy positive for Paget\"]\n    N08 --> N10[\"NAC biopsy negative for Paget\"]\n    N03 --> N11[\"Clinical follow-up Re-biopsy if not healing\"]\n    N10 --> N11\n    N04 --> N12[\"Consider breast MRI and tissue sampling, if indicated\"]\n    N05 --> N12\n    N06 --> N12\n    N12 --> N13[\"Central lumpectomy including NAC ± SLNB with whole breast RT\"]\n    N12 --> N14[\"Total mastectomy including NAC ± SLNB with or without breast reconstruction\"]\n    N13 --> N15[\"If DCIS or invasive breast cancer, appropriate systemic adjuvant therapy as clinically indicated\"]\n    N14 --> N15\n    N15 --> N16[\"See NCCN Guidelines for DCIS or Invasive Breast Cancer\"]\n    N17[\"c Principles of Dedicated Breast MRI Testing (BINV-B).\"]\n    N18[\"d Mastectomy is always an option with any manifestation of Paget disease (Discussion).\"]\n    N19[\"Note: All recommendations are category 2A unless otherwise indicated.\"]\n```"
+  }
+}

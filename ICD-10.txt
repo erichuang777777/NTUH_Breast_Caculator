@@ -1,0 +1,104 @@
+ C50 Malignant neoplasm of breast
+ C50.0 Malignant neoplasm of nipple and areola
+ C50.01 Malignant neoplasm of nipple and areola, female
+ C50.011 Malignant neoplasm of nipple and areola, right female breast
+ C50.012 Malignant neoplasm of nipple and areola, left female breast
+ C50.019 Malignant neoplasm of nipple and areola, unspecified female breast
+ C50.02 Malignant neoplasm of nipple and areola, male
+ C50.021 Malignant neoplasm of nipple and areola, right male breast
+ C50.022 Malignant neoplasm of nipple and areola, left male breast
+ C50.029 Malignant neoplasm of nipple and areola, unspecified male breast
+ C50.1 Malignant neoplasm of central portion of breast
+ C50.11 Malignant neoplasm of central portion of breast, female
+ C50.111 Malignant neoplasm of central portion of right female breast
+ C50.112 Malignant neoplasm of central portion of left female breast
+ C50.119 Malignant neoplasm of central portion of unspecified female breast
+ C50.12 Malignant neoplasm of central portion of breast, male
+ C50.121 Malignant neoplasm of central portion of right male breast
+ C50.122 Malignant neoplasm of central portion of left male breast
+ C50.129 Malignant neoplasm of central portion of unspecified male breast
+ C50.2 Malignant neoplasm of upper-inner quadrant of breast
+ C50.21 Malignant neoplasm of upper-inner quadrant of breast, female
+ C50.211 Malignant neoplasm of upper-inner quadrant of right female breast
+ C50.212 Malignant neoplasm of upper-inner quadrant of left female breast
+ C50.219 Malignant neoplasm of upper-inner quadrant of unspecified female breast
+ C50.22 Malignant neoplasm of upper-inner quadrant of breast, male
+ C50.221 Malignant neoplasm of upper-inner quadrant of right male breast
+ C50.222 Malignant neoplasm of upper-inner quadrant of left male breast
+ C50.229 Malignant neoplasm of upper-inner quadrant of unspecified male breast
+ C50.3 Malignant neoplasm of lower-inner quadrant of breast
+ C50.31 Malignant neoplasm of lower-inner quadrant of breast, female
+ C50.311 Malignant neoplasm of lower-inner quadrant of right female breast
+ C50.312 Malignant neoplasm of lower-inner quadrant of left female breast
+ C50.319 Malignant neoplasm of lower-inner quadrant of unspecified female breast
+ C50.32 Malignant neoplasm of lower-inner quadrant of breast, male
+ C50.321 Malignant neoplasm of lower-inner quadrant of right male breast
+ C50.322 Malignant neoplasm of lower-inner quadrant of left male breast
+ C50.329 Malignant neoplasm of lower-inner quadrant of unspecified male breast
+ C50.4 Malignant neoplasm of upper-outer quadrant of breast
+ C50.41 Malignant neoplasm of upper-outer quadrant of breast, female
+ C50.411 Malignant neoplasm of upper-outer quadrant of right female breast
+ C50.412 Malignant neoplasm of upper-outer quadrant of left female breast
+ C50.419 Malignant neoplasm of upper-outer quadrant of unspecified female breast
+ C50.42 Malignant neoplasm of upper-outer quadrant of breast, male
+ C50.421 Malignant neoplasm of upper-outer quadrant of right male breast
+ C50.422 Malignant neoplasm of upper-outer quadrant of left male breast
+ C50.429 Malignant neoplasm of upper-outer quadrant of unspecified male breast
+ C50.5 Malignant neoplasm of lower-outer quadrant of breast
+ C50.51 Malignant neoplasm of lower-outer quadrant of breast, female
+ C50.511 Malignant neoplasm of lower-outer quadrant of right female breast
+ C50.512 Malignant neoplasm of lower-outer quadrant of left female breast
+ C50.519 Malignant neoplasm of lower-outer quadrant of unspecified female breast
+ C50.52 Malignant neoplasm of lower-outer quadrant of breast, male
+ C50.521 Malignant neoplasm of lower-outer quadrant of right male breast
+ C50.522 Malignant neoplasm of lower-outer quadrant of left male breast
+ C50.529 Malignant neoplasm of lower-outer quadrant of unspecified male breast
+ C50.6 Malignant neoplasm of axillary tail of breast
+ C50.61 Malignant neoplasm of axillary tail of breast, female
+ C50.611 Malignant neoplasm of axillary tail of right female breast
+ C50.612 Malignant neoplasm of axillary tail of left female breast
+ C50.619 Malignant neoplasm of axillary tail of unspecified female breast
+ C50.62 Malignant neoplasm of axillary tail of breast, male
+ C50.621 Malignant neoplasm of axillary tail of right male breast
+ C50.622 Malignant neoplasm of axillary tail of left male breast
+ C50.629 Malignant neoplasm of axillary tail of unspecified male breast
+ C50.8 Malignant neoplasm of overlapping sites of breast
+ C50.81 Malignant neoplasm of overlapping sites of breast, female
+ C50.811 Malignant neoplasm of overlapping sites of right female breast
+ C50.812 Malignant neoplasm of overlapping sites of left female breast
+ C50.819 Malignant neoplasm of overlapping sites of unspecified female breast
+ C50.82 Malignant neoplasm of overlapping sites of breast, male
+ C50.821 Malignant neoplasm of overlapping sites of right male breast
+ C50.822 Malignant neoplasm of overlapping sites of left male breast
+ C50.829 Malignant neoplasm of overlapping sites of unspecified male breast
+ C50.9 Malignant neoplasm of breast of unspecified site
+ C50.91 Malignant neoplasm of breast of unspecified site, female
+ C50.911 Malignant neoplasm of unspecified site of right female breast
+ C50.912 Malignant neoplasm of unspecified site of left female breast
+ C50.919 Malignant neoplasm of unspecified site of unspecified female breast
+ C50.92 Malignant neoplasm of breast of unspecified site, male
+ C50.921 Malignant neoplasm of unspecified site of right male breast
+ C50.922 Malignant neoplasm of unspecified site of left male breast
+ C50.929 Malignant neoplasm of unspecified site of unspecified male breast
+ C50.A Malignant inflammatory neoplasm of breast
+ C50.A0 Malignant inflammatory neoplasm of unspecified breast
+ C50.A1 Malignant inflammatory neoplasm of right breast
+ C50.A2 Malignant inflammatory neoplasm of left breast
+Codes
+ D05 Carcinoma in situ of breast
+ D05.0 Lobular carcinoma in situ of breast
+ D05.00 Lobular carcinoma in situ of unspecified breast
+ D05.01 Lobular carcinoma in situ of right breast
+ D05.02 Lobular carcinoma in situ of left breast
+ D05.1 Intraductal carcinoma in situ of breast
+ D05.10 Intraductal carcinoma in situ of unspecified breast
+ D05.11 Intraductal carcinoma in situ of right breast
+ D05.12 Intraductal carcinoma in situ of left breast
+ D05.8 Other specified type of carcinoma in situ of breast
+ D05.80 Other specified type of carcinoma in situ of unspecified breast
+ D05.81 Other specified type of carcinoma in situ of right breast
+ D05.82 Other specified type of carcinoma in situ of left breast
+ D05.9 Unspecified type of carcinoma in situ of breast
+ D05.90 Unspecified type of carcinoma in situ of unspecified breast
+ D05.91 Unspecified type of carcinoma in situ of right breast
+ D05.92 Unspecified type of carcinoma in situ of left breast

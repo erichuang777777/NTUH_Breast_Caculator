@@ -1,0 +1,1165 @@
+{
+  "summary": {
+    "total_edges": 120,
+    "internal_references": 120,
+    "external_references": 0,
+    "resolved": 120,
+    "unresolved": 0,
+    "unique_targets": 44,
+    "pages_with_refs": 40
+  },
+  "edges": [
+    {
+      "source": "BINV-10",
+      "target": "BINV-17",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-10",
+      "target": "BINV-2",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-10",
+      "target": "BINV-3",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-10",
+      "target": "BINV-I",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "regimen_table",
+      "target_title": "Principles of Radiation Therapy Sequencing"
+    },
+    {
+      "source": "BINV-11",
+      "target": "BINV-17",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-11",
+      "target": "BINV-2",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-11",
+      "target": "BINV-3",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-11",
+      "target": "BINV-I",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "regimen_table",
+      "target_title": "Principles of Radiation Therapy Sequencing"
+    },
+    {
+      "source": "BINV-12",
+      "target": "BINV-13",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-12",
+      "target": "BINV-15",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-12",
+      "target": "BINV-L",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "regimen_table",
+      "target_title": "Candidates for Preoperative Systemic Therapy"
+    },
+    {
+      "source": "BINV-13",
+      "target": "BINV-14",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-13",
+      "target": "BINV-L",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "regimen_table",
+      "target_title": "Candidates for Preoperative Systemic Therapy"
+    },
+    {
+      "source": "BINV-13",
+      "target": "BINV-M",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "regimen_table",
+      "target_title": "Preoperative/Adjuvant Systemic Therapy Regimens"
+    },
+    {
+      "source": "BINV-14",
+      "target": "BINV-16",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-14",
+      "target": "BINV-D",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "principles",
+      "target_title": "Axillary Lymph Node Staging"
+    },
+    {
+      "source": "BINV-15",
+      "target": "BINV-16",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-15",
+      "target": "BINV-L",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "regimen_table",
+      "target_title": "Candidates for Preoperative Systemic Therapy"
+    },
+    {
+      "source": "BINV-16",
+      "target": "BINV-17",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-16",
+      "target": "BINV-K",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "principles",
+      "target_title": "Principles of Endocrine Therapy"
+    },
+    {
+      "source": "BINV-16",
+      "target": "BINV-M",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "regimen_table",
+      "target_title": "Preoperative/Adjuvant Systemic Therapy Regimens"
+    },
+    {
+      "source": "BINV-17",
+      "target": "BINV-18",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-17",
+      "target": "BINV-C",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "principles",
+      "target_title": "Fertility, Birth Control, and Sexual Health"
+    },
+    {
+      "source": "BINV-18",
+      "target": "BINV-19",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-18",
+      "target": "BINV-21",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-18",
+      "target": "BINV-Q",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "regimen_table",
+      "target_title": "Chemotherapy Regimens for Recurrent/Stage IV"
+    },
+    {
+      "source": "BINV-19",
+      "target": "BINV-28",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-19",
+      "target": "BINV-3",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-19",
+      "target": "BINV-K",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "principles",
+      "target_title": "Principles of Endocrine Therapy"
+    },
+    {
+      "source": "BINV-19",
+      "target": "BINV-M",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "regimen_table",
+      "target_title": "Preoperative/Adjuvant Systemic Therapy Regimens"
+    },
+    {
+      "source": "BINV-19",
+      "target": "BINV-P",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "regimen_table",
+      "target_title": "Systemic Therapy for ER+/PR+ Recurrent/Stage IV"
+    },
+    {
+      "source": "BINV-19",
+      "target": "BINV-Q",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "regimen_table",
+      "target_title": "Chemotherapy Regimens for Recurrent/Stage IV"
+    },
+    {
+      "source": "BINV-1",
+      "target": "BINV-12",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-1",
+      "target": "BINV-18",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-1",
+      "target": "BINV-2",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-1",
+      "target": "BINV-3",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-1",
+      "target": "BINV-L",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "regimen_table",
+      "target_title": "Candidates for Preoperative Systemic Therapy"
+    },
+    {
+      "source": "BINV-1",
+      "target": "IBC-1",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Inflammatory Breast Cancer"
+    },
+    {
+      "source": "BINV-1",
+      "target": "PREG-1",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Breast Cancer During Pregnancy"
+    },
+    {
+      "source": "BINV-20",
+      "target": "BINV-22",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-20",
+      "target": "BINV-24",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-20",
+      "target": "BINV-26",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-20",
+      "target": "BINV-27",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-21",
+      "target": "BINV-22",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-21",
+      "target": "BINV-24",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-21",
+      "target": "BINV-26",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-21",
+      "target": "BINV-27",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-22",
+      "target": "BINV-23",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-22",
+      "target": "BINV-28",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-22",
+      "target": "BINV-P",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "regimen_table",
+      "target_title": "Systemic Therapy for ER+/PR+ Recurrent/Stage IV"
+    },
+    {
+      "source": "BINV-22",
+      "target": "BINV-Q",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "regimen_table",
+      "target_title": "Chemotherapy Regimens for Recurrent/Stage IV"
+    },
+    {
+      "source": "BINV-23",
+      "target": "BINV-P",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "regimen_table",
+      "target_title": "Systemic Therapy for ER+/PR+ Recurrent/Stage IV"
+    },
+    {
+      "source": "BINV-23",
+      "target": "BINV-Q",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "regimen_table",
+      "target_title": "Chemotherapy Regimens for Recurrent/Stage IV"
+    },
+    {
+      "source": "BINV-24",
+      "target": "BINV-25",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-24",
+      "target": "BINV-28",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-24",
+      "target": "BINV-P",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "regimen_table",
+      "target_title": "Systemic Therapy for ER+/PR+ Recurrent/Stage IV"
+    },
+    {
+      "source": "BINV-24",
+      "target": "BINV-Q",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "regimen_table",
+      "target_title": "Chemotherapy Regimens for Recurrent/Stage IV"
+    },
+    {
+      "source": "BINV-25",
+      "target": "BINV-P",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "regimen_table",
+      "target_title": "Systemic Therapy for ER+/PR+ Recurrent/Stage IV"
+    },
+    {
+      "source": "BINV-25",
+      "target": "BINV-Q",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "regimen_table",
+      "target_title": "Chemotherapy Regimens for Recurrent/Stage IV"
+    },
+    {
+      "source": "BINV-26",
+      "target": "BINV-28",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-26",
+      "target": "BINV-Q",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "regimen_table",
+      "target_title": "Chemotherapy Regimens for Recurrent/Stage IV"
+    },
+    {
+      "source": "BINV-27",
+      "target": "BINV-28",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-27",
+      "target": "BINV-Q",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "regimen_table",
+      "target_title": "Chemotherapy Regimens for Recurrent/Stage IV"
+    },
+    {
+      "source": "BINV-28",
+      "target": "BINV-C",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "principles",
+      "target_title": "Fertility, Birth Control, and Sexual Health"
+    },
+    {
+      "source": "BINV-28",
+      "target": "BINV-R",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "principles",
+      "target_title": "Principles of Survivorship"
+    },
+    {
+      "source": "BINV-2",
+      "target": "BINV-4",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-2",
+      "target": "BINV-I",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "regimen_table",
+      "target_title": "Principles of Radiation Therapy Sequencing"
+    },
+    {
+      "source": "BINV-3",
+      "target": "BINV-4",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-3",
+      "target": "BINV-I",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "regimen_table",
+      "target_title": "Principles of Radiation Therapy Sequencing"
+    },
+    {
+      "source": "BINV-4",
+      "target": "BINV-10",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-4",
+      "target": "BINV-11",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-4",
+      "target": "BINV-5",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-4",
+      "target": "BINV-6",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-4",
+      "target": "BINV-7",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-4",
+      "target": "BINV-8",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-4",
+      "target": "BINV-9",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-5",
+      "target": "BINV-1",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-5",
+      "target": "BINV-17",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-5",
+      "target": "BINV-2",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-5",
+      "target": "BINV-3",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-6",
+      "target": "BINV-17",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-6",
+      "target": "BINV-2",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-6",
+      "target": "BINV-3",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-6",
+      "target": "BINV-I",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "regimen_table",
+      "target_title": "Principles of Radiation Therapy Sequencing"
+    },
+    {
+      "source": "BINV-6",
+      "target": "BINV-K",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "principles",
+      "target_title": "Principles of Endocrine Therapy"
+    },
+    {
+      "source": "BINV-7",
+      "target": "BINV-17",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-7",
+      "target": "BINV-2",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-7",
+      "target": "BINV-3",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-7",
+      "target": "BINV-I",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "regimen_table",
+      "target_title": "Principles of Radiation Therapy Sequencing"
+    },
+    {
+      "source": "BINV-7",
+      "target": "BINV-K",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "principles",
+      "target_title": "Principles of Endocrine Therapy"
+    },
+    {
+      "source": "BINV-8",
+      "target": "BINV-17",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-8",
+      "target": "BINV-2",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-8",
+      "target": "BINV-3",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-8",
+      "target": "BINV-I",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "regimen_table",
+      "target_title": "Principles of Radiation Therapy Sequencing"
+    },
+    {
+      "source": "BINV-8",
+      "target": "BINV-K",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "principles",
+      "target_title": "Principles of Endocrine Therapy"
+    },
+    {
+      "source": "BINV-8",
+      "target": "BINV-M",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "regimen_table",
+      "target_title": "Preoperative/Adjuvant Systemic Therapy Regimens"
+    },
+    {
+      "source": "BINV-9",
+      "target": "BINV-1",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-9",
+      "target": "BINV-17",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-9",
+      "target": "BINV-2",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "BINV-9",
+      "target": "BINV-3",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "DCIS-1",
+      "target": "DCIS-2",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "PHYLL-1",
+      "target": "BINV-1",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "PHYLL-1",
+      "target": "DCIS-1",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Note: All recommendations are category 2A unless otherwise indicated."
+    },
+    {
+      "source": "PREG-1",
+      "target": "PREG-2",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Breast Cancer During Pregnancy (continued)"
+    },
+    {
+      "source": "IBC-1",
+      "target": "BINV-L",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "regimen_table",
+      "target_title": "Candidates for Preoperative Systemic Therapy"
+    },
+    {
+      "source": "IBC-1",
+      "target": "IBC-2",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Inflammatory Breast Cancer (continued)"
+    },
+    {
+      "source": "PAGET-1",
+      "target": "PAGET-2",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "flowchart",
+      "target_title": "Paget's Disease (continued)"
+    },
+    {
+      "source": "PAGET-2",
+      "target": "BINV-B",
+      "type": "cross_reference",
+      "target_exists": true,
+      "target_type": "principles",
+      "target_title": "Principles of Dedicated Breast MRI Testing"
+    },
+    {
+      "source": "BINV-D",
+      "target": "BINV-E",
+      "type": "cross_reference",
+      "target_exists": true,
+      "source_type": "supplementary"
+    },
+    {
+      "source": "BINV-F",
+      "target": "DCIS-M",
+      "type": "cross_reference",
+      "target_exists": true,
+      "source_type": "supplementary"
+    },
+    {
+      "source": "BINV-F",
+      "target": "BINV-I",
+      "type": "cross_reference",
+      "target_exists": true,
+      "source_type": "supplementary"
+    },
+    {
+      "source": "BINV-G",
+      "target": "BINV-F",
+      "type": "cross_reference",
+      "target_exists": true,
+      "source_type": "supplementary"
+    },
+    {
+      "source": "BINV-G",
+      "target": "PREG-1",
+      "type": "cross_reference",
+      "target_exists": true,
+      "source_type": "supplementary"
+    },
+    {
+      "source": "BINV-K",
+      "target": "BINV-A",
+      "type": "cross_reference",
+      "target_exists": true,
+      "source_type": "supplementary"
+    },
+    {
+      "source": "BINV-K",
+      "target": "BINV-O",
+      "type": "cross_reference",
+      "target_exists": true,
+      "source_type": "supplementary"
+    },
+    {
+      "source": "BINV-K",
+      "target": "BINV-L",
+      "type": "cross_reference",
+      "target_exists": true,
+      "source_type": "supplementary"
+    },
+    {
+      "source": "BINV-K",
+      "target": "BINV-N",
+      "type": "cross_reference",
+      "target_exists": true,
+      "source_type": "supplementary"
+    },
+    {
+      "source": "BINV-M",
+      "target": "BINV-K",
+      "type": "cross_reference",
+      "target_exists": true,
+      "source_type": "supplementary"
+    },
+    {
+      "source": "BINV-M",
+      "target": "BINV-L",
+      "type": "cross_reference",
+      "target_exists": true,
+      "source_type": "supplementary"
+    },
+    {
+      "source": "BINV-N",
+      "target": "BINV-J",
+      "type": "cross_reference",
+      "target_exists": true,
+      "source_type": "supplementary"
+    }
+  ],
+  "unresolved_targets": [],
+  "external_targets": [],
+  "refs_by_source": {
+    "BINV-10": [
+      "BINV-17",
+      "BINV-2",
+      "BINV-3",
+      "BINV-I"
+    ],
+    "BINV-11": [
+      "BINV-17",
+      "BINV-2",
+      "BINV-3",
+      "BINV-I"
+    ],
+    "BINV-12": [
+      "BINV-13",
+      "BINV-15",
+      "BINV-L"
+    ],
+    "BINV-13": [
+      "BINV-14",
+      "BINV-L",
+      "BINV-M"
+    ],
+    "BINV-14": [
+      "BINV-16",
+      "BINV-D"
+    ],
+    "BINV-15": [
+      "BINV-16",
+      "BINV-L"
+    ],
+    "BINV-16": [
+      "BINV-17",
+      "BINV-K",
+      "BINV-M"
+    ],
+    "BINV-17": [
+      "BINV-18",
+      "BINV-C"
+    ],
+    "BINV-18": [
+      "BINV-19",
+      "BINV-21",
+      "BINV-Q"
+    ],
+    "BINV-19": [
+      "BINV-28",
+      "BINV-3",
+      "BINV-K",
+      "BINV-M",
+      "BINV-P",
+      "BINV-Q"
+    ],
+    "BINV-1": [
+      "BINV-12",
+      "BINV-18",
+      "BINV-2",
+      "BINV-3",
+      "BINV-L",
+      "IBC-1",
+      "PREG-1"
+    ],
+    "BINV-20": [
+      "BINV-22",
+      "BINV-24",
+      "BINV-26",
+      "BINV-27"
+    ],
+    "BINV-21": [
+      "BINV-22",
+      "BINV-24",
+      "BINV-26",
+      "BINV-27"
+    ],
+    "BINV-22": [
+      "BINV-23",
+      "BINV-28",
+      "BINV-P",
+      "BINV-Q"
+    ],
+    "BINV-23": [
+      "BINV-P",
+      "BINV-Q"
+    ],
+    "BINV-24": [
+      "BINV-25",
+      "BINV-28",
+      "BINV-P",
+      "BINV-Q"
+    ],
+    "BINV-25": [
+      "BINV-P",
+      "BINV-Q"
+    ],
+    "BINV-26": [
+      "BINV-28",
+      "BINV-Q"
+    ],
+    "BINV-27": [
+      "BINV-28",
+      "BINV-Q"
+    ],
+    "BINV-28": [
+      "BINV-C",
+      "BINV-R"
+    ],
+    "BINV-2": [
+      "BINV-4",
+      "BINV-I"
+    ],
+    "BINV-3": [
+      "BINV-4",
+      "BINV-I"
+    ],
+    "BINV-4": [
+      "BINV-10",
+      "BINV-11",
+      "BINV-5",
+      "BINV-6",
+      "BINV-7",
+      "BINV-8",
+      "BINV-9"
+    ],
+    "BINV-5": [
+      "BINV-1",
+      "BINV-17",
+      "BINV-2",
+      "BINV-3"
+    ],
+    "BINV-6": [
+      "BINV-17",
+      "BINV-2",
+      "BINV-3",
+      "BINV-I",
+      "BINV-K"
+    ],
+    "BINV-7": [
+      "BINV-17",
+      "BINV-2",
+      "BINV-3",
+      "BINV-I",
+      "BINV-K"
+    ],
+    "BINV-8": [
+      "BINV-17",
+      "BINV-2",
+      "BINV-3",
+      "BINV-I",
+      "BINV-K",
+      "BINV-M"
+    ],
+    "BINV-9": [
+      "BINV-1",
+      "BINV-17",
+      "BINV-2",
+      "BINV-3"
+    ],
+    "DCIS-1": [
+      "DCIS-2"
+    ],
+    "PHYLL-1": [
+      "BINV-1",
+      "DCIS-1"
+    ],
+    "PREG-1": [
+      "PREG-2"
+    ],
+    "IBC-1": [
+      "BINV-L",
+      "IBC-2"
+    ],
+    "PAGET-1": [
+      "PAGET-2"
+    ],
+    "PAGET-2": [
+      "BINV-B"
+    ],
+    "BINV-D": [
+      "BINV-E"
+    ],
+    "BINV-F": [
+      "BINV-I",
+      "DCIS-M"
+    ],
+    "BINV-G": [
+      "BINV-F",
+      "PREG-1"
+    ],
+    "BINV-K": [
+      "BINV-A",
+      "BINV-L",
+      "BINV-N",
+      "BINV-O"
+    ],
+    "BINV-M": [
+      "BINV-K",
+      "BINV-L"
+    ],
+    "BINV-N": [
+      "BINV-J"
+    ]
+  }
+}

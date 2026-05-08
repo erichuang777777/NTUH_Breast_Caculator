@@ -1,0 +1,915 @@
+{
+  "DCIS-1": {
+    "label": "DCIS-1",
+    "pdf_pages": [
+      11
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated.",
+    "footnotes": {
+      "b": "The Panel endorses the College of American Pathologists Protocol for pathology reporting for all invasive and noninvasive carcinomas of the breast. http://www.cap.org.",
+      "c": "For risk criteria, see NCCN Guidelines for Genetic/Familial High-Risk Assessment: Breast, Ovarian, Pancreatic, and Prostate.",
+      "d": "Principles of Dedicated Breast MRI Testing (BINV-B).",
+      "e": "The use of MRI has not been shown to increase likelihood of negative margins",
+      "f": "Refer to the NCCN Guidelines for Distress Management (DIS-A) for the NCCN Distress Thermometer and Problem List, which includes social determinants of health.",
+      "g": "Re-resection(s) may be performed in an effort to obtain negative margins in patients desiring breast-conservation therapy. Patients in whom adequate surgical margins cannot be achieved with BCS should undergo a total mastectomy. For definition of adequate surgical margins, see Margin Status Recommendations After BCS for Invasive Cancers and DCIS (BINV-F). DIAGNOSIS WORKUP PRIMARY TREATMENT DCIS Tis,N0,M0, Encapsulated or solid papillary carcinoma (SPC)a",
+      "h": "Surgical axillary staging should not be performed for preoperative (biopsy- determined) pure DCIS unless there is some clinical-radiographic-pathologic suggestion of invasion or axillary metastasis. SLNB may be considered for 1) concern of persistently positive margins 2) excision in an anatomic location compromising the performance of a future SLNB procedure; or 3) oncoplastic breast-conserving surgery (see BINV-D for considerations for SLNB).",
+      "i": "Omission of SLNB in the setting of mastectomy may be considered in patients >50 years with non-palpable low-grade ER-positive DCIS with no abnormal axillary findings and in patients in whom the primary reason for mastectomy is patient preference.",
+      "j": "Principles of Breast Reconstruction Following Surgery (BINV-H).",
+      "k": "Invasive disease at total mastectomy or re-excision should be managed as clinical stage l or stage ll disease (BINV-1).",
+      "l": "Principles of Radiation Therapy (BINV-I).",
+      "m": "Contraindications to Breast-Conserving Approaches Requiring RT (BINV-G).",
+      "n": "Whole breast RT following BCS reduces ipsilateral breast tumor recurrence (IBTR) rates for all DCIS by 50%–70%. Approximately half of the recurrences"
+    }
+  },
+  "DCIS-2": {
+    "label": "DCIS-2",
+    "pdf_pages": [
+      12
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated.",
+    "footnotes": {
+      "o": "genotype testing is not recommended for patients considering tamoxifen. CYP2D6",
+      "p": "Available data suggest endocrine therapy provides risk reduction in the ipsilateral breast treated with breast conservation and in the contralateral breast in patients with mastectomy or breast conservation with ER-positive primary tumors. Since a survival advantage has not been demonstrated, individual consideration of risks and benefits is important.",
+      "q": "The use of a bisphosphonate (PO/IV) or denosumab is acceptable to maintain or improve bone mineral density (BMD) and reduce risk of fractures in postmenopausal (natural or induced) patients receiving adjuvant aromatase inhibitor therapy. Optimal duration of either therapy has not been established. Benefits from duration beyond 3 years or optimal duration beyond 3 years is not known. Factors to consider for duration of anti-osteoporosis therapy include BMD, response to therapy, and risk factors for continued bone loss or fracture. There are case reports of spontaneous fractures after denosumab discontinuation. Patients treated with a bisphosphonate",
+      "r": "Low-dose tamoxifen (5 mg per day or 10 mg every other day for 3–5 years) is an option if patient is symptomatic on the 20-mg dose or if patient is unwilling or unable to take standard-dose 20 mg per day tamoxifen [10 mg every other day since 5-mg dose is not available in the United States]. This low dosage needs further investigation in premenopausal individuals (DeCensi A, et al. J Clin Oncol 2019;37:1629-1637). Note: All recommendations are category 2A unless otherwise indicated."
+    }
+  },
+  "DCIS-M": {
+    "label": "DCIS-M",
+    "pdf_pages": [
+      133
+    ],
+    "pdf_page_count": 1,
+    "section": "lettered",
+    "type": "principles",
+    "title": "Trials are ongoing to determine if there might be a selected favorable"
+  },
+  "BINV-1": {
+    "label": "BINV-1",
+    "pdf_pages": [
+      13
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated.",
+    "footnotes": {
+      "b": "Based on SOUND and INSEMA trials, patients >50 years",
+      "c": "Breast MRI may be useful for characterizing axillary and/or internal mammary nodal disease. See Principles",
+      "d": "The Panel endorses the College of American Pathologists Protocol for pathology reporting for all invasive and noninvasive carcinomas of the breast. http://www.cap.org.",
+      "e": "Principles of Biomarker Testing (BINV-A) . Oncology . For risk criteria, f Based on SOUND and INSEMA trials, patients >50 years see NCCN Guidelines for Genetic/Familial High-Risk Assessment: Breast, Ovarian, Pancreatic, and Prostate . b For Fertility, Birth Control, and Sexual Health, see g BINV-C . The general considerations for fertility and sexual health/function and postmenopausal with cT1N0 (node negative by outlined for specific populations in NCCN Guidelines for Adolescent and Young Adult (AYA) Oncology and NCCN Guidelines for axillary ultrasound), with HR+/HER2-negative, grade 1–2 Survivorship are applicable to all patients diagnosed with breast cancer. tumors who are agreeable to receiving whole breast RT Refer to the h NCCN Guidelines for Distress Management (DIS-A) for the NCCN Distress Thermometer and Problem List, which and endocrine therapy may be considered for omission includes social determinants of health. of SLNB. Caution should be used in those with lobular Routine systemic staging is not indicated for non-metastatic (M0) cancer in the absence of systemic symptoms. If metastatic i histology. Breast MRI may be useful for characterizing axillary disease is suspected, see Workup on BINV-18 . c Patients with a known genetic predisposition to breast cancer may have an increased risk of contralateral or ipsilateral breast j and/or internal mammary nodal disease. See Principles cancers after breast-conservation therapy. Risk reduction strategies including prophylactic mastectomies should be discussed. of Dedicated Breast MRI Testing (BINV-B) and NCCN See NCCN Guidelines for Genetic/Familial High-Risk Assessment: Breast, Ovarian, Pancreatic, and Prostate . Guidelines for Breast Cancer Screening and Diagnosis . Note: All recommendations are category 2A unless otherwise indicated.",
+      "f": "For risk criteria, see NCCN Guidelines for Genetic/Familial High-Risk Assessment: Breast, Ovarian, Pancreatic, and Prostate.",
+      "g": "For Fertility, Birth Control, and Sexual Health, see BINV-C. The general considerations for fertility and sexual health/function outlined for specific populations in NCCN Guidelines for Adolescent and Young Adult (AYA) Oncology and NCCN Guidelines for Survivorship are applicable to all patients diagnosed with breast cancer.",
+      "h": "Refer to the NCCN Guidelines for Distress Management (DIS-A) for the NCCN Distress Thermometer and Problem List, which includes social determinants of health.",
+      "i": "Routine systemic staging is not indicated for non-metastatic (M0) cancer in the absence of systemic symptoms. If metastatic disease is suspected, see Workup on BINV-18.",
+      "j": "Patients with a known genetic predisposition to breast cancer may have an increased risk of contralateral or ipsilateral breast cancers after breast-conservation therapy. Risk reduction strategies including prophylactic mastectomies should be discussed. See NCCN Guidelines for Genetic/Familial High-Risk Assessment: Breast, Ovarian, Pancreatic, and Prostate."
+    }
+  },
+  "BINV-2": {
+    "label": "BINV-2",
+    "pdf_pages": [
+      14
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated.",
+    "footnotes": {
+      "b": "Based on SOUND and INSEMA trials, patients >50 years and postmenopausal with cT1N0 Axillary Lymph Node Staging (BINV-E) and Margin Status Recommendations After BCS for Invasive Cancers (node negative by axillary ultrasound), with HR+/HER2-negative, grade 1–2 tumors who and DCIS (BINV-F) . o",
+      "j": "Patients with a known genetic predisposition to breast cancer may have an increased mastopexy to allow for greater volumes of resection while optimizing aesthetic outcomes in patients undergoing risk of contralateral or ipsilateral breast cancers after breast-conservation therapy. Risk BCS.",
+      "k": "Special Considerations for Breast Cancer in Males (Sex Assigned at Birth) (BINV-J).",
+      "l": "For patients >40 years of age with 2 biopsy-proven cTis–cT2 lesions (with at least one s Consider imaging for systemic staging, including chest/abdomen ± pelvis diagnostic CT with contrast, bone scan, invasive site) after MRI evaluation, intending on adjuvant whole breast radiation + and optional FDG-PET/CT. t boost, breast-conservation therapy may be considered (Boughey JC, et al. J Clin Oncol Principles of Radiation Therapy (BINV-I) .",
+      "m": "v APBI/PBI may be administered prior to chemotherapy. Considerations for Surgical Axillary Staging (BINV-D) . Note: All recommendations are category 2A unless otherwise indicated.",
+      "o": "Contraindications to Breast-Conserving Approaches Requiring RT (BINV-G).",
+      "p": "Includes techniques such as local tissue rearrangement, local flaps, regional flaps, breast reduction, and omission of SLNB. Caution should be used in those with lobular histology.",
+      "q": "Determined by surgery, clinical findings, or radiographic imaging. reduction strategies including prophylactic mastectomies should be discussed. See NCCN",
+      "r": "Based on data from the Europa trial (Meattini I, et al. Lancet 2025;26;37-50), older patients eligible for omission of Guidelines for Genetic/Familial High-Risk Assessment: Breast, Ovarian, Pancreatic, and Prostate . RT may choose to receive RT alone instead of endocrine therapy with no adverse effects on early breast cancer k Special Considerations for Breast Cancer in Males (Sex Assigned at Birth) (BINV-J) . outcomes.",
+      "s": "Consider imaging for systemic staging, including chest/abdomen ± pelvis diagnostic CT with contrast, bone scan,",
+      "t": "Principles of Radiation Therapy (BINV-I).",
+      "u": "For definition of HR-positive, see 2023;41:3184-3193). See BINV-G . Principles of Endocrine Therapy (BINV-K) .",
+      "v": "APBI/PBI may be administered prior to chemotherapy. Whole breast RT ± boost (use of comprehensive RNI with or without intentional inclusion of axilla at the discretion of the radiation oncologist) (category 1) Meets ALL of the following criteria:"
+    }
+  },
+  "BINV-3": {
+    "label": "BINV-3",
+    "pdf_pages": [
+      15
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated.",
+    "footnotes": {
+      "k": "Special Considerations for Breast Cancer in Males (Sex Assigned at Birth) (BINV-J).",
+      "m": "Considerations for Surgical Axillary Staging (BINV-D).",
+      "n": "See Axillary Lymph Node Staging (BINV-E) and Margin Status Recommendations After BCS for Invasive Cancers and DCIS (BINV-F).",
+      "s": "Consider imaging for systemic staging, including chest/abdomen ± pelvis diagnostic CT with contrast, bone scan, and optional FDG-PET/CT. Negative axillary nodes and pT3 (>5 cm) Consider PMRTt to chest wall ± comprehensive RNI (including any portion of the undissected axilla at risk).z LOCOREGIONAL TREATMENT OF cT1–3, cN0 or cN+, M0 DISEASEa,k: MASTECTOMY ± PMRT",
+      "t": "Principles of Radiation Therapy (BINV-I) . a For tools to aid optimal assessment and comprehensive care of older adults,",
+      "w": "Principles of Breast Reconstruction Following Surgery (BINV-H) . see NCCN Guidelines for Older Adult Oncology .",
+      "x": "In the case of pN1mi (a micrometastasis [>0.2 to ≤2.0 mm]), and no axillary dissection, k Special Considerations for Breast Cancer in Males (Sex Assigned at Birth) evaluate other patient risk factors when considering RT. (BINV-J) .",
+      "y": "PMRT may be considered for patients with multiple high-risk recurrence factors, m Considerations for Surgical Axillary Staging (BINV-D) . including central/medial tumors or tumors ≥2 cm and at least one of the following: grade n See Axillary Lymph Node Staging (BINV-E) and Margin Status 3, ER-negative, young age/longevity, or LVI. Recommendations After BCS for Invasive Cancers and DCIS (BINV-F) .",
+      "z": "In the case of pT3N0, high-risk features for considering PMRT include, but are not s Consider imaging for systemic staging, including chest/abdomen ± pelvis diagnostic CT with contrast, bone scan, and optional FDG-PET/CT. limited to, young age/longevity and/or LVI. Note: All recommendations are category 2A unless otherwise indicated."
+    }
+  },
+  "BINV-4": {
+    "label": "BINV-4",
+    "pdf_pages": [
+      16
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated.",
+    "footnotes": {
+      "aa": "According to WHO, carcinoma of no special type (NST) encompasses multiple patterns including medullary pattern, cancers with neuroendocrine expression, and other rare patterns.",
+      "bb": "There are rare subtypes of metaplastic carcinoma (low-grade adenosquamous and low-grade fibromatosis-like carcinoma) that are considered to have a favorable prognosis without adjuvant systemic therapies.",
+      "cc": "To be associated with favorable prognosis, the favorable histologic type should not be high grade, should be pure (>90% as classified on the surgical excision, not core biopsy alone), and should be HER2 negative. If atypical pathologic or clinical features are present, consider treating as ductal/NST. HISTOLOGY HR STATUS HER2 STATUS SYSTEMIC ADJUVANT TREATMENT",
+      "dd": "Correlation of histology, HR, and HER2 status should always be done with awareness of unusual/discordant or borderline results. See Principles of Biomarker Testing (BINV-A).",
+      "ee": "ee bb dd aa ee bb cc ff Note: All recommendations are category 2A unless otherwise indicated.",
+      "ff": "Definition of Menopause (BINV-O)."
+    }
+  },
+  "BINV-5": {
+    "label": "BINV-5",
+    "pdf_pages": [
+      17
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated.",
+    "footnotes": {
+      "e": "Principles of Biomarker Testing (BINV-A).",
+      "k": "Special Considerations for Breast Cancer in Males (Sex Assigned at Birth) (BINV-J).",
+      "aa": "jj \u0007 ee kk \u0007 ll \u0007 gg",
+      "ee": "Although patients with cancers with 1%–100% ER IHC staining are considered ER-positive and eligible for endocrine therapies, there are more limited data on the subgroup of cancers with ER-low–positive (1%–10%) results. The ER-low–positive group is heterogeneous with reported biologic behavior often similar to ER-negative cancers; thus, individualized consideration of risks versus benefits of endocrine therapy and additional adjuvant therapies should be incorporated into decision- making. See Principles of Biomarker Testing (BINV-A).",
+      "gg": "Adjuvant Endocrine ± CDK/4/6 Inhibitor Therapy and Principles of Adjuvant Endocrine Therapy (BINV-K).",
+      "hh": "mm ii Note: All recommendations are category 2A unless otherwise indicated.",
+      "ii": "The benefit of HER2-targeted therapy is uncertain in HER2-positive breast cancer with pT1a–b, N0 tumors, a population not studied in randomized trials. The decision",
+      "jj": "\u0007The absolute benefit of HER2-targeted systemic therapy is negligible in patients with HR-positive cancers and tumor size bordering on T1mic (<1 mm), and endocrine therapy remains a viable option for systemic treatment.",
+      "kk": "\u0007Consider adjuvant bisphosphonate therapy for risk reduction of distant metastasis for 3–5 years in postmenopausal patients (natural or induced) with high-risk node-negative or node-positive tumors.",
+      "ll": "\u0007Consider extended adjuvant neratinib following adjuvant trastuzumab-containing therapy for patients with HR-positive, HER2-positive disease with a perceived high risk of recurrence. The benefit or toxicities associated with extended neratinib in patients who have received pertuzumab or ado-trastuzumab emtansine is unknown.",
+      "mm": "Updated results from the adjuvant APHINITY trial in HER2-positive early breast cancer, with a median follow-up of 11.3 years, have confirmed the benefit of adding pertuzumab to trastuzumab plus chemotherapy in preventing recurrences."
+    }
+  },
+  "BINV-6": {
+    "label": "BINV-6",
+    "pdf_pages": [
+      18
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated.",
+    "footnotes": {
+      "k": "Special Considerations for Breast Cancer in Males (Sex Assigned at Birth) (BINV-J).",
+      "ee": "Although patients with cancers with 1%–100% ER IHC staining are considered ER-positive and eligible for endocrine therapies, there are more limited data on the subgroup of cancers with ER-low–positive (1%–10%) results. The ER-low–positive group is heterogeneous with reported biologic behavior often similar to ER-negative cancers; thus, individualized consideration of risks versus benefits of endocrine therapy and additional adjuvant therapies should be incorporated into decision-making. See Principles of Biomarker Testing (BINV-A). SYSTEMIC ADJUVANT TREATMENT: HR-POSITIVE – HER2-NEGATIVE DISEASEe,k,ee POSTMENOPAUSALff PATIENTS with pT1–3 AND pN0 or pN+ TUMORS",
+      "ff": "Definition of Menopause (BINV-O).",
+      "gg": "Adjuvant Endocrine ± CDK/4/6 Inhibitor Therapy and Principles of Adjuvant Endocrine Therapy (BINV-K).",
+      "hh": "Preoperative/Adjuvant Therapy Regimens (BINV-M).",
+      "kk": "\u0007Consider adjuvant bisphosphonate therapy for risk reduction of distant metastasis for 3–5 years in postmenopausal patients (natural or induced) with high-risk node-negative or node- positive tumors.",
+      "nn": "ee oo \u0007 pp \u0007 Note: All recommendations are category 2A unless otherwise indicated.",
+      "oo": "\u0007Other prognostic gene expression assays may be considered to help assess risk of recurrence but have not been validated to predict response to chemotherapy. See Gene Expression Assays for Consideration of Adjuvant Systemic Therapy (BINV-N).",
+      "pp": "\u0007Patients with T1b tumors with low-grade histology and no LVI should be treated with endocrine monotherapy as the TAILORx trial did not include patients with such tumors."
+    }
+  },
+  "BINV-7": {
+    "label": "BINV-7",
+    "pdf_pages": [
+      19
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated.",
+    "footnotes": {
+      "k": "Special Considerations for Breast Cancer in Males (Sex Assigned at Birth) (BINV-J).",
+      "ee": "oo \u0007 pp \u0007 qq ff Note: All recommendations are category 2A unless otherwise indicated.",
+      "ff": "Definition of Menopause (BINV-O). SYSTEMIC ADJUVANT TREATMENT: HR-POSITIVE – HER2-NEGATIVE DISEASEe,k,ee PREMENOPAUSALff PATIENTS with pT1–3 AND pN0 TUMORS",
+      "gg": "Adjuvant Endocrine ± CDK/4/6 Inhibitor Therapy and Principles of Adjuvant Endocrine Therapy (BINV-K).",
+      "hh": "Preoperative/Adjuvant Therapy Regimens (BINV-M).",
+      "kk": "Consider adjuvant bisphosphonate therapy for risk reduction of distant metastasis for 3–5 years in postmenopausal patients (natural or induced) with high-risk node-negative or node-positive tumors.",
+      "oo": "\u0007Other prognostic gene expression assays may be considered to help assess risk of recurrence but have not been validated to predict response to chemotherapy. See Gene Expression Assays for Consideration of Adjuvant Systemic Therapy (BINV-N).",
+      "pp": "\u0007Patients with T1b tumors with low-grade histology and no LVI should be treated with endocrine monotherapy as the TAILORx trial did not include patients with such tumors.",
+      "qq": "In premenopausal patients with recurrence score <26, the addition of chemotherapy to endocrine therapy was associated with a lower rate of distant recurrence compared with endocrine monotherapy, but it is unclear if the benefit was due to the ovarian suppression effects promoted by chemotherapy. Determine if candidate for chemotherapy"
+    }
+  },
+  "BINV-8": {
+    "label": "BINV-8",
+    "pdf_pages": [
+      20
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated.",
+    "footnotes": {
+      "e": "Principles of Biomarker Testing (BINV-A).",
+      "k": "Special Considerations for Breast Cancer in Males (Sex Assigned at Birth) (BINV-J).",
+      "aa": "kk \u0007 ee nn qq ff gg rr hh Note: All recommendations are category 2A unless otherwise indicated.",
+      "ee": "Although patients with cancers with 1%–100% ER IHC staining are considered ER-positive and eligible for endocrine therapies, there are more limited data on the subgroup of cancers with ER-low–positive (1%–10%) results. The ER-low–positive group is heterogeneous with reported biologic behavior often similar to ER-negative cancers; thus individualized consideration of risks versus benefits of endocrine therapy and additional adjuvant therapies should be incorporated into decision- making. See Principles of Biomarker Testing (BINV-A).",
+      "ff": "Definition of Menopause (BINV-O).",
+      "gg": "Adjuvant Endocrine ± CDK/4/6 Inhibitor Therapy and Principles of Adjuvant Endocrine Therapy (BINV-K).",
+      "hh": "Preoperative/Adjuvant Therapy Regimens (BINV-M). SYSTEMIC ADJUVANT TREATMENT: HR-POSITIVE – HER2-NEGATIVE DISEASEe,k,ee PREMENOPAUSALff PATIENTS with pT1–3 AND pN+ TUMORS",
+      "kk": "\u0007Consider adjuvant bisphosphonate therapy for risk reduction of distant metastasis for 3–5 years in postmenopausal patients (natural or induced) with high-risk node-negative or node-positive tumors.",
+      "nn": "There are few data regarding the role of gene expression assays in those with ≥4 ipsilateral axillary lymph nodes. Decisions to administer adjuvant chemotherapy for this group should be based on clinical factors.",
+      "qq": "In premenopausal patients with recurrence score <26, the addition of chemotherapy to endocrine therapy was associated with a lower rate of distant recurrence compared with endocrine monotherapy, but it is unclear",
+      "rr": "Gene Expression Assays for Consideration of Adjuvant Systemic Therapy (BINV-N)."
+    }
+  },
+  "BINV-9": {
+    "label": "BINV-9",
+    "pdf_pages": [
+      21
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated.",
+    "footnotes": {
+      "e": "Principles of Biomarker Testing (BINV-A) .",
+      "k": "Special Considerations for Breast Cancer in Males (Sex Assigned at Birth) (BINV-J) .",
+      "aa": "According to WHO, carcinoma of NST encompasses multiple patterns including medullary pattern, cancers with neuroendocrine expression, and other rare patterns.",
+      "hh": "Preoperative/Adjuvant Therapy Regimens (BINV-M) .",
+      "ii": "\u0007 The benefit of HER2-targeted therapy is uncertain in HER2-positive breast cancer with pT1a-b, N0 tumors, a population not studied in randomized trials. The decision for",
+      "kk": "\u0007 Consider adjuvant bisphosphonate therapy for risk reduction of distant metastasis for 3–5 years in postmenopausal patients (natural or induced) with high-risk node- negative or node-positive tumors.",
+      "mm": "Updated results from the adjuvant APHINITY trial in HER2-positive early breast cancer, with a median follow-up of 11.3 years, have confirmed the benefit of adding pertuzumab to trastuzumab plus chemotherapy in preventing recurrences. Note: All recommendations are category 2A unless otherwise indicated."
+    }
+  },
+  "BINV-10": {
+    "label": "BINV-10",
+    "pdf_pages": [
+      22
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated.",
+    "footnotes": {
+      "e": "Principles of Biomarker Testing (BINV-A) .",
+      "k": "Special Considerations for Breast Cancer in Males (Sex Assigned at Birth) (BINV-J) .",
+      "aa": "According to WHO, carcinoma of NST encompasses multiple patterns including medullary pattern, cancers with neuroendocrine expression, and other rare patterns.",
+      "bb": "There are rare subtypes of metaplastic carcinoma (eg, low-grade adenosquamous and low-grade fibromatosis-like carcinoma) that are considered to have a favorable prognosis without adjuvant systemic therapies.",
+      "hh": "Preoperative/Adjuvant Therapy Regimens (BINV-M) .",
+      "kk": "\u0007 Consider adjuvant bisphosphonate therapy for risk reduction of distant metastasis for 3–5 years in postmenopausal patients (natural or induced) with high-risk node- negative or node-positive tumors.",
+      "ss": "In select patients with high-risk features (eg, young patients with high-grade histology), adjuvant chemotherapy may be considered (category 2B). See BINV-L . Note: All recommendations are category 2A unless otherwise indicated."
+    }
+  },
+  "BINV-11": {
+    "label": "BINV-11",
+    "pdf_pages": [
+      23
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated.",
+    "footnotes": {
+      "k": "dd Special Considerations for Breast Cancer in Males (Sex Assigned at Birth) Correlation of histology, HR, and HER2 status should always be done with (BINV-J) . awareness of unusual/discordant or borderline results. See Principles of",
+      "bb": "There are rare subtypes of metaplastic carcinoma (eg, low-grade Biomarker Testing (BINV-A) .",
+      "cc": "hh To be associated with favorable prognosis, the favorable histologic type should Preoperative/Adjuvant Therapy Regimens (BINV-M) .",
+      "dd": "Correlation of histology, HR, and HER2 status should always be done with awareness of unusual/discordant or borderline results. See Principles of Biomarker Testing (BINV-A).",
+      "gg": "adenosquamous and low-grade fibromatosis-like carcinoma) that are considered Adjuvant Endocrine ± CDK/4/6 Inhibitor Therapy and Principles of Adjuvant",
+      "hh": "Preoperative/Adjuvant Therapy Regimens (BINV-M).",
+      "kk": "not be high grade, should be pure (>90% as classified on the surgical excision, Consider adjuvant bisphosphonate therapy for risk reduction of distant"
+    }
+  },
+  "BINV-12": {
+    "label": "BINV-12",
+    "pdf_pages": [
+      24
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated.",
+    "footnotes": {
+      "b": "Breast MRI may be useful for characterizing axillary and/or internal mammary nodal disease. See Principles of Dedicated Breast MRI Testing (BINV-B) and NCCN Guidelines for Breast Cancer Screening and Diagnosis .",
+      "tt": "If considering preoperative therapy, consider use of a gene expression assay during workup for pre- and postmenopausal patients with cN0 and postmenopausal patients with cN1, operable ER-positive, HER2-negative disease. (Iwata H, et al. Breast Cancer Res Treat 2019;173:123–133; Ma SJ, et al. Breast Cancer Res Treat 2021;189:737–745; Hanson K, et al. J Clin Oncol 2021;39.15_suppl.591; Beitsch PD, et al. J Clin Oncol 2023;41(16_suppl):Abstract 523).",
+      "uu": "At the time of biopsy of the most suspicious axillary lymph node(s), a marker should be placed to allow for identification and removal at the time of definitive surgery.",
+      "vv": "FDG-PET/CT is most beneficial and accurate for advanced disease (stage III) and invasive ductal (compared to lobular) histology, but may be useful in selected circumstances of earlier stage disease (stage IIA disease: cT1cN1, cT2cN0) such as: equivocal CT+ bone scan results; suspicion of undetected nodal and/or distant disease; and treatment response assessment. An FDG-PET/CT may be utilized as an adjunct to, or in lieu of, initial standard staging and may be performed simultaneously with diagnostic CT. Conversely, a bone scan or sodium fluoride PET/CT may not be needed if an upfront FDG-PET/CT clearly indicates consistent findings on both PET and CT components. Note: All recommendations are category 2A unless otherwise indicated."
+    }
+  },
+  "BINV-13": {
+    "label": "BINV-13",
+    "pdf_pages": [
+      25
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated."
+  },
+  "BINV-14": {
+    "label": "BINV-14",
+    "pdf_pages": [
+      26
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated.",
+    "footnotes": {
+      "k": "Special Considerations for Breast Cancer in Males (Sex Assigned at Birth) (BINV-J).",
+      "p": "Includes techniques such as local tissue rearrangement, local flaps, regional flaps, breast reduction, and mastopexy to allow for greater volumes of resection while optimizing aesthetic outcomes in patients undergoing BCS.",
+      "t": "Principles of Radiation Therapy (BINV-I).",
+      "w": "Principles of Breast Reconstruction Following Surgery (BINV-H).",
+      "ww": "\u0007The accurate assessment of in-breast tumor or regional lymph node response to preoperative systemic therapy is difficult, and should include physical examination",
+      "xx": "Among patients shown to be N+ prior to preoperative systemic therapy, SLNB has a >10% false-negative rate when performed after preoperative systemic therapy, which can be improved by marking the most suspicious biopsied node prior to treatment, and at the time of surgery, using dual tracers, obtaining ≥3 sentinel lymph nodes nodes and removal of the marked node (Targeted Axillary Dissection [TAD]).",
+      "yy": "Strongly consider RT boost for high-risk features (eg, central/medial tumors, tumors ≥2 cm with ≥1 of the following: grade 3, ER-negative, LVI, high residual cancer in",
+      "zz": "When considering PMRT + RNI for cN1 that has become ypN0 (after preoperative therapy), based on limited followup duration of NSABP B-51 study (Mamounas EP,"
+    }
+  },
+  "BINV-15": {
+    "label": "BINV-15",
+    "pdf_pages": [
+      27
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated.",
+    "footnotes": {
+      "m": "Considerations for Surgical Axillary Staging (BINV-D).",
+      "p": "Includes techniques such as local tissue rearrangement, local flaps, regional flaps, breast reduction, and mastopexy to allow for greater volumes of resection while optimizing aesthetic outcomes in patients undergoing BCS.",
+      "t": "Principles of Radiation Therapy (BINV-I).",
+      "u": "Special Considerations for Breast Cancer in Males (Sex Assigned at Birth) (BINV-J).",
+      "w": "Principles of Breast Reconstruction Following Surgery (BINV-H).",
+      "hh": "Preoperative/Adjuvant Therapy Regimens (BINV-M).",
+      "ww": "\u0007The accurate assessment of in-breast tumor or regional lymph node response",
+      "aaa": "\u0007For patients with skin and/or chest wall involvement (T4 non-inflammatory) prior to preoperative systemic therapy, breast conservation may be performed"
+    }
+  },
+  "BINV-16": {
+    "label": "BINV-16",
+    "pdf_pages": [
+      28
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated.",
+    "footnotes": {
+      "k": "Special Considerations for Breast Cancer in Males (Sex Assigned at Birth) (BINV-J).",
+      "gg": "Adjuvant Endocrine ± CDK/4/6 Inhibitor Therapy and Principles of Adjuvant Endocrine Therapy (BINV-K).",
+      "hh": "Preoperative/Adjuvant Therapy Regimens (BINV-M).",
+      "kk": "\u0007Consider adjuvant bisphosphonate therapy for risk reduction of distant metastasis",
+      "ll": "ccc Note: All recommendations are category 2A unless otherwise indicated.",
+      "mm": "Updated results from the adjuvant APHINITY trial in HER2-positive early breast cancer, with a median follow-up of 11.3 years, have confirmed the benefit of adding pertuzumab to trastuzumab plus chemotherapy in preventing recurrences.",
+      "bbb": "Recommendations do not apply to residual DCIS (ypTis).",
+      "ccc": "There are no data on sequencing or combining adjuvant pembrolizumab with capecitabine or olaparib in patients who meet criteria for treatment with"
+    }
+  },
+  "BINV-17": {
+    "label": "BINV-17",
+    "pdf_pages": [
+      29
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated.",
+    "footnotes": {
+      "ddd": "\u0007 Studies indicate that annual mammograms are the appropriate frequency for surveillance of patients with breast cancer who have had BCS and RT with no clear advantage to shorter interval imaging. Patients should wait 6 to 12 months after the completion of RT to begin their annual mammogram surveillance. Suspicious findings on physical examination or surveillance imaging should warrant immediate follow-up/workup.",
+      "eee": "\u0007 The use of estrogen, progesterone, or selective ER modulators to treat osteoporosis or osteopenia in patients with breast cancer is discouraged. The use of a bisphosphonate (oral/IV) or denosumab is acceptable to maintain or to improve BMD and reduce risk of fractures in postmenopausal (natural or induced) patients receiving adjuvant aromatase inhibitor therapy. Optimal duration of either therapy has not been established. Benefits of duration beyond 3 years or optimal duration beyond 3 years is not known. Factors to consider for duration of anti-osteoporosis therapy include BMD, response to therapy, and risk factors for continued bone loss"
+    }
+  },
+  "BINV-18": {
+    "label": "BINV-18",
+    "pdf_pages": [
+      30
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated.",
+    "footnotes": {
+      "e": "Principles of Biomarker Testing (BINV-A).",
+      "f": "For risk criteria, see NCCN Guidelines for Genetic/Familial High-Risk Assessment: Breast, Ovarian, Pancreatic, and Prostate.",
+      "h": "Refer to the NCCN Guidelines for Distress Management (DIS-A) for the NCCN Distress Thermometer and Problem List, which includes social determinants of health.",
+      "fff": "\u0007For the treatment of brain metastases, see NCCN Guidelines for Central Nervous System Cancers.",
+      "ggg": "\u0007False-negative ER and/or PR determinations occur, and there may be discordance between the ER and/or PR determination between the primary and metastatic tumor(s). Therefore, endocrine therapy with its low attendant toxicity may be considered in patients with non-visceral or asymptomatic visceral tumors, especially in patients with clinical characteristics predicting for an HR-positive tumor (eg, long disease-free interval, limited sites of recurrence, indolent disease, older age).",
+      "hhh": "\u0007In clinical situations where a biopsy cannot safely be obtained but the clinical evidence",
+      "iii": "Tumor tissue or plasma-based circulating tumor DNA (ctDNA) assays may be used and each of these have benefits and limitations for diagnosis and disease progression. Tissue- based assays have greater sensitivity for some alterations, but ctDNA may reflect tumor heterogeneity more accurately. If one specimen is negative for actionable biomarkers, testing on the alternative specimen can be considered.",
+      "jjj": "\u0007See NCCN Guidelines for Palliative Care and NCCN Guidelines for Supportive Care.",
+      "kkk": "Optimal management of oligometastatic stage IV breast cancers remains uncertain. Routine utilization of locoregional treatment of the primary tumor and ablative treatment for metastatic sites have not been demonstrated to improve survival outcomes in prospective trials, however, may reduce the risk of local progression and palliate symptoms. Compared with recurrent oligometastatic disease, patients with de novo oligometastatic cancer have better outcomes and therapeutic decisions should be individualized and discussed"
+    }
+  },
+  "BINV-19": {
+    "label": "BINV-19",
+    "pdf_pages": [
+      31
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated.",
+    "footnotes": {
+      "t": "Principles of Radiation Therapy (BINV-I) .",
+      "jjj": "\u0007 See NCCN Guidelines for Palliative Care and NCCN Guidelines for Supportive Care .",
+      "lll": "Multidisciplinary approach is especially important in the management of breast cancer recurrence to consider all potential treatment options for optimal outcomes.",
+      "mmm": "\u0007 In patients with a local breast recurrence after BCS who had a prior SLNB, a repeat SLNB may be considered although the accuracy of repeat SLNB is unproven. After mastectomy, repeat SLNB may be considered although there are limited data in this setting. In patients who had a prior axillary lymph node dissection (ALND)",
+      "nnn": "Repeat BCS ± adjuvant APBI/PBI may be considered in selected patients who decline mastectomy and otherwise meet consensus criteria for radiotherapy omission",
+      "ooo": "The decision to use RT to treat locoregional recurrence must factor in any prior radiation to the area and the risk of late normal tissue toxicity from the sum of the prior and planned radiation courses. Note: All recommendations are category 2A unless otherwise indicated."
+    }
+  },
+  "BINV-20": {
+    "label": "BINV-20",
+    "pdf_pages": [
+      32
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated.",
+    "footnotes": {
+      "t": "Principles of Radiation Therapy (BINV-I) .",
+      "jjj": "\u0007 See NCCN Guidelines for Palliative Care and NCCN Guidelines for Supportive Care .",
+      "lll": "Multidisciplinary approach is especially important in the management of breast cancer recurrence to consider all potential treatment options for optimal outcomes.",
+      "ooo": "The decision to use RT to treat locoregional recurrence must factor in any prior radiation to the area and the risk of late normal tissue toxicity from the sum of the prior and planned radiation courses. Note: All recommendations are category 2A unless otherwise indicated."
+    }
+  },
+  "BINV-21": {
+    "label": "BINV-21",
+    "pdf_pages": [
+      33
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated.",
+    "footnotes": {
+      "e": "Principles of Biomarker Testing (BINV-A).",
+      "k": "Special Considerations for Breast Cancer in Males (Sex Assigned at Birth) (BINV-J).",
+      "ee": "Although patients with cancers with 1%–100% ER IHC staining are considered ER-positive and eligible for endocrine therapies, there are more limited data on the subgroup of cancers with ER-low–positive (1%–10%) results. The ER-low–positive group is heterogeneous with reported biologic behavior often similar to ER-negative cancers; thus, individualized consideration of risks versus benefits of endocrine therapy and additional adjuvant therapies should be incorporated into decision-making. See Principles of Biomarker Testing (BINV-A).",
+      "kkk": "Optimal management of oligometastatic stage IV breast cancers remains uncertain. Routine utilization of locoregional treatment of the primary tumor and ablative treatment for metastatic sites have not been demonstrated to improve survival outcomes in prospective trials, however, may reduce the risk of local progression and palliate symptoms. Compared with recurrent oligometastatic disease, patients with de novo oligometastatic cancer have better outcomes and therapeutic decisions should be individualized and discussed in a multidisciplinary context. A large number of case series document long-term DFS for patients with de novo oligometastatic breast cancer who received multimodality therapy leading to NED. For de novo oligometastatic disease with favorable features (HER2+ or ER+, induced NED status after receipt of optimal multi-agent systemic regimens, limited sites of metastases, bone-only metastases, and young age/longevity), an aggressive multimodality approach involving locoregional therapy of the primary tumor, ablative treatment to all sites of metastases and \"adjuvant-like\" systemic therapy may offer improved long-term PFS and may be considered.",
+      "ppp": "Denosumab, zoledronic acid, or pamidronate (all with calcium and vitamin D supplementation) should be given (category 1) in addition to systemic therapy or endocrine therapy if bone metastasis is present, expected survival is ≥3 months, and renal function is adequate. Patients should undergo a dental examination with preventive dentistry prior to initiation of this therapy. The optimal schedule for zoledronic acid is every 12 weeks.",
+      "qqq": "Baseline assessment of bone density is recommended for patients receiving an aromatase inhibitor who are at risk of osteoporosis (eg, age >65, family history, chronic steroids)."
+    }
+  },
+  "BINV-22": {
+    "label": "BINV-22",
+    "pdf_pages": [
+      34
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated.",
+    "footnotes": {
+      "e": "Principles of Biomarker Testing (BINV-A) .",
+      "ff": "Definition of Menopause (BINV-O) .",
+      "rrr": "According to the 5th ESO-ESMO international consensus guidelines (Cardoso F, et al. Ann Oncol 2020;31:1623-1649) for advanced breast cancer visceral crisis",
+      "sss": "Cytotoxic Regimens for Recurrent Unresectable (Local or Regional) or Stage IV (M1) Disease (BINV-Q) .",
+      "ttt": "Cytotoxic therapy includes chemotherapy or antibody-drug conjugates (ADCs), or targeted therapy.",
+      "uuu": "Endocrine therapy combinations with targeted therapies (doublet with CDK4/6i or triplets with CDK4/6i and PI3Ki) may be considered in certain circumstances with visceral crisis.",
+      "vvv": "Systemic Therapy for ER- and/or PR-Positive Recurrent Unresectable (Local or Regional) or Stage IV (M1) Disease (BINV-P) .",
+      "www": "Principles of Monitoring Metastatic Disease (BINV-R) .",
+      "xxx": "It is acceptable to switch to endocrine-based therapy ( BINV-P ) after disease stabilizes or response is observed. Note: All recommendations are category 2A unless otherwise indicated."
+    }
+  },
+  "BINV-23": {
+    "label": "BINV-23",
+    "pdf_pages": [
+      35
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated.",
+    "footnotes": {
+      "e": "Principles of Biomarker Testing (BINV-A) .",
+      "ff": "Definition of Menopause (BINV-O) .",
+      "ggg": "\u0007 False-negative ER and/or PR determinations occur, and there may be discordance between the ER and/or PR determination between the primary and metastatic tumor(s). Therefore, endocrine therapy with its low attendant toxicity may be considered in patients with non-visceral or asymptomatic visceral tumors, especially in patients with clinical characteristics predicting for an HR-positive tumor (eg, long disease-free interval, limited sites of recurrence, indolent disease, older age).",
+      "sss": "Systemic Therapy Regimens for Recurrent Unresectable (Local or Regional) or Stage IV (M1) Disease (BINV-Q) .",
+      "ttt": "Cytotoxic therapy includes chemotherapy or ADCs, or targeted therapy.",
+      "vvv": "Systemic Therapy for ER- and/or PR-Positive Recurrent Unresectable (Local or Regional) or Stage IV (M1) Disease (BINV-P) .",
+      "www": "Principles of Monitoring Metastatic Disease (BINV-R) .",
+      "yyy": "The potential side effects of additional lines of therapy may outweigh any clinical benefit in a patient who has a compromised performance status. Patient preference must be taken into account. Note: All recommendations are category 2A unless otherwise indicated."
+    }
+  },
+  "BINV-24": {
+    "label": "BINV-24",
+    "pdf_pages": [
+      36
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated.",
+    "footnotes": {
+      "e": "Principles of Biomarker Testing (BINV-A) .",
+      "ff": "Definition of Menopause (BINV-O) .",
+      "sss": "Systemic Therapy Regimens for Recurrent Unresectable (Local or Regional) or Stage IV (M1) Disease (BINV-Q) .",
+      "ttt": "Cytotoxic therapy includes chemotherapy or ADCs, or targeted therapy.",
+      "vvv": "Systemic Therapy for ER- and/or PR-Positive Recurrent Unresectable (Local or Regional) or Stage IV (M1) Disease (BINV-P) .",
+      "www": "Principles of Monitoring Metastatic Disease (BINV-R) .",
+      "zzz": "If prior endocrine therapy within 1 year, consider a different endocrine therapy. aaaa \u0007 For premenopausal patients, tamoxifen alone (without ovarian ablation/suppression) + HER2-targeted therapy is also an option. Note: All recommendations are category 2A unless otherwise indicated."
+    }
+  },
+  "BINV-25": {
+    "label": "BINV-25",
+    "pdf_pages": [
+      37
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated.",
+    "footnotes": {
+      "e": "Principles of Biomarker Testing (BINV-A) .",
+      "ggg": "\u0007 False-negative ER and/or PR determinations occur, and there may be discordance between the ER and/or PR determination between the primary and metastatic tumor(s). Therefore, endocrine therapy with its low attendant toxicity may be considered in patients with non-visceral or asymptomatic visceral tumors, especially in patients with clinical characteristics predicting for an HR-positive tumor (eg, long disease-free interval, limited sites of recurrence, indolent disease, older age).",
+      "sss": "Systemic Therapy Regimens for Recurrent Unresectable (Local or Regional) or Stage IV (M1) Disease (BINV-Q) .",
+      "ttt": "Cytotoxic therapy includes chemotherapy or ADCs, or targeted therapy.",
+      "vvv": "Systemic Therapy for ER- and/or PR-Positive Recurrent Unresectable (Local or Regional) or Stage IV (M1) Disease (BINV-P) .",
+      "www": "Principles of Monitoring Metastatic Disease (BINV-R) .",
+      "yyy": "The potential side effects of additional lines of therapy may outweigh any clinical benefit in a patient who has a compromised performance status. Patient preference must be taken into account. bbbb The optimal duration of trastuzumab in patients with long-term control of disease is unknown. Note: All recommendations are category 2A unless otherwise indicated."
+    }
+  },
+  "BINV-26": {
+    "label": "BINV-26",
+    "pdf_pages": [
+      38
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated.",
+    "footnotes": {
+      "e": "Principles of Biomarker Testing (BINV-A) .",
+      "sss": "Systemic Therapy Regimens for Recurrent Unresectable (Local or Regional) or Stage IV (M1) Disease (BINV-Q) .",
+      "ttt": "Cytotoxic therapy includes chemotherapy or ADCs, or targeted therapy.",
+      "www": "Principles of Monitoring Metastatic Disease (BINV-R) .",
+      "yyy": "The potential side effects of additional lines of therapy may outweigh any clinical benefit in a patient who has a compromised performance status. Patient preference must be taken into account. bbbb The optimal duration of trastuzumab in patients with long-term control of disease is unknown. Note: All recommendations are category 2A unless otherwise indicated."
+    }
+  },
+  "BINV-27": {
+    "label": "BINV-27",
+    "pdf_pages": [
+      39
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated.",
+    "footnotes": {
+      "e": "Principles of Biomarker Testing (BINV-A) .",
+      "sss": "Systemic Therapy Regimens for Recurrent Unresectable (Local or Regional) or Stage IV (M1) Disease (BINV-Q) .",
+      "ttt": "Cytotoxic therapy includes chemotherapy or ADCs, or targeted therapy.",
+      "www": "Principles of Monitoring Metastatic Disease (BINV-R) .",
+      "yyy": "The potential side effects of additional lines of therapy may outweigh any clinical benefit in a patient who has a compromised performance status. Patient preference must be taken into account. Note: All recommendations are category 2A unless otherwise indicated."
+    }
+  },
+  "BINV-28": {
+    "label": "BINV-28",
+    "pdf_pages": [
+      40
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Note: All recommendations are category 2A unless otherwise indicated."
+  },
+  "BINV-A": {
+    "label": "BINV-A",
+    "pdf_pages": [
+      41,
+      42,
+      43,
+      44
+    ],
+    "pdf_page_count": 4,
+    "section": "lettered",
+    "type": "principles",
+    "title": "Principles of Biomarker Testing"
+  },
+  "BINV-B": {
+    "label": "BINV-B",
+    "pdf_pages": [
+      45
+    ],
+    "pdf_page_count": 1,
+    "section": "lettered",
+    "type": "principles",
+    "title": "Principles of Dedicated Breast MRI Testing"
+  },
+  "BINV-C": {
+    "label": "BINV-C",
+    "pdf_pages": [
+      46
+    ],
+    "pdf_page_count": 1,
+    "section": "lettered",
+    "type": "principles",
+    "title": "Fertility, Birth Control, and Sexual Health"
+  },
+  "BINV-D": {
+    "label": "BINV-D",
+    "pdf_pages": [
+      47
+    ],
+    "pdf_page_count": 1,
+    "section": "lettered",
+    "type": "principles",
+    "title": "Axillary Lymph Node Staging"
+  },
+  "BINV-E": {
+    "label": "BINV-E",
+    "pdf_pages": [
+      48
+    ],
+    "pdf_page_count": 1,
+    "section": "lettered",
+    "type": "regimen_table",
+    "title": "Axillary Lymph Node Staging (continued)"
+  },
+  "BINV-F": {
+    "label": "BINV-F",
+    "pdf_pages": [
+      49,
+      50
+    ],
+    "pdf_page_count": 2,
+    "section": "lettered",
+    "type": "definitions",
+    "title": "Principles of Breast Reconstruction and Modification"
+  },
+  "BINV-G": {
+    "label": "BINV-G",
+    "pdf_pages": [
+      51
+    ],
+    "pdf_page_count": 1,
+    "section": "lettered",
+    "type": "text",
+    "title": "Breast Cancer Risk Reduction After Treatment"
+  },
+  "BINV-H": {
+    "label": "BINV-H",
+    "pdf_pages": [
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58
+    ],
+    "pdf_page_count": 7,
+    "section": "lettered",
+    "type": "principles",
+    "title": "Principles of Radiation Therapy"
+  },
+  "BINV-I": {
+    "label": "BINV-I",
+    "pdf_pages": [
+      59,
+      60,
+      61
+    ],
+    "pdf_page_count": 3,
+    "section": "lettered",
+    "type": "regimen_table",
+    "title": "Principles of Radiation Therapy Sequencing"
+  },
+  "BINV-J": {
+    "label": "BINV-J",
+    "pdf_pages": [
+      62,
+      63
+    ],
+    "pdf_page_count": 2,
+    "section": "lettered",
+    "type": "regimen_table",
+    "title": "Considerations for Preoperative/Adjuvant Systemic Therapy Sequencing"
+  },
+  "BINV-K": {
+    "label": "BINV-K",
+    "pdf_pages": [
+      64,
+      65,
+      66,
+      67
+    ],
+    "pdf_page_count": 4,
+    "section": "lettered",
+    "type": "principles",
+    "title": "Principles of Endocrine Therapy"
+  },
+  "BINV-L": {
+    "label": "BINV-L",
+    "pdf_pages": [
+      68,
+      69
+    ],
+    "pdf_page_count": 2,
+    "section": "lettered",
+    "type": "regimen_table",
+    "title": "Candidates for Preoperative Systemic Therapy"
+  },
+  "BINV-M": {
+    "label": "BINV-M",
+    "pdf_pages": [
+      70,
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79
+    ],
+    "pdf_page_count": 10,
+    "section": "lettered",
+    "type": "regimen_table",
+    "title": "Preoperative/Adjuvant Systemic Therapy Regimens"
+  },
+  "BINV-N": {
+    "label": "BINV-N",
+    "pdf_pages": [
+      80,
+      81,
+      82,
+      83,
+      84
+    ],
+    "pdf_page_count": 5,
+    "section": "lettered",
+    "type": "regimen_table",
+    "title": "Gene Expression Assays for Adjuvant Systemic Therapy"
+  },
+  "BINV-O": {
+    "label": "BINV-O",
+    "pdf_pages": [
+      85
+    ],
+    "pdf_page_count": 1,
+    "section": "lettered",
+    "type": "definitions",
+    "title": "Fertility and Ovarian Function"
+  },
+  "BINV-P": {
+    "label": "BINV-P",
+    "pdf_pages": [
+      86,
+      87,
+      88
+    ],
+    "pdf_page_count": 3,
+    "section": "lettered",
+    "type": "regimen_table",
+    "title": "Systemic Therapy for ER+/PR+ Recurrent/Stage IV"
+  },
+  "BINV-Q": {
+    "label": "BINV-Q",
+    "pdf_pages": [
+      89,
+      90,
+      91,
+      92,
+      93,
+      94,
+      95,
+      96,
+      97,
+      98,
+      99,
+      100,
+      101,
+      102,
+      103
+    ],
+    "pdf_page_count": 15,
+    "section": "lettered",
+    "type": "regimen_table",
+    "title": "Chemotherapy Regimens for Recurrent/Stage IV"
+  },
+  "BINV-R": {
+    "label": "BINV-R",
+    "pdf_pages": [
+      104,
+      105,
+      106
+    ],
+    "pdf_page_count": 3,
+    "section": "lettered",
+    "type": "principles",
+    "title": "Principles of Survivorship"
+  },
+  "PHYLL-1": {
+    "label": "PHYLL-1",
+    "pdf_pages": [
+      107
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Phyllodes Tumor",
+    "footnotes": {
+      "b": "d FNA or core biopsy may not distinguish a fibroadenoma from a phyllodes Excisional biopsy includes complete mass removal, but without the intent of tumor in some cases. The sensitivity of core biopsy for the diagnosis obtaining surgical margins.",
+      "c": "NCCN Distress Thermometer and Problem List, which includes social Genetic counseling and testing if patient is at risk for hereditary cancer syndromes, determinants of health. particularly breast, ovarian, and pancreatic cancer.",
+      "d": "Excisional biopsy includes complete mass removal, but without the intent of obtaining surgical margins.",
+      "e": "of phyllodes tumor is greater than that of FNA biopsy, but neither core The Panel endorses the College of American Pathologists Protocol for biopsy nor FNA biopsy can always differentiate phyllodes tumors from standardized pathology reporting for all phyllodes tumors ( https://documents.cap. fibroadenomas. In cases with clinical suspicion for phyllodes tumor, org/protocols/Breast.Phyllodes_1.1.0.1.REL_CAPCP.pdf ).",
+      "f": "excision of the lesion may be needed for definitive pathologic classification. Adjuvant RT is not indicated for positive margins. Note: All recommendations are category 2A unless otherwise indicated."
+    }
+  },
+  "PAGET-1": {
+    "label": "PAGET-1",
+    "pdf_pages": [
+      108
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Paget's Disease",
+    "footnotes": {
+      "b": "Refer to the NCCN Guidelines for Distress Management (DIS-A) for the NCCN Distress Thermometer and Problem List, which includes social determinants of health. Note: All recommendations are category 2A unless otherwise indicated."
+    }
+  },
+  "PAGET-2": {
+    "label": "PAGET-2",
+    "pdf_pages": [
+      109
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Paget's Disease (continued)",
+    "footnotes": {
+      "c": "Principles of Dedicated Breast MRI Testing (BINV-B) .",
+      "d": "Mastectomy is always an option with any manifestation of Paget disease ( Discussion ). Note: All recommendations are category 2A unless otherwise indicated."
+    }
+  },
+  "PREG-1": {
+    "label": "PREG-1",
+    "pdf_pages": [
+      110
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Breast Cancer During Pregnancy",
+    "footnotes": {
+      "b": "Refer to the NCCN Guidelines for Distress Management (DIS-A) for the NCCN Distress Thermometer and Problem List, which includes social determinants of health.",
+      "c": "If late first trimester, may consider preoperative chemotherapy in the second trimester.",
+      "d": "Survival outcomes of breast-conservation therapy are equivalent to mastectomy in both non-pregnancy and pregnancy-associated breast cancers. Therapeutic RT"
+    }
+  },
+  "PREG-2": {
+    "label": "PREG-2",
+    "pdf_pages": [
+      111
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Breast Cancer During Pregnancy (continued)"
+  },
+  "IBC-1": {
+    "label": "IBC-1",
+    "pdf_pages": [
+      112
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Inflammatory Breast Cancer",
+    "footnotes": {
+      "b": "The Panel endorses the College of American Pathologists Protocol for pathology reporting for all invasive and noninvasive carcinomas of the breast. http://www.cap.org.",
+      "c": "Principles of Biomarker Testing (BINV-A).",
+      "d": "Fertility, Birth Control, and Sexual Health (BINV-C).",
+      "e": "For risk criteria, see NCCN Guidelines for Genetic/Familial High-Risk Assessment: Breast, Ovarian, Pancreatic, and Prostate.",
+      "f": "Refer to the NCCN Guidelines for Distress Management (DIS-A) for the NCCN Distress Thermometer and Problem List, which includes social determinants of health.",
+      "g": "If FDG-PET/CT is performed and clearly indicates bone metastasis on both the PET and CT component, bone scan or sodium fluoride PET/CT may not be needed.",
+      "h": "FDG-PET/CT can be performed at the same time as diagnostic CT. FDG-PET/CT is most helpful in situations where standard staging studies are equivocal or suspicious. FDG-PET/CT may also be helpful in identifying unsuspected regional nodal disease and/or distant metastases when used in addition to standard staging studies.",
+      "i": "A pertuzumab-containing regimen may be administered preoperatively to patients with HER2-positive IBC. See IBC-2"
+    }
+  },
+  "IBC-2": {
+    "label": "IBC-2",
+    "pdf_pages": [
+      113
+    ],
+    "pdf_page_count": 1,
+    "section": "numbered",
+    "type": "flowchart",
+    "title": "Inflammatory Breast Cancer (continued)",
+    "footnotes": {
+      "j": "The accurate assessment of in-breast tumor or regional lymph node response to preoperative systemic therapy is difficult, and should include physical examination and performance of imaging studies (mammogram and/or breast ultrasound and/or breast MRI) that were abnormal at the time of initial tumor staging. Selection of imaging methods prior to surgery should be determined by the multidisciplinary team. MRI is more accurate than mammography for assessing tumor response to preoperative therapy.",
+      "k": "Patients with recurrent IBC should be treated according to the guideline for recurrence/stage IV (M1) disease ( BINV-19 ).",
+      "l": "Principles of Breast Reconstruction Following Surgery (BINV-H) .",
+      "m": "Cytotoxic Therapy Regimens for Recurrent Unresectable (Local or Regional) or Stage IV (M1) Disease (BINV-Q) .",
+      "n": "Cytotoxic therapy includes chemotherapy or ADCs, or targeted therapy.",
+      "o": "Adjuvant Endocrine Therapy (BINV-K) .",
+      "p": "Principles of Radiation Therapy (BINV-I) . Note: All recommendations are category 2A unless otherwise indicated."
+    }
+  }
+}

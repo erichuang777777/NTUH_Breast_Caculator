@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NCCN 乳癌臨床指引 可視化系統</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f0f4f8;
+  --surface: #ffffff;
+  --border: #e2e8f0;
+  --text: #1e293b;
+  --text-2: #64748b;
+  --primary: #2563eb;
+  --primary-light: #dbeafe;
+  --accent: #0ea5e9;
+  --green: #10b981;
+  --amber: #f59e0b;
+  --red: #ef4444;
+  --purple: #8b5cf6;
+  --header-h: 56px;
+  --phase-bar-h: 72px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
+  --radius: 8px;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+  height: 100vh;
+}
+
+/* ===== HEADER ===== */
+#header {
+  height: var(--header-h);
+  background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 16px;
+  z-index: 100;
+}
+#header h1 { font-size: 18px; font-weight: 700; white-space: nowrap; }
+#header .subtitle { font-size: 12px; opacity: 0.8; }
+#header .spacer { flex: 1; }
+#search-box {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 6px;
+  padding: 6px 12px;
+  color: white;
+  font-size: 13px;
+  width: 240px;
+  outline: none;
+}
+#search-box::placeholder { color: rgba(255,255,255,0.6); }
+#search-box:focus { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.5); }
+
+/* ===== PHASE BAR ===== */
+#phase-bar {
+  height: var(--phase-bar-h);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 4px;
+  overflow-x: auto;
+}
+.phase-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  min-width: 100px;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+  position: relative;
+}
+.phase-item:hover { background: var(--primary-light); }
+.phase-item.active { background: var(--primary-light); border-color: var(--primary); }
+.phase-item .phase-icon { font-size: 20px; }
+.phase-item .phase-name { font-size: 11px; font-weight: 600; margin-top: 2px; text-align: center; white-space: nowrap; }
+.phase-item .phase-en { font-size: 9px; color: var(--text-2); }
+.phase-arrow {
+  font-size: 18px;
+  color: var(--text-2);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+/* ===== MAIN LAYOUT ===== */
+#main {
+  display: flex;
+  height: calc(100vh - var(--header-h) - var(--phase-bar-h));
+}
+
+/* Left: Page List */
+#page-list {
+  width: 220px;
+  min-width: 180px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+#page-list .section-title {
+  padding: 10px 14px 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: sticky;
+  top: 0;
+  background: var(--surface);
+  z-index: 1;
+}
+.page-item {
+  padding: 8px 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+}
+.page-item:hover { background: #f1f5f9; }
+.page-item.active { background: var(--primary-light); border-left-color: var(--primary); font-weight: 600; }
+.page-item .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.page-item .label { flex: 1; }
+.page-item .badge {
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: #f1f5f9;
+  color: var(--text-2);
+}
+
+/* Middle: Flowchart */
+#flowchart-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 400px;
+}
+#fc-header {
+  padding: 12px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+#fc-badge {
+  background: var(--primary);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 700;
+}
+#fc-title { font-size: 14px; font-weight: 600; flex: 1; }
+#fc-type { font-size: 12px; color: var(--text-2); }
+#fc-body {
+  flex: 1;
+  overflow: auto;
+  padding: 16px;
+  position: relative;
+}
+#mermaid-wrapper {
+  min-height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+#mermaid-wrapper svg { max-width: 100%; height: auto; }
+.no-flowchart {
+  text-align: center;
+  padding: 60px 40px;
+  color: var(--text-2);
+}
+.no-flowchart .icon { font-size: 48px; margin-bottom: 16px; }
+.no-flowchart .msg { font-size: 16px; font-weight: 500; }
+.no-flowchart .sub { font-size: 13px; margin-top: 8px; }
+.mermaid-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius);
+  padding: 20px;
+  max-width: 600px;
+  margin: 20px auto;
+}
+.mermaid-error .err-title { font-weight: 700; color: var(--red); margin-bottom: 8px; }
+#zoom-controls {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+#zoom-controls button {
+  width: 32px; height: 32px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#zoom-controls button:hover { background: #f1f5f9; }
+
+/* Right: Info Panel */
+#info-panel {
+  width: 300px;
+  min-width: 240px;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+.info-section {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.info-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px 0;
+  font-size: 13px;
+}
+.info-row .lbl { color: var(--text-2); }
+.info-row .val { font-weight: 500; text-align: right; }
+.type-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: white;
+}
+.ref-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.ref-link {
+  display: inline-block;
+  padding: 3px 8px;
+  background: var(--primary-light);
+  color: var(--primary);
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-decoration: none;
+}
+.ref-link:hover { background: var(--primary); color: white; }
+
+/* Footnotes */
+.footnote-list { margin-top: 8px; }
+.footnote-item {
+  display: flex;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.footnote-marker {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  background: var(--primary-light);
+  color: var(--primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+}
+.footnote-text { color: var(--text-2); flex: 1; }
+.fn-toggle {
+  background: none;
+  border: none;
+  color: var(--primary);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 4px 0;
+}
+.fn-toggle:hover { text-decoration: underline; }
+
+/* Inline numbered references */
+.inline-ref-list { margin-top: 8px; }
+.inline-ref-item {
+  display: flex;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 11px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+.inline-ref-item:hover { background: #f8faff; }
+.inline-ref-num {
+  flex-shrink: 0;
+  color: #2563eb;
+  font-weight: 700;
+  min-width: 28px;
+}
+.inline-ref-text { color: var(--text-2); flex: 1; }
+
+/* Loading */
+#loading {
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  gap: 12px;
+}
+.spinner {
+  width: 36px; height: 36px;
+  border: 3px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+
+/* ===== REFERENCE TOOLTIP ===== */
+.ref-superscript {
+  display: inline-block;
+  color: #2563eb;
+  font-size: 0.75em;
+  vertical-align: super;
+  cursor: pointer;
+  border-bottom: 1px dotted #2563eb;
+  line-height: 1;
+  padding: 0 1px;
+  user-select: none;
+}
+.ref-superscript:hover { color: #1d4ed8; border-bottom-color: #1d4ed8; }
+
+#ref-tooltip {
+  position: fixed;
+  z-index: 9999;
+  background: #1e293b;
+  color: #f1f5f9;
+  border-radius: 8px;
+  padding: 12px 16px;
+  max-width: 420px;
+  font-size: 12px;
+  line-height: 1.6;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  pointer-events: none;
+  display: none;
+}
+#ref-tooltip .tt-num {
+  font-size: 10px;
+  font-weight: 700;
+  color: #94a3b8;
+  margin-bottom: 4px;
+}
+#ref-tooltip .tt-text { color: #f1f5f9; }
+#ref-tooltip .tt-link {
+  display: block;
+  margin-top: 6px;
+  color: #60a5fa;
+  font-size: 11px;
+  word-break: break-all;
+}
+/* highlight the numeric ref superscript inside SVG nodes */
+.num-ref-badge {
+  fill: #2563eb !important;
+  text-decoration: underline;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div id="header">
+  <h1>NCCN 乳癌臨床指引 可視化系統</h1>
+  <span class="subtitle" id="header-sub">載入中...</span>
+  <div class="spacer"></div>
+  <input type="text" id="search-box" placeholder="搜尋頁面（例：BINV-1、radiation）">
+</div>
+
+<!-- Phase Bar -->
+<div id="phase-bar"></div>
+
+<!-- Main -->
+<div id="main">
+  <div id="page-list"></div>
+  <div id="flowchart-panel">
+    <div id="fc-header">
+      <span id="fc-badge">-</span>
+      <span id="fc-title">選擇一個頁面</span>
+      <span id="fc-type"></span>
+    </div>
+    <div id="fc-body">
+      <div id="mermaid-wrapper">
+        <div class="no-flowchart">
+          <div class="icon">👈</div>
+          <div class="msg">從左側選擇臨床路徑階段或頁面</div>
+        </div>
+      </div>
+      <div id="zoom-controls">
+        <button onclick="zoomIn()">+</button>
+        <button onclick="zoomOut()">−</button>
+        <button onclick="zoomReset()">↻</button>
+      </div>
+    </div>
+  </div>
+  <div id="info-panel">
+    <div class="info-section">
+      <div class="info-section-title">頁面資訊</div>
+      <div style="color:var(--text-2);font-size:13px;">選擇頁面以查看詳情</div>
+    </div>
+  </div>
+</div>
+
+<!-- Reference Tooltip -->
+<div id="ref-tooltip">
+  <div class="tt-num" id="tt-num"></div>
+  <div class="tt-text" id="tt-text"></div>
+  <a class="tt-link" id="tt-link" href="#" target="_blank" rel="noopener"></a>
+</div>
+
+<!-- Loading -->
+<div id="loading">
+  <div class="spinner"></div>
+  <div style="color:var(--text-2);">正在載入指引資料...</div>
+</div>
+
+<script>
+// ===== GLOBALS =====
+let appData = null;
+const nodeMap = {};
+let reverseRefs = {};
+let currentNode = null;
+let currentZoom = 1;
+let mermaidCounter = 0;
+let activePhase = null;
+
+const TYPE_LABELS = {
+  flowchart: '流程圖',
+  principles: '原則說明',
+  regimen_table: '治療方案表',
+  definitions: '定義',
+  text: '文字',
+};
+const TYPE_COLORS = {
+  flowchart: '#3b82f6',
+  principles: '#10b981',
+  regimen_table: '#f59e0b',
+  definitions: '#8b5cf6',
+  text: '#6b7280',
+};
+
+// Special page colors
+function getColor(node) {
+  if (['PAGET-1','PAGET-2','IBC-1','IBC-2','PHYLL-1','PREG-1','PREG-2'].includes(node.id)) return '#ef4444';
+  return TYPE_COLORS[node.type] || '#6b7280';
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ===== INIT =====
+mermaid.initialize({ startOnLoad: false, theme: 'default', securityLevel: 'loose', flowchart: { useMaxWidth: true, htmlLabels: true } });
+
+fetch('data/viz_data.json')
+  .then(r => { if (!r.ok) throw new Error('Failed to load viz_data.json'); return r.json(); })
+  .then(data => {
+    appData = data;
+    buildIndexes();
+    initUI();
+    document.getElementById('loading').style.display = 'none';
+  })
+  .catch(err => {
+    document.getElementById('loading').innerHTML =
+      '<div style="color:#991b1b;font-size:16px;font-weight:700;">載入失敗</div>' +
+      '<div style="color:#64748b;margin-top:8px;">' + err.message + '</div>';
+  });
+
+function buildIndexes() {
+  appData.nodes.forEach(n => { nodeMap[n.id] = n; });
+  reverseRefs = {};
+  appData.edges.forEach(e => {
+    if (!reverseRefs[e.target]) reverseRefs[e.target] = [];
+    reverseRefs[e.target].push(e.source);
+  });
+}
+
+function initUI() {
+  const s = appData.stats;
+  const isPublic = appData.mode === 'public';
+  const modeTag = isPublic ? ' | 🔒 Public Mode（結構預覽）' : '';
+  document.getElementById('header-sub').textContent =
+    `Breast Cancer v2.2026 | ${s.total_pages} 頁 | ${s.total_nodes} 節點 | ${s.total_cross_refs} 交叉引用${modeTag}`;
+
+  buildPhaseBar();
+  buildPageList();
+  initSearch();
+
+  // Default: select phase 1 and BINV-1
+  selectPhase(0);
+  selectNode('BINV-1');
+}
+
+// ===== PHASE BAR =====
+function buildPhaseBar() {
+  const bar = document.getElementById('phase-bar');
+  const phases = appData.clinical_phases || [];
+  bar.innerHTML = '';
+
+  phases.forEach((p, i) => {
+    if (i > 0) {
+      const arrow = document.createElement('span');
+      arrow.className = 'phase-arrow';
+      arrow.textContent = '→';
+      bar.appendChild(arrow);
+    }
+
+    const item = document.createElement('div');
+    item.className = 'phase-item';
+    item.dataset.index = i;
+    item.innerHTML = `
+      <span class="phase-icon">${p.icon || '📄'}</span>
+      <span class="phase-name">${p.name_zh}</span>
+      <span class="phase-en">${p.name_en}</span>
+    `;
+    item.onclick = () => selectPhase(i);
+    bar.appendChild(item);
+  });
+}
+
+function selectPhase(index) {
+  activePhase = index;
+  document.querySelectorAll('.phase-item').forEach((el, i) => {
+    el.classList.toggle('active', i === index);
+  });
+
+  const phases = appData.clinical_phases || [];
+  const phase = phases[index];
+  if (!phase) return;
+
+  // Update page list to highlight this phase's pages
+  updatePageListHighlight(phase.pages);
+
+  // Select first page of this phase if it exists
+  const firstPage = phase.pages.find(p => nodeMap[p]);
+  if (firstPage) selectNode(firstPage);
+}
+
+// ===== PAGE LIST =====
+function buildPageList() {
+  const list = document.getElementById('page-list');
+  const phases = appData.clinical_phases || [];
+
+  let html = '';
+  // Group by phase
+  phases.forEach(p => {
+    html += `<div class="section-title">${p.icon || ''} ${p.name_zh}</div>`;
+    p.pages.forEach(pid => {
+      const node = nodeMap[pid];
+      if (!node) return;
+      const color = getColor(node);
+      const badge = node.has_mermaid ? `${node.node_count}n` : node.type === 'principles' ? '原則' : '表格';
+      html += `<div class="page-item" data-id="${pid}" onclick="selectNode('${pid}')">
+        <span class="dot" style="background:${color}"></span>
+        <span class="label">${pid}</span>
+        <span class="badge">${badge}</span>
+      </div>`;
+    });
+  });
+
+  // Other pages not in any phase
+  const phasedPages = new Set(phases.flatMap(p => p.pages));
+  const others = appData.nodes.filter(n => !phasedPages.has(n.id));
+  if (others.length > 0) {
+    html += '<div class="section-title">其他頁面</div>';
+    others.forEach(node => {
+      const color = getColor(node);
+      const badge = node.has_mermaid ? `${node.node_count}n` : TYPE_LABELS[node.type] || '';
+      html += `<div class="page-item" data-id="${node.id}" onclick="selectNode('${node.id}')">
+        <span class="dot" style="background:${color}"></span>
+        <span class="label">${node.id}</span>
+        <span class="badge">${badge}</span>
+      </div>`;
+    });
+  }
+
+  list.innerHTML = html;
+}
+
+function updatePageListHighlight(pageIds) {
+  const set = new Set(pageIds);
+  document.querySelectorAll('.page-item').forEach(el => {
+    const id = el.dataset.id;
+    el.style.opacity = set.size === 0 || set.has(id) ? '1' : '0.4';
+  });
+}
+
+// ===== NODE SELECTION =====
+function selectNode(id) {
+  const node = nodeMap[id];
+  if (!node) return;
+  currentNode = node;
+
+  // Update page list active state
+  document.querySelectorAll('.page-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.id === id);
+  });
+
+  // Scroll page item into view
+  const activeItem = document.querySelector(`.page-item[data-id="${id}"]`);
+  if (activeItem) activeItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+
+  // Update header
+  document.getElementById('fc-badge').textContent = id;
+  document.getElementById('fc-badge').style.background = getColor(node);
+  document.getElementById('fc-title').textContent = node.title || id;
+  document.getElementById('fc-type').textContent = TYPE_LABELS[node.type] || node.type;
+
+  // Render flowchart
+  renderFlowchart(node);
+
+  // Update info panel
+  updateInfoPanel(node);
+}
+
+// ===== FLOWCHART RENDERING =====
+async function renderFlowchart(node) {
+  const wrapper = document.getElementById('mermaid-wrapper');
+  currentZoom = 1;
+  wrapper.style.transform = 'scale(1)';
+  wrapper.style.transformOrigin = 'top center';
+
+  const isPublic = appData?.mode === 'public';
+
+  // Public mode: show reference card instead of flowchart
+  if (isPublic && node.has_mermaid) {
+    wrapper.innerHTML = `
+      <div class="no-flowchart">
+        <div class="icon">🔒</div>
+        <div class="msg">此頁面包含 NCCN 版權內容</div>
+        <div class="sub" style="font-size:15px;margin-top:12px;">
+          See <strong>NCCN Clinical Practice Guidelines in Oncology</strong>
+        </div>
+        <div class="sub" style="font-size:18px;margin-top:8px;color:var(--primary);font-weight:700;">
+          Breast Cancer — ${node.id}
+        </div>
+        <div class="sub" style="margin-top:8px;">${escapeHtml(node.title || '')}</div>
+        <div class="sub" style="margin-top:16px;">
+          <a href="https://www.nccn.org/guidelines/guidelines-detail?category=1&id=1419"
+             target="_blank" style="color:var(--primary);text-decoration:underline;">
+            前往 NCCN 官網查看完整指引（免費註冊）
+          </a>
+        </div>
+        <div class="sub" style="margin-top:8px;font-size:11px;color:var(--text-3);">
+          PDF 頁碼：${(node.pdf_pages || []).map(p => p + 1).join(', ')}
+        </div>
+      </div>`;
+    return;
+  }
+
+  if (!node.has_mermaid || !node.mermaid_text) {
+    wrapper.innerHTML = `
+      <div class="no-flowchart">
+        <div class="icon">📄</div>
+        <div class="msg">此頁面為補充資料（${TYPE_LABELS[node.type] || node.type}），無流程圖</div>
+        <div class="sub">${escapeHtml(node.title || '')}</div>
+        <div class="sub" style="margin-top:8px;">PDF 頁碼：${(node.pdf_pages || []).map(p => p + 1).join(', ')}</div>
+      </div>`;
+    return;
+  }
+
+  wrapper.innerHTML = '<div style="color:var(--text-2);padding:40px;text-align:center;">正在渲染流程圖...</div>';
+
+  try {
+    mermaidCounter++;
+    const renderId = 'mm-' + mermaidCounter;
+    const text = node.mermaid_text;
+
+    const renderP = mermaid.render(renderId, text);
+    const timeoutP = new Promise((_, rej) => setTimeout(() => rej(new Error('渲染超時 (10s)')), 10000));
+    const { svg } = await Promise.race([renderP, timeoutP]);
+    wrapper.innerHTML = svg;
+
+    // Make cross-refs clickable
+    makeCrossRefsClickable(wrapper);
+    // Make numeric citation superscripts hoverable
+    makeNumericRefsHoverable(wrapper, node);
+  } catch (err) {
+    console.warn('Mermaid error for', node.id, err);
+    wrapper.innerHTML = `
+      <div class="mermaid-error">
+        <div class="err-title">流程圖渲染失敗</div>
+        <div>頁面：${node.id}</div>
+        <div style="margin-top:8px;font-family:monospace;font-size:11px;white-space:pre-wrap;max-height:200px;overflow:auto;">${escapeHtml(String(err.message || err))}</div>
+      </div>`;
+  }
+}
+
+function makeCrossRefsClickable(container) {
+  const svgEl = container.querySelector('svg');
+  if (!svgEl) return;
+  const textEls = svgEl.querySelectorAll('text, span, foreignObject *');
+  const refPattern = /\b((?:BINV|DCIS|PAGET|IBC|PHYLL|PREG)-[\w]+(?:\s+\d+)?)\b/g;
+  textEls.forEach(el => {
+    const text = el.textContent || '';
+    if (!refPattern.test(text)) return;
+    refPattern.lastIndex = 0;
+    el.style.cursor = 'pointer';
+    el.style.textDecoration = 'underline';
+    el.style.fill = '#2563eb';
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      refPattern.lastIndex = 0;
+      const m = refPattern.exec(el.textContent || '');
+      if (m && nodeMap[m[1]]) selectNode(m[1]);
+    });
+  });
+}
+
+// ===== NUMERIC REFERENCE TOOLTIP =====
+const tooltip = document.getElementById('ref-tooltip');
+const ttNum   = document.getElementById('tt-num');
+const ttText  = document.getElementById('tt-text');
+const ttLink  = document.getElementById('tt-link');
+
+function showTooltip(e, num, refObj) {
+  ttNum.textContent = `Reference [${num}]`;
+  ttText.textContent = refObj.text || '';
+  if (refObj.pubmed_url) {
+    ttLink.href = refObj.pubmed_url;
+    ttLink.textContent = refObj.pubmed_url;
+    ttLink.style.display = 'block';
+  } else if (refObj.doi) {
+    ttLink.href = refObj.doi;
+    ttLink.textContent = refObj.doi;
+    ttLink.style.display = 'block';
+  } else {
+    ttLink.style.display = 'none';
+  }
+  tooltip.style.display = 'block';
+  positionTooltip(e);
+}
+
+function positionTooltip(e) {
+  const margin = 12;
+  const tw = tooltip.offsetWidth || 420;
+  const th = tooltip.offsetHeight || 120;
+  let x = e.clientX + margin;
+  let y = e.clientY + margin;
+  if (x + tw > window.innerWidth)  x = e.clientX - tw - margin;
+  if (y + th > window.innerHeight) y = e.clientY - th - margin;
+  tooltip.style.left = x + 'px';
+  tooltip.style.top  = y + 'px';
+}
+
+function hideTooltip() {
+  tooltip.style.display = 'none';
+}
+
+document.addEventListener('mousemove', (e) => {
+  if (tooltip.style.display !== 'none') positionTooltip(e);
+});
+
+// Patterns matching numeric citations in mermaid text
+// e.g. ^1^  ^1,2^  ^1-3^  ¹  [1]  superscript digits
+const NUM_CITE_PATTERNS = [
+  /\^([\d,\-]+)\^/g,          // ^1^  ^1,2^  ^1-3^
+  /\[(\d+)\]/g,                 // [1]
+  /(?<![A-Za-z])(\d+)\s+(?=[A-Z][a-z]+,)/g  // "1 Chan S," inline style
+];
+
+function expandNumRange(s) {
+  // "1,2,3" or "1-3" -> [1,2,3]
+  const nums = [];
+  s.split(',').forEach(part => {
+    const dash = part.match(/^(\d+)-(\d+)$/);
+    if (dash) {
+      for (let i = parseInt(dash[1]); i <= parseInt(dash[2]); i++) nums.push(String(i));
+    } else {
+      nums.push(part.trim());
+    }
+  });
+  return nums;
+}
+
+function makeNumericRefsHoverable(container, pageNode) {
+  // Sources: inline_refs on this page, or global bibliography
+  const inlineRefs = pageNode?.inline_refs || {};
+  const bib = appData?.bibliography || {};
+
+  const svgEl = container.querySelector('svg');
+  if (!svgEl) return;
+
+  // Walk all text nodes in SVG
+  const walker = document.createTreeWalker(svgEl, NodeFilter.SHOW_TEXT);
+  const textNodes = [];
+  let n;
+  while ((n = walker.nextNode())) textNodes.push(n);
+
+  textNodes.forEach(textNode => {
+    const orig = textNode.textContent;
+    // Check for ^N^ or [N] or similar patterns
+    const hasCaret  = /\^[\d,\-]+\^/.test(orig);
+    const hasBracket = /\[[\d]+\]/.test(orig);
+    if (!hasCaret && !hasBracket) return;
+
+    // Replace text node with HTML span elements
+    const parent = textNode.parentNode;
+    if (!parent || parent.closest('.num-ref-processed')) return;
+
+    // Build replacement: split on citation markers
+    const parts = [];
+    let last = 0;
+    const combined = /\^([\d,\-]+)\^|\[(\d+)\]/g;
+    let m;
+    combined.lastIndex = 0;
+    while ((m = combined.exec(orig)) !== null) {
+      // Text before match
+      if (m.index > last) parts.push({ type: 'text', val: orig.slice(last, m.index) });
+      const numStr = m[1] || m[2];
+      parts.push({ type: 'ref', val: numStr });
+      last = m.index + m[0].length;
+    }
+    if (last < orig.length) parts.push({ type: 'text', val: orig.slice(last) });
+
+    // Only proceed if we have actual refs
+    if (!parts.some(p => p.type === 'ref')) return;
+
+    // Create a foreignObject or just modify SVG text (use foreignObject approach)
+    // Simpler: wrap in a <tspan> and add event listeners
+    // Actually the cleanest for SVG text: replace the textNode with multiple tspans
+    const frag = document.createDocumentFragment();
+    parts.forEach(part => {
+      if (part.type === 'text') {
+        frag.appendChild(document.createTextNode(part.val));
+      } else {
+        const nums = expandNumRange(part.val);
+        // Create a tspan styled as superscript-link
+        const ns = 'http://www.w3.org/2000/svg';
+        const tspan = document.createElementNS(ns, 'tspan');
+        tspan.textContent = `[${part.val}]`;
+        tspan.setAttribute('class', 'num-ref-badge');
+        tspan.style.cssText = 'fill:#2563eb;font-size:0.78em;cursor:pointer;text-decoration:underline;baseline-shift:super;';
+        tspan.addEventListener('mouseenter', (e) => {
+          // Show tooltip for first valid num
+          for (const num of nums) {
+            const ref = inlineRefs[num] || bib[num];
+            if (ref) {
+              const refObj = typeof ref === 'string' ? { text: ref } : ref;
+              showTooltip(e, num, refObj);
+              break;
+            }
+          }
+        });
+        tspan.addEventListener('mouseleave', hideTooltip);
+        tspan.addEventListener('click', (e) => {
+          e.stopPropagation();
+          // Open pubmed if available
+          for (const num of nums) {
+            const ref = inlineRefs[num] || bib[num];
+            if (ref && typeof ref === 'object' && ref.pubmed_url) {
+              window.open(ref.pubmed_url, '_blank');
+              break;
+            }
+          }
+        });
+        frag.appendChild(tspan);
+      }
+    });
+    parent.replaceChild(frag, textNode);
+    parent.classList.add('num-ref-processed');
+  });
+}
+
+// ===== ZOOM =====
+function zoomIn() { currentZoom = Math.min(currentZoom * 1.2, 3); applyZoom(); }
+function zoomOut() { currentZoom = Math.max(currentZoom / 1.2, 0.3); applyZoom(); }
+function zoomReset() { currentZoom = 1; applyZoom(); }
+function applyZoom() {
+  const w = document.getElementById('mermaid-wrapper');
+  w.style.transform = `scale(${currentZoom})`;
+  w.style.transformOrigin = 'top center';
+}
+
+// ===== INFO PANEL =====
+function updateInfoPanel(node) {
+  const panel = document.getElementById('info-panel');
+  const typeBg = getColor(node);
+  const typeLabel = TYPE_LABELS[node.type] || node.type;
+
+  // Cross refs
+  const crossRefs = node.cross_refs || [];
+  const referencedBy = reverseRefs[node.id] || [];
+
+  // Footnotes
+  const footnotes = node.footnotes || {};
+  const fnKeys = Object.keys(footnotes);
+
+  let html = `
+    <div class="info-section">
+      <div class="info-section-title">頁面資訊</div>
+      <div class="info-row"><span class="lbl">標籤</span><span class="val">${node.id}</span></div>
+      <div class="info-row"><span class="lbl">類型</span><span class="type-badge" style="background:${typeBg}">${typeLabel}</span></div>
+      <div class="info-row"><span class="lbl">分區</span><span class="val">${node.section === 'numbered' ? '編號頁面' : '字母附錄'}</span></div>
+      <div class="info-row"><span class="lbl">PDF 頁碼</span><span class="val">${(node.pdf_pages || []).map(p => p + 1).join(', ')}</span></div>
+    </div>
+
+    <div class="info-section">
+      <div class="info-section-title">統計</div>
+      <div class="info-row"><span class="lbl">流程圖節點數</span><span class="val">${node.node_count || '-'}</span></div>
+      <div class="info-row"><span class="lbl">流程圖邊數</span><span class="val">${node.edge_count || '-'}</span></div>
+      <div class="info-row"><span class="lbl">引出 (out-degree)</span><span class="val">${node.out_degree}</span></div>
+      <div class="info-row"><span class="lbl">引入 (in-degree)</span><span class="val">${node.in_degree}</span></div>
+    </div>`;
+
+  // Cross references
+  if (crossRefs.length > 0) {
+    html += `<div class="info-section">
+      <div class="info-section-title">引用的頁面 (${crossRefs.length})</div>
+      <div class="ref-list">
+        ${crossRefs.map(r => `<span class="ref-link" onclick="selectNode('${r}')">${r}</span>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  // Referenced by
+  if (referencedBy.length > 0) {
+    html += `<div class="info-section">
+      <div class="info-section-title">被引用 (${referencedBy.length})</div>
+      <div class="ref-list">
+        ${referencedBy.map(r => `<span class="ref-link" onclick="selectNode('${r}')">${r}</span>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  // Pathway routing (only for BINV-4)
+  if (node.id === 'BINV-4' && appData.pathway_routing) {
+    html += `<div class="info-section">
+      <div class="info-section-title">受體狀態路由表</div>
+      <div style="font-size:12px;">
+        ${Object.entries(appData.pathway_routing).map(([k, v]) =>
+          `<div class="info-row"><span class="lbl" style="font-size:11px;">${k}</span><span class="ref-link" onclick="selectNode('${v}')">${v}</span></div>`
+        ).join('')}
+      </div>
+    </div>`;
+  }
+
+  // Footnotes
+  if (fnKeys.length > 0) {
+    const showCount = 5;
+    const hasMore = fnKeys.length > showCount;
+    html += `<div class="info-section">
+      <div class="info-section-title">註腳 (${fnKeys.length})</div>
+      <div class="footnote-list" id="fn-list">
+        ${fnKeys.slice(0, showCount).map(k => `
+          <div class="footnote-item">
+            <span class="footnote-marker">${k}</span>
+            <span class="footnote-text">${escapeHtml((footnotes[k] || '').substring(0, 200))}${(footnotes[k] || '').length > 200 ? '...' : ''}</span>
+          </div>
+        `).join('')}
+      </div>
+      ${hasMore ? `<button class="fn-toggle" onclick="toggleFootnotes(this)">展開全部 ${fnKeys.length} 個註腳 ▼</button>` : ''}
+    </div>`;
+  }
+
+  // Inline numbered references (BINV-N, BINV-Q, PREG-2 etc.)
+  const inlineRefs = node.inline_refs || {};
+  const irKeys = Object.keys(inlineRefs).sort((a, b) => Number(a) - Number(b));
+  if (irKeys.length > 0) {
+    const showCount = 5;
+    const hasMore = irKeys.length > showCount;
+    html += `<div class="info-section">
+      <div class="info-section-title">文獻引用 (${irKeys.length})</div>
+      <div class="inline-ref-list" id="ir-list">
+        ${buildRefItems(irKeys.slice(0, showCount), inlineRefs)}
+      </div>
+      ${hasMore ? `<button class="fn-toggle" onclick="toggleInlineRefs(this)">展開全部 ${irKeys.length} 個引用 ▼</button>` : ''}
+    </div>`;
+  }
+
+  panel.innerHTML = html;
+  attachInlineRefEvents(panel);
+}
+
+function buildRefItems(keys, inlineRefs) {
+  const bib = appData?.bibliography || {};
+  return keys.map(k => {
+    const refObj = typeof inlineRefs[k] === 'string' ? { text: inlineRefs[k] } : (inlineRefs[k] || {});
+    const fullRef = bib[k] || refObj;
+    const text = (fullRef.text || refObj.text || '').substring(0, 160);
+    const truncated = (fullRef.text || refObj.text || '').length > 160;
+    return `<div class="inline-ref-item" data-ref-num="${k}">
+      <span class="inline-ref-num">[${k}]</span>
+      <span class="inline-ref-text">${escapeHtml(text)}${truncated ? '...' : ''}</span>
+    </div>`;
+  }).join('');
+}
+
+function attachInlineRefEvents(container) {
+  container.querySelectorAll('.inline-ref-item').forEach(el => {
+    const k = el.dataset.refNum;
+    el.addEventListener('mouseenter', (e) => {
+      const inlineRefs = currentNode?.inline_refs || {};
+      const bib = appData?.bibliography || {};
+      const refObj = typeof inlineRefs[k] === 'string' ? { text: inlineRefs[k] } : (inlineRefs[k] || {});
+      const fullRef = bib[k] || refObj;
+      if (fullRef.text || refObj.text) showTooltip(e, k, fullRef);
+    });
+    el.addEventListener('mouseleave', hideTooltip);
+    el.addEventListener('click', () => {
+      const inlineRefs = currentNode?.inline_refs || {};
+      const bib = appData?.bibliography || {};
+      const refObj = typeof inlineRefs[k] === 'string' ? { text: inlineRefs[k] } : (inlineRefs[k] || {});
+      const fullRef = bib[k] || refObj;
+      if (fullRef.pubmed_url) window.open(fullRef.pubmed_url, '_blank');
+    });
+  });
+}
+
+function toggleInlineRefs(btn) {
+  if (!currentNode) return;
+  const inlineRefs = currentNode.inline_refs || {};
+  const keys = Object.keys(inlineRefs).sort((a, b) => Number(a) - Number(b));
+  const list = document.getElementById('ir-list');
+  const isExpanded = btn.dataset.expanded === '1';
+
+  if (isExpanded) {
+    list.innerHTML = buildRefItems(keys.slice(0, 5), inlineRefs);
+    btn.textContent = `展開全部 ${keys.length} 個引用 ▼`;
+    btn.dataset.expanded = '0';
+  } else {
+    list.innerHTML = buildRefItems(keys, inlineRefs);
+    btn.textContent = `收合 ▲`;
+    btn.dataset.expanded = '1';
+  }
+  attachInlineRefEvents(list);
+}
+
+function toggleFootnotes(btn) {
+  if (!currentNode) return;
+  const fn = currentNode.footnotes || {};
+  const keys = Object.keys(fn);
+  const list = document.getElementById('fn-list');
+  const isExpanded = btn.dataset.expanded === '1';
+
+  if (isExpanded) {
+    list.innerHTML = keys.slice(0, 5).map(k => `
+      <div class="footnote-item">
+        <span class="footnote-marker">${k}</span>
+        <span class="footnote-text">${escapeHtml((fn[k] || '').substring(0, 200))}${(fn[k] || '').length > 200 ? '...' : ''}</span>
+      </div>
+    `).join('');
+    btn.textContent = `展開全部 ${keys.length} 個註腳 ▼`;
+    btn.dataset.expanded = '0';
+  } else {
+    list.innerHTML = keys.map(k => `
+      <div class="footnote-item">
+        <span class="footnote-marker">${k}</span>
+        <span class="footnote-text">${escapeHtml(fn[k] || '')}</span>
+      </div>
+    `).join('');
+    btn.textContent = '收合註腳 ▲';
+    btn.dataset.expanded = '1';
+  }
+}
+
+// ===== SEARCH =====
+function initSearch() {
+  const box = document.getElementById('search-box');
+  box.addEventListener('input', () => {
+    const q = box.value.trim().toLowerCase();
+    if (!q) {
+      document.querySelectorAll('.page-item').forEach(el => { el.style.display = ''; el.style.opacity = '1'; });
+      return;
+    }
+    document.querySelectorAll('.page-item').forEach(el => {
+      const id = (el.dataset.id || '').toLowerCase();
+      const node = nodeMap[el.dataset.id];
+      const title = (node?.title || '').toLowerCase();
+      const match = id.includes(q) || title.includes(q);
+      el.style.display = match ? '' : 'none';
+    });
+  });
+  box.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const visible = document.querySelector('.page-item:not([style*="display: none"])');
+      if (visible) selectNode(visible.dataset.id);
+    }
+    if (e.key === 'Escape') {
+      box.value = '';
+      box.dispatchEvent(new Event('input'));
+    }
+  });
+}
+</script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>健保腫瘤藥物查詢系統</title>
+<title>乳癌小幫手</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -262,6 +262,238 @@ body {
 }
 .page-topbar.breast h2 { color: var(--breast); }
 .page-topbar.heme h2 { color: var(--heme); }
+.page-topbar.inp h2 { color: #0d9488; }
+
+/* ── Inpatient card ── */
+.dept-card.inp::before { background: #0d9488; }
+.dept-card.inp:hover { border-color: #99f6e4; }
+
+/* ── Inpatient Calculator ── */
+.inp-reg-btn.active { background: #0d9488; border-color: #0d9488; color: #fff; }
+.inp-reg-btn:hover { border-color: #0d9488; color: #0d9488; }
+.inp-phase-box {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: .85rem; margin-bottom: .75rem;
+}
+.inp-phase-box h4 {
+  font-size: .82rem; color: #0d9488;
+  margin-bottom: .5rem; display: flex; justify-content: space-between; align-items: center;
+}
+.inp-drug-row {
+  display: flex; align-items: flex-start; gap: .5rem;
+  padding: .4rem 0; border-bottom: 1px solid var(--surface-2); flex-wrap: wrap;
+}
+.inp-drug-row:last-child { border-bottom: none; }
+.inp-drug-info { flex: 1; min-width: 180px; }
+.inp-drug-name { font-weight: 600; font-size: .83rem; }
+.inp-drug-dose { font-size: .72rem; color: var(--text-muted); }
+.inp-vial-combo { font-size: .72rem; color: #0d9488; font-weight: 500; margin-top: .1rem; }
+.inp-drug-cost { font-weight: 700; font-size: .85rem; color: #0d9488; min-width: 130px; text-align: right; }
+.inp-summary {
+  background: #f0fdfa; border: 1.5px solid #99f6e4;
+  border-radius: var(--r-lg); padding: 1rem; margin-top: .75rem;
+}
+.inp-sum-line { display: flex; justify-content: space-between; padding: .25rem 0; font-size: .85rem; color: var(--text-2); }
+.inp-sum-total { font-weight: 700; font-size: 1rem; color: #0f766e; border-top: 2px solid #99f6e4; margin-top: .4rem; padding-top: .5rem; }
+.inp-sum-note { font-size: .7rem; color: var(--text-faint); margin-top: .6rem; font-style: italic; line-height: 1.6; }
+
+/* ── ICD Page ── */
+.page-topbar.icd h2 { color: #be123c; }
+.dept-card.icd::before { background: #e11d48; }
+.dept-card.icd:hover { border-color: #fda4af; }
+.icd-breast-wrap { text-align: center; }
+.icd-breast-label { font-weight: 700; font-size: .9rem; color: #be123c; margin-bottom: .3rem; line-height: 1.3; }
+.icd-breast-label small { font-size: .72rem; font-weight: 400; color: var(--text-muted); }
+.icd-svg { width: 175px; height: 175px; display: block; margin: 0 auto; }
+.icd-q { fill: transparent; cursor: pointer; transition: fill .12s; }
+.icd-q:hover { fill: rgba(253,164,175,.4); }
+.icd-q.selected { fill: rgba(244,63,94,.25); }
+.icd-nipple { fill: #fecdd3; stroke: #fda4af; stroke-width: 1.5; }
+.icd-nipple:hover { fill: #fda4af; }
+.icd-nipple.selected { fill: #fb7185; }
+.icd-popup { background: #fff; border: 2px solid #fda4af; border-radius: 10px; padding: .8rem 1rem; }
+.icd-popup-title { font-weight: 700; color: #be123c; font-size: .9rem; }
+.icd-code-row { display: flex; gap: .5rem; align-items: center; padding: .25rem 0; font-size: .82rem; }
+.icd-code { font-family: monospace; background: #fff1f2; color: #be123c; padding: .15rem .45rem; border-radius: 4px; font-weight: 700; border: 1px solid #fda4af; cursor: pointer; transition: background .1s; }
+.icd-code:hover { background: #fecdd3; }
+.icd-side-list { margin-top: .5rem; }
+.icd-side-item { display: flex; gap: .6rem; align-items: flex-start; padding: .3rem 0; border-bottom: 1px solid var(--surface-2); font-size: .82rem; }
+
+/* ── Surgery List Page ── */
+.page-topbar.surg h2 { color: #059669; }
+.dept-card.surg::before { background: #059669; }
+.dept-card.surg:hover { border-color: #a7f3d0; }
+.surg-group-title { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-faint); margin: .8rem 0 .3rem; }
+.surg-item { display: flex; align-items: flex-start; gap: .6rem; padding: .45rem .5rem; border-radius: var(--r-sm); border: 1px solid var(--border); margin-bottom: .35rem; background: var(--surface); transition: background .12s; }
+.surg-item:hover { background: #f0fdf4; border-color: #a7f3d0; }
+.surg-item input[type=checkbox] { margin-top: .15rem; accent-color: #059669; width: 16px; height: 16px; flex-shrink: 0; }
+.surg-item-info { flex: 1; }
+.surg-item-name { font-weight: 600; font-size: .83rem; }
+.surg-item-zh { font-size: .75rem; color: var(--text-muted); }
+.surg-item-code { font-size: .72rem; color: var(--text-faint); font-family: monospace; }
+.surg-item-price { font-weight: 700; font-size: .85rem; color: #059669; min-width: 90px; text-align: right; flex-shrink: 0; }
+.surg-note { font-size: .7rem; color: #6b7280; font-style: italic; padding: .2rem 0; }
+.surg-total-bar { position: sticky; bottom: 0; background: #ecfdf5; border: 2px solid #a7f3d0; border-radius: var(--r-lg); padding: .75rem 1rem; display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; }
+.surg-total-label { font-weight: 700; font-size: .95rem; color: #065f46; }
+.surg-total-amt { font-weight: 700; font-size: 1.1rem; color: #059669; }
+
+/* ── Clinical Trials Page ── */
+.page-topbar.trial h2 { color: #0369a1; }
+.dept-card.trial::before { background: #0369a1; }
+.dept-card.trial:hover { border-color: #bae6fd; }
+
+/* ── NCCN Guidelines Card ── */
+.dept-card.nccn::before { background: #7c3aed; }
+.dept-card.nccn:hover { border-color: #c4b5fd; }
+
+/* ── AJCC Staging Page ── */
+.page-topbar.ajcc h2 { color: #b45309; }
+.dept-card.ajcc::before { background: #d97706; }
+.dept-card.ajcc:hover { border-color: #fcd34d; }
+.ajcc-calc { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.ajcc-group { margin-bottom: .6rem; }
+.ajcc-group label { font-size: .78rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: .25rem; }
+.ajcc-select { width: 100%; padding: .4rem .5rem; border: 1px solid var(--border); border-radius: var(--r-sm); background: var(--surface); font-size: .88rem; }
+.ajcc-ref-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+.ajcc-ref-table th { background: #fef3c7; color: #92400e; font-weight: 600; padding: .4rem .5rem; border: 1px solid #fcd34d; }
+.ajcc-ref-table td { padding: .35rem .5rem; border: 1px solid var(--border); }
+.ajcc-ref-table tr.ajcc-highlighted td { background: #fef3c7 !important; font-weight: 700; outline: 2px solid #f59e0b; outline-offset: -2px; }
+.ajcc-cat-iv td { background: #fee2e2; }
+.ajcc-cat-iii td { background: #ffedd5; }
+.ajcc-cat-ii td { background: #fefce8; }
+.ajcc-cat-i td { background: #f0fdf4; }
+.ajcc-cat-0 td { background: #f8fafc; }
+.ajcc-biomarker-section { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--r-sm); padding: .75rem; margin-top: .75rem; }
+.ajcc-note { background: #fff7ed; border-left: 3px solid #f59e0b; padding: .55rem .75rem; font-size: .8rem; color: #92400e; margin-top: .75rem; border-radius: 0 var(--r-sm) var(--r-sm) 0; }
+.cat-badge { display: inline-block; padding: .1rem .45rem; border-radius: 999px; font-size: .75rem; font-weight: 700; white-space: nowrap; }
+.cat-iv { background: #fee2e2; color: #b91c1c; }
+.cat-iii { background: #ffedd5; color: #c2410c; }
+.cat-ii { background: #fef9c3; color: #854d0e; }
+.cat-i { background: #dcfce7; color: #166534; }
+.cat-0 { background: #f1f5f9; color: #475569; }
+.ajcc-toggle { display: inline-flex; gap: .15rem; background: #f3f4f6; border-radius: 999px; padding: .2rem; margin-bottom: .85rem; border: 1px solid var(--border); }
+.ajcc-toggle button { border: 0; background: transparent; padding: .4rem 1rem; border-radius: 999px; font-size: .82rem; font-weight: 600; color: #64748b; cursor: pointer; transition: .15s; }
+.ajcc-toggle button.active { background: #d97706; color: white; box-shadow: 0 1px 3px rgba(0,0,0,.15); }
+.ajcc-toggle button:not(.active):hover { color: #b45309; background: rgba(255,255,255,.6); }
+.ajcc-reset { float: right; background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: .25rem .7rem; border-radius: var(--r-sm); font-size: .78rem; cursor: pointer; transition: .15s; }
+.ajcc-reset:hover { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
+.ajcc-error { background: #fef2f2; border-left: 3px solid #ef4444; padding: .55rem .8rem; border-radius: 0 var(--r-sm) var(--r-sm) 0; font-size: .82rem; color: #991b1b; }
+@media (max-width: 760px){
+  .ajcc-calc { grid-template-columns: 1fr; }
+  .ajcc-biomarker-section > div[style*="grid-template-columns"] { grid-template-columns: 1fr 1fr !important; }
+  .ajcc-ref-table { font-size: .75rem; }
+  .ajcc-ref-table th, .ajcc-ref-table td { padding: .3rem .35rem; }
+}
+
+/* ── Calculator Page ── */
+.page-topbar.calc h2 { color: #0e7490; }
+.dept-card.calc::before { background: #06b6d4; }
+.dept-card.calc:hover { border-color: #67e8f9; }
+.calc-tabs { display: flex; gap: .25rem; flex-wrap: wrap; padding: .35rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); margin-bottom: .8rem; }
+.calc-tab { padding: .45rem .85rem; border: 0; background: transparent; border-radius: var(--r-sm); font-size: .82rem; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: .15s; }
+.calc-tab:hover { background: #ecfeff; color: #0e7490; }
+.calc-tab.active { background: #06b6d4; color: white; }
+.calc-panel { display: none; }
+.calc-panel.active { display: block; }
+.calc-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); padding: 1rem 1.1rem; }
+.calc-form { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem .85rem; }
+.calc-field label { font-size: .76rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: .22rem; }
+.calc-field input, .calc-field select { width: 100%; padding: .42rem .55rem; border: 1px solid var(--border); border-radius: var(--r-sm); background: var(--surface); color: var(--text); font-size: .88rem; font-family: inherit; }
+.calc-field input:focus, .calc-field select:focus { outline: 2px solid #06b6d4; outline-offset: -1px; border-color: #06b6d4; }
+.calc-section-title { font-weight: 700; font-size: .92rem; color: #0e7490; margin-bottom: .55rem; }
+.calc-result { margin-top: .85rem; padding: .85rem 1rem; border-radius: var(--r-sm); border-left: 4px solid #06b6d4; background: #ecfeff; }
+.calc-result.low { border-color: #22c55e; background: #f0fdf4; }
+.calc-result.med { border-color: #eab308; background: #fefce8; }
+.calc-result.high { border-color: #ef4444; background: #fef2f2; }
+.calc-result-label { font-size: .72rem; font-weight: 700; letter-spacing: .05em; color: #0e7490; text-transform: uppercase; }
+.calc-result-main { font-size: 1.6rem; font-weight: 800; color: #0e7490; line-height: 1.1; margin-top: .15rem; }
+.calc-result.low .calc-result-label, .calc-result.low .calc-result-main { color: #166534; }
+.calc-result.med .calc-result-label, .calc-result.med .calc-result-main { color: #854d0e; }
+.calc-result.high .calc-result-label, .calc-result.high .calc-result-main { color: #b91c1c; }
+.calc-result-detail { font-size: .82rem; color: var(--text); margin-top: .35rem; line-height: 1.55; }
+.calc-cite { font-size: .72rem; color: var(--text-faint); margin-top: .8rem; padding-top: .55rem; border-top: 1px dashed var(--border); }
+.calc-extlinks { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem; }
+.calc-extlink { display: block; padding: .65rem .8rem; border: 1px solid var(--border); border-radius: var(--r-sm); background: var(--surface); text-decoration: none; color: var(--text); transition: .15s; }
+.calc-extlink:hover { border-color: #06b6d4; background: #ecfeff; transform: translateY(-1px); }
+.calc-extlink-name { font-weight: 700; font-size: .9rem; color: #0e7490; }
+.calc-extlink-desc { font-size: .76rem; color: var(--text-muted); margin-top: .2rem; line-height: 1.4; }
+.calc-pepi-table { width: 100%; border-collapse: collapse; font-size: .82rem; margin-top: .5rem; }
+.calc-pepi-table th, .calc-pepi-table td { border: 1px solid var(--border); padding: .35rem .55rem; text-align: left; }
+.calc-pepi-table th { background: #ecfeff; color: #0e7490; font-weight: 600; }
+.calc-pepi-table tr.pepi-hl td { background: #fef9c3 !important; font-weight: 600; }
+@media (max-width: 760px){
+  .calc-form { grid-template-columns: 1fr; }
+  .calc-extlinks { grid-template-columns: 1fr; }
+}
+
+/* ── Patient Workspace Page ── */
+.page-topbar.ws h2 { color: #be185d; }
+.dept-card.ws::before { background: #ec4899; }
+.dept-card.ws:hover { border-color: #f9a8d4; }
+.ws-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); padding: 1rem 1.1rem; margin-bottom: .85rem; }
+.ws-section h3 { font-size: .92rem; color: #be185d; margin: 0 0 .65rem; font-weight: 700; display: flex; align-items: center; gap: .4rem; }
+.ws-section h3::before { content: ''; width: 4px; height: 16px; background: #ec4899; border-radius: 2px; }
+.ws-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: .55rem .75rem; }
+.ws-field label { display:block; font-size: .72rem; font-weight: 600; color: var(--text-muted); margin-bottom: .18rem; letter-spacing: .02em; }
+.ws-field input, .ws-field select { width: 100%; padding: .4rem .55rem; border: 1px solid var(--border); border-radius: var(--r-sm); background: var(--surface); color: var(--text); font-size: .86rem; font-family: inherit; }
+.ws-field input:focus, .ws-field select:focus { outline: 2px solid #ec4899; outline-offset: -1px; border-color: #ec4899; }
+.ws-derived { display: flex; flex-wrap: wrap; gap: .5rem .9rem; padding: .6rem .8rem; background: linear-gradient(135deg, #fdf2f8 0%, #fef3c7 100%); border-radius: var(--r-sm); margin-top: .6rem; font-size: .82rem; }
+.ws-derived-item { display: flex; flex-direction: column; }
+.ws-derived-label { font-size: .68rem; font-weight: 600; color: #9d174d; text-transform: uppercase; letter-spacing: .04em; }
+.ws-derived-value { font-size: 1rem; font-weight: 700; color: #831843; }
+.ws-actions { display: flex; gap: .5rem; flex-wrap: wrap; padding: .85rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); position: sticky; bottom: 0; z-index: 10; box-shadow: 0 -2px 12px rgba(0,0,0,.04); }
+.ws-btn { padding: .5rem 1rem; border-radius: var(--r-sm); border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: .85rem; font-weight: 600; cursor: pointer; transition: .15s; font-family: inherit; }
+.ws-btn-primary { background: #ec4899; color: white; border-color: #ec4899; }
+.ws-btn-primary:hover { background: #db2777; }
+.ws-btn-danger { color: #b91c1c; }
+.ws-btn-danger:hover { background: #fef2f2; border-color: #fca5a5; }
+.ws-btn:hover { transform: translateY(-1px); }
+.nhi-elig-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: .5rem; margin-top: .55rem; }
+.nhi-elig-card { padding: .55rem .7rem; border: 1px solid var(--border); border-left: 3px solid #16a34a; border-radius: var(--r-sm); background: #f0fdf4; }
+.nhi-elig-card.partial { border-left-color: #f59e0b; background: #fefce8; }
+.nhi-elig-card.ineligible { border-left-color: #dc2626; background: #fef2f2; opacity: .85; }
+.nhi-elig-name { font-weight: 700; font-size: .86rem; color: #14532d; margin-bottom: .15rem; }
+.nhi-elig-card.partial .nhi-elig-name { color: #854d0e; }
+.nhi-elig-card.ineligible .nhi-elig-name { color: #7f1d1d; }
+.nhi-elig-tags { display: flex; flex-wrap: wrap; gap: .25rem; }
+.nhi-elig-tag { font-size: .68rem; padding: .1rem .4rem; border-radius: 999px; background: #d1fae5; color: #065f46; font-weight: 600; }
+.nhi-elig-card.partial .nhi-elig-tag { background: #fef3c7; color: #92400e; }
+.nhi-elig-reason { font-size: .72rem; color: var(--text-muted); margin-top: .15rem; line-height: 1.4; }
+.ws-empty { text-align: center; color: var(--text-faint); font-size: .82rem; padding: 1.5rem; }
+@media (max-width: 760px){
+  .ws-form { grid-template-columns: 1fr 1fr; }
+  .nhi-elig-list { grid-template-columns: 1fr; }
+}
+
+/* ── Dark Mode Toggle Button ── */
+.dark-toggle { position: fixed; bottom: 1rem; right: 1rem; width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.1); z-index: 100; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: .2s; }
+.dark-toggle:hover { transform: scale(1.08); }
+/* ── Dark Mode Theme ── */
+body.dark { color-scheme: dark; }
+body.dark { --bg: #0f172a; --surface: #1e293b; --border: #334155; --text: #e2e8f0; --text-muted: #94a3b8; --text-faint: #64748b; }
+body.dark { background: #0f172a; color: #e2e8f0; }
+body.dark .dept-card { background: #1e293b; }
+body.dark input, body.dark select, body.dark textarea { background: #1e293b; color: #e2e8f0; border-color: #334155; }
+body.dark .calc-tab:hover { background: #164e63; }
+body.dark .calc-result { background: #164e63; }
+body.dark .calc-result.low { background: #14532d; }
+body.dark .calc-result.med { background: #422006; }
+body.dark .calc-result.high { background: #450a0a; }
+body.dark .calc-pepi-table th { background: #164e63; }
+body.dark .calc-extlink:hover { background: #164e63; }
+body.dark .ajcc-toggle { background: #1e293b; }
+body.dark th { background: #1e293b !important; color: #e2e8f0; }
+body.dark .modal { background: #1e293b; }
+.trial-card { border: 1px solid var(--border); border-radius: var(--r-md); padding: .85rem 1rem; margin-bottom: .6rem; background: var(--surface); }
+.trial-card:hover { border-color: #7dd3fc; background: #f0f9ff; }
+.trial-title { font-weight: 600; font-size: .88rem; margin-bottom: .25rem; }
+.trial-meta { font-size: .73rem; color: var(--text-muted); display: flex; gap: .75rem; flex-wrap: wrap; margin-bottom: .3rem; }
+.trial-badge { display: inline-block; padding: .1rem .5rem; border-radius: 999px; font-size: .68rem; font-weight: 600; }
+.trial-badge.recruiting { background: #dcfce7; color: #166534; }
+.trial-badge.active { background: #dbeafe; color: #1e40af; }
+.trial-phase { background: #f3f4f6; color: #374151; }
+.trial-sponsor { font-size: .75rem; color: var(--text-2); }
+.trial-locations { font-size: .72rem; color: #0369a1; margin-top: .25rem; }
 
 .back-btn {
   background: none;
@@ -1032,69 +1264,688 @@ body {
     </div>
   </div>
 
-  <!-- ===== HEME PAGE ===== -->
-  <div id="hemePage" class="dept-page">
-    <div class="page-topbar heme">
+  <!-- ===== INPATIENT CHEMO CALC PAGE ===== -->
+  <div id="inpatientPage" class="dept-page">
+    <div class="page-topbar inp">
       <button class="back-btn" onclick="showLanding()">← 返回</button>
-      <h2>血液腫瘤藥物查詢</h2>
+      <h2>住院化療計算</h2>
     </div>
 
-    <div class="content-layout">
-      <!-- Sidebar -->
-      <aside class="filter-sidebar">
-        <div class="sidebar-title">篩選條件</div>
-        <div class="search-row">
-          <input type="text" id="hemeSearch" placeholder="搜尋藥物…" autocomplete="off" oninput="filterHeme()">
-        </div>
+    <div style="max-width:960px;margin:0 auto;padding:0 .5rem 2rem">
 
-        <div class="filter-section">
-          <div class="filter-section-label">疾病類型</div>
-          <div class="filter-chips">
-            <div class="filter-chip" data-f="disease" data-v="CML" onclick="toggleChip(this)">CML</div>
-            <div class="filter-chip" data-f="disease" data-v="AML" onclick="toggleChip(this)">AML</div>
-            <div class="filter-chip" data-f="disease" data-v="CLL" onclick="toggleChip(this)">CLL</div>
-            <div class="filter-chip" data-f="disease" data-v="ALL" onclick="toggleChip(this)">ALL</div>
-            <div class="filter-chip" data-f="disease" data-v="lymphoma" onclick="toggleChip(this)">淋巴瘤</div>
-            <div class="filter-chip" data-f="disease" data-v="myeloma" onclick="toggleChip(this)">骨髓瘤</div>
-            <div class="filter-chip" data-f="disease" data-v="MDS" onclick="toggleChip(this)">MDS</div>
+      <!-- Patient Info -->
+      <div class="reg-section">
+        <h3>患者資訊</h3>
+        <div class="patient-inputs">
+          <div class="field"><label>體重 (kg)</label><input type="number" id="inpWt" value="60" min="30" max="150" step="0.1" onchange="updateInpPatient()"></div>
+          <div class="field"><label>身高 (cm)</label><input type="number" id="inpHt" value="165" min="140" max="200" onchange="updateInpPatient()"></div>
+          <div class="bsa-display" id="inpBSA" style="background:#f0fdfa;color:#0d9488;border-color:#99f6e4">BSA: 1.66 m²</div>
+          <div class="field"><label>年齡</label><input type="number" id="inpAge" value="50" min="18" max="100" onchange="updateInpPatient()"></div>
+          <div class="field">
+            <label>性別</label>
+            <select id="inpSex" onchange="updateInpPatient()" style="width:100%;padding:.42rem .55rem;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:.88rem;font-family:inherit;outline:none">
+              <option value="F">女</option>
+              <option value="M">男</option>
+            </select>
           </div>
-        </div>
-
-        <hr class="filter-divider">
-
-        <div class="filter-section">
-          <div class="filter-section-label">治療階段</div>
-          <div class="filter-chips">
-            <div class="filter-chip" data-f="phase" data-v="initial" onclick="toggleChip(this)">第一線</div>
-            <div class="filter-chip" data-f="phase" data-v="relapsed" onclick="toggleChip(this)">復發/難治</div>
-          </div>
-        </div>
-
-        <hr class="filter-divider">
-        <div class="sidebar-actions">
-          <button class="btn btn-primary btn-sm" onclick="filterHeme()" style="flex:1">搜尋</button>
-          <button class="btn btn-outline btn-sm" onclick="resetHemeFilters()">重置</button>
-        </div>
-      </aside>
-
-      <!-- Main content -->
-      <div class="content-main">
-        <div class="result-bar">
-          <span class="result-count" id="hemeInfo"></span>
-        </div>
-        <div class="drug-list" id="hemeList"></div>
-        <!-- Hidden table for JS compatibility -->
-        <div class="table-wrap">
-          <table><thead><tr>
-            <th style="width:30px"></th>
-            <th>藥物名稱</th><th>適用疾病</th><th>療程線</th>
-            <th>事前審查</th><th>藥價</th><th>臨床標記</th><th style="width:64px"></th>
-          </tr></thead>
-          <tbody id="hemeBody"></tbody></table>
+          <div class="field"><label>血清肌酸酐 Cr (mg/dL)</label><input type="number" id="inpCr" value="0.8" min="0.3" max="8" step="0.1" onchange="updateInpPatient()"></div>
+          <div class="bsa-display" id="inpCrCl" style="background:#f0fdfa;color:#0d9488;border-color:#99f6e4">CrCl: 80 mL/min</div>
         </div>
       </div>
+
+      <!-- Regimen Picker -->
+      <div class="reg-section">
+        <h3>選擇住院處方</h3>
+        <div id="inpRegimenPicker"></div>
+      </div>
+
+      <!-- Options (hidden until regimen selected) -->
+      <div id="inpOptions" class="reg-section" style="display:none">
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end">
+          <div class="field" style="min-width:130px">
+            <label>療程週期數</label>
+            <input type="number" id="inpCycles" value="4" min="1" max="36" onchange="calcInpRegimen()">
+          </div>
+          <div style="display:flex;gap:.4rem;align-items:center;flex-wrap:wrap">
+            <span style="font-size:.73rem;font-weight:600;color:var(--text-muted)">藥價基準：</span>
+            <button id="inpPriceNHI" class="cond-btn inp-reg-btn active" onclick="setInpPrice('nhi')">健保藥價</button>
+            <button id="inpPriceSelf" class="cond-btn inp-reg-btn" onclick="setInpPrice('self')">台大自費藥價</button>
+          </div>
+        </div>
+        <div id="inpAucOverride" style="display:none;margin-top:.6rem">
+          <span style="font-size:.73rem;font-weight:600;color:var(--text-muted)">Carboplatin AUC 目標值：</span>
+          <input type="number" id="inpAucTarget" value="5" min="1" max="8" step="0.5" style="width:70px;padding:.3rem .4rem;border:1.5px solid #99f6e4;border-radius:var(--r-sm);font-size:.88rem" onchange="calcInpRegimen()">
+          <span style="font-size:.72rem;color:var(--text-muted)">（Calvert: 劑量 = AUC × (CrCl+25)）</span>
+        </div>
+      </div>
+
+      <!-- Detail & Summary -->
+      <div id="inpDetail"></div>
+      <div id="inpSummary"></div>
+
     </div>
-  </div>
+  </div><!-- /inpatientPage -->
+
+  <!-- ===== ICD PAGE ===== -->
+  <div id="icdPage" class="dept-page">
+    <div class="page-topbar icd">
+      <button class="back-btn" onclick="showLanding()">← 返回</button>
+      <h2>ICD碼查詢 — 重大傷病卡申請</h2>
+    </div>
+    <div style="max-width:960px;margin:0 auto;padding:0 .5rem 2rem">
+      <div class="reg-section">
+        <h3>乳房部位對應 ICD-10 碼</h3>
+        <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:.8rem">點擊右乳或左乳的象限，查詢對應 C50 ICD-10 碼（申請重大傷病卡 010 乳癌用）</p>
+        <div style="display:flex;flex-wrap:wrap;gap:1.5rem;align-items:flex-start;justify-content:center">
+          <!-- Two separate breast diagrams -->
+          <div style="display:flex;gap:1.2rem;flex-wrap:wrap;justify-content:center">
+            <!-- Right Breast (右乳) — outer=right side of diagram -->
+            <div class="icd-breast-wrap">
+              <div class="icd-breast-label">右乳<br><small>Right Breast</small></div>
+              <svg class="icd-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <!-- Background ellipse -->
+                <ellipse cx="100" cy="108" rx="84" ry="74" fill="#fff1f2" stroke="#fda4af" stroke-width="1.5"/>
+                <!-- Quadrant paths — right breast: outer(外)=right, inner(內)=left -->
+                <path class="icd-q" data-side="R" data-zone="UO" d="M100,108 L100,34 A84,74 0 0,1 184,108 Z" onclick="selectIcdZone('R','UO')"/>
+                <path class="icd-q" data-side="R" data-zone="UI" d="M100,108 L100,34 A84,74 0 0,0 16,108 Z" onclick="selectIcdZone('R','UI')"/>
+                <path class="icd-q" data-side="R" data-zone="LO" d="M100,108 L184,108 A84,74 0 0,1 100,182 Z" onclick="selectIcdZone('R','LO')"/>
+                <path class="icd-q" data-side="R" data-zone="LI" d="M100,108 L16,108 A84,74 0 0,0 100,182 Z" onclick="selectIcdZone('R','LI')"/>
+                <!-- Divider lines -->
+                <line x1="100" y1="34" x2="100" y2="182" stroke="#fca5a5" stroke-width="1.2" stroke-dasharray="3,2" pointer-events="none"/>
+                <line x1="16" y1="108" x2="184" y2="108" stroke="#fca5a5" stroke-width="1.2" stroke-dasharray="3,2" pointer-events="none"/>
+                <!-- Nipple/areola -->
+                <circle class="icd-q icd-nipple" data-side="R" data-zone="nipple" cx="100" cy="108" r="15" onclick="selectIcdZone('R','nipple')"/>
+                <!-- Zone labels -->
+                <text x="152" y="72" text-anchor="middle" font-size="10" fill="#be123c" font-weight="700" pointer-events="none">外上</text>
+                <text x="48" y="72" text-anchor="middle" font-size="10" fill="#9f1239" font-weight="700" pointer-events="none">內上</text>
+                <text x="152" y="155" text-anchor="middle" font-size="10" fill="#be123c" font-weight="700" pointer-events="none">外下</text>
+                <text x="48" y="155" text-anchor="middle" font-size="10" fill="#9f1239" font-weight="700" pointer-events="none">內下</text>
+                <text x="100" y="111" text-anchor="middle" font-size="8" fill="#7f1d1d" pointer-events="none">乳頭</text>
+                <!-- Side arrows -->
+                <text x="164" y="22" text-anchor="middle" font-size="8.5" fill="#e11d48" pointer-events="none">外→</text>
+                <text x="36" y="22" text-anchor="middle" font-size="8.5" fill="#be123c" pointer-events="none">←內</text>
+              </svg>
+            </div>
+            <!-- Left Breast (左乳) — outer=left side of diagram -->
+            <div class="icd-breast-wrap">
+              <div class="icd-breast-label">左乳<br><small>Left Breast</small></div>
+              <svg class="icd-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="100" cy="108" rx="84" ry="74" fill="#fff1f2" stroke="#fda4af" stroke-width="1.5"/>
+                <!-- Left breast: outer(外)=left, inner(內)=right -->
+                <path class="icd-q" data-side="L" data-zone="UO" d="M100,108 L100,34 A84,74 0 0,0 16,108 Z" onclick="selectIcdZone('L','UO')"/>
+                <path class="icd-q" data-side="L" data-zone="UI" d="M100,108 L100,34 A84,74 0 0,1 184,108 Z" onclick="selectIcdZone('L','UI')"/>
+                <path class="icd-q" data-side="L" data-zone="LO" d="M100,108 L16,108 A84,74 0 0,0 100,182 Z" onclick="selectIcdZone('L','LO')"/>
+                <path class="icd-q" data-side="L" data-zone="LI" d="M100,108 L184,108 A84,74 0 0,1 100,182 Z" onclick="selectIcdZone('L','LI')"/>
+                <line x1="100" y1="34" x2="100" y2="182" stroke="#fca5a5" stroke-width="1.2" stroke-dasharray="3,2" pointer-events="none"/>
+                <line x1="16" y1="108" x2="184" y2="108" stroke="#fca5a5" stroke-width="1.2" stroke-dasharray="3,2" pointer-events="none"/>
+                <circle class="icd-q icd-nipple" data-side="L" data-zone="nipple" cx="100" cy="108" r="15" onclick="selectIcdZone('L','nipple')"/>
+                <text x="48" y="72" text-anchor="middle" font-size="10" fill="#be123c" font-weight="700" pointer-events="none">外上</text>
+                <text x="152" y="72" text-anchor="middle" font-size="10" fill="#9f1239" font-weight="700" pointer-events="none">內上</text>
+                <text x="48" y="155" text-anchor="middle" font-size="10" fill="#be123c" font-weight="700" pointer-events="none">外下</text>
+                <text x="152" y="155" text-anchor="middle" font-size="10" fill="#9f1239" font-weight="700" pointer-events="none">內下</text>
+                <text x="100" y="111" text-anchor="middle" font-size="8" fill="#7f1d1d" pointer-events="none">乳頭</text>
+                <text x="36" y="22" text-anchor="middle" font-size="8.5" fill="#e11d48" pointer-events="none">←外</text>
+                <text x="164" y="22" text-anchor="middle" font-size="8.5" fill="#be123c" pointer-events="none">內→</text>
+              </svg>
+            </div>
+          </div>
+          <!-- Popup result area -->
+          <div style="flex:1;min-width:240px;max-width:360px">
+            <div id="icdPopupArea">
+              <div class="icd-popup" style="border-color:#fda4af;background:#fff1f2">
+                <div class="icd-popup-title">點擊乳房示意圖選擇部位</div>
+                <div style="font-size:.78rem;color:var(--text-muted);margin-top:.3rem">分別點選右乳或左乳的各象限，顯示對應 ICD-10 碼</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="font-size:.7rem;color:var(--text-muted);margin-top:.5rem;text-align:center">※ 患者視角：右乳外側在右、左乳外側在左</div>
+      </div>
+      <div class="reg-section">
+        <h3>特殊部位 / 無法分類 ICD-10 碼</h3>
+        <div class="icd-side-list" id="icdSideList"></div>
+      </div>
+      <div class="reg-section">
+        <h3>原位癌 (DCIS/LCIS) — D05</h3>
+        <div class="icd-side-list" id="icdDcislist"></div>
+      </div>
+      <div style="font-size:.72rem;color:var(--text-muted);padding:.5rem;background:var(--surface);border-radius:var(--r-md);margin-top:.5rem">
+        ※ 重大傷病卡申請：填寫診斷書時需選擇 ICD-10-CM 碼，申請代碼為 「010」乳癌。C50 系列為惡性腫瘤，D05 為原位癌（DCIS/LCIS 通常不符合重大傷病申請條件，請確認）。
+      </div>
+    </div>
+  </div><!-- /icdPage -->
+
+  <!-- ===== SURGERY PAGE ===== -->
+  <div id="surgeryPage" class="dept-page">
+    <div class="page-topbar surg">
+      <button class="back-btn" onclick="showLanding()">← 返回</button>
+      <h2>手術自費醫材清單</h2>
+    </div>
+    <div style="max-width:960px;margin:0 auto;padding:0 .5rem 2rem">
+      <div class="reg-section">
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-bottom:.75rem">
+          <span style="font-size:.8rem;color:var(--text-muted)">資料來源：黃祥瑋醫師 乳癌或疑陽病灶手術自費項目清單（台大醫院）</span>
+          <button class="btn btn-outline btn-sm" onclick="clearSurgeryChecks()" style="margin-left:auto">清除勾選</button>
+          <button class="btn btn-outline btn-sm" onclick="printSurgeryList()">&#128438; 列印/PDF</button>
+        </div>
+        <div id="surgeryList"></div>
+      </div>
+      <div class="surg-total-bar" id="surgTotalBar">
+        <span class="surg-total-label">已選項目合計</span>
+        <span class="surg-total-amt" id="surgTotal">NT$ 0</span>
+      </div>
+    </div>
+  </div><!-- /surgeryPage -->
+
+  <!-- ===== TRIALS PAGE ===== -->
+  <div id="trialsPage" class="dept-page">
+    <div class="page-topbar trial">
+      <button class="back-btn" onclick="showLanding()">← 返回</button>
+      <h2>臨床試驗搜尋</h2>
+    </div>
+    <div style="max-width:960px;margin:0 auto;padding:0 .5rem 2rem">
+      <div class="reg-section">
+        <div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:flex-end;margin-bottom:.75rem">
+          <div class="field" style="flex:2;min-width:200px">
+            <label style="font-size:.72rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:.2rem">搜尋關鍵字</label>
+            <input type="text" id="trialKeyword" placeholder="e.g. HER2, TNBC, CDK4/6..." value="breast cancer" style="width:100%;padding:.42rem .6rem;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:.88rem;font-family:inherit">
+          </div>
+          <div class="field" style="min-width:140px">
+            <label style="font-size:.72rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:.2rem">地點</label>
+            <input type="text" id="trialLocation" placeholder="Taiwan" value="Taiwan" style="width:100%;padding:.42rem .6rem;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:.88rem;font-family:inherit">
+          </div>
+          <div class="field" style="min-width:130px">
+            <label style="font-size:.72rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:.2rem">狀態</label>
+            <select id="trialStatus" style="width:100%;padding:.42rem .55rem;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:.88rem;font-family:inherit">
+              <option value="RECRUITING">招募中</option>
+              <option value="ACTIVE_NOT_RECRUITING">進行中（不再招募）</option>
+              <option value="">全部</option>
+            </select>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="searchTrials()" style="background:#0369a1;border-color:#0369a1">搜尋</button>
+        </div>
+        <div id="trialResults"><div style="color:var(--text-muted);font-size:.85rem;padding:1rem 0">點擊「搜尋」查詢 ClinicalTrials.gov 資料庫</div></div>
+      </div>
+    </div>
+  </div><!-- /trialsPage -->
+
+  <!-- ===== AJCC STAGING PAGE ===== -->
+  <div id="ajccPage" class="dept-page">
+    <div class="page-topbar ajcc">
+      <button class="back-btn" onclick="showLanding()">← 返回</button>
+      <h2>&#127981; AJCC 第八版乳癌分期</h2>
+    </div>
+    <div class="page-body">
+
+      <!-- Anatomic Stage Calculator -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:1rem;margin-bottom:1rem">
+        <button type="button" class="ajcc-reset" onclick="resetAJCC()">&#8635; 清除</button>
+        <div style="font-weight:700;font-size:.9rem;color:#92400e;margin-bottom:.5rem">分期計算</div>
+        <div class="ajcc-toggle">
+          <button type="button" data-mode="clinical" class="active" onclick="setAJCCMode('clinical')">臨床期別 (cTNM)</button>
+          <button type="button" data-mode="pathologic" onclick="setAJCCMode('pathologic')">病理期別 (pTNM)</button>
+        </div>
+        <div class="ajcc-calc">
+          <div>
+            <div class="ajcc-group">
+              <label id="ajccTLabel">cT — 腫瘤大小/範圍</label>
+              <select id="ajccT" class="ajcc-select" onchange="calcAJCC()">
+                <option value="">請選擇…</option>
+                <option value="Tis">Tis — 原位癌 (DCIS / LCIS)</option>
+                <option value="T0">T0 — 無原發腫瘤</option>
+                <option value="T1mi">T1mi — ≤1 mm（微浸潤）</option>
+                <option value="T1a">T1a — &gt;1 mm，≤5 mm</option>
+                <option value="T1b">T1b — &gt;5 mm，≤10 mm</option>
+                <option value="T1c">T1c — &gt;10 mm，≤20 mm</option>
+                <option value="T2">T2 — &gt;20 mm，≤50 mm</option>
+                <option value="T3">T3 — &gt;50 mm</option>
+                <option value="T4a">T4a — 延伸至胸壁（不含胸肌）</option>
+                <option value="T4b">T4b — 皮膚潰瘍 / 衛星結節 / 水腫</option>
+                <option value="T4c">T4c — T4a + T4b</option>
+                <option value="T4d">T4d — 發炎性乳癌</option>
+              </select>
+            </div>
+            <div class="ajcc-group">
+              <label id="ajccNLabel">cN — 區域淋巴結</label>
+              <select id="ajccN" class="ajcc-select" onchange="calcAJCC()">
+                <option value="">請選擇…</option>
+                <option value="N0">N0 — 無轉移</option>
+                <option value="N1mi">N1mi — 微轉移（&gt;0.2 mm，≤2 mm）</option>
+                <option value="N1">N1 — 1–3 個腋下淋巴（巨轉移）</option>
+                <option value="N2a">N2a — 4–9 個腋下淋巴</option>
+                <option value="N2b">N2b — 僅乳內淋巴（影像陽性，無腋下）</option>
+                <option value="N3a">N3a — ≥10 腋下 或 鎖骨下淋巴</option>
+                <option value="N3b">N3b — 腋下 + 乳內淋巴</option>
+                <option value="N3c">N3c — 鎖骨上淋巴</option>
+              </select>
+            </div>
+            <div class="ajcc-group">
+              <label id="ajccMLabel">cM — 遠端轉移</label>
+              <select id="ajccM" class="ajcc-select" onchange="calcAJCC()">
+                <option value="">請選擇…</option>
+                <option value="M0">M0 — 無遠端轉移</option>
+                <option value="M1">M1 — 有遠端轉移（骨、肝、肺、腦等）</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="ajccAnatomicResult" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:150px;border:2px dashed var(--border);border-radius:var(--r-md);transition:.2s">
+            <div style="color:var(--text-faint);font-size:.85rem;text-align:center">請選擇<br>T、N、M</div>
+          </div>
+        </div>
+
+        <!-- Biomarker section for prognostic stage -->
+        <div class="ajcc-biomarker-section" id="ajccBioSection" style="display:none">
+          <div style="font-weight:600;font-size:.82rem;color:#1d4ed8;margin-bottom:.6rem" id="ajccBioTitle">&#10024; 預後因子（選填）— 評估臨床預後期別</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.55rem">
+            <div class="ajcc-group" style="margin:0">
+              <label>Grade 分級</label>
+              <select id="ajccGrade" class="ajcc-select" onchange="calcAJCCPrognostic()">
+                <option value="">未知</option>
+                <option value="1">G1 低度</option>
+                <option value="2">G2 中度</option>
+                <option value="3">G3 高度</option>
+              </select>
+            </div>
+            <div class="ajcc-group" style="margin:0">
+              <label>ER 雌激素</label>
+              <select id="ajccER" class="ajcc-select" onchange="calcAJCCPrognostic()">
+                <option value="">未知</option>
+                <option value="+">ER 陽性</option>
+                <option value="-">ER 陰性</option>
+              </select>
+            </div>
+            <div class="ajcc-group" style="margin:0">
+              <label>PR 黃體素</label>
+              <select id="ajccPR" class="ajcc-select" onchange="calcAJCCPrognostic()">
+                <option value="">未知</option>
+                <option value="+">PR 陽性</option>
+                <option value="-">PR 陰性</option>
+              </select>
+            </div>
+            <div class="ajcc-group" style="margin:0">
+              <label>HER2</label>
+              <select id="ajccHER2" class="ajcc-select" onchange="calcAJCCPrognostic()">
+                <option value="">未知</option>
+                <option value="+">HER2 陽性</option>
+                <option value="-">HER2 陰性</option>
+              </select>
+            </div>
+          </div>
+          <div class="ajcc-group" id="ajccOncotypeGroup" style="margin:.5rem 0 0 0;display:none">
+            <label>Oncotype DX 復發指數 (RS) — 僅適用於 ER+/HER2-/N0</label>
+            <select id="ajccOncotype" class="ajcc-select" onchange="calcAJCCPrognostic()">
+              <option value="">未測 / 未知</option>
+              <option value="lt11">RS &lt; 11（極低風險，可降階至 IA）</option>
+              <option value="ge11">RS ≥ 11</option>
+            </select>
+          </div>
+          <div id="ajccPrognosticResult" style="margin-top:.5rem"></div>
+        </div>
+
+        <!-- 重大傷病 eligibility -->
+        <div id="ajccCatastrophic" style="display:none;margin-top:.6rem"></div>
+      </div>
+
+      <!-- Reference Table -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:1rem">
+        <div style="font-weight:700;font-size:.9rem;color:#92400e;margin-bottom:.6rem">AJCC 第八版解剖期別對照表</div>
+        <div style="overflow-x:auto">
+          <table class="ajcc-ref-table" id="ajccRefTable">
+            <thead><tr><th>期別</th><th>T</th><th>N</th><th>M</th><th>臨床描述</th></tr></thead>
+            <tbody>
+              <tr class="ajcc-cat-0" data-stage="0"><td><span class="cat-badge cat-0">0 期</span></td><td>Tis</td><td>N0</td><td>M0</td><td>原位癌（DCIS／LCIS）</td></tr>
+              <tr class="ajcc-cat-i" data-stage="IA"><td><span class="cat-badge cat-i">IA 期</span></td><td>T1</td><td>N0</td><td>M0</td><td>腫瘤 ≤20 mm，無淋巴轉移</td></tr>
+              <tr class="ajcc-cat-i" data-stage="IB"><td><span class="cat-badge cat-i">IB 期</span></td><td>T0，T1</td><td>N1mi</td><td>M0</td><td>微轉移（0.2–2 mm），腫瘤 ≤20 mm</td></tr>
+              <tr class="ajcc-cat-ii" data-stage="IIA"><td><span class="cat-badge cat-ii">IIA 期</span></td><td>T0，T1</td><td>N1</td><td>M0</td><td>1–3 個腋下淋巴轉移，腫瘤 ≤20 mm</td></tr>
+              <tr class="ajcc-cat-ii" data-stage="IIA"><td><span class="cat-badge cat-ii">IIA 期</span></td><td>T2</td><td>N0</td><td>M0</td><td>腫瘤 20–50 mm，無淋巴轉移</td></tr>
+              <tr class="ajcc-cat-ii" data-stage="IIB"><td><span class="cat-badge cat-ii">IIB 期</span></td><td>T2</td><td>N1</td><td>M0</td><td>腫瘤 20–50 mm，1–3 個淋巴轉移</td></tr>
+              <tr class="ajcc-cat-ii" data-stage="IIB"><td><span class="cat-badge cat-ii">IIB 期</span></td><td>T3</td><td>N0</td><td>M0</td><td>腫瘤 &gt;50 mm，無淋巴轉移</td></tr>
+              <tr class="ajcc-cat-iii" data-stage="IIIA"><td><span class="cat-badge cat-iii">IIIA 期</span></td><td>T0–T3</td><td>N2</td><td>M0</td><td>4–9 個腋下 或 乳內淋巴</td></tr>
+              <tr class="ajcc-cat-iii" data-stage="IIIA"><td><span class="cat-badge cat-iii">IIIA 期</span></td><td>T3</td><td>N1</td><td>M0</td><td>腫瘤 &gt;50 mm，1–3 個淋巴轉移</td></tr>
+              <tr class="ajcc-cat-iii" data-stage="IIIB"><td><span class="cat-badge cat-iii">IIIB 期</span></td><td>T4</td><td>N0–N2</td><td>M0</td><td>胸壁延伸、皮膚病變 或 發炎性乳癌</td></tr>
+              <tr class="ajcc-cat-iii" data-stage="IIIC"><td><span class="cat-badge cat-iii">IIIC 期</span></td><td>任何 T</td><td>N3</td><td>M0</td><td>≥10 腋下／鎖骨下／上 或 廣泛乳內淋巴</td></tr>
+              <tr class="ajcc-cat-iv" data-stage="IV"><td><span class="cat-badge cat-iv">IV 期</span></td><td>任何 T</td><td>任何 N</td><td>M1</td><td>遠端轉移（骨、肝、肺、腦…）</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="ajcc-note">
+          &#9432; AJCC 第八版（2018）新增<strong>臨床預後期別</strong>與<strong>病理預後期別</strong>，整合 ER／PR、HER2、組織分級（Grade）。以上為<em>解剖期別</em>。HER2陽性或ER陽性Grade 1–2者預後期別可能降低；三陰性Grade 3者可能升高。詳見 AJCC 第八版手冊 Table 48.2。
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /ajccPage -->
+
+  <!-- ===== PATIENT WORKSPACE PAGE ===== -->
+  <div id="wsPage" class="dept-page">
+    <div class="page-topbar ws">
+      <button class="back-btn" onclick="showLanding()">← 返回</button>
+      <h2>&#128100; 病人 Workspace</h2>
+    </div>
+    <div class="page-body">
+
+      <!-- Demographics -->
+      <div class="ws-section">
+        <h3>基本資料</h3>
+        <div class="ws-form">
+          <div class="ws-field"><label>病歷號 (選填)</label><input type="text" id="ws_mrn" oninput="setPatientField('mrn',this.value)" placeholder="MRN"></div>
+          <div class="ws-field"><label>年齡</label><input type="number" id="ws_age" min="20" max="120" oninput="setPatientField('age',this.value)"></div>
+          <div class="ws-field"><label>性別</label><select id="ws_sex" onchange="setPatientField('sex',this.value)"><option value="F">女</option><option value="M">男</option></select></div>
+          <div class="ws-field"><label>身高 (cm)</label><input type="number" id="ws_height" min="100" max="220" step="0.1" oninput="setPatientField('height',this.value)"></div>
+          <div class="ws-field"><label>體重 (kg)</label><input type="number" id="ws_weight" min="30" max="200" step="0.1" oninput="setPatientField('weight',this.value)"></div>
+          <div class="ws-field"><label>血清肌酸酐 (mg/dL)</label><input type="number" id="ws_scr" min="0.3" max="10" step="0.1" oninput="setPatientField('scr',this.value)"></div>
+        </div>
+        <div class="ws-derived">
+          <div class="ws-derived-item"><span class="ws-derived-label">BSA</span><span class="ws-derived-value" id="ws_d_bsa">—</span></div>
+          <div class="ws-derived-item"><span class="ws-derived-label">CrCl</span><span class="ws-derived-value" id="ws_d_crcl">—</span></div>
+        </div>
+      </div>
+
+      <!-- Tumor location -->
+      <div class="ws-section">
+        <h3>腫瘤位置</h3>
+        <div class="ws-form">
+          <div class="ws-field"><label>側別</label><select id="ws_side" onchange="setPatientField('side',this.value)"><option value="">—</option><option value="R">右乳</option><option value="L">左乳</option><option value="B">雙側</option></select></div>
+          <div class="ws-field"><label>象限</label><select id="ws_quadrant" onchange="setPatientField('quadrant',this.value)"><option value="">—</option><option value="UO">外上 UO</option><option value="UI">內上 UI</option><option value="LO">外下 LO</option><option value="LI">內下 LI</option><option value="central">乳頭/乳暈下</option><option value="overlapping">跨象限</option></select></div>
+        </div>
+        <div class="ws-derived">
+          <div class="ws-derived-item"><span class="ws-derived-label">ICD-10-CM</span><span class="ws-derived-value" id="ws_d_icd">—</span></div>
+        </div>
+      </div>
+
+      <!-- TNM Staging -->
+      <div class="ws-section">
+        <h3>TNM 分期</h3>
+        <div class="ws-form">
+          <div class="ws-field"><label>T 分期</label><select id="ws_T" onchange="setPatientField('T',this.value)"><option value="">—</option><option value="Tis">Tis</option><option value="T0">T0</option><option value="T1mi">T1mi</option><option value="T1a">T1a</option><option value="T1b">T1b</option><option value="T1c">T1c</option><option value="T2">T2</option><option value="T3">T3</option><option value="T4a">T4a</option><option value="T4b">T4b</option><option value="T4c">T4c</option><option value="T4d">T4d</option></select></div>
+          <div class="ws-field"><label>N 分期</label><select id="ws_N" onchange="setPatientField('N',this.value)"><option value="">—</option><option value="N0">N0</option><option value="N1mi">N1mi</option><option value="N1">N1</option><option value="N2a">N2a</option><option value="N2b">N2b</option><option value="N3a">N3a</option><option value="N3b">N3b</option><option value="N3c">N3c</option></select></div>
+          <div class="ws-field"><label>M 分期</label><select id="ws_M" onchange="setPatientField('M',this.value)"><option value="">—</option><option value="M0">M0</option><option value="M1">M1</option></select></div>
+          <div class="ws-field"><label>Tumor size (mm)</label><input type="number" id="ws_size" min="0" max="500" step="0.1" oninput="setPatientField('size',this.value)"></div>
+          <div class="ws-field"><label>陽性淋巴結數</label><input type="number" id="ws_nodes_pos" min="0" max="50" oninput="setPatientField('nodes_pos',this.value)"></div>
+          <div class="ws-field"><label>Grade</label><select id="ws_grade" onchange="setPatientField('grade',this.value)"><option value="">—</option><option value="1">G1</option><option value="2">G2</option><option value="3">G3</option></select></div>
+        </div>
+        <div class="ws-derived">
+          <div class="ws-derived-item"><span class="ws-derived-label">解剖期別</span><span class="ws-derived-value" id="ws_d_anat">—</span></div>
+          <div class="ws-derived-item"><span class="ws-derived-label">CTS5</span><span class="ws-derived-value" id="ws_d_cts5">—</span></div>
+          <div class="ws-derived-item"><span class="ws-derived-label">重大傷病</span><span class="ws-derived-value" id="ws_d_catas">—</span></div>
+        </div>
+      </div>
+
+      <!-- Biomarkers -->
+      <div class="ws-section">
+        <h3>生物標記 (IHC)</h3>
+        <div class="ws-form">
+          <div class="ws-field"><label>ER</label><select id="ws_er" onchange="setPatientField('er',this.value)"><option value="">—</option><option value="+">陽性 (≥1%)</option><option value="-">陰性</option></select></div>
+          <div class="ws-field"><label>PR</label><select id="ws_pr" onchange="setPatientField('pr',this.value)"><option value="">—</option><option value="+">陽性</option><option value="-">陰性</option></select></div>
+          <div class="ws-field"><label>HER2</label><select id="ws_her2" onchange="setPatientField('her2',this.value)"><option value="">—</option><option value="+">陽性 (3+ 或 FISH+)</option><option value="-">陰性 (0/1+ 或 FISH-)</option><option value="low">HER2-low (1+ / 2+ FISH-)</option></select></div>
+          <div class="ws-field"><label>Ki-67 (%)</label><input type="number" id="ws_ki67" min="0" max="100" step="0.1" oninput="setPatientField('ki67',this.value)"></div>
+          <div class="ws-field"><label>BRCA</label><select id="ws_brca" onchange="setPatientField('brca',this.value)"><option value="">未檢測</option><option value="wt">未帶因 (wild-type)</option><option value="brca1">BRCA1+</option><option value="brca2">BRCA2+</option></select></div>
+          <div class="ws-field"><label>PD-L1</label><select id="ws_pdl1" onchange="setPatientField('pdl1',this.value)"><option value="">未檢測</option><option value="+">陽性 (CPS≥10)</option><option value="-">陰性</option></select></div>
+        </div>
+        <div class="ws-derived">
+          <div class="ws-derived-item"><span class="ws-derived-label">分子亞型</span><span class="ws-derived-value" id="ws_d_subtype">—</span></div>
+        </div>
+      </div>
+
+      <!-- Clinical context -->
+      <div class="ws-section">
+        <h3>治療脈絡</h3>
+        <div class="ws-form">
+          <div class="ws-field"><label>停經狀態</label><select id="ws_menopause" onchange="setPatientField('menopause',this.value)"><option value="">—</option><option value="pre">未停經</option><option value="post">已停經</option></select></div>
+          <div class="ws-field"><label>ECOG PS</label><select id="ws_ecog" onchange="setPatientField('ecog',this.value)"><option value="">—</option><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
+          <div class="ws-field"><label>治療階段</label><select id="ws_phase" onchange="setPatientField('phase',this.value)"><option value="">—</option><option value="neoadjuvant">術前 Neoadjuvant</option><option value="adjuvant">術後 Adjuvant</option><option value="advanced">局部晚期</option><option value="metastatic">轉移性 / first-line</option><option value="metastatic_2L">轉移性 / 後線</option></select></div>
+          <div class="ws-field"><label>已用過治療</label><input type="text" id="ws_prior" oninput="setPatientField('prior',this.value)" placeholder="例如：AC-T, Trastuzumab"></div>
+        </div>
+      </div>
+
+      <!-- NHI Reverse Lookup -->
+      <div class="ws-section">
+        <h3>健保給付反向查詢</h3>
+        <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:.4rem">依當前 workspace 資料，列出可能符合健保給付的乳癌藥物。</div>
+        <div id="ws_nhi_eligible"><div class="ws-empty">請先填入分期 + 生物標記，會自動比對</div></div>
+      </div>
+
+      <!-- Action bar -->
+      <div class="ws-actions">
+        <button class="ws-btn ws-btn-primary" onclick="printWorkspaceSummary()">&#128203; 產生整合摘要</button>
+        <button class="ws-btn" onclick="exportPatientWorkspace()">&#128190; 匯出 JSON</button>
+        <button class="ws-btn" onclick="importPatientWorkspace()">&#128194; 匯入 JSON</button>
+        <span style="flex:1"></span>
+        <button class="ws-btn ws-btn-danger" onclick="clearPatient()">&#128465;&#65039; 清除全部</button>
+      </div>
+
+    </div>
+  </div><!-- /wsPage -->
+
+  <!-- ===== CALCULATOR PAGE ===== -->
+  <div id="calcPage" class="dept-page">
+    <div class="page-topbar calc">
+      <button class="back-btn" onclick="showLanding()">← 返回</button>
+      <h2>&#129518; 乳癌專業計算機</h2>
+    </div>
+    <div class="page-body">
+
+      <div class="calc-tabs">
+        <button class="calc-tab active" data-tab="predict" onclick="switchCalcTab('predict')">PREDICT v2.3</button>
+        <button class="calc-tab" data-tab="cts5" onclick="switchCalcTab('cts5')">CTS5</button>
+        <button class="calc-tab" data-tab="pepi" onclick="switchCalcTab('pepi')">PEPI Score</button>
+        <button class="calc-tab" data-tab="magee" onclick="switchCalcTab('magee')">Magee Equations</button>
+        <button class="calc-tab" data-tab="ext" onclick="switchCalcTab('ext')">官方/外連工具</button>
+      </div>
+
+      <!-- PREDICT v2.3 -->
+      <div class="calc-panel active" id="calcPanel-predict">
+        <div class="calc-card">
+          <div class="calc-section-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem">
+            <span>PREDICT v2.3 — 乳癌術後存活率 + 治療獲益</span>
+            <button class="ws-btn" style="font-size:.75rem;padding:.3rem .7rem;background:#fdf2f8;color:#be185d;border-color:#f9a8d4" onclick="loadPredictFromWorkspace()">&#128203; 從 Workspace 帶入</button>
+          </div>
+          <div style="font-size:.8rem;color:var(--text-muted);margin-bottom:.7rem;line-height:1.55">
+            估算術後 5 / 10 / 15 年整體存活率，及各種輔助治療的<strong>增量獲益</strong>。
+            <span style="color:#b45309">⚠️ 此為估算工具，正式決策請以 <a href="https://breast.predict.nhs.uk/" target="_blank" style="color:#0369a1">NHS 官方 PREDICT</a> 為準。</span>
+          </div>
+
+          <div style="font-weight:700;font-size:.82rem;color:#0e7490;margin:.7rem 0 .4rem">病人 / 腫瘤特徵</div>
+          <div class="calc-form">
+            <div class="calc-field"><label>診斷時年齡 (歲)</label><input type="number" id="pred_age" min="20" max="100" value="55" oninput="calcPREDICT()"></div>
+            <div class="calc-field"><label>偵測方式</label><select id="pred_mode" onchange="calcPREDICT()"><option value="symp" selected>症狀性</option><option value="screen">篩檢發現</option><option value="other">其他/臨床偵測</option></select></div>
+            <div class="calc-field"><label>腫瘤大小 (mm)</label><input type="number" id="pred_size" min="1" max="200" value="20" oninput="calcPREDICT()"></div>
+            <div class="calc-field"><label>陽性淋巴結數</label><input type="number" id="pred_nodes" min="0" max="50" value="0" oninput="calcPREDICT()"></div>
+            <div class="calc-field"><label>Grade</label><select id="pred_grade" onchange="calcPREDICT()"><option value="1">G1</option><option value="2" selected>G2</option><option value="3">G3</option></select></div>
+            <div class="calc-field"><label>ER 狀態</label><select id="pred_er" onchange="calcPREDICT()"><option value="pos" selected>ER 陽性</option><option value="neg">ER 陰性</option></select></div>
+            <div class="calc-field"><label>HER2 狀態</label><select id="pred_her2" onchange="calcPREDICT()"><option value="neg" selected>HER2 陰性</option><option value="pos">HER2 陽性</option><option value="unk">未知</option></select></div>
+            <div class="calc-field"><label>Ki-67</label><select id="pred_ki67" onchange="calcPREDICT()"><option value="unk" selected>未測 / 未知</option><option value="pos">≥10% (陽性)</option><option value="neg">&lt;10% (陰性)</option></select></div>
+          </div>
+
+          <div style="font-weight:700;font-size:.82rem;color:#0e7490;margin:.85rem 0 .4rem">輔助治療選項</div>
+          <div class="calc-form">
+            <div class="calc-field"><label>內分泌治療 (僅 ER+)</label><select id="pred_endo" onchange="calcPREDICT()"><option value="0">無</option><option value="5" selected>5 年</option><option value="10">10 年（延長）</option></select></div>
+            <div class="calc-field"><label>化學治療</label><select id="pred_chemo" onchange="calcPREDICT()"><option value="0">無</option><option value="1">第 1 代 (CMF)</option><option value="2">第 2 代 (含 anthracycline)</option><option value="3" selected>第 3 代 (anthracycline + taxane)</option></select></div>
+            <div class="calc-field"><label>Trastuzumab (HER2+)</label><select id="pred_trast" onchange="calcPREDICT()"><option value="0">無</option><option value="1" selected>使用</option></select></div>
+            <div class="calc-field"><label>Bisphosphonates (停經後)</label><select id="pred_bis" onchange="calcPREDICT()"><option value="0" selected>無</option><option value="1">使用</option></select></div>
+          </div>
+
+          <div id="pred_result"></div>
+
+          <div class="calc-cite">
+            Candido dos Reis FJ, et al. <em>An updated PREDICT breast cancer prognostication and treatment benefit prediction model with independent validation</em>. Breast Cancer Res. 2017;19:58.<br>
+            Wishart GC, et al. <em>PREDICT: a new UK prognostic model that predicts survival following surgery for invasive breast cancer</em>. Breast Cancer Res. 2010;12:R1.<br>
+            v2.3 更新（含 bisphosphonate 效果、Ki67 校正）來源：predict.nhs.uk
+          </div>
+        </div>
+      </div>
+
+      <!-- CTS5 -->
+      <div class="calc-panel" id="calcPanel-cts5">
+        <div class="calc-card">
+          <div class="calc-section-title">CTS5 — 5 年後晚期復發風險（DRR years 5–10）</div>
+          <div style="font-size:.82rem;color:var(--text-muted);margin-bottom:.7rem;line-height:1.5">
+            適用對象：ER+ HER2− 完成 5 年 endocrine therapy 的病人。決定是否延長 tamoxifen / AI 至 10 年。
+          </div>
+          <div class="calc-form">
+            <div class="calc-field">
+              <label>淋巴結陽性數 (N)</label>
+              <input type="number" id="cts5_n" min="0" max="50" value="0" oninput="calcCTS5()">
+            </div>
+            <div class="calc-field">
+              <label>腫瘤大小 (mm)</label>
+              <input type="number" id="cts5_t" min="1" max="200" value="20" oninput="calcCTS5()">
+            </div>
+            <div class="calc-field">
+              <label>組織分級 Grade</label>
+              <select id="cts5_g" onchange="calcCTS5()">
+                <option value="1">G1</option>
+                <option value="2" selected>G2</option>
+                <option value="3">G3</option>
+              </select>
+            </div>
+            <div class="calc-field">
+              <label>診斷時年齡 (歲)</label>
+              <input type="number" id="cts5_age" min="20" max="100" value="55" oninput="calcCTS5()">
+            </div>
+          </div>
+          <div id="cts5_result"></div>
+          <div class="calc-cite">
+            Dowsett M, et al. <em>Integration of Clinical Variables for the Prediction of Late Distant Recurrence in Patients with Estrogen Receptor-Positive Breast Cancer Treated with 5 Years of Endocrine Therapy: CTS5</em>. JCO 2018;36(19):1941-1948.
+          </div>
+        </div>
+      </div>
+
+      <!-- PEPI -->
+      <div class="calc-panel" id="calcPanel-pepi">
+        <div class="calc-card">
+          <div class="calc-section-title">PEPI Score — Pre-operative Endocrine Prognostic Index</div>
+          <div style="font-size:.82rem;color:var(--text-muted);margin-bottom:.7rem;line-height:1.5">
+            適用對象：Neoadjuvant endocrine therapy 後接受手術的 ER+ 病人。預測 RFS 與是否需要術後化療。
+          </div>
+          <div class="calc-form">
+            <div class="calc-field">
+              <label>術後病理 T 分期 (pT)</label>
+              <select id="pepi_t" onchange="calcPEPI()">
+                <option value="0">pT1 / pT2（≤50 mm）</option>
+                <option value="3">pT3 / pT4（&gt;50 mm 或胸壁/皮膚）</option>
+              </select>
+            </div>
+            <div class="calc-field">
+              <label>術後病理淋巴結 (pN)</label>
+              <select id="pepi_n" onchange="calcPEPI()">
+                <option value="0">pN0（陰性）</option>
+                <option value="3">pN+（陽性）</option>
+              </select>
+            </div>
+            <div class="calc-field">
+              <label>Ki67 (%)</label>
+              <input type="number" id="pepi_ki67" min="0" max="100" step="0.1" value="10" oninput="calcPEPI()">
+            </div>
+            <div class="calc-field">
+              <label>ER (Allred Score 0–8)</label>
+              <select id="pepi_er" onchange="calcPEPI()">
+                <option value="0">3 – 8（陽性）</option>
+                <option value="3">0 – 2（陰性 / 弱）</option>
+              </select>
+            </div>
+          </div>
+          <div id="pepi_result"></div>
+          <table class="calc-pepi-table" id="pepi_table">
+            <thead><tr><th>分組</th><th>分數</th><th>5 年 RFS</th><th>建議</th></tr></thead>
+            <tbody>
+              <tr data-grp="1"><td>Group 1（極佳）</td><td>0</td><td>~95%</td><td>Endocrine alone 即可</td></tr>
+              <tr data-grp="2"><td>Group 2（中等）</td><td>1–3</td><td>~78%</td><td>考慮加 chemo（個案討論）</td></tr>
+              <tr data-grp="3"><td>Group 3（高風險）</td><td>≥4</td><td>~58%</td><td>強烈建議 adjuvant chemo</td></tr>
+            </tbody>
+          </table>
+          <div class="calc-cite">
+            Ellis MJ, et al. <em>Outcome Prediction for Estrogen Receptor-Positive Breast Cancer Based on Postneoadjuvant Endocrine Therapy Tumor Characteristics</em>. JNCI 2008;100(19):1380-1388.
+          </div>
+        </div>
+      </div>
+
+      <!-- Magee -->
+      <div class="calc-panel" id="calcPanel-magee">
+        <div class="calc-card">
+          <div class="calc-section-title">Magee Equations — 估算 Oncotype DX RS</div>
+          <div style="font-size:.82rem;color:var(--text-muted);margin-bottom:.7rem;line-height:1.5">
+            從常規 H&amp;E + IHC（ER/PR/HER2/Ki67）估算 Oncotype DX Recurrence Score。三個方程式平均，可在無法做 Oncotype 時參考。
+          </div>
+          <div class="calc-form">
+            <div class="calc-field">
+              <label>Nottingham Histologic Score (3–9)</label>
+              <input type="number" id="magee_ns" min="3" max="9" value="5" oninput="calcMagee()">
+            </div>
+            <div class="calc-field">
+              <label>腫瘤大小 (mm)</label>
+              <input type="number" id="magee_size" min="1" max="200" value="20" oninput="calcMagee()">
+            </div>
+            <div class="calc-field">
+              <label>ER H-score (0–300)</label>
+              <input type="number" id="magee_er" min="0" max="300" value="270" oninput="calcMagee()">
+            </div>
+            <div class="calc-field">
+              <label>PR H-score (0–300)</label>
+              <input type="number" id="magee_pr" min="0" max="300" value="200" oninput="calcMagee()">
+            </div>
+            <div class="calc-field">
+              <label>HER2 IHC Score</label>
+              <select id="magee_her2" onchange="calcMagee()">
+                <option value="0">0 / 1+ (negative)</option>
+                <option value="1">2+ (FISH-)</option>
+                <option value="2">2+ (FISH+) / 3+ (positive)</option>
+              </select>
+            </div>
+            <div class="calc-field">
+              <label>Ki67 (%)</label>
+              <input type="number" id="magee_ki67" min="0" max="100" step="0.1" value="15" oninput="calcMagee()">
+            </div>
+          </div>
+          <div id="magee_result"></div>
+          <div class="calc-cite">
+            Klein ME, et al. <em>Prediction of the Oncotype DX recurrence score: use of pathology-generated equations derived by linear regression analysis</em>. Mod Pathol 2013;26(5):658-664. (UPMC)
+          </div>
+        </div>
+      </div>
+
+      <!-- External Links -->
+      <div class="calc-panel" id="calcPanel-ext">
+        <div class="calc-card">
+          <div class="calc-section-title">官方 / 外連工具（版權所限，僅提供連結）</div>
+          <div class="calc-extlinks">
+            <a class="calc-extlink" href="https://breast.predict.nhs.uk/" target="_blank" rel="noopener">
+              <div class="calc-extlink-name">PREDICT v2.3 (UK NHS)</div>
+              <div class="calc-extlink-desc">5/10/15 年存活率 + 治療效益（chemo, endocrine, trastuzumab, bisphosphonate）。Cambridge / NHS 官方。</div>
+            </a>
+            <a class="calc-extlink" href="https://ibis.ikonopedia.com/" target="_blank" rel="noopener">
+              <div class="calc-extlink-name">Tyrer-Cuzick (IBIS) v8</div>
+              <div class="calc-extlink-desc">乳癌風險評估，含家族史 / BRCA。授權限制不可離線實作。</div>
+            </a>
+            <a class="calc-extlink" href="https://bcrisktool.cancer.gov/" target="_blank" rel="noopener">
+              <div class="calc-extlink-name">NCI BCRAT (Gail Model)</div>
+              <div class="calc-extlink-desc">5 年 / 終身乳癌風險。NCI 官方，用於高風險篩檢與預防性投藥決策。</div>
+            </a>
+            <a class="calc-extlink" href="https://www.mskcc.org/nomograms/breast" target="_blank" rel="noopener">
+              <div class="calc-extlink-name">MSK Breast Nomograms</div>
+              <div class="calc-extlink-desc">SLN+ → non-SLN 機率、Post-Mastectomy LR、Survival 等多個 nomograms。</div>
+            </a>
+            <a class="calc-extlink" href="https://www.lifemath.net/cancer/breastcancer/" target="_blank" rel="noopener">
+              <div class="calc-extlink-name">Lifemath Breast Cancer</div>
+              <div class="calc-extlink-desc">綜合存活與治療獲益估算（與 Adjuvant! Online 系出同源）。</div>
+            </a>
+            <a class="calc-extlink" href="https://www.evidencio.com/models/show/2196" target="_blank" rel="noopener">
+              <div class="calc-extlink-name">CanRisk (BOADICEA)</div>
+              <div class="calc-extlink-desc">乳癌 / 卵巢癌風險，含 BRCA1/2、PALB2 等多基因家族史。</div>
+            </a>
+          </div>
+          <div class="calc-cite">
+            註：上述工具有的官方無 API，有的因版權無法 port 進本工具。建議手動帶入計算後將結果記錄回病歷。
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /calcPage -->
+
+  <!-- Dark Mode Toggle -->
+  <button class="dark-toggle" id="darkToggle" onclick="toggleDarkMode()" title="切換深色模式 (Ctrl+D)">&#127769;</button>
 
 </div><!-- /container -->
 
@@ -1156,13 +2007,11 @@ async function cachedFetch(url, opts){
 // ── Init ──
 document.addEventListener('DOMContentLoaded',()=>{
     loadLanding();
-    ['breastSearch','hemeSearch'].forEach(id=>{
-        const el=document.getElementById(id);
-        if(el){
-            let t; el.addEventListener('input',()=>{clearTimeout(t);t=setTimeout(()=>{id==='breastSearch'?filterBreast():filterHeme()},300)});
-            el.addEventListener('keyup',e=>{if(e.key==='Enter'){id==='breastSearch'?filterBreast():filterHeme()}});
-        }
-    });
+    const breastSearchEl=document.getElementById('breastSearch');
+    if(breastSearchEl){
+        let t; breastSearchEl.addEventListener('input',()=>{clearTimeout(t);t=setTimeout(()=>filterBreast(),300)});
+        breastSearchEl.addEventListener('keyup',e=>{if(e.key==='Enter')filterBreast()});
+    }
     checkVersion();
     // Pre-cache all data for offline use
     cachedFetch('/api/stats');
@@ -1181,26 +2030,942 @@ async function loadLanding(){
             <div class="count">${d.breast}</div>
             <div class="desc">藥物 | HER2/ER/PR 篩選 | 分期查詢</div>
         </div>
-        <div class="dept-card heme" onclick="showHeme()">
-            <div style="font-size:2.5rem">&#129656;</div>
-            <h2>血液腫瘤</h2>
-            <div class="count">${d.heme}</div>
-            <div class="desc">藥物 | CML/AML/CLL/淋巴瘤/骨髓瘤</div>
+        <div class="dept-card inp" onclick="showInpatient()">
+            <div style="font-size:2.5rem">&#127973;</div>
+            <h2>住院化療計算</h2>
+            <div class="count" style="color:#0d9488">BSA / AUC</div>
+            <div class="desc">劑量計算 | 安瓿優化 | EC/TC/TCH/TCHP…</div>
+        </div>
+        <div class="dept-card icd" onclick="showICD()">
+            <div style="font-size:2.5rem">&#128196;</div>
+            <h2>ICD碼查詢</h2>
+            <div class="count" style="color:#7c3aed">重大傷病</div>
+            <div class="desc">C50 / D05 乳癌 ICD-10 碼 | 重大傷病申請</div>
+        </div>
+        <div class="dept-card surg" onclick="showSurgery()">
+            <div style="font-size:2.5rem">&#129657;</div>
+            <h2>手術醫材清單</h2>
+            <div class="count" style="color:#059669">自費項目</div>
+            <div class="desc">乳癌手術自費品項 | 勾選計算總價 | 匯出</div>
+        </div>
+        <div class="dept-card trial" onclick="showTrials()">
+            <div style="font-size:2.5rem">&#128203;</div>
+            <h2>臨床試驗搜尋</h2>
+            <div class="count" style="color:#0369a1">ClinicalTrials.gov</div>
+            <div class="desc">乳癌相關臨床試驗 | 台灣招募中</div>
+        </div>
+        <div class="dept-card nccn" onclick="window.open('nccn_viewer.html','_blank')">
+            <div style="font-size:2.5rem">&#128214;</div>
+            <h2>NCCN 治療指引</h2>
+            <div class="count" style="color:#7c3aed">流程圖</div>
+            <div class="desc">NCCN 乳癌 2026 指引 | 決策流程圖 | 跨頁參照</div>
+        </div>
+        <div class="dept-card ajcc" onclick="showAJCC()">
+            <div style="font-size:2.5rem">&#127981;</div>
+            <h2>AJCC 分期</h2>
+            <div class="count" style="color:#b45309">第八版</div>
+            <div class="desc">T/N/M 解剖期別計算 | 預後因子 | 重大傷病申請</div>
+        </div>
+        <div class="dept-card calc" onclick="showCalc()">
+            <div style="font-size:2.5rem">&#129518;</div>
+            <h2>計算機 / Nomogram</h2>
+            <div class="count" style="color:#0e7490">CTS5 / PEPI / Magee</div>
+            <div class="desc">CTS5 | PEPI | Magee Equations | 外連 PREDICT/IBIS/BCRAT</div>
+        </div>
+        <div class="dept-card ws" onclick="showWorkspace()">
+            <div style="font-size:2.5rem">&#128100;</div>
+            <h2>病人 Workspace</h2>
+            <div class="count" style="color:#be185d">個案決策中心</div>
+            <div class="desc">輸入一次跨頁共享 | 健保給付反向查詢 | 整合摘要</div>
         </div>`;
 }
 
 function showLanding(){
     document.getElementById('landingPage').style.display='';
     document.getElementById('breastPage').classList.remove('active');
-    document.getElementById('hemePage').classList.remove('active');
+    document.getElementById('inpatientPage').classList.remove('active');
+    document.getElementById('icdPage').classList.remove('active');
+    document.getElementById('surgeryPage').classList.remove('active');
+    document.getElementById('trialsPage').classList.remove('active');
+    document.getElementById('ajccPage').classList.remove('active');
+    document.getElementById('calcPage').classList.remove('active');
+    document.getElementById('wsPage').classList.remove('active');
+}
+function showInpatient(){
+    document.getElementById('landingPage').style.display='none';
+    document.getElementById('breastPage').classList.remove('active');
+    document.getElementById('inpatientPage').classList.add('active');
+    document.getElementById('icdPage').classList.remove('active');
+    document.getElementById('surgeryPage').classList.remove('active');
+    document.getElementById('trialsPage').classList.remove('active');
+    document.getElementById('ajccPage').classList.remove('active');
+    document.getElementById('calcPage').classList.remove('active');
+    document.getElementById('wsPage').classList.remove('active');
+    if(!_inpInited) initInpCalc();
 }
 async function showBreast(){
     document.getElementById('landingPage').style.display='none';
     document.getElementById('breastPage').classList.add('active');
-    document.getElementById('hemePage').classList.remove('active');
+    document.getElementById('inpatientPage').classList.remove('active');
+    document.getElementById('icdPage').classList.remove('active');
+    document.getElementById('surgeryPage').classList.remove('active');
+    document.getElementById('trialsPage').classList.remove('active');
+    document.getElementById('ajccPage').classList.remove('active');
+    document.getElementById('calcPage').classList.remove('active');
+    document.getElementById('wsPage').classList.remove('active');
     activeFilters={};
     switchBreastTab('drugs');
 }
+function showICD(){
+    document.getElementById('landingPage').style.display='none';
+    document.getElementById('breastPage').classList.remove('active');
+    document.getElementById('inpatientPage').classList.remove('active');
+    document.getElementById('icdPage').classList.add('active');
+    document.getElementById('surgeryPage').classList.remove('active');
+    document.getElementById('trialsPage').classList.remove('active');
+    document.getElementById('ajccPage').classList.remove('active');
+    document.getElementById('calcPage').classList.remove('active');
+    document.getElementById('wsPage').classList.remove('active');
+    if(!_icdInited) initIcdPage();
+}
+function showSurgery(){
+    document.getElementById('landingPage').style.display='none';
+    document.getElementById('breastPage').classList.remove('active');
+    document.getElementById('inpatientPage').classList.remove('active');
+    document.getElementById('icdPage').classList.remove('active');
+    document.getElementById('surgeryPage').classList.add('active');
+    document.getElementById('trialsPage').classList.remove('active');
+    document.getElementById('ajccPage').classList.remove('active');
+    document.getElementById('calcPage').classList.remove('active');
+    document.getElementById('wsPage').classList.remove('active');
+    if(!_surgInited) initSurgeryList();
+}
+function showTrials(){
+    document.getElementById('landingPage').style.display='none';
+    document.getElementById('breastPage').classList.remove('active');
+    document.getElementById('inpatientPage').classList.remove('active');
+    document.getElementById('icdPage').classList.remove('active');
+    document.getElementById('surgeryPage').classList.remove('active');
+    document.getElementById('trialsPage').classList.add('active');
+    document.getElementById('ajccPage').classList.remove('active');
+    document.getElementById('calcPage').classList.remove('active');
+    document.getElementById('wsPage').classList.remove('active');
+}
+function showAJCC(){
+    document.getElementById('landingPage').style.display='none';
+    document.getElementById('breastPage').classList.remove('active');
+    document.getElementById('inpatientPage').classList.remove('active');
+    document.getElementById('icdPage').classList.remove('active');
+    document.getElementById('surgeryPage').classList.remove('active');
+    document.getElementById('trialsPage').classList.remove('active');
+    document.getElementById('calcPage').classList.remove('active');
+    document.getElementById('wsPage').classList.remove('active');
+    document.getElementById('ajccPage').classList.add('active');
+}
+function showCalc(){
+    document.getElementById('landingPage').style.display='none';
+    document.getElementById('breastPage').classList.remove('active');
+    document.getElementById('inpatientPage').classList.remove('active');
+    document.getElementById('icdPage').classList.remove('active');
+    document.getElementById('surgeryPage').classList.remove('active');
+    document.getElementById('trialsPage').classList.remove('active');
+    document.getElementById('ajccPage').classList.remove('active');
+    document.getElementById('wsPage').classList.remove('active');
+    document.getElementById('calcPage').classList.add('active');
+    if(!_calcInited){ initCalcPage(); _calcInited=true; }
+}
+function showWorkspace(){
+    document.getElementById('landingPage').style.display='none';
+    document.getElementById('breastPage').classList.remove('active');
+    document.getElementById('inpatientPage').classList.remove('active');
+    document.getElementById('icdPage').classList.remove('active');
+    document.getElementById('surgeryPage').classList.remove('active');
+    document.getElementById('trialsPage').classList.remove('active');
+    document.getElementById('ajccPage').classList.remove('active');
+    document.getElementById('calcPage').classList.remove('active');
+    document.getElementById('wsPage').classList.add('active');
+    if(!_wsInited){ initWorkspace(); _wsInited=true; }
+}
+// ── Patient Workspace ──
+const PATIENT_DEFAULTS = {
+    mrn:'', age:'', sex:'F', height:'', weight:'', scr:'',
+    side:'', quadrant:'',
+    T:'', N:'', M:'', size:'', nodes_pos:'', grade:'',
+    er:'', pr:'', her2:'', ki67:'', brca:'', pdl1:'',
+    menopause:'', ecog:'', phase:'', prior:''
+};
+let _patient = { ...PATIENT_DEFAULTS };
+let _wsInited = false;
+function loadPatient(){
+    try {
+        const saved = localStorage.getItem('_patient_workspace');
+        if(saved) _patient = { ...PATIENT_DEFAULTS, ...JSON.parse(saved) };
+    } catch(e){ console.warn('Failed to load patient workspace', e); }
+}
+function savePatient(){
+    try { localStorage.setItem('_patient_workspace', JSON.stringify(_patient)); }
+    catch(e){ console.warn('Failed to save patient', e); }
+}
+function setPatientField(key, value){
+    _patient[key] = value;
+    savePatient();
+    refreshWorkspaceDerived();
+}
+function clearPatient(){
+    if(!confirm('確定要清除目前 workspace 全部資料嗎？此操作無法復原。')) return;
+    _patient = { ...PATIENT_DEFAULTS };
+    localStorage.removeItem('_patient_workspace');
+    initWorkspace();
+}
+function initWorkspace(){
+    loadPatient();
+    // Populate inputs
+    Object.keys(PATIENT_DEFAULTS).forEach(k => {
+        const el = document.getElementById('ws_'+k);
+        if(el) el.value = _patient[k] || '';
+    });
+    refreshWorkspaceDerived();
+}
+function refreshWorkspaceDerived(){
+    const p = _patient;
+    // BSA (Mosteller)
+    const h = +p.height, w = +p.weight;
+    const bsa = (h>0 && w>0) ? Math.sqrt(h*w/3600) : null;
+    document.getElementById('ws_d_bsa').textContent = bsa ? bsa.toFixed(2)+' m²' : '—';
+    // CrCl (Cockcroft-Gault)
+    const age=+p.age, scr=+p.scr;
+    let crcl = null;
+    if(age>0 && w>0 && scr>0){
+        crcl = ((140-age)*w / (72*scr)) * (p.sex==='F' ? 0.85 : 1);
+    }
+    document.getElementById('ws_d_crcl').textContent = crcl ? crcl.toFixed(0)+' mL/min' : '—';
+    // ICD code
+    let icdCode = '—';
+    const ICD_BY_QUAD = {
+        UO: {R:'C50.411', L:'C50.412', B:'C50.419'},
+        UI: {R:'C50.211', L:'C50.212', B:'C50.219'},
+        LO: {R:'C50.511', L:'C50.512', B:'C50.519'},
+        LI: {R:'C50.311', L:'C50.312', B:'C50.319'},
+        central: {R:'C50.111', L:'C50.112', B:'C50.119'},
+        overlapping: {R:'C50.811', L:'C50.812', B:'C50.819'}
+    };
+    if(p.quadrant && p.side && ICD_BY_QUAD[p.quadrant]){
+        if(p.T==='Tis') icdCode = 'D05.' + (p.quadrant==='central'?'81':p.quadrant==='overlapping'?'80':'82');
+        else icdCode = ICD_BY_QUAD[p.quadrant][p.side] || '—';
+    }
+    document.getElementById('ws_d_icd').textContent = icdCode;
+    // AJCC stage
+    let anat = '—';
+    if(p.T && p.N && p.M){
+        try { anat = _ajccAnatomic(p.T, p.N, p.M) || '—'; } catch(e){ anat='—'; }
+    }
+    document.getElementById('ws_d_anat').textContent = anat==='—' ? '—' : '第 '+anat+' 期';
+    // 重大傷病
+    const eligible = ['IIA','IIB','IIIA','IIIB','IIIC','IV'].includes(anat);
+    const cataEl = document.getElementById('ws_d_catas');
+    cataEl.textContent = anat==='—' ? '—' : (eligible?'符合':'不符合');
+    cataEl.style.color = anat==='—' ? '' : (eligible?'#16a34a':'#b45309');
+    // CTS5
+    let cts5Display = '—';
+    if(p.nodes_pos!=='' && p.size && p.grade && p.age){
+        const N=+p.nodes_pos, T=+p.size, G=+p.grade, A=+p.age;
+        if(!isNaN(N)&&!isNaN(T)&&!isNaN(G)&&!isNaN(A)&&T>0&&A>0){
+            const cts5 = 0.438*N + 0.988*(0.093*T - 0.001*T*T) + 0.375*G + 0.017*A;
+            const lbl = cts5>=3.86 ? '高' : (cts5>=3.13?'中':'低');
+            cts5Display = cts5.toFixed(2) + ' ('+lbl+')';
+        }
+    }
+    document.getElementById('ws_d_cts5').textContent = cts5Display;
+    // Molecular subtype
+    let subtype = '—';
+    if(p.er && p.her2){
+        if(p.her2==='+'){
+            subtype = (p.er==='+') ? 'HR+/HER2+ (Luminal B-like)' : 'HR-/HER2+';
+        } else if(p.her2==='low'){
+            subtype = (p.er==='+') ? 'HR+/HER2-low' : 'TNBC (HER2-low)';
+        } else {
+            if(p.er==='+'){
+                const ki = +p.ki67;
+                subtype = (ki>=20) ? 'HR+/HER2- (Luminal B-like)' : 'HR+/HER2- (Luminal A-like)';
+            } else {
+                subtype = 'TNBC (Triple Negative)';
+            }
+        }
+    }
+    document.getElementById('ws_d_subtype').textContent = subtype;
+    // NHI eligibility
+    refreshNHIEligibility();
+}
+function _stageBucket(anat, M){
+    if(M==='M1') return 'metastatic';
+    if(['IIIA','IIIB','IIIC'].includes(anat)) return 'advanced';
+    if(['IIA','IIB'].includes(anat)) return 'early';
+    if(['IA','IB'].includes(anat)) return 'early';
+    return null;
+}
+function refreshNHIEligibility(){
+    const p = _patient;
+    const el = document.getElementById('ws_nhi_eligible');
+    if(!el) return;
+    if(typeof breastDrugs==='undefined' || !breastDrugs.length){
+        el.innerHTML = '<div class="ws-empty">藥物資料尚未載入</div>'; return;
+    }
+    if(!p.T||!p.N||!p.M||!p.her2||!p.er){
+        el.innerHTML = '<div class="ws-empty">請至少填入 T、N、M、ER、HER2 五項才能比對</div>';
+        return;
+    }
+    const anat = _ajccAnatomic(p.T, p.N, p.M);
+    const bucket = _stageBucket(anat, p.M);
+    const her2Status = p.her2==='+' ? 'positive' : 'negative';
+    const erprStatus = (p.er==='+'||p.pr==='+') ? 'positive' : 'negative';
+    const items = [];
+    breastDrugs.forEach(d => {
+        const tags = d.clinical_tags||{};
+        const stages = (d.stage||'').split(',');
+        const reasons = [];
+        let score = 0; // 0=ineligible, 1=partial, 2=fully matches
+        // Stage match
+        const stageMatch = stages.some(s => s===bucket);
+        if(stageMatch) { score++; reasons.push(`分期符合 (${bucket})`); }
+        else if(stages.length===0 || stages[0]==='') reasons.push('未指定分期');
+        else { reasons.push(`分期不符 (藥物：${d.stage}，病人：${bucket})`); return; }
+        // HER2 match
+        if(tags.her2){
+            if(tags.her2===her2Status||tags.her2==='both'){ score++; reasons.push(`HER2 ${her2Status}`); }
+            else { reasons.push(`HER2 不符`); return; }
+        }
+        // ER/PR match
+        if(tags.er_pr){
+            if(tags.er_pr===erprStatus||tags.er_pr==='both'){ score++; reasons.push(`ER/PR ${erprStatus}`); }
+            else { reasons.push(`ER/PR 不符`); return; }
+        }
+        // Menopause
+        if(tags.menopause && p.menopause){
+            if(tags.menopause===p.menopause||tags.menopause==='both'){ reasons.push(`停經狀態符合`); }
+            else { reasons.push(`停經狀態不符`); return; }
+        }
+        // BRCA (for olaparib etc.)
+        if(tags.brca){
+            if(p.brca==='brca1'||p.brca==='brca2'){ reasons.push('BRCA 帶因符合'); }
+            else { reasons.push('需 BRCA 突變'); score = 0; }
+        }
+        const cls = score>=2 ? 'full' : (score===1?'partial':'ineligible');
+        items.push({drug:d, reasons, cls, priorAuth: d.prior_auth});
+    });
+    if(!items.length){
+        el.innerHTML = '<div class="ws-empty">無符合給付的藥物</div>'; return;
+    }
+    // Sort: full match first, then partial, ineligible last
+    items.sort((a,b)=>{
+        const order = {full:0, partial:1, ineligible:2};
+        return order[a.cls] - order[b.cls];
+    });
+    let html = '<div class="nhi-elig-list">';
+    items.slice(0, 30).forEach(it=>{
+        const d = it.drug;
+        const trade = d.trade_names ? ` <span style="color:var(--text-muted);font-weight:400">(${d.trade_names.split(',')[0]})</span>` : '';
+        html += `<div class="nhi-elig-card ${it.cls==='full'?'':it.cls}">
+            <div class="nhi-elig-name">${d.generic_name}${trade}</div>
+            <div class="nhi-elig-tags">${it.reasons.map(r=>`<span class="nhi-elig-tag">${r}</span>`).join('')}${it.priorAuth?'<span class="nhi-elig-tag" style="background:#fee2e2;color:#991b1b">需事審</span>':''}</div>
+            ${d.indication?`<div class="nhi-elig-reason">${d.indication.slice(0,80)}${d.indication.length>80?'…':''}</div>`:''}
+        </div>`;
+    });
+    html += '</div>';
+    if(items.length>30) html += `<div style="font-size:.78rem;color:var(--text-muted);margin-top:.4rem">共 ${items.length} 筆，僅顯示前 30 筆</div>`;
+    el.innerHTML = html;
+}
+function exportPatientWorkspace(){
+    const data = JSON.stringify(_patient, null, 2);
+    const blob = new Blob([data], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `patient_workspace_${(_patient.mrn||'unnamed')}_${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 1000);
+}
+function importPatientWorkspace(){
+    const input = document.createElement('input');
+    input.type = 'file'; input.accept = 'application/json,.json';
+    input.onchange = e => {
+        const f = e.target.files[0]; if(!f) return;
+        const reader = new FileReader();
+        reader.onload = ev => {
+            try {
+                const obj = JSON.parse(ev.target.result);
+                _patient = { ...PATIENT_DEFAULTS, ...obj };
+                savePatient();
+                initWorkspace();
+                alert('已載入 workspace');
+            } catch(err){ alert('JSON 格式錯誤：'+err.message); }
+        };
+        reader.readAsText(f);
+    };
+    input.click();
+}
+function printWorkspaceSummary(){
+    const p = _patient;
+    const today = new Date().toLocaleDateString('zh-TW');
+    const esc = s => String(s==null?'':s).replace(/[<>&]/g, c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));
+    const v = (k, fmt) => p[k] ? (fmt?fmt(p[k]):esc(p[k])) : '—';
+    const bsa = (+p.height>0 && +p.weight>0) ? Math.sqrt(p.height*p.weight/3600).toFixed(2) : '—';
+    const anat = (p.T && p.N && p.M) ? (_ajccAnatomic(p.T,p.N,p.M)||'—') : '—';
+    const subtypeEl = document.getElementById('ws_d_subtype');
+    const subtype = subtypeEl ? subtypeEl.textContent : '—';
+    const icdEl = document.getElementById('ws_d_icd');
+    const icd = icdEl ? icdEl.textContent : '—';
+    const sexLabel = p.sex==='F'?'女':'男';
+    const sideLabel = {R:'右乳',L:'左乳',B:'雙側'}[p.side]||'—';
+    const quadrantLabel = {UO:'外上',UI:'內上',LO:'外下',LI:'內下',central:'中央/乳頭',overlapping:'跨象限'}[p.quadrant]||'—';
+    const menoLabel = {pre:'未停經',post:'已停經'}[p.menopause]||'—';
+    const phaseLabel = {neoadjuvant:'術前 Neoadjuvant',adjuvant:'術後 Adjuvant',advanced:'局部晚期',metastatic:'轉移性 first-line',metastatic_2L:'轉移性 後線'}[p.phase]||'—';
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>病歷摘要 ${today}</title>
+    <style>
+      body{font-family:'Microsoft JhengHei','Noto Sans CJK TC',sans-serif;padding:18px;font-size:11.5px;color:#1f2937;line-height:1.5}
+      h1{font-size:16px;margin:0;color:#be185d}
+      .header{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #ec4899;padding-bottom:8px;margin-bottom:14px}
+      .meta-line{font-size:10px;color:#6b7280}
+      .sec{border:1px solid #e5e7eb;border-radius:5px;padding:10px 12px;margin-bottom:8px;page-break-inside:avoid}
+      .sec h2{font-size:12px;color:#be185d;margin:0 0 6px;border-bottom:1px solid #fdf2f8;padding-bottom:3px}
+      .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px 14px}
+      .field{font-size:11px}
+      .label{color:#6b7280;font-size:9.5px;font-weight:600}
+      .val{color:#1f2937;font-weight:600}
+      .highlight{background:#fdf2f8;padding:2px 6px;border-radius:3px;color:#be185d}
+      @media print { body{padding:0} .actions{display:none} }
+      .actions{position:fixed;top:10px;right:10px}
+      .actions button{background:#ec4899;color:white;border:0;padding:8px 14px;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit}
+    </style></head><body>
+    <div class="actions"><button onclick="window.print()">&#128438; 列印 / 存 PDF</button></div>
+    <div class="header">
+      <div><h1>&#128203; 乳癌病歷整合摘要</h1><div class="meta-line">由乳癌小幫手生成</div></div>
+      <div class="meta-line" style="text-align:right">${today}<br>MRN: ${esc(p.mrn)||'—'}</div>
+    </div>
+    <div class="sec"><h2>基本資料</h2>
+      <div class="grid">
+        <div class="field"><span class="label">年齡：</span><span class="val">${v('age')} 歲</span></div>
+        <div class="field"><span class="label">性別：</span><span class="val">${sexLabel}</span></div>
+        <div class="field"><span class="label">停經：</span><span class="val">${menoLabel}</span></div>
+        <div class="field"><span class="label">身高：</span><span class="val">${v('height')} cm</span></div>
+        <div class="field"><span class="label">體重：</span><span class="val">${v('weight')} kg</span></div>
+        <div class="field"><span class="label">BSA：</span><span class="val highlight">${bsa} m²</span></div>
+        <div class="field"><span class="label">ECOG：</span><span class="val">${v('ecog')}</span></div>
+        <div class="field"><span class="label">Cr：</span><span class="val">${v('scr')} mg/dL</span></div>
+      </div>
+    </div>
+    <div class="sec"><h2>腫瘤資訊</h2>
+      <div class="grid">
+        <div class="field"><span class="label">位置：</span><span class="val">${sideLabel} ${quadrantLabel}</span></div>
+        <div class="field"><span class="label">ICD-10：</span><span class="val highlight">${esc(icd)}</span></div>
+        <div class="field"><span class="label">大小：</span><span class="val">${v('size')} mm</span></div>
+        <div class="field"><span class="label">陽性淋巴：</span><span class="val">${v('nodes_pos')} 個</span></div>
+        <div class="field"><span class="label">Grade：</span><span class="val">G${v('grade')}</span></div>
+        <div class="field"><span class="label">期別：</span><span class="val highlight">${anat==='—'?'—':'第 '+anat+' 期'}</span></div>
+        <div class="field"><span class="label">T：</span><span class="val">${v('T')}</span></div>
+        <div class="field"><span class="label">N：</span><span class="val">${v('N')}</span></div>
+        <div class="field"><span class="label">M：</span><span class="val">${v('M')}</span></div>
+      </div>
+    </div>
+    <div class="sec"><h2>生物標記</h2>
+      <div class="grid">
+        <div class="field"><span class="label">ER：</span><span class="val">${v('er')}</span></div>
+        <div class="field"><span class="label">PR：</span><span class="val">${v('pr')}</span></div>
+        <div class="field"><span class="label">HER2：</span><span class="val">${v('her2')}</span></div>
+        <div class="field"><span class="label">Ki-67：</span><span class="val">${v('ki67')} %</span></div>
+        <div class="field"><span class="label">BRCA：</span><span class="val">${v('brca')}</span></div>
+        <div class="field"><span class="label">PD-L1：</span><span class="val">${v('pdl1')}</span></div>
+        <div class="field" style="grid-column:span 3"><span class="label">分子亞型：</span><span class="val highlight">${esc(subtype)}</span></div>
+      </div>
+    </div>
+    <div class="sec"><h2>治療脈絡</h2>
+      <div class="grid">
+        <div class="field" style="grid-column:span 2"><span class="label">階段：</span><span class="val">${phaseLabel}</span></div>
+        <div class="field" style="grid-column:span 1"><span class="label">已用過：</span><span class="val">${v('prior')||'—'}</span></div>
+      </div>
+    </div>
+    </body></html>`;
+    const w = window.open('','_blank');
+    if(!w){ alert('請允許彈出視窗以列印摘要'); return; }
+    w.document.write(html);
+    w.document.close();
+}
+// Auto-load workspace on app start
+document.addEventListener('DOMContentLoaded', ()=>{
+    loadPatient();
+});
+let _calcInited=false;
+function initCalcPage(){
+    calcPREDICT();
+    calcCTS5();
+    calcPEPI();
+    calcMagee();
+}
+function switchCalcTab(tab){
+    document.querySelectorAll('#calcPage .calc-tab').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
+    document.querySelectorAll('#calcPage .calc-panel').forEach(p=>p.classList.toggle('active', p.id==='calcPanel-'+tab));
+}
+// ── CTS5 (Dowsett JCO 2018) ──
+function calcCTS5(){
+    const N=+document.getElementById('cts5_n').value;
+    const T=+document.getElementById('cts5_t').value;
+    const G=+document.getElementById('cts5_g').value;
+    const A=+document.getElementById('cts5_age').value;
+    if(isNaN(N)||isNaN(T)||isNaN(G)||isNaN(A)||T<=0||A<=0){
+        document.getElementById('cts5_result').innerHTML='<div class="calc-result"><div class="calc-result-detail">請輸入完整資料。</div></div>';
+        return;
+    }
+    // CTS5 = 0.438×N + 0.988×(0.093×T - 0.001×T²) + 0.375×G + 0.017×A
+    const cts5 = 0.438*N + 0.988*(0.093*T - 0.001*T*T) + 0.375*G + 0.017*A;
+    // 10-year DRR (years 5-10) per Dowsett 2018 derivation:
+    // Risk = 1 - 0.802^exp(CTS5)
+    const drr10 = (1 - Math.pow(0.802, Math.exp(cts5))) * 100;
+    let cls='low', label='低風險', advice='不建議延長 endocrine therapy；標準 5 年即可。';
+    if(cts5>=3.86){ cls='high'; label='高風險'; advice='強烈建議延長 endocrine therapy 至 10 年。'; }
+    else if(cts5>=3.13){ cls='med'; label='中度風險'; advice='可考慮延長 endocrine therapy；個案討論利弊（骨密、心血管、子宮內膜）。'; }
+    document.getElementById('cts5_result').innerHTML=`
+      <div class="calc-result ${cls}">
+        <div class="calc-result-label">CTS5 = ${cts5.toFixed(2)} · ${label}</div>
+        <div class="calc-result-main">10 年遠端復發率 ≈ ${drr10.toFixed(1)}%</div>
+        <div class="calc-result-detail">${advice}<br><span style="color:var(--text-muted);font-size:.78rem">分組：低 &lt;3.13；中 3.13–3.85；高 ≥3.86</span></div>
+      </div>`;
+}
+// ── PEPI Score (Ellis JNCI 2008) ──
+function calcPEPI(){
+    const t=+document.getElementById('pepi_t').value;
+    const n=+document.getElementById('pepi_n').value;
+    const er=+document.getElementById('pepi_er').value;
+    const ki=+document.getElementById('pepi_ki67').value;
+    let kiPts;
+    if(ki<=2.7) kiPts=0;
+    else if(ki<=7.3) kiPts=1;
+    else if(ki<=19.7) kiPts=2;
+    else if(ki<=53.1) kiPts=3;
+    else kiPts=4;
+    const total=t+n+er+kiPts;
+    let grp, cls, label, advice, rfs;
+    if(total===0){ grp=1; cls='low'; label='Group 1（極佳）'; advice='Endocrine alone 即可，不需 adjuvant chemo。'; rfs='~95%'; }
+    else if(total<=3){ grp=2; cls='med'; label='Group 2（中等）'; advice='個案討論加 chemo 的必要；視整體風險與病人偏好。'; rfs='~78%'; }
+    else { grp=3; cls='high'; label='Group 3（高風險）'; advice='強烈建議 adjuvant chemo（在 endocrine 之外）。'; rfs='~58%'; }
+    document.getElementById('pepi_result').innerHTML=`
+      <div class="calc-result ${cls}">
+        <div class="calc-result-label">PEPI Score = ${total} · ${label}</div>
+        <div class="calc-result-main">5 年 RFS ${rfs}</div>
+        <div class="calc-result-detail">${advice}<br><span style="color:var(--text-muted);font-size:.78rem">pT: ${t} 分；pN: ${n} 分；ER: ${er} 分；Ki67 ${ki}%: ${kiPts} 分</span></div>
+      </div>`;
+    document.querySelectorAll('#pepi_table tr[data-grp]').forEach(r=>r.classList.toggle('pepi-hl', +r.dataset.grp===grp));
+}
+// ── Magee Equations (Klein Mod Pathol 2013) ──
+function calcMagee(){
+    const ns=+document.getElementById('magee_ns').value;
+    const size=+document.getElementById('magee_size').value;
+    const er=+document.getElementById('magee_er').value;
+    const pr=+document.getElementById('magee_pr').value;
+    const her2cat=+document.getElementById('magee_her2').value;
+    const ki67=+document.getElementById('magee_ki67').value;
+    // HER2 status: 0=neg, 1=equivocal, 2=positive
+    const her2 = her2cat===2 ? 1 : 0;
+    // Magee Eq 1 (no Ki67): RS = 15.31385 + Nottingham*1.4055 + ER_H*(-0.01924) + PR_H*(-0.02925) + HER2*11.99435 + size*0.0986
+    const m1 = 15.31385 + ns*1.4055 + er*(-0.01924) + pr*(-0.02925) + her2*11.99435 + size*0.0986;
+    // Magee Eq 2 (with Ki67): RS = 18.8042 + Nottingham*2.34123 + ER_H*(-0.03749) + PR_H*(-0.03065) + HER2*11.8378 + size*0.13838 + Ki67*0.0035 (approx)
+    const m2 = 18.8042 + ns*2.34123 + er*(-0.03749) + pr*(-0.03065) + her2*11.8378 + size*0.13838 + ki67*0.0035;
+    // Magee Eq 3 (categorical, simplified): score derived from cat values
+    const erCat = er>=200 ? 0 : (er>=10 ? 1 : 2);
+    const prCat = pr>=200 ? 0 : (pr>=10 ? 1 : 2);
+    const her2Cat = her2cat>=2 ? 4 : (her2cat===1 ? 1.5 : 0);
+    const nsCat = ns<=5 ? 0 : (ns<=7 ? 1 : 2);
+    const kiCat = ki67<10 ? 0 : (ki67<20 ? 1 : 2);
+    const sizeCat = size<10 ? 0 : (size<20 ? 1 : (size<30 ? 2 : 3));
+    const m3 = 13.424 + (erCat*1.4) + (prCat*1.6) + (her2Cat*5) + (nsCat*3) + (kiCat*1.6) + (sizeCat*0.5);
+    const avg = (m1+m2+m3)/3;
+    let cls='low', label='Low Risk', advice='等同 Oncotype RS &lt;18：endocrine alone 即可。';
+    if(avg>=31){ cls='high'; label='High Risk'; advice='等同 Oncotype RS ≥31：建議 adjuvant chemo。'; }
+    else if(avg>=18){ cls='med'; label='Intermediate Risk'; advice='等同 Oncotype RS 18–30：考慮 chemo 利弊（依年齡與 nodal status）。'; }
+    document.getElementById('magee_result').innerHTML=`
+      <div class="calc-result ${cls}">
+        <div class="calc-result-label">Magee 平均估算 RS = ${avg.toFixed(1)} · ${label}</div>
+        <div class="calc-result-main">${avg.toFixed(1)}</div>
+        <div class="calc-result-detail">
+          ${advice}<br>
+          <span style="color:var(--text-muted);font-size:.78rem">Eq.1 (無 Ki67): ${m1.toFixed(1)} · Eq.2 (含 Ki67): ${m2.toFixed(1)} · Eq.3 (分類): ${m3.toFixed(1)}</span><br>
+          <span style="color:var(--text-faint);font-size:.72rem">&#9432; 估算僅供參考，正式決策仍以實際 Oncotype DX RS 為準。</span>
+        </div>
+      </div>`;
+}
+// ── PREDICT v2.3 (Candido dos Reis BCR 2017 + v2.3 updates) ──
+function _predictPI_ERpos(age, size, nodes, grade, mode, her2, ki67){
+    const age_mfp1 = Math.pow(age/10, -2);
+    const age_mfp2 = age_mfp1 * Math.log(age/10);
+    return 34.53642*(age_mfp1 - 0.0287449295)
+         + (-34.20342)*(age_mfp2 - 0.0510121013)
+         + 0.7530729*(Math.log(Math.max(size,1)/100) + 1.545435731)
+         + 0.7060723*(Math.log((nodes+1)/10) + 1.387566)
+         + (grade===2 ? 0.7424 : grade===3 ? 1.0204 : 0)
+         + (mode==='screen' ? -0.220638 : 0)
+         + (her2==='pos' ? 0.2413 : her2==='neg' ? -0.0762 : 0)
+         + (ki67==='pos' ? 0.14534 : ki67==='neg' ? -0.11333 : 0);
+}
+function _predictPI_ERneg(age, size, nodes, grade, mode, her2){
+    return 0.0089*age + (-0.0001)*age*age
+         + 2.093*(Math.log(Math.max(size,1)/100) + 1.545435731)
+         + 0.6038*(Math.log((nodes+1)/10) + 1.387566)
+         + (grade===2 ? 0.5 : grade===3 ? 1.0 : 0)
+         + (mode==='screen' ? -0.18 : 0)
+         + (her2==='pos' ? 0.31 : 0);
+}
+function _predictBCSurv(pi, t, isERpos){
+    let log_baseline;
+    if(isERpos){
+        log_baseline = -0.7044 + 0.04293 * Math.log(t);
+    } else {
+        log_baseline = -1.0 + 0.155 * Math.log(t);
+    }
+    return Math.exp(-Math.exp(log_baseline + pi));
+}
+function _predictOCSurv(age0, years){
+    // Simplified UK female all-cause mortality (annual rate by age)
+    let S = 1;
+    for(let y=0; y<years; y++){
+        const a = Math.floor(age0 + y);
+        let q;
+        if(a<35) q=0.0006;
+        else if(a<45) q=0.0011;
+        else if(a<55) q=0.0026;
+        else if(a<65) q=0.0064;
+        else if(a<75) q=0.0163;
+        else if(a<85) q=0.0436;
+        else q=0.116;
+        S *= (1 - q);
+    }
+    return S;
+}
+function calcPREDICT(){
+    const el = document.getElementById('pred_result');
+    if(!el) return;
+    const age = +document.getElementById('pred_age').value;
+    const mode = document.getElementById('pred_mode').value;
+    const size = +document.getElementById('pred_size').value;
+    const nodes = +document.getElementById('pred_nodes').value;
+    const grade = +document.getElementById('pred_grade').value;
+    const er = document.getElementById('pred_er').value;
+    const her2 = document.getElementById('pred_her2').value;
+    const ki67 = document.getElementById('pred_ki67').value;
+    const endo = +document.getElementById('pred_endo').value;
+    const chemo = +document.getElementById('pred_chemo').value;
+    const trast = +document.getElementById('pred_trast').value;
+    const bis = +document.getElementById('pred_bis').value;
+
+    if(!age || !size || isNaN(nodes) || isNaN(grade) || age<20 || age>100 || size<1){
+        el.innerHTML = '<div class="calc-result"><div class="calc-result-detail">請填入合法的年齡 (20–100)、腫瘤大小、Grade、淋巴結數。</div></div>';
+        return;
+    }
+
+    const isERpos = er === 'pos';
+    const pi = isERpos
+        ? _predictPI_ERpos(age, size, nodes, grade, mode, her2, ki67)
+        : _predictPI_ERneg(age, size, nodes, grade, mode, her2);
+
+    // Build cumulative treatment list with HRs
+    const txList = [];
+    if(isERpos && endo >= 5){
+        txList.push({name:'內分泌治療 5 年', logHR: Math.log(0.71), color:'#0369a1'});
+        if(endo === 10){
+            txList.push({name:'內分泌延長至 10 年', logHR: Math.log(0.85), color:'#0369a1'});
+        }
+    }
+    if(chemo > 0){
+        const chemoHRs = [1, 0.79, 0.69, 0.65];
+        const chemoNames = ['', '化療 第 1 代 (CMF)', '化療 第 2 代 (anthracycline)', '化療 第 3 代 (anth + taxane)'];
+        txList.push({name: chemoNames[chemo], logHR: Math.log(chemoHRs[chemo]), color:'#7c3aed'});
+    }
+    if(her2 === 'pos' && trast === 1){
+        txList.push({name:'Trastuzumab', logHR: Math.log(0.69), color:'#16a34a'});
+    }
+    if(bis === 1){
+        txList.push({name:'Bisphosphonates', logHR: Math.log(0.83), color:'#ea580c'});
+    }
+
+    const years = [5, 10, 15];
+    const ocSurvByYear = years.map(t => _predictOCSurv(age, t));
+
+    // Build stages: baseline + each treatment cumulative
+    const stages = [{name:'無輔助治療（baseline）', cumLogHR:0, isBaseline:true}];
+    let cum = 0;
+    for(const tx of txList){
+        cum += tx.logHR;
+        stages.push({name: tx.name, cumLogHR: cum, color: tx.color, isBaseline:false});
+    }
+
+    const stagesData = stages.map(s => ({
+        ...s,
+        survByYear: years.map((t,i) => _predictBCSurv(pi + s.cumLogHR, t, isERpos) * ocSurvByYear[i])
+    }));
+
+    // Render table
+    let html = '<div style="margin-top:.85rem;overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:.85rem;min-width:480px">';
+    html += '<thead><tr><th style="text-align:left;padding:.5rem .6rem;border-bottom:2px solid var(--border);background:#f8fafc">階段</th>';
+    years.forEach(y => { html += `<th style="text-align:center;padding:.5rem .6rem;border-bottom:2px solid var(--border);background:#f8fafc">${y} 年存活率</th>`; });
+    html += '</tr></thead><tbody>';
+    stagesData.forEach((s, i) => {
+        const isLast = i === stagesData.length - 1 && stagesData.length > 1;
+        const rowStyle = (i===0?'border-bottom:1px solid var(--border);':'') + (isLast?'font-weight:700;background:#fefce8;':'');
+        html += `<tr style="${rowStyle}">`;
+        const colorBar = s.color ? `<span style="display:inline-block;width:3px;height:14px;background:${s.color};margin-right:.4rem;vertical-align:middle;border-radius:2px"></span>` : '';
+        html += `<td style="padding:.42rem .6rem">${colorBar}${s.name}</td>`;
+        s.survByYear.forEach((sv, j) => {
+            const pct = (sv*100).toFixed(1);
+            let delta = '';
+            if(i > 0){
+                const prev = stagesData[i-1].survByYear[j];
+                const d = (sv - prev) * 100;
+                if(d > 0.05) delta = ` <span style="color:#16a34a;font-size:.78rem;font-weight:600">+${d.toFixed(1)}</span>`;
+            }
+            html += `<td style="padding:.42rem .6rem;text-align:center">${pct}%${delta}</td>`;
+        });
+        html += '</tr>';
+    });
+    html += '</tbody></table></div>';
+
+    // Summary box (only if treatments selected)
+    if(txList.length > 0){
+        const totalSurv = stagesData[stagesData.length-1].survByYear;
+        const baseSurv = stagesData[0].survByYear;
+        html += `<div class="calc-result med" style="margin-top:.7rem">
+            <div class="calc-result-label">綜合所有治療下的整體存活率</div>
+            <div style="font-size:1.05rem;font-weight:700;color:#854d0e;margin-top:.2rem">
+                5 年: ${(totalSurv[0]*100).toFixed(1)}% <span style="color:#166534;font-size:.85rem">(+${((totalSurv[0]-baseSurv[0])*100).toFixed(1)})</span>
+                · 10 年: ${(totalSurv[1]*100).toFixed(1)}% <span style="color:#166534;font-size:.85rem">(+${((totalSurv[1]-baseSurv[1])*100).toFixed(1)})</span>
+                · 15 年: ${(totalSurv[2]*100).toFixed(1)}% <span style="color:#166534;font-size:.85rem">(+${((totalSurv[2]-baseSurv[2])*100).toFixed(1)})</span>
+            </div>
+            <div class="calc-result-detail" style="margin-top:.3rem">
+                <span style="color:var(--text-muted);font-size:.78rem">PI = ${pi.toFixed(3)} · 治療數 = ${txList.length}</span>
+            </div>
+        </div>`;
+    } else {
+        const baseSurv = stagesData[0].survByYear;
+        html += `<div class="calc-result" style="margin-top:.7rem">
+            <div class="calc-result-label">無治療下的存活率</div>
+            <div style="font-size:1.05rem;font-weight:700;color:#0e7490;margin-top:.2rem">
+                5 年 ${(baseSurv[0]*100).toFixed(1)}% · 10 年 ${(baseSurv[1]*100).toFixed(1)}% · 15 年 ${(baseSurv[2]*100).toFixed(1)}%
+            </div>
+            <div class="calc-result-detail">請於上方選擇輔助治療以查看獲益。</div>
+        </div>`;
+    }
+    el.innerHTML = html;
+}
+function loadPredictFromWorkspace(){
+    if(typeof _patient === 'undefined' || !_patient.age){
+        alert('Workspace 尚未填入資料。請先到「病人 Workspace」分頁填入年齡、腫瘤大小等基本資訊。');
+        return;
+    }
+    const p = _patient;
+    const setVal = (id, v) => { const e=document.getElementById(id); if(e && v!=null && v!=='') e.value = v; };
+    setVal('pred_age', p.age);
+    setVal('pred_size', p.size);
+    setVal('pred_nodes', p.nodes_pos);
+    if(p.grade) setVal('pred_grade', p.grade);
+    if(p.er) setVal('pred_er', p.er === '+' ? 'pos' : 'neg');
+    if(p.her2){
+        const v = p.her2==='+' ? 'pos' : (p.her2==='-'||p.her2==='low') ? 'neg' : 'unk';
+        setVal('pred_her2', v);
+    }
+    if(p.ki67){
+        const ki = +p.ki67;
+        if(!isNaN(ki) && ki > 0) setVal('pred_ki67', ki >= 10 ? 'pos' : 'neg');
+    }
+    calcPREDICT();
+}
+
+// ── Dark Mode ──
+function toggleDarkMode(){
+    const isDark = document.body.classList.toggle('dark');
+    if(isDark) localStorage.setItem('_darkMode','1');
+    else localStorage.removeItem('_darkMode');
+    document.getElementById('darkToggle').innerHTML = isDark ? '&#9728;&#65039;' : '&#127769;';
+}
+(function initDark(){
+    if(localStorage.getItem('_darkMode')==='1'){
+        document.body.classList.add('dark');
+        document.addEventListener('DOMContentLoaded',()=>{
+            const t=document.getElementById('darkToggle'); if(t) t.innerHTML='&#9728;&#65039;';
+        });
+    }
+    document.addEventListener('keydown',e=>{
+        if((e.ctrlKey||e.metaKey)&&e.key==='d'){ e.preventDefault(); toggleDarkMode(); }
+    });
+})();
+// ── AJCC 8th Edition Staging ──
+let _ajccMode = 'clinical'; // 'clinical' or 'pathologic'
+function setAJCCMode(mode){
+    _ajccMode = mode;
+    document.querySelectorAll('.ajcc-toggle button').forEach(b=>{
+        b.classList.toggle('active', b.dataset.mode===mode);
+    });
+    const prefix = mode==='clinical' ? 'c' : 'p';
+    document.getElementById('ajccTLabel').textContent = `${prefix}T — 腫瘤大小/範圍`;
+    document.getElementById('ajccNLabel').textContent = `${prefix}N — 區域淋巴結`;
+    document.getElementById('ajccMLabel').textContent = `${prefix}M — 遠端轉移`;
+    const bioTitle = document.getElementById('ajccBioTitle');
+    if(bioTitle){
+        bioTitle.innerHTML = mode==='clinical'
+            ? '&#10024; 預後因子（選填）— 評估<strong>臨床預後期別</strong>'
+            : '&#10024; 預後因子（選填）— 評估<strong>病理預後期別</strong>（含 Oncotype DX）';
+    }
+    document.getElementById('ajccOncotypeGroup').style.display = mode==='pathologic' ? '' : 'none';
+    if(document.getElementById('ajccT').value && document.getElementById('ajccN').value && document.getElementById('ajccM').value){
+        calcAJCC();
+    }
+}
+function resetAJCC(){
+    ['ajccT','ajccN','ajccM','ajccGrade','ajccER','ajccPR','ajccHER2','ajccOncotype'].forEach(id=>{
+        const e=document.getElementById(id); if(e) e.value='';
+    });
+    const r=document.getElementById('ajccAnatomicResult');
+    r.style.border='2px dashed var(--border)';
+    r.style.background='';
+    r.innerHTML=`<div style="color:var(--text-faint);font-size:.85rem;text-align:center">請選擇<br>T、N、M</div>`;
+    document.getElementById('ajccBioSection').style.display='none';
+    document.getElementById('ajccCatastrophic').style.display='none';
+    document.getElementById('ajccPrognosticResult').innerHTML='';
+    document.querySelectorAll('#ajccRefTable tr[data-stage]').forEach(r=>r.classList.remove('ajcc-highlighted'));
+}
+function _ajccValidate(t,n,m){
+    if(t==='Tis' && (n!=='N0' && n!=='')) return '原位癌 (Tis) 依定義無淋巴轉移；若 SLN 陽性，腫瘤需重新分類為微浸潤 (T1mi) 或更高。';
+    if(t==='T0' && n==='N0' && m==='M0') return 'T0 N0 M0 通常表示無乳癌證據（無原發病灶 + 無淋巴 + 無遠端轉移）。請確認 T 期。';
+    return null;
+}
+function _ajccTGroup(t){
+    if(t==='Tis') return 'is';
+    if(t==='T0') return 0;
+    if(['T1mi','T1a','T1b','T1c'].includes(t)) return 1;
+    if(t==='T2') return 2;
+    if(t==='T3') return 3;
+    if(['T4a','T4b','T4c','T4d'].includes(t)) return 4;
+    return null;
+}
+function _ajccNGroup(n){
+    if(n==='N0') return 0;
+    if(n==='N1mi') return '1mi';
+    if(n==='N1') return 1;
+    if(['N2a','N2b'].includes(n)) return 2;
+    if(['N3a','N3b','N3c'].includes(n)) return 3;
+    return null;
+}
+function _ajccAnatomic(t,n,m){
+    if(m==='M1') return 'IV';
+    const tg=_ajccTGroup(t), ng=_ajccNGroup(n);
+    if(tg==='is') return ng===0?'0':'?';
+    if(tg===null||ng===null) return '?';
+    if(ng===3) return 'IIIC';
+    if(tg===4) return 'IIIB';
+    if(ng===2) return 'IIIA';
+    if(tg===3&&(ng===1||ng==='1mi')) return 'IIIA';
+    if(tg===3&&ng===0) return 'IIB';
+    if(tg===2&&(ng===1||ng==='1mi')) return 'IIB';
+    if(tg===2&&ng===0) return 'IIA';
+    if((tg===1||tg===0)&&ng===1) return 'IIA';
+    if((tg===1||tg===0)&&ng==='1mi') return 'IB';
+    if(tg===1&&ng===0) return 'IA';
+    return '?';
+}
+function calcAJCC(){
+    const t=document.getElementById('ajccT').value;
+    const n=document.getElementById('ajccN').value;
+    const m=document.getElementById('ajccM').value;
+    if(!t||!n||!m) return;
+    const el=document.getElementById('ajccAnatomicResult');
+    // Validate combination
+    const errMsg=_ajccValidate(t,n,m);
+    if(errMsg){
+        el.style.border='2px solid #ef4444';
+        el.style.background='#fef2f2';
+        el.innerHTML=`<div style="font-size:.78rem;color:#991b1b;font-weight:600;margin-bottom:.3rem">&#9888;&#65039; 組合不符</div>
+            <div style="font-size:.82rem;color:#991b1b;text-align:center;line-height:1.5;padding:0 .6rem">${errMsg}</div>`;
+        document.getElementById('ajccBioSection').style.display='none';
+        document.getElementById('ajccCatastrophic').style.display='none';
+        document.querySelectorAll('#ajccRefTable tr[data-stage]').forEach(r=>r.classList.remove('ajcc-highlighted'));
+        return;
+    }
+    const stage=_ajccAnatomic(t,n,m);
+    const cfg={
+        '0':{bg:'#f8fafc',bc:'#94a3b8',col:'#475569',lbl:'原位癌'},
+        'IA':{bg:'#f0fdf4',bc:'#22c55e',col:'#166534',lbl:'早期'},
+        'IB':{bg:'#f0fdf4',bc:'#22c55e',col:'#166534',lbl:'早期'},
+        'IIA':{bg:'#fefce8',bc:'#eab308',col:'#854d0e',lbl:'局部'},
+        'IIB':{bg:'#fefce8',bc:'#eab308',col:'#854d0e',lbl:'局部'},
+        'IIIA':{bg:'#fff7ed',bc:'#f97316',col:'#c2410c',lbl:'局部晚期'},
+        'IIIB':{bg:'#fff7ed',bc:'#f97316',col:'#c2410c',lbl:'局部晚期'},
+        'IIIC':{bg:'#fff7ed',bc:'#f97316',col:'#c2410c',lbl:'局部晚期'},
+        'IV':{bg:'#fef2f2',bc:'#ef4444',col:'#b91c1c',lbl:'轉移性'}
+    };
+    const c=cfg[stage]||{bg:'#f9fafb',bc:'#d1d5db',col:'#6b7280',lbl:''};
+    el.style.border=`2px solid ${c.bc}`;
+    el.style.background=c.bg;
+    el.innerHTML=`<div style="font-size:.72rem;color:${c.col};font-weight:600;letter-spacing:.05em">解剖期別</div>
+        <div style="font-size:2.4rem;font-weight:900;color:${c.col};line-height:1.1">第 ${stage} 期</div>
+        <div style="font-size:.8rem;color:${c.col};opacity:.75;margin-top:.1rem">${c.lbl}</div>
+        <div style="font-size:.7rem;color:var(--text-faint);margin-top:.35rem">${t} &nbsp;·&nbsp; ${n} &nbsp;·&nbsp; ${m}</div>`;
+    // Biomarker section: hidden for IV (always IV) and 0 (always 0)
+    document.getElementById('ajccBioSection').style.display=(stage==='IV'||stage==='0')?'none':'';
+    // Highlight table rows
+    document.querySelectorAll('#ajccRefTable tr[data-stage]').forEach(r=>r.classList.remove('ajcc-highlighted'));
+    document.querySelectorAll(`#ajccRefTable tr[data-stage="${stage}"]`).forEach(r=>r.classList.add('ajcc-highlighted'));
+    // 重大傷病 eligibility
+    const cat=document.getElementById('ajccCatastrophic');
+    cat.style.display='';
+    const eligible=['IIA','IIB','IIIA','IIIB','IIIC','IV'].includes(stage);
+    cat.innerHTML=eligible
+        ?`<div style="background:#f0fdf4;border-left:3px solid #16a34a;padding:.5rem .8rem;border-radius:0 var(--r-sm) var(--r-sm) 0;font-size:.82rem;color:#166534">&#9989; <strong>重大傷病卡：符合申請資格</strong>（第 ${stage} 期，IIA 以上）</div>`
+        :`<div style="background:#fefce8;border-left:3px solid #f59e0b;padding:.5rem .8rem;border-radius:0 var(--r-sm) var(--r-sm) 0;font-size:.82rem;color:#92400e">&#9888;&#65039; <strong>重大傷病卡：</strong>第 ${stage} 期通常不符合申請資格（需 IIA 期以上）</div>`;
+    calcAJCCPrognostic();
+}
+function calcAJCCPrognostic(){
+    const t=document.getElementById('ajccT').value;
+    const n=document.getElementById('ajccN').value;
+    const m=document.getElementById('ajccM').value;
+    const grade=document.getElementById('ajccGrade').value;
+    const er=document.getElementById('ajccER').value;
+    const her2=document.getElementById('ajccHER2').value;
+    const el=document.getElementById('ajccPrognosticResult');
+    // Need at least Grade + ER + HER2 to compute (PR optional)
+    if(!t||!n||!m||!grade||!er||!her2){el.innerHTML='';return;}
+    const anat=_ajccAnatomic(t,n,m);
+    if(['IV','0','?'].includes(anat)){el.innerHTML='';return;}
+    const g=parseInt(grade), erPos=er==='+', her2Pos=her2==='+';
+    const seq=['IA','IB','IIA','IIB','IIIA','IIIB','IIIC'];
+    const ai=seq.indexOf(anat);
+    let pi=ai, mod='neutral', noteExtra='';
+    // Pathologic-only: Oncotype DX RS<11 for ER+/HER2-/N0 → IA
+    const oncotype=document.getElementById('ajccOncotype').value;
+    const tg=_ajccTGroup(t), ng=_ajccNGroup(n);
+    const oncotypeQualifies = _ajccMode==='pathologic' && oncotype==='lt11'
+                              && erPos && !her2Pos && ng===0
+                              && (tg===1||tg===2);
+    if(oncotypeQualifies){
+        pi=0; mod='favorable';
+        noteExtra=' · Oncotype RS&lt;11 降階至 IA';
+    } else if(her2Pos||(erPos&&g<=2)){
+        pi=Math.max(0,ai-1); mod='favorable';
+    } else if(!erPos&&!her2Pos&&g===3){
+        pi=Math.min(seq.length-1,ai+1); mod='unfavorable';
+    }
+    const prog=seq[pi];
+    const changed=prog!==anat;
+    const modeLabel = _ajccMode==='clinical' ? '臨床' : '病理';
+    const mCfg={
+        favorable:{col:'#166534',icon:'&#9660;',lbl:'有利因子'},
+        unfavorable:{col:'#b91c1c',icon:'&#9650;',lbl:'不利因子'},
+        neutral:{col:'#475569',icon:'&#8596;',lbl:'中性'}
+    };
+    const mc=mCfg[mod];
+    el.innerHTML=`<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:.55rem .75rem;font-size:.82rem">
+        <span style="font-weight:600;color:#1d4ed8">${modeLabel}預後期別：</span>
+        <span style="font-weight:800;font-size:1.1rem;color:${mc.col}">第 ${prog} 期</span>
+        ${changed?`<span style="color:${mc.col};margin-left:.3rem;font-size:.78rem">（解剖 ${anat} → ${modeLabel}預後 ${prog}）</span>`:''}
+        <span style="color:${mc.col};margin-left:.5rem">${mc.icon} ${mc.lbl}</span>
+        <div style="color:var(--text-faint);font-size:.72rem;margin-top:.2rem">&#9432; 簡化估算${noteExtra}；完整對照請參閱 AJCC 第八版 Table 48.2 (clinical) / 48.4 (pathologic)</div>
+    </div>`;
+}
+
 function switchBreastTab(tab){
     document.querySelectorAll('#breastPage .inner-tab').forEach(b=>b.classList.remove('active'));
     document.querySelectorAll('#breastPage .tab-content').forEach(c=>c.classList.remove('active'));
@@ -1216,15 +2981,6 @@ function switchBreastTab(tab){
         if(!_regimenInited) initRegimenCalc();
     }
 }
-async function showHeme(){
-    document.getElementById('landingPage').style.display='none';
-    document.getElementById('hemePage').classList.add('active');
-    document.getElementById('breastPage').classList.remove('active');
-    activeFilters={};
-    const r=await cachedFetch('/api/drugs?category=oncology_heme'); hemeDrugs=await r.json();
-    renderHeme(hemeDrugs);
-}
-
 // ── Filters ──
 function toggleChip(el){
     const f=el.dataset.f, v=el.dataset.v;
@@ -1244,31 +3000,42 @@ function toggleChip(el){
     }
     // Determine which page
     if(document.getElementById('breastPage').classList.contains('active'))filterBreast();
-    else filterHeme();
 }
 
 function matchesFilters(drug, filters){
     const tags=drug.clinical_tags||{};
     const stage=drug.stage||'';
-    for(const[f,v] of Object.entries(filters)){
+    // HER2 and ER/PR are independent axes — use OR among receptor filters
+    const receptorKeys=['her2','er_pr'];
+    const receptorFilters=Object.fromEntries(Object.entries(filters).filter(([k])=>receptorKeys.includes(k)));
+    const otherFilters=Object.fromEntries(Object.entries(filters).filter(([k])=>!receptorKeys.includes(k)));
+    // AND logic for non-receptor filters
+    for(const[f,v] of Object.entries(otherFilters)){
         if(f==='stage'){
             if(!stage.includes(v))return false;
         } else if(f==='disease'){
             if(!tags.disease||!tags.disease.includes(v))return false;
         } else if(f==='phase'){
             if(!tags.phase||!tags.phase.includes(v))return false;
-        } else if(f==='her2'){
-            if(!tags.her2)return false;
-            if(tags.her2!==v && tags.her2!=='both')return false;
-        } else if(f==='er_pr'){
-            if(!tags.er_pr)return false;
-            if(tags.er_pr!==v && tags.er_pr!=='both')return false;
         } else if(f==='menopause'){
             if(!tags.menopause)return false;
             if(tags.menopause!==v && tags.menopause!=='both')return false;
         } else {
             if(!tags[f])return false;
         }
+    }
+    // OR logic for receptor filters: patient may be HER2+/ER+ simultaneously
+    if(Object.keys(receptorFilters).length>0){
+        let match=false;
+        if(receptorFilters.her2!==undefined){
+            const v=receptorFilters.her2;
+            if(tags.her2&&(tags.her2===v||tags.her2==='both'))match=true;
+        }
+        if(receptorFilters.er_pr!==undefined){
+            const v=receptorFilters.er_pr;
+            if(tags.er_pr&&(tags.er_pr===v||tags.er_pr==='both'))match=true;
+        }
+        if(!match)return false;
     }
     return true;
 }
@@ -1287,19 +3054,6 @@ function resetBreastFilters(){
     document.querySelectorAll('#breastPage .filter-chip').forEach(c=>c.classList.remove('active'));
     renderBreast(breastDrugs);
 }
-function filterHeme(){
-    const q=(document.getElementById('hemeSearch').value||'').toLowerCase();
-    let list=hemeDrugs;
-    if(q)list=list.filter(d=>(d.generic_name||'').toLowerCase().includes(q)||(d.trade_names||'').toLowerCase().includes(q));
-    renderHeme(list);
-}
-function resetHemeFilters(){
-    document.getElementById('hemeSearch').value='';
-    activeFilters={};
-    document.querySelectorAll('#hemePage .filter-chip').forEach(c=>c.classList.remove('active'));
-    renderHeme(hemeDrugs);
-}
-
 // ── Render ──
 function stageLabel(s){
     if(!s)return'<span style="color:var(--text-muted)">*待確認</span>';
@@ -1729,14 +3483,12 @@ async function saveDrug(id){
     alert('已儲存');
     // Reload current page
     if(document.getElementById('breastPage').classList.contains('active'))showBreast();
-    else if(document.getElementById('hemePage').classList.contains('active'))showHeme();
 }
 async function deleteDrug(id){
     if(!confirm('確定要刪除此藥物？'))return;
     alert('本系統為唯讀模式，無法修改資料。'); return;
     closeEdit();
     if(document.getElementById('breastPage').classList.contains('active'))showBreast();
-    else if(document.getElementById('hemePage').classList.contains('active'))showHeme();
     else loadLanding();
 }
 function closeEdit(){document.getElementById('editModal').classList.remove('show')}
@@ -2898,11 +4650,6 @@ filterBreast = function() {
   syncTableToCards('breastBody', 'breastList', 'breastInfo');
 };
 
-const _origFilterHeme = filterHeme;
-filterHeme = function() {
-  _origFilterHeme();
-  syncTableToCards('hemeBody', 'hemeList', 'hemeInfo');
-};
 
 function syncTableToCards(tableBodyId, listId, infoId) {
   const tbody = document.getElementById(tableBodyId);
@@ -2959,16 +4706,11 @@ function syncTableToCards(tableBodyId, listId, infoId) {
   }).join('') || '<div class="empty-state"><div class="empty-icon">💊</div><p>找不到符合條件的藥物</p></div>';
 }
 
-// Hook into showBreast/showHeme to init card lists
+// Hook into showBreast to init card list
 const _origShowBreast = showBreast;
 showBreast = function() {
   _origShowBreast();
   setTimeout(() => syncTableToCards('breastBody', 'breastList', 'breastInfo'), 50);
-};
-const _origShowHeme = showHeme;
-showHeme = function() {
-  _origShowHeme();
-  setTimeout(() => syncTableToCards('hemeBody', 'hemeList', 'hemeInfo'), 50);
 };
 
 // ── Compare Feature ──────────────────────────────────────────────────────────
@@ -3065,6 +4807,1159 @@ function printPatientSummary(id){
     w.document.write('<div class="footer">本資料僅供門診說明參考，實際給付以健保署公告為準。藥價依健保支付標準，自費藥品市場價格可能不同。<\/div>');
     w.document.write('<scr'+'ipt>window.onload=function(){window.print()}<\/scr'+'ipt><\/body><\/html>');
     w.document.close();
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  住院化療計算 (Inpatient Chemo Calculator)
+// ═══════════════════════════════════════════════════════
+let _inpInited = false;
+let _inpWt = 60, _inpHt = 165, _inpBSA = 1.66, _inpCrCl = 80;
+let _inpAge = 50, _inpSex = 'F', _inpCr = 0.8;
+let _inpPriceType = 'nhi';
+let _inpSelectedRegimen = null;
+
+// ── Drug price data (NHI=115年健保支付價, Self=台大醫院2024/12參考) ──
+const INP_DRUG_DATA = {
+  // ── Anthracyclines ──
+  epirubicin: {
+    name: 'Epirubicin (表柔比星)', unit_label: 'mg/vial',
+    vials: [
+      {size:50, nhi:2470, self:3200, label:'50mg/vial'},
+      {size:10, nhi:600,  self:780,  label:'10mg/vial'}
+    ]
+  },
+  doxorubicin: {
+    name: 'Doxorubicin HCl (小紅莓)', unit_label: 'mg/vial',
+    vials: [
+      {size:50, nhi:1350, self:1700, label:'50mg/vial'},
+      {size:10, nhi:280,  self:350,  label:'10mg/vial'}
+    ]
+  },
+  doxorubicin_lipo: {
+    name: 'Doxorubicin Liposomal (Lipo-Dox)', unit_label: 'mg/vial',
+    vials: [
+      {size:20, nhi:15400, self:19000, label:'20mg/vial'},
+      {size:10, nhi:8200,  self:10000, label:'10mg/vial'}
+    ]
+  },
+  // ── Alkylating agents ──
+  cyclophosphamide: {
+    name: 'Cyclophosphamide (環磷醯胺)', unit_label: 'mg/vial',
+    vials: [
+      {size:1000, nhi:280, self:350, label:'1000mg/vial'},
+      {size:500,  nhi:160, self:200, label:'500mg/vial'}
+    ]
+  },
+  // ── Taxanes ──
+  docetaxel: {
+    name: 'Docetaxel (紫杉特爾)', unit_label: 'mg/vial',
+    vials: [
+      {size:80, nhi:9874, self:13800, label:'80mg/4mL'},
+      {size:20, nhi:2802, self:4187,  label:'20mg/1mL'}
+    ]
+  },
+  paclitaxel: {
+    name: 'Paclitaxel (太平洋紫杉醇)', unit_label: 'mg/vial',
+    vials: [
+      {size:90, nhi:894, self:1566, label:'90mg/15mL'},
+      {size:30, nhi:509, self:942,  label:'30mg/5mL'}
+    ]
+  },
+  nab_paclitaxel: {
+    name: 'nab-Paclitaxel (Abraxane)', unit_label: 'mg/vial',
+    vials: [
+      {size:100, nhi:10500, self:14000, label:'100mg/vial'}
+    ]
+  },
+  // ── Platinum ──
+  carboplatin: {
+    name: 'Carboplatin (卡鉑)', unit_label: 'mg/vial',
+    vials: [
+      {size:450, nhi:3195, self:4281, label:'450mg/40mL'},
+      {size:150, nhi:1442, self:2055, label:'150mg/15mL'}
+    ]
+  },
+  cisplatin: {
+    name: 'Cisplatin (順鉑)', unit_label: 'mg/vial',
+    vials: [
+      {size:50, nhi:260, self:320, label:'50mg/50mL'},
+      {size:10, nhi:60,  self:80,  label:'10mg/10mL'}
+    ]
+  },
+  // ── HER2 targeted ──
+  trastuzumab: {
+    name: 'Trastuzumab IV (Herceptin)', unit_label: 'mg/vial',
+    vials: [
+      {size:440, nhi:32885, self:48230, label:'440mg/vial'}
+    ]
+  },
+  pertuzumab: {
+    name: 'Pertuzumab (Perjeta)', unit_label: 'mg/vial',
+    vials: [
+      {size:420, nhi:49966, self:65105, label:'420mg/vial'}
+    ]
+  },
+  trastuzumab_emtansine: {
+    name: 'T-DM1 (Kadcyla)', unit_label: 'mg/vial',
+    vials: [
+      {size:160, nhi:56604, self:57970, label:'160mg/vial'},
+      {size:100, nhi:35506, self:40257, label:'100mg/vial'}
+    ]
+  },
+  // ── Immunotherapy ──
+  pembrolizumab: {
+    name: 'Pembrolizumab (Keytruda)', unit_label: 'mg/vial',
+    vials: [
+      {size:100, nhi:54267, self:74645, label:'100mg/4mL'}
+    ]
+  },
+  // ── Other cytotoxics ──
+  gemcitabine: {
+    name: 'Gemcitabine (健擇 Gemzar)', unit_label: 'mg/vial',
+    vials: [
+      {size:1000, nhi:320, self:420, label:'1000mg/vial'},
+      {size:200,  nhi:80,  self:105, label:'200mg/vial'}
+    ]
+  },
+  vinorelbine: {
+    name: 'Vinorelbine (溫諾平 Navelbine)', unit_label: 'mg/vial',
+    vials: [
+      {size:50, nhi:1200, self:1500, label:'50mg/5mL'},
+      {size:10, nhi:280,  self:350,  label:'10mg/1mL'}
+    ]
+  },
+  eribulin: {
+    name: 'Eribulin (艾瑞布林 Halaven)', unit_label: 'mg/vial',
+    vials: [
+      {size:1, nhi:11800, self:14800, label:'1mg/2mL'}
+    ]
+  },
+  // ── Oral ──
+  capecitabine: {
+    name: 'Capecitabine (Xeloda 截瘤達)', unit_label: 'mg/tab', isOral: true,
+    vials: [
+      {size:500, nhi:88, self:120, label:'500mg/tab'}
+    ]
+  }
+};
+
+// ── Regimen definitions (NCCN 2024-2025 / Taiwan Practice) ──
+const INP_REGIMENS = [
+  // ════════════════════════════════
+  // HER2- 輔助 / 術前化療
+  // ════════════════════════════════
+  {
+    id:'ec', name:'EC', group:'HER2- 輔助/術前',
+    desc:'Epirubicin 90mg/m² + Cyclophosphamide 600mg/m²  q3w × 4',
+    default_cycles:4, freq:'q3w',
+    drugs:[
+      {key:'epirubicin',       dose_type:'bsa', dose:90,  unit:'mg/m²'},
+      {key:'cyclophosphamide', dose_type:'bsa', dose:600, unit:'mg/m²'}
+    ]
+  },
+  {
+    id:'ac', name:'AC', group:'HER2- 輔助/術前',
+    desc:'Doxorubicin 60mg/m² + Cyclophosphamide 600mg/m²  q3w × 4',
+    default_cycles:4, freq:'q3w',
+    drugs:[
+      {key:'doxorubicin',      dose_type:'bsa', dose:60,  unit:'mg/m²'},
+      {key:'cyclophosphamide', dose_type:'bsa', dose:600, unit:'mg/m²'}
+    ]
+  },
+  {
+    id:'dd_ac', name:'dd-AC (q2w)', group:'HER2- 輔助/術前',
+    desc:'Dose-dense Doxorubicin 60mg/m² + Cyclophosphamide 600mg/m²  q2w × 4（需 G-CSF）',
+    default_cycles:4, freq:'q2w',
+    drugs:[
+      {key:'doxorubicin',      dose_type:'bsa', dose:60,  unit:'mg/m²'},
+      {key:'cyclophosphamide', dose_type:'bsa', dose:600, unit:'mg/m²'}
+    ]
+  },
+  {
+    id:'tc', name:'TC', group:'HER2- 輔助/術前',
+    desc:'Docetaxel 75mg/m² + Cyclophosphamide 600mg/m²  q3w × 4',
+    default_cycles:4, freq:'q3w',
+    drugs:[
+      {key:'docetaxel',        dose_type:'bsa', dose:75,  unit:'mg/m²'},
+      {key:'cyclophosphamide', dose_type:'bsa', dose:600, unit:'mg/m²'}
+    ]
+  },
+  {
+    id:'ec_t', name:'EC → T', group:'HER2- 輔助/術前',
+    desc:'EC × 4  q3w → Docetaxel 75mg/m² × 4  q3w',
+    sequential:true,
+    phases:[
+      {name:'EC Phase', default_cycles:4, freq:'q3w',
+       drugs:[
+         {key:'epirubicin',       dose_type:'bsa', dose:90,  unit:'mg/m²'},
+         {key:'cyclophosphamide', dose_type:'bsa', dose:600, unit:'mg/m²'}
+       ]},
+      {name:'T Phase', default_cycles:4, freq:'q3w',
+       drugs:[
+         {key:'docetaxel', dose_type:'bsa', dose:75, unit:'mg/m²'}
+       ]}
+    ]
+  },
+  {
+    id:'ac_t', name:'AC → T (q3w)', group:'HER2- 輔助/術前',
+    desc:'AC × 4  q3w → Paclitaxel 175mg/m² × 4  q3w（或 Docetaxel 75×4）',
+    sequential:true,
+    phases:[
+      {name:'AC Phase', default_cycles:4, freq:'q3w',
+       drugs:[
+         {key:'doxorubicin',      dose_type:'bsa', dose:60,  unit:'mg/m²'},
+         {key:'cyclophosphamide', dose_type:'bsa', dose:600, unit:'mg/m²'}
+       ]},
+      {name:'T Phase', default_cycles:4, freq:'q3w',
+       drugs:[
+         {key:'paclitaxel', dose_type:'bsa', dose:175, unit:'mg/m²'}
+       ]}
+    ]
+  },
+  {
+    id:'dd_act', name:'dd-AC → dd-T', group:'HER2- 輔助/術前',
+    desc:'Dose-dense AC × 4  q2w → Paclitaxel 175mg/m² × 4  q2w（均需 G-CSF）',
+    sequential:true,
+    phases:[
+      {name:'dd-AC Phase', default_cycles:4, freq:'q2w',
+       drugs:[
+         {key:'doxorubicin',      dose_type:'bsa', dose:60,  unit:'mg/m²'},
+         {key:'cyclophosphamide', dose_type:'bsa', dose:600, unit:'mg/m²'}
+       ]},
+      {name:'dd-T Phase', default_cycles:4, freq:'q2w',
+       drugs:[
+         {key:'paclitaxel', dose_type:'bsa', dose:175, unit:'mg/m²'}
+       ]}
+    ]
+  },
+  {
+    id:'tac', name:'TAC', group:'HER2- 輔助/術前',
+    desc:'Docetaxel 75mg/m² + Doxorubicin 50mg/m² + Cyclophosphamide 500mg/m²  q3w × 6',
+    default_cycles:6, freq:'q3w',
+    drugs:[
+      {key:'docetaxel',        dose_type:'bsa', dose:75,  unit:'mg/m²'},
+      {key:'doxorubicin',      dose_type:'bsa', dose:50,  unit:'mg/m²'},
+      {key:'cyclophosphamide', dose_type:'bsa', dose:500, unit:'mg/m²'}
+    ]
+  },
+
+  // ════════════════════════════════
+  // HER2+ 術前 / 輔助
+  // ════════════════════════════════
+  {
+    id:'tch', name:'TCH', group:'HER2+ 術前/輔助',
+    desc:'Docetaxel 75mg/m² + Carboplatin AUC5 + Herceptin  q3w × 6',
+    default_cycles:6, freq:'q3w',
+    drugs:[
+      {key:'docetaxel',   dose_type:'bsa', dose:75, unit:'mg/m²'},
+      {key:'carboplatin', dose_type:'auc', dose:5,  unit:'AUC'},
+      {key:'trastuzumab', dose_type:'kg',  dose:6,  loading:8, unit:'mg/kg'}
+    ]
+  },
+  {
+    id:'tchp', name:'TCHP', group:'HER2+ 術前/輔助',
+    desc:'Docetaxel + Carboplatin AUC5 + Herceptin + Perjeta  q3w × 6',
+    default_cycles:6, freq:'q3w',
+    drugs:[
+      {key:'docetaxel',   dose_type:'bsa',   dose:75,  unit:'mg/m²'},
+      {key:'carboplatin', dose_type:'auc',   dose:5,   unit:'AUC'},
+      {key:'trastuzumab', dose_type:'kg',    dose:6,   loading:8,   unit:'mg/kg'},
+      {key:'pertuzumab',  dose_type:'fixed', dose:420, loading:840, unit:'mg'}
+    ]
+  },
+  {
+    id:'ec_thp', name:'EC → THP', group:'HER2+ 術前/輔助',
+    desc:'EC × 4  q3w → Docetaxel+Herceptin+Perjeta × 4  q3w（經典術前方案）',
+    sequential:true,
+    phases:[
+      {name:'EC Phase', default_cycles:4, freq:'q3w',
+       drugs:[
+         {key:'epirubicin',       dose_type:'bsa', dose:90,  unit:'mg/m²'},
+         {key:'cyclophosphamide', dose_type:'bsa', dose:600, unit:'mg/m²'}
+       ]},
+      {name:'THP Phase', default_cycles:4, freq:'q3w',
+       drugs:[
+         {key:'docetaxel',   dose_type:'bsa',   dose:75,  unit:'mg/m²'},
+         {key:'trastuzumab', dose_type:'kg',    dose:6,   loading:8,   unit:'mg/kg'},
+         {key:'pertuzumab',  dose_type:'fixed', dose:420, loading:840, unit:'mg'}
+       ]}
+    ]
+  },
+  {
+    id:'ac_wph', name:'AC → wPH', group:'HER2+ 術前/輔助',
+    desc:'AC × 4  q3w → weekly Paclitaxel 80mg/m² + Herceptin × 12週',
+    sequential:true,
+    phases:[
+      {name:'AC Phase', default_cycles:4, freq:'q3w',
+       drugs:[
+         {key:'doxorubicin',     dose_type:'bsa', dose:60,  unit:'mg/m²'},
+         {key:'cyclophosphamide',dose_type:'bsa', dose:600, unit:'mg/m²'}
+       ]},
+      {name:'wPH Phase (weekly × 12)', default_cycles:12, freq:'weekly',
+       drugs:[
+         {key:'paclitaxel',   dose_type:'bsa', dose:80, unit:'mg/m²'},
+         {key:'trastuzumab',  dose_type:'kg',  dose:2,  loading:4, unit:'mg/kg'}
+       ]}
+    ]
+  },
+  {
+    id:'wp_h', name:'wP + H', group:'HER2+ 術前/輔助',
+    desc:'Weekly Paclitaxel 80mg/m² + Herceptin 2mg/kg  每週 × 12',
+    default_cycles:12, freq:'weekly',
+    drugs:[
+      {key:'paclitaxel',  dose_type:'bsa', dose:80, unit:'mg/m²'},
+      {key:'trastuzumab', dose_type:'kg',  dose:2,  loading:4, unit:'mg/kg'}
+    ]
+  },
+  {
+    id:'tdm1_adj', name:'T-DM1 輔助', group:'HER2+ 術前/輔助',
+    desc:'T-DM1 3.6mg/kg  q3w × 14（術後有殘餘病灶，非 pCR）',
+    default_cycles:14, freq:'q3w',
+    drugs:[
+      {key:'trastuzumab_emtansine', dose_type:'kg', dose:3.6, unit:'mg/kg'}
+    ]
+  },
+
+  // ════════════════════════════════
+  // TNBC 術前化療
+  // ════════════════════════════════
+  {
+    id:'keynote522', name:'KEYNOTE-522', group:'TNBC 術前',
+    desc:'Pembro+wP+Carbo × 4  q3w → Pembro+AC × 4  q3w（術後 Pembro 維持 × 9）',
+    sequential:true,
+    phases:[
+      {name:'Phase 1: Keytruda + wP + Carbo (q3w × 4)', default_cycles:4, freq:'q3w',
+       drugs:[
+         {key:'pembrolizumab', dose_type:'fixed', dose:200, unit:'mg'},
+         {key:'paclitaxel',    dose_type:'bsa',   dose:80,  unit:'mg/m²（每週）'},
+         {key:'carboplatin',   dose_type:'auc',   dose:5,   unit:'AUC'}
+       ]},
+      {name:'Phase 2: Keytruda + AC (q3w × 4)', default_cycles:4, freq:'q3w',
+       drugs:[
+         {key:'pembrolizumab',    dose_type:'fixed', dose:200, unit:'mg'},
+         {key:'doxorubicin',      dose_type:'bsa',   dose:60,  unit:'mg/m²'},
+         {key:'cyclophosphamide', dose_type:'bsa',   dose:600, unit:'mg/m²'}
+       ]}
+    ]
+  },
+  {
+    id:'neopact', name:'NeoPACT', group:'TNBC 術前',
+    desc:'Docetaxel 75mg/m² + Carboplatin AUC6 + Pembrolizumab 200mg  q3w × 6（無 anthracycline）',
+    default_cycles:6, freq:'q3w',
+    drugs:[
+      {key:'docetaxel',     dose_type:'bsa',   dose:75,  unit:'mg/m²'},
+      {key:'carboplatin',   dose_type:'auc',   dose:6,   unit:'AUC'},
+      {key:'pembrolizumab', dose_type:'fixed', dose:200, unit:'mg'}
+    ]
+  },
+  {
+    id:'wp_carbo', name:'wP + Carbo', group:'TNBC 術前',
+    desc:'Weekly Paclitaxel 80mg/m² + Carboplatin AUC5  q3w × 4（無免疫治療）',
+    default_cycles:4, freq:'q3w',
+    drugs:[
+      {key:'paclitaxel',  dose_type:'bsa', dose:80, unit:'mg/m²（每週）'},
+      {key:'carboplatin', dose_type:'auc', dose:5,  unit:'AUC'}
+    ]
+  },
+  {
+    id:'ec_wpc', name:'EC → wP + Carbo', group:'TNBC 術前',
+    desc:'EC × 4  q3w → weekly Paclitaxel 80mg/m² + Carboplatin AUC2 weekly × 12',
+    sequential:true,
+    phases:[
+      {name:'EC Phase', default_cycles:4, freq:'q3w',
+       drugs:[
+         {key:'epirubicin',       dose_type:'bsa', dose:90,  unit:'mg/m²'},
+         {key:'cyclophosphamide', dose_type:'bsa', dose:600, unit:'mg/m²'}
+       ]},
+      {name:'wP + Carbo Phase (weekly × 12)', default_cycles:12, freq:'weekly',
+       drugs:[
+         {key:'paclitaxel',  dose_type:'bsa', dose:80, unit:'mg/m²'},
+         {key:'carboplatin', dose_type:'auc', dose:2,  unit:'AUC (weekly)'}
+       ]}
+    ]
+  },
+
+  // ════════════════════════════════
+  // HER2+ 轉移性
+  // ════════════════════════════════
+  {
+    id:'thp_meta', name:'THP (轉移)', group:'HER2+ 轉移',
+    desc:'Docetaxel 75mg/m² + Herceptin + Perjeta  q3w（CLEOPATRA 方案，一線）',
+    default_cycles:8, freq:'q3w',
+    drugs:[
+      {key:'docetaxel',   dose_type:'bsa',   dose:75,  unit:'mg/m²'},
+      {key:'trastuzumab', dose_type:'kg',    dose:6,   loading:8,   unit:'mg/kg'},
+      {key:'pertuzumab',  dose_type:'fixed', dose:420, loading:840, unit:'mg'}
+    ]
+  },
+  {
+    id:'hp_maintenance', name:'HP 維持', group:'HER2+ 轉移',
+    desc:'Herceptin 6mg/kg + Perjeta 420mg  q3w（化療完成後繼續維持）',
+    default_cycles:12, freq:'q3w',
+    drugs:[
+      {key:'trastuzumab', dose_type:'kg',    dose:6,   unit:'mg/kg'},
+      {key:'pertuzumab',  dose_type:'fixed', dose:420, unit:'mg'}
+    ]
+  },
+  {
+    id:'tdm1_meta', name:'T-DM1 (轉移)', group:'HER2+ 轉移',
+    desc:'T-DM1 3.6mg/kg  q3w（二線或以上）',
+    default_cycles:8, freq:'q3w',
+    drugs:[
+      {key:'trastuzumab_emtansine', dose_type:'kg', dose:3.6, unit:'mg/kg'}
+    ]
+  },
+  {
+    id:'vh', name:'Vinorelbine + H', group:'HER2+ 轉移',
+    desc:'Vinorelbine 25mg/m² d1,d8 + Herceptin 6mg/kg  q3w（輕鬆方案）',
+    default_cycles:6, freq:'q3w',
+    drugs:[
+      {key:'vinorelbine', dose_type:'bsa', dose:25, unit:'mg/m² d1,d8'},
+      {key:'trastuzumab', dose_type:'kg',  dose:6,  loading:8, unit:'mg/kg'}
+    ]
+  },
+
+  // ════════════════════════════════
+  // TNBC 轉移性 / 免疫治療
+  // ════════════════════════════════
+  {
+    id:'pembro_wp_meta', name:'Keytruda + wP (轉移)', group:'TNBC 轉移/免疫',
+    desc:'Pembrolizumab 200mg + weekly Paclitaxel 80mg/m²  q3w（KEYNOTE-355，PD-L1 CPS≥10）',
+    default_cycles:8, freq:'q3w',
+    drugs:[
+      {key:'pembrolizumab', dose_type:'fixed', dose:200, unit:'mg'},
+      {key:'paclitaxel',    dose_type:'bsa',   dose:80,  unit:'mg/m²（每週）'}
+    ]
+  },
+  {
+    id:'pembro_gc', name:'Keytruda + GC (轉移)', group:'TNBC 轉移/免疫',
+    desc:'Pembrolizumab 200mg + Gemcitabine 1000mg/m² + Carboplatin AUC2  d1,d8  q3w',
+    default_cycles:6, freq:'q3w',
+    drugs:[
+      {key:'pembrolizumab', dose_type:'fixed', dose:200, unit:'mg'},
+      {key:'gemcitabine',   dose_type:'bsa',   dose:1000, unit:'mg/m² d1,d8'},
+      {key:'carboplatin',   dose_type:'auc',   dose:2,   unit:'AUC d1,d8'}
+    ]
+  },
+  {
+    id:'pembro_alone_adj', name:'Keytruda 維持', group:'TNBC 轉移/免疫',
+    desc:'Pembrolizumab 200mg  q3w × 9（KEYNOTE-522 術後輔助維持）',
+    default_cycles:9, freq:'q3w',
+    drugs:[
+      {key:'pembrolizumab', dose_type:'fixed', dose:200, unit:'mg'}
+    ]
+  },
+
+  // ════════════════════════════════
+  // 單藥化療
+  // ════════════════════════════════
+  {
+    id:'docetaxel_mono', name:'Docetaxel', group:'單藥化療',
+    desc:'Docetaxel 75mg/m²  q3w',
+    default_cycles:6, freq:'q3w',
+    drugs:[
+      {key:'docetaxel', dose_type:'bsa', dose:75, unit:'mg/m²'}
+    ]
+  },
+  {
+    id:'paclitaxel_q3w', name:'Paclitaxel q3w', group:'單藥化療',
+    desc:'Paclitaxel 175mg/m²  q3w',
+    default_cycles:6, freq:'q3w',
+    drugs:[
+      {key:'paclitaxel', dose_type:'bsa', dose:175, unit:'mg/m²'}
+    ]
+  },
+  {
+    id:'paclitaxel_weekly', name:'wPaclitaxel', group:'單藥化療',
+    desc:'Paclitaxel 80mg/m²  每週',
+    default_cycles:12, freq:'weekly',
+    drugs:[
+      {key:'paclitaxel', dose_type:'bsa', dose:80, unit:'mg/m²'}
+    ]
+  },
+  {
+    id:'nab_paclitaxel_mono', name:'nab-Paclitaxel', group:'單藥化療',
+    desc:'nab-Paclitaxel 260mg/m²  q3w（或 150mg/m² 每週）',
+    default_cycles:6, freq:'q3w',
+    drugs:[
+      {key:'nab_paclitaxel', dose_type:'bsa', dose:260, unit:'mg/m²'}
+    ]
+  },
+  {
+    id:'carbo_mono', name:'Carboplatin', group:'單藥化療',
+    desc:'Carboplatin AUC5  q3w（BRCA 突變適用）',
+    default_cycles:6, freq:'q3w',
+    drugs:[
+      {key:'carboplatin', dose_type:'auc', dose:5, unit:'AUC'}
+    ]
+  },
+  {
+    id:'gc_combo', name:'GC', group:'單藥化療',
+    desc:'Gemcitabine 1000mg/m² + Carboplatin AUC2  d1,d8  q3w',
+    default_cycles:6, freq:'q3w',
+    drugs:[
+      {key:'gemcitabine', dose_type:'bsa', dose:1000, unit:'mg/m² d1,d8'},
+      {key:'carboplatin', dose_type:'auc', dose:2,    unit:'AUC d1,d8'}
+    ]
+  },
+  {
+    id:'vinorelbine_mono', name:'Vinorelbine', group:'單藥化療',
+    desc:'Vinorelbine 25mg/m²  d1,d8  q3w',
+    default_cycles:6, freq:'q3w',
+    drugs:[
+      {key:'vinorelbine', dose_type:'bsa', dose:25, unit:'mg/m² d1,d8'}
+    ]
+  },
+  {
+    id:'eribulin_mono', name:'Eribulin', group:'單藥化療',
+    desc:'Eribulin 1.4mg/m²  d1,d8  q3w（二線以上，EMBRACE 試驗）',
+    default_cycles:6, freq:'q3w',
+    drugs:[
+      {key:'eribulin', dose_type:'bsa', dose:1.4, unit:'mg/m² d1,d8'}
+    ]
+  },
+  {
+    id:'xeloda', name:'Xeloda', group:'單藥化療',
+    desc:'Capecitabine 1000mg/m² BID × 14天  q3w',
+    default_cycles:8, freq:'q3w',
+    drugs:[
+      {key:'capecitabine', dose_type:'bsa', dose:1000, unit:'mg/m² BID', isOral:true, freq_daily:2, days:14}
+    ]
+  },
+
+  // ════════════════════════════════
+  // 免疫治療單藥
+  // ════════════════════════════════
+  {
+    id:'pembro_alone', name:'Pembrolizumab', group:'免疫治療',
+    desc:'Pembrolizumab 200mg  q3w（或 400mg q6w）',
+    default_cycles:18, freq:'q3w',
+    drugs:[
+      {key:'pembrolizumab', dose_type:'fixed', dose:200, unit:'mg'}
+    ]
+  }
+];
+
+// ── Vial optimizer (greedy, cheapest combo ≥ required dose) ──
+function inpOptimizeVials(doseMg, drugKey, priceType){
+  const drug = INP_DRUG_DATA[drugKey];
+  if(!drug || !drug.vials) return {cost:0, combo:[], totalMg:doseMg};
+  const vials = [...drug.vials].sort((a,b)=>b.size-a.size);
+  const large = vials[0], small = vials[vials.length-1];
+  let best = {cost:Infinity, combo:[], totalMg:0};
+  const maxL = Math.ceil(doseMg/large.size)+1;
+  for(let nL=0; nL<=maxL; nL++){
+    const rem = doseMg - nL*large.size;
+    let nS = 0;
+    if(rem > 0 && large!==small) nS = Math.ceil(rem/small.size);
+    else if(rem > 0) continue;
+    const total = nL*large.size + nS*small.size;
+    if(total < doseMg-0.01) continue;
+    const cost = nL*(large[priceType]||large.nhi) + nS*(small[priceType]||small.nhi);
+    if(cost < best.cost){
+      best = {cost, totalMg:total, combo:[]};
+      if(nL>0) best.combo.push({n:nL, label:large.label, price:large[priceType]||large.nhi});
+      if(nS>0) best.combo.push({n:nS, label:small.label, price:small[priceType]||small.nhi});
+    }
+  }
+  return best;
+}
+
+// ── Dose calculators ──
+function inpCalcDose(drug, wt, bsa, crCl){
+  if(drug.dose_type==='bsa')   return drug.dose * bsa;
+  if(drug.dose_type==='kg')    return drug.dose * wt;
+  if(drug.dose_type==='auc'){
+    const aucVal = (drug.key==='carboplatin' && document.getElementById('inpAucTarget'))
+      ? parseFloat(document.getElementById('inpAucTarget').value)||drug.dose
+      : drug.dose;
+    return aucVal * (crCl + 25); // Calvert
+  }
+  if(drug.dose_type==='fixed') return drug.dose;
+  return drug.dose;
+}
+function inpCalcLoading(drug, wt){
+  if(!drug.loading) return 0;
+  return drug.dose_type==='kg' ? drug.loading * wt : drug.loading;
+}
+
+// ── Cockcroft-Gault ──
+function calcInpCrCl(age, sex, wt, cr){
+  return ((140-age) * wt * (sex==='F'?0.85:1.0)) / (72*cr);
+}
+
+// ── Patient update ──
+function updateInpPatient(){
+  _inpWt  = parseFloat(document.getElementById('inpWt').value)||60;
+  _inpHt  = parseFloat(document.getElementById('inpHt').value)||165;
+  _inpAge = parseInt(document.getElementById('inpAge').value)||50;
+  _inpSex = document.getElementById('inpSex').value;
+  _inpCr  = parseFloat(document.getElementById('inpCr').value)||0.8;
+  _inpBSA  = Math.sqrt((_inpHt*_inpWt)/3600);
+  _inpCrCl = calcInpCrCl(_inpAge, _inpSex, _inpWt, _inpCr);
+  document.getElementById('inpBSA').textContent  = 'BSA: '+_inpBSA.toFixed(2)+' m²';
+  document.getElementById('inpCrCl').textContent = 'CrCl: '+Math.round(_inpCrCl)+' mL/min';
+  if(_inpSelectedRegimen) calcInpRegimen();
+}
+
+function setInpPrice(type){
+  _inpPriceType = type;
+  document.getElementById('inpPriceNHI').classList.toggle('active', type==='nhi');
+  document.getElementById('inpPriceSelf').classList.toggle('active', type==='self');
+  if(_inpSelectedRegimen) calcInpRegimen();
+}
+
+function selectInpRegimen(id){
+  _inpSelectedRegimen = INP_REGIMENS.find(r=>r.id===id);
+  if(!_inpSelectedRegimen) return;
+  document.querySelectorAll('.inp-reg-btn[data-id]').forEach(b=>{
+    b.classList.toggle('active', b.dataset.id===id);
+  });
+  // Set default cycles
+  const reg = _inpSelectedRegimen;
+  const totalCycles = reg.sequential
+    ? reg.phases.reduce((s,p)=>s+p.default_cycles,0)
+    : reg.default_cycles;
+  document.getElementById('inpCycles').value = totalCycles;
+  document.getElementById('inpOptions').style.display='';
+  // Show/hide AUC override for carboplatin regimens
+  const allDrugs = reg.sequential ? reg.phases.flatMap(p=>p.drugs) : (reg.drugs||[]);
+  const carbAuc = allDrugs.find(d=>d.key==='carboplatin' && d.dose_type==='auc');
+  const aucOverride = document.getElementById('inpAucOverride');
+  if(carbAuc){
+    aucOverride.style.display='';
+    document.getElementById('inpAucTarget').value = carbAuc.dose;
+  } else {
+    aucOverride.style.display='none';
+  }
+  calcInpRegimen();
+  setTimeout(()=>document.getElementById('inpOptions').scrollIntoView({behavior:'smooth',block:'nearest'}),100);
+}
+
+// ── Main calculation ──
+function calcInpRegimen(){
+  const reg = _inpSelectedRegimen;
+  if(!reg) return;
+  const pk = _inpPriceType;
+  let detailHtml = '', grandTotal = 0;
+
+  if(reg.sequential && reg.phases){
+    reg.phases.forEach(phase=>{
+      const {html, subtotal} = inpRenderPhase(phase.name, phase.drugs, phase.default_cycles, pk, phase.freq);
+      detailHtml += html;
+      grandTotal += subtotal;
+    });
+  } else {
+    const cycles = parseInt(document.getElementById('inpCycles').value)||4;
+    const {html, subtotal} = inpRenderPhase(reg.name, reg.drugs, cycles, pk, reg.freq);
+    detailHtml += html;
+    grandTotal += subtotal;
+  }
+
+  document.getElementById('inpDetail').innerHTML = detailHtml;
+
+  const priceLabel = pk==='nhi' ? '健保藥價' : '台大自費藥價';
+  document.getElementById('inpSummary').innerHTML = `
+    <div class="inp-summary">
+      <div class="inp-sum-line" style="font-weight:700;font-size:.9rem;margin-bottom:.2rem">
+        <span>${reg.name}　全療程費用</span>
+        <span style="font-size:.77rem;font-weight:400;color:var(--text-muted)">${priceLabel}</span>
+      </div>
+      <div class="inp-sum-line" style="font-size:.78rem;color:var(--text-muted);margin-bottom:.3rem">
+        <span>體重 ${_inpWt}kg　BSA ${_inpBSA.toFixed(2)} m²　CrCl ${Math.round(_inpCrCl)} mL/min</span>
+      </div>
+      <div class="inp-sum-line inp-sum-total">
+        <span>合計（${priceLabel}）</span>
+        <span>NT$ ${grandTotal.toLocaleString()}</span>
+      </div>
+      <div class="inp-sum-note">※ BSA 採 Mosteller 公式；Carboplatin 依 Calvert 公式（劑量 = AUC × (CrCl＋25)）；CrCl 依 Cockcroft-Gault 計算。Herceptin 首劑 8mg/kg 後續 6mg/kg，Perjeta 首劑 840mg 後續 420mg。安瓿以最省組合計算（剩餘藥液捨棄不計）。藥價來源：NHI＝115年健保支付價格（115/04/01），NTUH＝台大醫院2024/12參考藥價。本計算僅供估算參考，實際醫令以醫師處方為準。</div>
+      <div style="text-align:center;margin-top:.8rem">
+        <button class="btn btn-outline btn-sm" onclick="printInpRegimen()">&#128438; 列印 / 匯出 PDF</button>
+      </div>
+    </div>`;
+}
+
+function inpRenderPhase(phaseName, drugs, cycles, pk, freq){
+  let drugRows = '', subtotal = 0;
+  drugs.forEach(drug=>{
+    const drugData = INP_DRUG_DATA[drug.key];
+    if(!drugData) return;
+
+    const doseMg    = inpCalcDose(drug, _inpWt, _inpBSA, _inpCrCl);
+    const loadingMg = inpCalcLoading(drug, _inpWt);
+
+    // Dose label
+    let doseLabel = '';
+    if(drug.dose_type==='bsa')
+      doseLabel = drug.dose+' mg/m² × BSA '+_inpBSA.toFixed(2)+' = <strong>'+Math.round(doseMg)+'mg</strong>';
+    else if(drug.dose_type==='kg')
+      doseLabel = drug.dose+' mg/kg × '+_inpWt+'kg = <strong>'+Math.round(doseMg)+'mg</strong>'+(loadingMg?'；首劑 <strong>'+Math.round(loadingMg)+'mg</strong>':'');
+    else if(drug.dose_type==='auc')
+      doseLabel = 'AUC '+drug.dose+' × ('+Math.round(_inpCrCl)+'+25) = <strong>'+Math.round(doseMg)+'mg</strong>';
+    else
+      doseLabel = '<strong>'+doseMg+'mg</strong>（固定劑量）';
+
+    let vialInfo = '', costTotal = 0;
+
+    if(drug.isOral || drugData.isOral){
+      // Oral tablets
+      const tabSize  = drugData.vials[0].size;
+      const tabPrice = drugData.vials[0][pk]||drugData.vials[0].nhi;
+      const tabsPerDose = Math.ceil(doseMg/tabSize);
+      const freqD = drug.freq_daily||2;
+      const days  = drug.days||14;
+      const tabsPerCycle = tabsPerDose*freqD*days;
+      costTotal = tabsPerCycle*tabPrice*cycles;
+      vialInfo = tabsPerDose+'錠 × '+freqD+'次/天 × '+days+'天 = '+tabsPerCycle+'錠/cycle　單錠 NT$'+tabPrice;
+    } else if(loadingMg>0 && cycles>=1){
+      const loadOpt = inpOptimizeVials(loadingMg, drug.key, pk);
+      const maintOpt= inpOptimizeVials(doseMg,    drug.key, pk);
+      costTotal = loadOpt.cost + maintOpt.cost*(cycles-1);
+      const loadStr = loadOpt.combo.map(c=>c.n+'×'+c.label).join(' + ')||'—';
+      const maintStr= maintOpt.combo.map(c=>c.n+'×'+c.label).join(' + ')||'—';
+      vialInfo = '首劑: '+loadStr+(cycles>1?' | 後續(×'+(cycles-1)+'): '+maintStr:'');
+    } else {
+      const opt = inpOptimizeVials(doseMg, drug.key, pk);
+      costTotal = opt.cost*cycles;
+      vialInfo = opt.combo.map(c=>c.n+'×'+c.label).join(' + ')||'—';
+    }
+
+    subtotal += costTotal;
+    drugRows += `<div class="inp-drug-row">
+      <div class="inp-drug-info">
+        <div class="inp-drug-name">${drugData.name}</div>
+        <div class="inp-drug-dose">${doseLabel}</div>
+        <div class="inp-vial-combo">${vialInfo}</div>
+      </div>
+      <div class="inp-drug-cost">
+        <div>× ${cycles} = NT$ ${costTotal.toLocaleString()}</div>
+        <div style="font-size:.7rem;font-weight:400;color:var(--text-muted)">≈ NT$ ${Math.round(costTotal/cycles).toLocaleString()}/次</div>
+      </div>
+    </div>`;
+  });
+
+  const cycleDays = freq==='weekly'?7:freq==='q2w'?14:freq==='q4w'?28:21;
+  const months = (cycles*cycleDays/30).toFixed(1);
+  const html = `<div class="inp-phase-box">
+    <h4><span>${phaseName}　<small style="font-weight:400;font-size:.73rem">${freq} × ${cycles} cycles</small></span>
+        <span style="font-size:.73rem;color:var(--text-muted)">~${months} 個月</span></h4>
+    ${drugRows}
+    <div style="display:flex;justify-content:space-between;font-size:.78rem;font-weight:600;margin-top:.4rem;padding-top:.4rem;border-top:1px dashed var(--border)">
+      <span>Phase 小計</span>
+      <span style="color:#0d9488">NT$ ${subtotal.toLocaleString()}</span>
+    </div>
+  </div>`;
+  return {html, subtotal};
+}
+
+// ── Print ──
+function printInpRegimen(){
+  const reg = _inpSelectedRegimen;
+  if(!reg){alert('請先選擇處方');return;}
+  const today = new Date().toLocaleDateString('zh-TW');
+  const detail  = document.getElementById('inpDetail').innerHTML;
+  const summary = document.getElementById('inpSummary').innerHTML;
+  const w = window.open('','_blank','width=720,height=920');
+  if(!w){alert('請允許彈出視窗');return;}
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <title>${reg.name} 住院化療費用計算 ${today}</title>
+  <style>
+    body{font-family:'Noto Sans TC',sans-serif;padding:1.5rem;font-size:13px;color:#0f172a;max-width:680px;margin:0 auto}
+    h1{font-size:1.1rem;margin-bottom:.2rem}
+    .sub{color:#64748b;font-size:.82rem;margin-bottom:1.2rem;padding-bottom:.6rem;border-bottom:1px solid #e2e8f0}
+    .inp-phase-box{border:1px solid #e2e8f0;border-radius:8px;padding:.8rem;margin-bottom:.75rem}
+    .inp-phase-box h4{font-size:.85rem;color:#0d9488;margin-bottom:.5rem;display:flex;justify-content:space-between}
+    .inp-drug-row{display:flex;align-items:flex-start;gap:.5rem;padding:.35rem 0;border-bottom:1px solid #f1f5f9;flex-wrap:wrap}
+    .inp-drug-row:last-child{border:none}
+    .inp-drug-info{flex:1}.inp-drug-name{font-weight:600;font-size:.82rem}
+    .inp-drug-dose{font-size:.72rem;color:#64748b}.inp-vial-combo{font-size:.72rem;color:#0d9488;font-weight:500}
+    .inp-drug-cost{font-weight:700;font-size:.82rem;color:#0d9488;min-width:130px;text-align:right}
+    .inp-summary{background:#f0fdfa;border:1px solid #99f6e4;border-radius:8px;padding:1rem}
+    .inp-sum-line{display:flex;justify-content:space-between;padding:.25rem 0;font-size:.85rem}
+    .inp-sum-total{font-weight:700;font-size:.95rem;color:#0f766e;border-top:2px solid #99f6e4;margin-top:.4rem;padding-top:.5rem}
+    .inp-sum-note{font-size:.68rem;color:#94a3b8;margin-top:.6rem;font-style:italic;line-height:1.6}
+    .footer{margin-top:1.5rem;font-size:.7rem;color:#94a3b8;border-top:1px solid #e2e8f0;padding-top:.5rem}
+    @media print{body{padding:.5rem}}
+  </style></head><body>
+  <h1>${reg.name}　住院化療費用計算</h1>
+  <div class="sub">列印日期：${today}　　體重：${_inpWt} kg　BSA：${_inpBSA.toFixed(2)} m²　CrCl：${Math.round(_inpCrCl)} mL/min　　藥價基準：${_inpPriceType==='nhi'?'健保藥價 (115/04/01)':'台大自費藥價 (2024/12)'}</div>
+  ${detail}
+  ${summary}
+  <div class="footer">本資料僅供醫療人員估算參考，實際劑量與費用以醫師處方及醫院計費為準。</div>
+  <script>window.onload=function(){window.print()}<\/script>
+  </body></html>`);
+  w.document.close();
+}
+
+// ═══════════════════════════════════════════════════════
+//  ICD碼查詢 (ICD Code Lookup for 重大傷病卡)
+// ═══════════════════════════════════════════════════════
+let _icdInited = false;
+
+const ICD_ZONES = {
+  UO: { label:'外上象限 (Upper-Outer Quadrant)', right:'C50.411', left:'C50.412', desc:'外上象限為最常見乳癌發生部位' },
+  UI: { label:'內上象限 (Upper-Inner Quadrant)', right:'C50.211', left:'C50.212', desc:'' },
+  LO: { label:'外下象限 (Lower-Outer Quadrant)', right:'C50.511', left:'C50.512', desc:'' },
+  LI: { label:'內下象限 (Lower-Inner Quadrant)', right:'C50.311', left:'C50.312', desc:'' },
+  nipple: { label:'乳頭及乳暈 (Nipple & Areola)', right:'C50.011', left:'C50.012', desc:'' }
+};
+
+const ICD_SIDE_CODES = [
+  { code:'C50.811', side:'右乳', desc:'Malignant neoplasm of overlapping sites of right female breast — 跨象限/重疊部位（右乳）' },
+  { code:'C50.812', side:'左乳', desc:'Malignant neoplasm of overlapping sites of left female breast — 跨象限/重疊部位（左乳）' },
+  { code:'C50.111', side:'右乳', desc:'Malignant neoplasm of central portion of right female breast — 中央區（右乳）' },
+  { code:'C50.112', side:'左乳', desc:'Malignant neoplasm of central portion of left female breast — 中央區（左乳）' },
+  { code:'C50.611', side:'右乳', desc:'Malignant neoplasm of axillary tail of right female breast — 腋窩尾部（右乳）' },
+  { code:'C50.612', side:'左乳', desc:'Malignant neoplasm of axillary tail of left female breast — 腋窩尾部（左乳）' },
+  { code:'C50.911', side:'右乳', desc:'Malignant neoplasm of unspecified site of right female breast — 未明確部位（右乳）' },
+  { code:'C50.912', side:'左乳', desc:'Malignant neoplasm of unspecified site of left female breast — 未明確部位（左乳）' },
+  { code:'C50.A1',  side:'右乳', desc:'Malignant inflammatory neoplasm of right breast — 炎性乳癌（右乳）' },
+  { code:'C50.A2',  side:'左乳', desc:'Malignant inflammatory neoplasm of left breast — 炎性乳癌（左乳）' },
+];
+
+const ICD_DCIS_CODES = [
+  { code:'D05.11', side:'右乳', desc:'Intraductal carcinoma in situ of right breast — 右乳導管原位癌 (DCIS)' },
+  { code:'D05.12', side:'左乳', desc:'Intraductal carcinoma in situ of left breast — 左乳導管原位癌 (DCIS)' },
+  { code:'D05.01', side:'右乳', desc:'Lobular carcinoma in situ of right breast — 右乳小葉原位癌 (LCIS)' },
+  { code:'D05.02', side:'左乳', desc:'Lobular carcinoma in situ of left breast — 左乳小葉原位癌 (LCIS)' },
+  { code:'D05.81', side:'右乳', desc:'Other specified type of carcinoma in situ of right breast — 右乳其他原位癌' },
+  { code:'D05.82', side:'左乳', desc:'Other specified type of carcinoma in situ of left breast — 左乳其他原位癌' },
+  { code:'D05.10', side:'不明確', desc:'Intraductal carcinoma in situ of unspecified breast — 未指定側導管原位癌' },
+  { code:'D05.00', side:'不明確', desc:'Lobular carcinoma in situ of unspecified breast — 未指定側小葉原位癌' },
+];
+
+function selectIcdZone(side, zone){
+  document.querySelectorAll('.icd-q').forEach(el=>el.classList.remove('selected'));
+  document.querySelectorAll(`.icd-q[data-side="${side}"][data-zone="${zone}"]`).forEach(el=>el.classList.add('selected'));
+  const info = ICD_ZONES[zone];
+  if(!info) return;
+  const sideLabel = side==='R' ? '右乳' : '左乳';
+  const code = side==='R' ? info.right : info.left;
+  const zoneDesc = zone==='UO'?'（最常見乳癌部位）':zone==='nipple'?'（乳頭/乳暈區）':'';
+  document.getElementById('icdPopupArea').innerHTML = `
+    <div class="icd-popup">
+      <div class="icd-popup-title">${sideLabel}　${info.label}</div>
+      <div style="font-size:.75rem;color:var(--text-muted);margin:.2rem 0 .5rem">${zoneDesc}點擊代碼可複製到剪貼簿</div>
+      <div class="icd-code-row">
+        <span class="icd-code" id="icdCopyCode" onclick="icdCopy('${code}')">${code}</span>
+        <span style="font-size:.82rem">${sideLabel}　${info.label}</span>
+      </div>
+      <div style="margin-top:.7rem;padding-top:.5rem;border-top:1px solid #fda4af;font-size:.72rem;color:var(--text-muted)">
+        <div>重大傷病申請代碼：<strong style="color:#be123c">010</strong>（乳癌）</div>
+        <div style="margin-top:.2rem">ICD-10-CM：<strong style="color:#be123c">${code}</strong></div>
+      </div>
+    </div>`;
+}
+
+function icdCopy(code){
+  navigator.clipboard.writeText(code).then(()=>{
+    const el = document.getElementById('icdCopyCode');
+    if(el){ el.textContent = code+' ✓'; setTimeout(()=>{ if(el) el.textContent=code; },1500); }
+  });
+}
+
+function initIcdPage(){
+  _icdInited = true;
+  const makeRow = (c) =>
+    `<div class="icd-side-item"><span class="icd-code" style="min-width:72px" onclick="icdCopy('${c.code}')" title="點擊複製">${c.code}</span><span><strong style="color:#be123c">${c.side}</strong>　${c.desc}</span></div>`;
+  document.getElementById('icdSideList').innerHTML = ICD_SIDE_CODES.map(makeRow).join('');
+  document.getElementById('icdDcislist').innerHTML = ICD_DCIS_CODES.map(makeRow).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+//  手術自費醫材清單
+// ═══════════════════════════════════════════════════════
+let _surgInited = false;
+
+const SURG_ITEMS = [
+  { group:'前哨淋巴精準定位', en:'Lymphscintigraphy', zh:'前哨淋巴掃描', code:'000TP144', price:3463, note:'' },
+  { group:'前哨淋巴精準定位', en:'Patent Blue', zh:'拍得藍注射液', code:'PAT1PC03', price:2125, note:'' },
+  { group:'前哨淋巴精準定位', en:'Diagnogreen', zh:'循血綠注射劑', code:'DIA1PA22', price:2125, note:'' },
+  { group:'前哨淋巴精準定位', en:'SPY-PHI Drape', zh:'手持攝影頭滅菌套', code:'20509712', price:2160, note:'' },
+  { group:'前哨淋巴精準定位', en:'SPY-PHI Stryker', zh:'螢光顯影開機費', code:'0YHB1009', price:20000, note:'' },
+  { group:'術中使用', en:'Plasma Blade', zh:'低溫電漿手術刀', code:'20325608', price:17550, note:'' },
+  { group:'術中使用', en:'SURGIFLO', zh:'止血劑', code:'20452030', price:24440, note:'可減少術後腫脹、減少引流量，腋下淋巴廓清及大範圍切除患者可考慮使用' },
+  { group:'術中使用', en:'Wound Retractor', zh:'傷口撐開/保護器', code:'20437224', price:2180, note:'傷口保護器可在術中保護傷口，不受器械及電燒傷害' },
+  { group:'術中使用', en:'Collagen Dressing', zh:'膠原蛋白敷料（癒立安）', code:'20452396', price:22750, note:'用於填塞切除後之空腔，可加速內部傷口復原' },
+  { group:'術後照護用品', en:'Gen Tek Carefix', zh:'術後衣', code:'20449990', price:8515, note:'' },
+  { group:'術後照護用品', en:'台灣富盛得術後衣', zh:'壓迫緊密但拆裝容易，返家後可重複使用（加贈腋下加壓帶）', code:'—', price:2800, note:'' },
+  { group:'術後照護用品', en:'芙爾摩莎超薄彈力膜', zh:'術後衣', code:'—', price:2200, note:'' },
+  { group:'術後照護用品', en:'SurgiSeal', zh:'速近傷口黏膠劑', code:'20471332', price:6760, note:'' },
+  { group:'術後照護用品', en:'TissueAid', zh:'高黏度組織黏著劑', code:'20471326', price:3227, note:'' },
+  { group:'內視鏡乳房手術', en:'Trocar (5mm)', zh:'安德派思腹腔鏡套管', code:'20220080', price:1138, note:'' },
+  { group:'內視鏡乳房手術', en:'Trocar (12mm)', zh:'安德派思腹腔鏡套管', code:'20220079', price:1208, note:'' },
+  { group:'內視鏡乳房手術', en:'Laparoscopy', zh:'內視鏡使用費', code:'28014C00', price:5959, note:'' },
+  { group:'內視鏡乳房手術', en:'NELIS Glove Port', zh:'內視鏡用端口', code:'20437242', price:26000, note:'' },
+  { group:'內視鏡乳房手術', en:'Suction Irrigation', zh:'內視鏡用沖吸管組', code:'20219907', price:2470, note:'' },
+  { group:'內視鏡乳房手術', en:'LigaSure Maryland', zh:'利嘉修爾鉗口閉合器', code:'20445100', price:29025, note:'' },
+  { group:'乳房微創手術', en:'"SenoRx" EnCor Biopsy Probe', zh:'安可兒切片探針（含附件）', code:'20281007', price:15525, note:'' },
+  { group:'整形式乳房手術', en:'Oncoplasty Surgery', zh:'整形式乳頭提升', code:'000B4348', price:18000, note:'' },
+  { group:'整形式乳房手術', en:'疤痕重整（特小）', zh:'疤痕重整（特小）', code:'000B4355', price:5000, note:'' },
+  { group:'整形式乳房手術', en:'疤痕重整（超大）', zh:'疤痕重整（超大）', code:'000B4357', price:20000, note:'' },
+  { group:'整形式乳房手術', en:'Breast Reconstruction', zh:'乳房重建技術費', code:'0YHB1003', price:50000, note:'' },
+  { group:'整形式乳房手術', en:'Tissue Expander', zh:'光滑面組織擴張器', code:'20381010', price:14598, note:'用於橋接二階段重建，可先進行後續療程，完成治療再進行完整重建手術' },
+  { group:'基因檢測', en:'NGS Hereditary Breast Cancer Gene', zh:'次世代定序遺傳性基因變異檢測', code:'000X0230', price:30000, note:'' },
+  { group:'基因檢測', en:'Oncotype Dx / FoundationOne CDx', zh:'安可待乳癌腫瘤基因檢測/全方位癌症基因組織檢測', code:'—', price:170000, note:'約17萬，實際依廠商報價' },
+  { group:'特殊術式–疑陽個案切片', en:'MG-guided needle localization', zh:'乳房攝影導引病灶細針定位', code:'000M2E21', price:4200, note:'' },
+  { group:'特殊術式–疑陽個案切片', en:'MRI-guided needle localization', zh:'磁振造影導引乳房細針定位', code:'000M4011', price:16000, note:'' },
+];
+
+function initSurgeryList(){
+  _surgInited = true;
+  const groups = {};
+  SURG_ITEMS.forEach((item, idx)=>{
+    if(!groups[item.group]) groups[item.group]=[];
+    groups[item.group].push({...item, idx});
+  });
+  let html = '';
+  Object.keys(groups).forEach(g=>{
+    html += `<div class="surg-group-title">${g}</div>`;
+    groups[g].forEach(item=>{
+      html += `<div class="surg-item" id="surg_row_${item.idx}">
+        <input type="checkbox" id="surg_${item.idx}" data-price="${item.price}" onchange="updateSurgTotal()">
+        <div class="surg-item-info">
+          <div class="surg-item-name">${item.en}</div>
+          <div class="surg-item-zh">${item.zh}</div>
+          ${item.code!=='—'?`<div class="surg-item-code">院內碼：${item.code}</div>`:''}
+          ${item.note?`<div class="surg-note">※ ${item.note}</div>`:''}
+        </div>
+        <div class="surg-item-price">NT$ ${item.price.toLocaleString()}</div>
+      </div>`;
+    });
+  });
+  document.getElementById('surgeryList').innerHTML = html;
+  updateSurgTotal();
+}
+
+function updateSurgTotal(){
+  let total = 0;
+  document.querySelectorAll('#surgeryList input[type=checkbox]:checked').forEach(cb=>{
+    total += parseInt(cb.dataset.price)||0;
+    cb.closest('.surg-item').style.background='#f0fdf4';
+    cb.closest('.surg-item').style.borderColor='#6ee7b7';
+  });
+  document.querySelectorAll('#surgeryList input[type=checkbox]:not(:checked)').forEach(cb=>{
+    cb.closest('.surg-item').style.background='';
+    cb.closest('.surg-item').style.borderColor='';
+  });
+  document.getElementById('surgTotal').textContent = 'NT$ '+total.toLocaleString();
+}
+
+function clearSurgeryChecks(){
+  document.querySelectorAll('#surgeryList input[type=checkbox]').forEach(cb=>cb.checked=false);
+  updateSurgTotal();
+}
+
+function printSurgeryList(){
+  const checked = [];
+  document.querySelectorAll('#surgeryList input[type=checkbox]:checked').forEach(cb=>{
+    const row = cb.closest('.surg-item');
+    const name = row.querySelector('.surg-item-name').textContent;
+    const zh   = row.querySelector('.surg-item-zh').textContent;
+    const price= parseInt(cb.dataset.price)||0;
+    checked.push({name, zh, price});
+  });
+  if(checked.length===0){alert('請先勾選項目');return;}
+  const total = checked.reduce((s,c)=>s+c.price,0);
+  const today = new Date().toLocaleDateString('zh-TW');
+  const rows = checked.map(c=>`<tr><td>${c.name}</td><td>${c.zh}</td><td style="text-align:right">NT$ ${c.price.toLocaleString()}</td></tr>`).join('');
+  const w = window.open('','_blank','width=700,height=800');
+  if(!w){alert('請允許彈出視窗');return;}
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>手術自費清單 ${today}</title>
+  <style>body{font-family:'Noto Sans TC',sans-serif;padding:1.5rem;font-size:13px;max-width:620px;margin:0 auto}
+  h1{font-size:1.1rem}table{width:100%;border-collapse:collapse;margin-top:1rem}
+  th{background:#f0fdf4;padding:.4rem .6rem;font-size:.78rem;text-align:left;border:1px solid #a7f3d0}
+  td{padding:.35rem .6rem;border:1px solid #e2e8f0;font-size:.8rem}
+  tfoot td{font-weight:700;background:#ecfdf5;color:#059669}
+  .note{font-size:.68rem;color:#94a3b8;margin-top:1rem;font-style:italic}
+  @media print{body{padding:.3rem}}</style></head><body>
+  <h1>手術自費醫材清單</h1>
+  <div style="color:#6b7280;font-size:.8rem;margin-bottom:.5rem">列印日期：${today}　來源：黃祥瑋醫師 乳癌手術自費項目清單（台大醫院）</div>
+  <table><thead><tr><th>品項</th><th>中文名稱</th><th style="text-align:right">定價</th></tr></thead>
+  <tbody>${rows}</tbody>
+  <tfoot><tr><td colspan="2">合計</td><td style="text-align:right">NT$ ${total.toLocaleString()}</td></tr></tfoot>
+  </table>
+  <div class="note">※ 本清單為估算參考用，實際費用依住院時簽署之自費同意書為準。</div>
+  <scr`+'ipt>window.onload=function(){window.print()}</scr'+'ipt></body></html>');
+  w.document.close();
+}
+
+// ═══════════════════════════════════════════════════════
+//  臨床試驗搜尋 (ClinicalTrials.gov API v2)
+// ═══════════════════════════════════════════════════════
+let _lastTrialResults = [];
+async function searchTrials(){
+  const keyword  = document.getElementById('trialKeyword').value.trim() || 'breast cancer';
+  const location = document.getElementById('trialLocation').value.trim() || 'Taiwan';
+  const status   = document.getElementById('trialStatus').value;
+  const el = document.getElementById('trialResults');
+  el.innerHTML = '<div style="color:var(--text-muted);padding:1rem">搜尋中，請稍候…</div>';
+  _lastTrialResults = [];
+
+  try {
+    const params = new URLSearchParams({
+      'query.cond': keyword,
+      'query.locn': location,
+      'pageSize': 20,
+      'fields': 'NCTId,BriefTitle,OverallStatus,Phase,StartDate,PrimaryCompletionDate,LeadSponsorName,LocationFacility,LocationCity,LocationCountry,BriefSummary,EligibilityCriteria',
+      'format': 'json'
+    });
+    if(status) params.set('filter.overallStatus', status);
+
+    const resp = await fetch(`https://clinicaltrials.gov/api/v2/studies?${params}`);
+    if(!resp.ok) throw new Error('API error: '+resp.status);
+    const data = await resp.json();
+    const studies = data.studies || [];
+
+    if(studies.length===0){
+      el.innerHTML='<div style="padding:1rem;color:var(--text-muted)">未找到符合條件的試驗。請嘗試修改關鍵字或地點。</div>';
+      return;
+    }
+
+    let html = `<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.4rem;margin-bottom:.6rem">
+        <div style="font-size:.78rem;color:var(--text-muted)">找到 ${data.totalCount||studies.length} 筆（顯示前 ${studies.length} 筆）</div>
+        <div style="display:flex;gap:.35rem">
+          <button class="btn btn-outline btn-sm" onclick="exportTrialsCSV()" title="匯出為 CSV (Excel 可開啟)">&#11015;&#65039; CSV</button>
+          <button class="btn btn-outline btn-sm" onclick="printTrialsList()" title="列印或存成 PDF">&#128438; 列印/PDF</button>
+        </div>
+      </div>`;
+    studies.forEach(s=>{
+      const ps = s.protocolSection||{};
+      const id = ps.identificationModule||{};
+      const statusMod = ps.statusModule||{};
+      const design = ps.designModule||{};
+      const sponsor = ps.sponsorCollaboratorsModule||{};
+      const locations = ps.contactsLocationsModule||{};
+      const desc = ps.descriptionModule||{};
+      const elig = ps.eligibilityModule||{};
+
+      const nctId = id.nctId||'';
+      const title = id.briefTitle||'(no title)';
+      const overallStatus = statusMod.overallStatus||'';
+      const phase = (design.phases||[]).join(', ')||'N/A';
+      const leadSponsor = sponsor.leadSponsor?.name||'';
+      const twLocs = (locations.locations||[]).filter(l=>l.country==='Taiwan');
+      const locs = twLocs.map(l=>`${l.facility||''} (${l.city||''})`).slice(0,3).join('、');
+      const startDate = statusMod.startDateStruct?.date || '';
+      const completionDate = statusMod.primaryCompletionDateStruct?.date || '';
+      const briefSummary = desc.briefSummary || '';
+      const eligibility = elig.eligibilityCriteria || '';
+
+      _lastTrialResults.push({
+        nctId, title, overallStatus, phase, leadSponsor,
+        locs, startDate, completionDate, briefSummary, eligibility
+      });
+
+      const badgeClass = overallStatus==='RECRUITING'?'recruiting':'active';
+      const badgeLabel = overallStatus==='RECRUITING'?'招募中':overallStatus==='ACTIVE_NOT_RECRUITING'?'進行中':'其他';
+
+      html += `<div class="trial-card">
+        <div style="display:flex;gap:.5rem;align-items:flex-start;flex-wrap:wrap">
+          <span class="trial-badge ${badgeClass}">${badgeLabel}</span>
+          <span class="trial-badge trial-phase">${phase}</span>
+        </div>
+        <div class="trial-title" style="margin-top:.3rem">${title}</div>
+        <div class="trial-meta">
+          <span>&#128196; <a href="https://clinicaltrials.gov/study/${nctId}" target="_blank" style="color:#0369a1">${nctId}</a></span>
+          ${leadSponsor?`<span>&#127970; ${leadSponsor}</span>`:''}
+        </div>
+        ${locs?`<div class="trial-locations">&#128205; 台灣試驗中心：${locs}</div>`:''}
+      </div>`;
+    });
+    el.innerHTML = html;
+  } catch(err){
+    el.innerHTML = `<div style="padding:1rem;color:#ef4444">搜尋失敗：${err.message}。請確認網路連線，或稍後再試。</div>`;
+  }
+}
+
+function _csvEsc(v){
+  v = String(v==null?'':v).replace(/\r?\n/g,' ').replace(/\s+/g,' ').trim();
+  return /[",]/.test(v) ? `"${v.replace(/"/g,'""')}"` : v;
+}
+function exportTrialsCSV(){
+  if(!_lastTrialResults.length){ alert('尚無試驗資料可匯出'); return; }
+  const headers = ['NCT編號','試驗名稱','期別','狀態','主辦單位','台灣試驗中心','開始日期','預計完成日期','摘要','招募條件'];
+  const rows = _lastTrialResults.map(t => [
+    t.nctId, t.title, t.phase, t.overallStatus, t.leadSponsor,
+    t.locs, t.startDate, t.completionDate, t.briefSummary, t.eligibility
+  ].map(_csvEsc).join(','));
+  const csv = '﻿' + headers.join(',') + '\r\n' + rows.join('\r\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `clinical_trials_${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+}
+function printTrialsList(){
+  if(!_lastTrialResults.length){ alert('尚無試驗資料可列印'); return; }
+  const today = new Date().toLocaleDateString('zh-TW');
+  const esc = s => String(s==null?'':s).replace(/[<>&]/g, c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));
+  let body = '';
+  _lastTrialResults.forEach((t,i) => {
+    const recBadge = t.overallStatus==='RECRUITING' ? '<span class="badge rec">招募中</span>' :
+                     t.overallStatus==='ACTIVE_NOT_RECRUITING' ? '<span class="badge">進行中</span>' :
+                     `<span class="badge">${esc(t.overallStatus)}</span>`;
+    body += `<div class="trial">
+      <div><span class="nct">${i+1}. ${esc(t.nctId)}</span> &nbsp; ${recBadge}<span class="badge">${esc(t.phase)}</span></div>
+      <div class="title">${esc(t.title)}</div>
+      <div class="meta"><span class="label">主辦：</span>${esc(t.leadSponsor)||'—'}</div>
+      ${t.locs ? `<div class="meta"><span class="label">台灣試驗中心：</span>${esc(t.locs)}</div>` : ''}
+      <div class="meta"><span class="label">開始：</span>${esc(t.startDate)||'—'} &nbsp; <span class="label">預計完成：</span>${esc(t.completionDate)||'—'}</div>
+      ${t.briefSummary ? `<div class="summary">${esc(t.briefSummary.slice(0,500))}${t.briefSummary.length>500?'…':''}</div>` : ''}
+    </div>`;
+  });
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>臨床試驗清單 ${today}</title>
+    <style>
+      body{font-family:'Microsoft JhengHei','Noto Sans CJK TC',sans-serif;padding:18px;font-size:11px;color:#1f2937;line-height:1.45}
+      h1{font-size:16px;margin:0;color:#0369a1}
+      .header{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #0369a1;padding-bottom:8px;margin-bottom:14px}
+      .meta-line{font-size:10px;color:#6b7280}
+      .trial{border:1px solid #e5e7eb;border-left:3px solid #0369a1;border-radius:4px;padding:9px 11px;margin-bottom:8px;page-break-inside:avoid}
+      .nct{font-weight:600;color:#0369a1}
+      .badge{display:inline-block;padding:1px 6px;border-radius:8px;font-size:9px;font-weight:600;background:#e0f2fe;color:#075985;margin-right:4px}
+      .badge.rec{background:#dcfce7;color:#166534}
+      .title{font-weight:700;font-size:12px;margin:4px 0;color:#111827}
+      .meta{font-size:10px;color:#4b5563;margin:2px 0}
+      .label{font-weight:600;color:#374151}
+      .summary{font-size:10px;color:#374151;margin-top:5px;padding-top:5px;border-top:1px dashed #e5e7eb}
+      @media print { body{padding:0} .no-print{display:none} }
+      .actions{position:fixed;top:10px;right:10px}
+      .actions button{background:#0369a1;color:white;border:0;padding:8px 14px;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit}
+    </style></head><body>
+    <div class="actions no-print"><button onclick="window.print()">&#128438; 列印 / 存 PDF</button></div>
+    <div class="header">
+      <div><h1>&#129514; 乳癌相關臨床試驗清單</h1><div class="meta-line">資料來源：ClinicalTrials.gov</div></div>
+      <div class="meta-line" style="text-align:right">${today}<br>共 ${_lastTrialResults.length} 筆</div>
+    </div>${body}</body></html>`;
+  const w = window.open('', '_blank');
+  if(!w){ alert('請允許彈出視窗以列印試驗清單'); return; }
+  w.document.write(html);
+  w.document.close();
+}
+
+// ── Init ──
+function initInpCalc(){
+  _inpInited = true;
+  const groups = {};
+  INP_REGIMENS.forEach(r=>{
+    if(!groups[r.group]) groups[r.group]=[];
+    groups[r.group].push(r);
+  });
+  let html = '';
+  Object.keys(groups).forEach(g=>{
+    html += `<div style="margin-bottom:.8rem">
+      <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-faint);margin-bottom:.35rem">${g}</div>
+      <div style="display:flex;gap:.4rem;flex-wrap:wrap">`;
+    groups[g].forEach(r=>{
+      html += `<button class="cond-btn inp-reg-btn" data-id="${r.id}" onclick="selectInpRegimen('${r.id}')" title="${r.desc}">${r.name}</button>`;
+    });
+    html += '</div></div>';
+  });
+  document.getElementById('inpRegimenPicker').innerHTML = html;
+  updateInpPatient();
 }
 
 </script>
