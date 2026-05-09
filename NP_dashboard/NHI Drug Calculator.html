@@ -1776,10 +1776,11 @@ body.dark .modal { background: #1e293b; }
           </div>
           <div style="font-size:.8rem;color:var(--text-muted);margin-bottom:.7rem;line-height:1.55">
             估算術後 5 / 10 / 15 年整體存活率，及各種輔助治療的<strong>增量獲益</strong>。
-            <div style="margin-top:.4rem;padding:.5rem .7rem;background:#eff6ff;border-left:3px solid #0369a1;border-radius:0 var(--r-sm) var(--r-sm) 0;font-size:.78rem;line-height:1.5">
-              <strong>本站使用版本：PREDICT v2.1/v2.3</strong>（NHS Cambridge / Candido dos Reis 2017 BCR）<br>
-              所有 Cox 模型係數比照 <a href="https://github.com/cran/nhs.predict/blob/master/R/predict.os.R" target="_blank" style="color:#0369a1">官方 R 原始碼 cran/nhs.predict</a> 實作。
-              <span style="color:#b45309">⚠️ 最新版 v4.0 (2026) 包含 radiotherapy benefit + 更新基線；如需最新請至 <a href="https://breast.predict.nhs.uk/" target="_blank" style="color:#0369a1"><strong>breast.predict.nhs.uk</strong></a>。</span>
+            <div style="margin-top:.4rem;padding:.6rem .8rem;background:#fef2f2;border:2px solid #dc2626;border-radius:6px;font-size:.78rem;line-height:1.55;color:#7f1d1d">
+              <strong>⚠️ Beta — 尚未對照 NHS 官網驗證</strong><br>
+              <strong>本站使用版本</strong>：PREDICT v2.1/v2.3，係數比照 <a href="https://github.com/cran/nhs.predict/blob/master/R/predict.os.R" target="_blank" style="color:#0369a1">官方 R 原始碼 cran/nhs.predict</a>，但<u>尚未 end-to-end validation</u>。<br>
+              <strong>建議行動</strong>：使用 <code>tests/predict_validation.html</code> 比對 NHS 官網 ≥5 個 case，誤差 &lt; 2% 後再用於臨床討論。<br>
+              <strong>最新 v4.0 (Grootes 2024)</strong> 含 radiotherapy benefit，請至 <a href="https://breast.predict.nhs.uk/" target="_blank" style="color:#0369a1"><strong>breast.predict.nhs.uk</strong></a>。
             </div>
           </div>
 
@@ -1798,7 +1799,7 @@ body.dark .modal { background: #1e293b; }
           <div style="font-weight:700;font-size:.82rem;color:#0e7490;margin:.85rem 0 .4rem">輔助治療選項</div>
           <div class="calc-form">
             <div class="calc-field"><label>內分泌治療 (僅 ER+)</label><select id="pred_endo" onchange="calcPREDICT()"><option value="0">無</option><option value="5" selected>5 年</option><option value="10">10 年（延長）</option></select></div>
-            <div class="calc-field"><label>化學治療</label><select id="pred_chemo" onchange="calcPREDICT()"><option value="0">無</option><option value="1">第 1 代 (CMF)</option><option value="2">第 2 代 (含 anthracycline)</option><option value="3" selected>第 3 代 (anthracycline + taxane)</option></select></div>
+            <div class="calc-field"><label>化學治療（NHS v2.1 模型）</label><select id="pred_chemo" onchange="calcPREDICT()"><option value="0">無化療</option><option value="2">第 2 代：anthracycline-based（含 CMF）</option><option value="3" selected>第 3 代：anthracycline + taxane</option></select></div>
             <div class="calc-field"><label>Trastuzumab (HER2+)</label><select id="pred_trast" onchange="calcPREDICT()"><option value="0">無</option><option value="1" selected>使用</option></select></div>
             <div class="calc-field"><label>Bisphosphonates (停經後)</label><select id="pred_bis" onchange="calcPREDICT()"><option value="0" selected>無</option><option value="1">使用</option></select></div>
           </div>
@@ -1972,9 +1973,13 @@ body.dark .modal { background: #1e293b; }
       <div class="calc-panel" id="calcPanel-ihc4">
         <div class="calc-card">
           <div class="calc-section-title">IHC4 — 由 IHC 估算復發風險</div>
+          <div style="background:#fffbeb;border-left:3px solid #f59e0b;padding:.5rem .8rem;border-radius:0 4px 4px 0;font-size:.8rem;color:#92400e;margin-bottom:.7rem;line-height:1.55">
+            ⚠️ <strong>分數計算依 Cuzick 2011 公式，但風險分組 cutoffs（極低/低/中/高）為近似分隔，非原論文 tertile 分界。</strong><br>
+            原論文 cutoffs 依研究 cohort 而定（樣本相依），無絕對標準值。實務上應以 IHC4 <em>連續分數</em> 配合臨床判斷，不應將 cutoffs 視為絕對標準。
+          </div>
           <div style="font-size:.82rem;color:var(--text-muted);margin-bottom:.7rem;line-height:1.5">
-            由 ER, PR, HER2, Ki67 估算復發風險（與 Oncotype DX RS 高度相關但更低成本）。<br>
-            <strong>本站使用版本</strong>：Cuzick 2011 — IHC4 = 94.7 × {-0.100×ER10 - 0.079×PgR10 + 0.586×HER2 + 0.240×ln(1+10×Ki67)}
+            由 ER, PR, HER2, Ki67 估算復發風險（與 Oncotype DX RS 中度相關但成本低）。<br>
+            <strong>本站公式</strong>：IHC4 = 94.7 × {-0.100×ER10 - 0.079×PgR10 + 0.586×HER2 + 0.240×ln(1+10×Ki67)}
           </div>
           <div class="calc-form">
             <div class="calc-field"><label>ER H-score (0–300)</label><input type="number" id="ihc4_er" min="0" max="300" value="270" oninput="calcIHC4()"></div>
@@ -2038,9 +2043,17 @@ body.dark .modal { background: #1e293b; }
       <div class="calc-panel" id="calcPanel-gail">
         <div class="calc-card">
           <div class="calc-section-title">Gail Model — 5 年 / 終身乳癌風險</div>
+          <div style="background:#fef2f2;border:2px solid #dc2626;padding:.7rem .9rem;border-radius:6px;margin-bottom:.7rem;font-size:.85rem;line-height:1.6;color:#7f1d1d">
+            <strong style="font-size:.95rem">🚫 重要：本工具為高度簡化估算，禁止用於臨床決策</strong><br>
+            <ul style="margin:.4rem 0 .2rem 1.3rem;padding:0;font-size:.82rem">
+              <li>種族係數採「<strong>近似估算</strong>」，非 NCI BCRAT 官方數值</li>
+              <li>年齡別發生率為粗略平均（SEER），非分年齡計算</li>
+              <li>終身風險係數為粗略外推，誤差可能 ±20%</li>
+            </ul>
+            <strong>正式臨床決策請使用 <a href="https://bcrisktool.cancer.gov/" target="_blank" style="color:#0369a1;text-decoration:underline">NCI 官方 BCRAT</a></strong>（含種族 + NHANES + 完整年齡別校正）
+          </div>
           <div style="font-size:.82rem;color:var(--text-muted);margin-bottom:.7rem;line-height:1.5">
-            <strong>適用對象</strong>：35 歲以上未有乳癌診斷的女性。用於高風險篩檢與預防性投藥決策（如 Tamoxifen / Raloxifene 化學預防）。<br>
-            <span style="color:#b45309">⚠️ 本工具為 Gail Model（BCRAT v2）簡化版；正式建議使用 <a href="https://bcrisktool.cancer.gov/" target="_blank" style="color:#0369a1">NCI 官方 BCRAT</a>（含種族 / NHANES 校正）。</span>
+            <strong>適用對象</strong>：35 歲以上未有乳癌診斷的女性，用於高風險篩檢與預防性投藥（Tamoxifen / Raloxifene）討論之教學/個案展示。
           </div>
           <div class="calc-form">
             <div class="calc-field"><label>年齡 (35–85)</label><input type="number" id="gail_age" min="35" max="85" value="50" oninput="calcGail()"></div>
@@ -2692,23 +2705,42 @@ document.addEventListener('DOMContentLoaded', ()=>{
 });
 let _calcInited=false;
 function initCalcPage(){
-    // Apply feature flags to tabs
-    const predictTab = document.querySelector('[data-tab="predict"]');
-    const predictPanel = document.getElementById('calcPanel-predict');
-    if(predictTab) predictTab.style.display = FEATURE_FLAGS.predict ? '' : 'none';
-    if(predictPanel) predictPanel.style.display = FEATURE_FLAGS.predict ? '' : 'none';
-    if(!FEATURE_FLAGS.predict && predictTab && predictTab.classList.contains('active')){
-        switchCalcTab('cts5');
+    // Apply feature flag gating to each calculator sub-tab
+    const tabFlagMap = {
+        predict: 'predict',
+        cts5: 'calc_cts5',
+        pepi: 'calc_pepi',
+        npi: 'calc_npi',
+        magee: 'calc_magee',
+        ihc4: 'calc_ihc4',
+        hscore: 'calc_hscore',
+        rcb: 'calc_rcb',
+        gail: 'calc_gail'
+    };
+    let firstVisibleTab = 'ext';
+    Object.entries(tabFlagMap).forEach(([tab, flag]) => {
+        const tabEl = document.querySelector(`[data-tab="${tab}"]`);
+        const panelEl = document.getElementById('calcPanel-' + tab);
+        const enabled = FEATURE_FLAGS[flag];
+        if(tabEl) tabEl.style.display = enabled ? '' : 'none';
+        if(panelEl) panelEl.style.display = enabled ? '' : 'none';
+        if(enabled && firstVisibleTab === 'ext') firstVisibleTab = tab;
+    });
+    // If currently active tab was disabled, switch to first visible
+    const activeTab = document.querySelector('#calcPage .calc-tab.active');
+    if(activeTab && activeTab.style.display === 'none'){
+        switchCalcTab(firstVisibleTab);
     }
+    // Run calculators only if enabled (avoid wasted DOM lookups for hidden ones)
     if(FEATURE_FLAGS.predict) calcPREDICT();
-    calcCTS5();
-    calcPEPI();
-    calcNPI();
-    calcMagee();
-    calcIHC4();
-    calcHscore();
-    calcRCB();
-    calcGail();
+    if(FEATURE_FLAGS.calc_cts5) calcCTS5();
+    if(FEATURE_FLAGS.calc_pepi) calcPEPI();
+    if(FEATURE_FLAGS.calc_npi) calcNPI();
+    if(FEATURE_FLAGS.calc_magee) calcMagee();
+    if(FEATURE_FLAGS.calc_ihc4) calcIHC4();
+    if(FEATURE_FLAGS.calc_hscore) calcHscore();
+    if(FEATURE_FLAGS.calc_rcb) calcRCB();
+    if(FEATURE_FLAGS.calc_gail) calcGail();
 }
 function switchCalcTab(tab){
     document.querySelectorAll('#calcPage .calc-tab').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
@@ -2891,9 +2923,10 @@ function calcPREDICT(){
         txList.push({name: endo===10?'內分泌治療 10 年':'內分泌治療 5 年', logHR: -0.3857, color:'#0369a1'});
     }
     if(chemo > 0){
-        const chemoLogHR = [0, -0.248, -0.248, -0.446][chemo]; // gen 1 (CMF) approximated as gen 2
-        const chemoNames = ['', '化療 第 1 代 (CMF, ≈ 2nd gen)', '化療 第 2 代 (anthracycline)', '化療 第 3 代 (anth + taxane)'];
-        txList.push({name: chemoNames[chemo], logHR: chemoLogHR, color:'#7c3aed'});
+        // NHS v2.1 only defines gen 2 (-0.248) and gen 3 (-0.446); CMF treated as gen 2
+        const chemoLogHR = chemo===2 ? -0.248 : (chemo===3 ? -0.446 : 0);
+        const chemoNames = {2:'化療 第 2 代 (anthracycline / CMF)', 3:'化療 第 3 代 (anth + taxane)'};
+        if(chemoLogHR !== 0) txList.push({name: chemoNames[chemo], logHR: chemoLogHR, color:'#7c3aed'});
     }
     if(her2 === 'pos' && trast === 1){
         txList.push({name:'Trastuzumab', logHR: -0.3567, color:'#16a34a'});
@@ -3056,16 +3089,18 @@ function calcIHC4(){
     const pr10 = prH/30;
     const ki67d = ki67/100;
     const ihc4 = 94.7 * (-0.100*er10 - 0.079*pr10 + 0.586*her2 + 0.240*Math.log(1 + 10*ki67d));
+    // NOTE: cutoffs below are APPROXIMATE; Cuzick 2011 used cohort-specific tertiles
     let group, cls, advice;
-    if(ihc4 < -25){ group='極低風險'; cls='low'; advice='類似 Oncotype RS &lt;18'; }
-    else if(ihc4 < 0){ group='低風險'; cls='low'; advice='endocrine alone 通常足夠'; }
-    else if(ihc4 < 25){ group='中度風險'; cls='med'; advice='類似 Oncotype RS 18–30，個案討論加 chemo'; }
-    else { group='高風險'; cls='high'; advice='類似 Oncotype RS ≥31，建議 adjuvant chemo'; }
+    if(ihc4 < -25){ group='相對低 (近似)'; cls='low'; advice='與低 Oncotype RS 相關性較強'; }
+    else if(ihc4 < 0){ group='較低 (近似)'; cls='low'; advice='連續分數較低，輔助臨床綜合判斷'; }
+    else if(ihc4 < 25){ group='中等 (近似)'; cls='med'; advice='中等分數，建議綜合年齡/分期判斷'; }
+    else { group='相對高 (近似)'; cls='high'; advice='與高 Oncotype RS 相關性較強'; }
     el.innerHTML=`<div class="calc-result ${cls}">
-        <div class="calc-result-label">IHC4 = ${ihc4.toFixed(2)} · ${group}</div>
+        <div class="calc-result-label">IHC4 連續分數 = ${ihc4.toFixed(2)} · ${group}</div>
         <div class="calc-result-main">${ihc4.toFixed(1)}</div>
         <div class="calc-result-detail">${advice}<br>
-            <span style="color:var(--text-muted);font-size:.78rem">ER10=${er10.toFixed(2)} · PR10=${pr10.toFixed(2)} · HER2=${her2} · Ki67=${ki67}%</span>
+            <span style="color:var(--text-muted);font-size:.78rem">ER10=${er10.toFixed(2)} · PR10=${pr10.toFixed(2)} · HER2=${her2} · Ki67=${ki67}%</span><br>
+            <span style="color:#b45309;font-size:.74rem">⚠️ 上述 cutoffs 為近似分隔，非 Cuzick 原文之 tertile。應以連續分數搭配臨床整體判斷，非絕對風險分類。</span>
         </div>
     </div>`;
 }
@@ -3187,12 +3222,21 @@ const FEATURE_FLAGS_DEFAULT = {
     calculator: true,
     workspace: true,
     darkMode: true,
+    // Calculator sub-features (stable: well-validated formulas)
+    calc_cts5: true,        // Dowsett 2018, well-validated
+    calc_pepi: true,        // Ellis 2008, well-validated
+    calc_npi: true,         // Galea 1992, well-validated
+    calc_magee: true,       // Klein 2013, multiple equations
+    calc_hscore: true,      // pure math, no clinical interpretation
+    calc_rcb: true,         // Symmans 2007, well-validated formula
     // Beta features (experimental, may not be fully validated)
-    predict: true,            // Beta: 估算可能與 NHS 官方有 ±5% 誤差
-    ajccPrognostic: true,     // Beta: 預後期別為簡化估算
-    nhiReverseLookup: true    // Beta: 給付規則需與健保署最新公告對照
+    predict: true,           // Beta: 未實際對照 NHS 官網驗證
+    ajccPrognostic: true,    // Beta: 預後期別為簡化估算
+    nhiReverseLookup: true,  // Beta: 給付規則需與健保署最新公告對照
+    calc_ihc4: false,        // Beta: cutoffs 非標準，預設關閉
+    calc_gail: false         // Beta: 種族/年齡/lifetime 因子皆為估算，預設關閉
 };
-const FEATURE_FLAGS_BETA_KEYS = ['predict','ajccPrognostic','nhiReverseLookup'];
+const FEATURE_FLAGS_BETA_KEYS = ['predict','ajccPrognostic','nhiReverseLookup','calc_ihc4','calc_gail'];
 const FEATURE_FLAGS_KEY = '_feature_flags';
 let FEATURE_FLAGS = { ...FEATURE_FLAGS_DEFAULT };
 function loadFeatureFlags(){
@@ -3254,12 +3298,20 @@ function renderSettings(){
         {key:'trials', label:'臨床試驗搜尋', stable:true},
         {key:'nccn', label:'NCCN 治療指引', stable:true},
         {key:'ajcc', label:'AJCC 第八版分期 (TNM 解剖期別)', stable:true},
-        {key:'calculator', label:'計算機 (CTS5 / PEPI / Magee)', stable:true},
+        {key:'calculator', label:'計算機 / Nomogram 主分頁', stable:true},
         {key:'workspace', label:'病人 Workspace', stable:true},
         {key:'darkMode', label:'Dark Mode + 鍵盤快捷鍵', stable:true},
-        {key:'predict', label:'PREDICT v2.3', stable:false, note:'存活率估算，可能與 NHS 官方有 ±5% 誤差'},
+        {key:'calc_cts5', label:'  └ CTS5', stable:true},
+        {key:'calc_pepi', label:'  └ PEPI Score', stable:true},
+        {key:'calc_npi', label:'  └ NPI (Nottingham)', stable:true},
+        {key:'calc_magee', label:'  └ Magee Equations', stable:true},
+        {key:'calc_hscore', label:'  └ H-score', stable:true},
+        {key:'calc_rcb', label:'  └ RCB (Residual Cancer Burden)', stable:true},
+        {key:'predict', label:'  └ PREDICT v2.3', stable:false, note:'存活率估算，尚未實際對照 NHS 官方驗證；建議用 tests/predict_validation.html'},
         {key:'ajccPrognostic', label:'AJCC 預後期別 (Clinical/Pathologic)', stable:false, note:'簡化估算，正式請參閱 AJCC 第八版手冊 Table 48.2'},
-        {key:'nhiReverseLookup', label:'健保給付反向查詢 (Workspace)', stable:false, note:'給付規則需驗證；以健保署最新公告為準'}
+        {key:'nhiReverseLookup', label:'健保給付反向查詢 (Workspace)', stable:false, note:'給付規則需驗證；以健保署最新公告為準'},
+        {key:'calc_ihc4', label:'  └ IHC4', stable:false, note:'公式正確 (Cuzick 2011)，但 cutoffs 為近似分界非原論文 tertile，預設關閉'},
+        {key:'calc_gail', label:'  └ Gail Model', stable:false, note:'高度簡化版（種族/年齡/lifetime 皆估算），不可作為臨床決策；預設關閉'}
     ];
     let html = '';
     // Determine current mode
