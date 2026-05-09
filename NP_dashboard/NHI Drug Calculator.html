@@ -1757,9 +1757,14 @@ body.dark .modal { background: #1e293b; }
       <div class="calc-tabs">
         <button class="calc-tab active" data-tab="predict" onclick="switchCalcTab('predict')">PREDICT v2.3</button>
         <button class="calc-tab" data-tab="cts5" onclick="switchCalcTab('cts5')">CTS5</button>
-        <button class="calc-tab" data-tab="pepi" onclick="switchCalcTab('pepi')">PEPI Score</button>
-        <button class="calc-tab" data-tab="magee" onclick="switchCalcTab('magee')">Magee Equations</button>
-        <button class="calc-tab" data-tab="ext" onclick="switchCalcTab('ext')">官方/外連工具</button>
+        <button class="calc-tab" data-tab="pepi" onclick="switchCalcTab('pepi')">PEPI</button>
+        <button class="calc-tab" data-tab="npi" onclick="switchCalcTab('npi')">NPI</button>
+        <button class="calc-tab" data-tab="magee" onclick="switchCalcTab('magee')">Magee</button>
+        <button class="calc-tab" data-tab="ihc4" onclick="switchCalcTab('ihc4')">IHC4</button>
+        <button class="calc-tab" data-tab="hscore" onclick="switchCalcTab('hscore')">H-score</button>
+        <button class="calc-tab" data-tab="rcb" onclick="switchCalcTab('rcb')">RCB</button>
+        <button class="calc-tab" data-tab="gail" onclick="switchCalcTab('gail')">Gail</button>
+        <button class="calc-tab" data-tab="ext" onclick="switchCalcTab('ext')">外連</button>
       </div>
 
       <!-- PREDICT v2.3 -->
@@ -1939,6 +1944,117 @@ body.dark .modal { background: #1e293b; }
           <div id="magee_result"></div>
           <div class="calc-cite">
             Klein ME, et al. <em>Prediction of the Oncotype DX recurrence score: use of pathology-generated equations derived by linear regression analysis</em>. Mod Pathol 2013;26(5):658-664. (UPMC)
+          </div>
+        </div>
+      </div>
+
+      <!-- NPI (Nottingham Prognostic Index) -->
+      <div class="calc-panel" id="calcPanel-npi">
+        <div class="calc-card">
+          <div class="calc-section-title">NPI — Nottingham Prognostic Index</div>
+          <div style="font-size:.82rem;color:var(--text-muted);margin-bottom:.7rem;line-height:1.5">
+            簡易預後分數，用於早期乳癌預後分組。<br>
+            <strong>公式</strong>：NPI = 0.2 × tumor_size(cm) + node_stage + grade
+          </div>
+          <div class="calc-form">
+            <div class="calc-field"><label>腫瘤大小 (cm)</label><input type="number" id="npi_size" min="0.1" max="20" step="0.1" value="2" oninput="calcNPI()"></div>
+            <div class="calc-field"><label>淋巴結狀態</label><select id="npi_node" onchange="calcNPI()"><option value="1" selected>N0：無轉移</option><option value="2">1–3 個淋巴轉移</option><option value="3">≥4 個淋巴轉移</option></select></div>
+            <div class="calc-field"><label>Grade</label><select id="npi_grade" onchange="calcNPI()"><option value="1">G1</option><option value="2" selected>G2</option><option value="3">G3</option></select></div>
+          </div>
+          <div id="npi_result"></div>
+          <div class="calc-cite">
+            Galea MH, Blamey RW, et al. <em>The Nottingham Prognostic Index in primary breast cancer</em>. Breast Cancer Res Treat. 1992;22(3):207-219.
+          </div>
+        </div>
+      </div>
+
+      <!-- IHC4 (Cuzick 2011) -->
+      <div class="calc-panel" id="calcPanel-ihc4">
+        <div class="calc-card">
+          <div class="calc-section-title">IHC4 — 由 IHC 估算復發風險</div>
+          <div style="font-size:.82rem;color:var(--text-muted);margin-bottom:.7rem;line-height:1.5">
+            由 ER, PR, HER2, Ki67 估算復發風險（與 Oncotype DX RS 高度相關但更低成本）。<br>
+            <strong>本站使用版本</strong>：Cuzick 2011 — IHC4 = 94.7 × {-0.100×ER10 - 0.079×PgR10 + 0.586×HER2 + 0.240×ln(1+10×Ki67)}
+          </div>
+          <div class="calc-form">
+            <div class="calc-field"><label>ER H-score (0–300)</label><input type="number" id="ihc4_er" min="0" max="300" value="270" oninput="calcIHC4()"></div>
+            <div class="calc-field"><label>PR H-score (0–300)</label><input type="number" id="ihc4_pr" min="0" max="300" value="200" oninput="calcIHC4()"></div>
+            <div class="calc-field"><label>HER2</label><select id="ihc4_her2" onchange="calcIHC4()"><option value="0" selected>陰性 (0/1+/2+ FISH-)</option><option value="1">陽性 (3+ 或 FISH+)</option></select></div>
+            <div class="calc-field"><label>Ki67 (%)</label><input type="number" id="ihc4_ki67" min="0" max="100" step="0.1" value="15" oninput="calcIHC4()"></div>
+          </div>
+          <div id="ihc4_result"></div>
+          <div class="calc-cite">
+            Cuzick J, Dowsett M, et al. <em>Prognostic value of a combined ER, PgR, Ki-67, HER2 immunohistochemical score and comparison with the Genomic Health recurrence score in early breast cancer</em>. JCO 2011;29(32):4273-4278.<br>
+            <strong>注意</strong>：ER10 = ER H-score / 30（範圍 0–10）；遠端 Python 模組使用 Dowsett 2010 版本，與此公式不同。
+          </div>
+        </div>
+      </div>
+
+      <!-- H-score -->
+      <div class="calc-panel" id="calcPanel-hscore">
+        <div class="calc-card">
+          <div class="calc-section-title">H-score — IHC 染色強度量化</div>
+          <div style="font-size:.82rem;color:var(--text-muted);margin-bottom:.7rem;line-height:1.5">
+            量化 ER / PR / HER2 染色強度。<br>
+            <strong>公式</strong>：H = (1×%1+) + (2×%2+) + (3×%3+)，範圍 0–300。
+          </div>
+          <div class="calc-form">
+            <div class="calc-field"><label>無染色 0 (% cells)</label><input type="number" id="hs_0" min="0" max="100" value="0" oninput="calcHscore()"></div>
+            <div class="calc-field"><label>弱染色 1+ (%)</label><input type="number" id="hs_1" min="0" max="100" value="0" oninput="calcHscore()"></div>
+            <div class="calc-field"><label>中度 2+ (%)</label><input type="number" id="hs_2" min="0" max="100" value="0" oninput="calcHscore()"></div>
+            <div class="calc-field"><label>強染色 3+ (%)</label><input type="number" id="hs_3" min="0" max="100" value="100" oninput="calcHscore()"></div>
+          </div>
+          <div id="hs_result"></div>
+          <div class="calc-cite">
+            McCarty KS Jr, et al. <em>Estrogen receptor analyses: correlation of biochemical and immunohistochemical methods using monoclonal antireceptor antibodies</em>. Arch Pathol Lab Med 1985;109(8):716-721.
+          </div>
+        </div>
+      </div>
+
+      <!-- RCB -->
+      <div class="calc-panel" id="calcPanel-rcb">
+        <div class="calc-card">
+          <div class="calc-section-title">RCB — Residual Cancer Burden（Symmans 2007）</div>
+          <div style="font-size:.82rem;color:var(--text-muted);margin-bottom:.7rem;line-height:1.5">
+            Neoadjuvant chemo 後的殘餘腫瘤負擔。0 = pCR；越高預後越差。<br>
+            <strong>公式</strong>：RCB = 1.4×(f_inv × d_prim)^0.17 + (4×(1 − 0.75^LN) × d_met)^0.17
+          </div>
+          <div class="calc-form">
+            <div class="calc-field"><label>Tumor bed 直徑 1 (mm)</label><input type="number" id="rcb_d1" min="0" max="500" step="0.1" value="20" oninput="calcRCB()"></div>
+            <div class="calc-field"><label>Tumor bed 直徑 2 (mm)</label><input type="number" id="rcb_d2" min="0" max="500" step="0.1" value="20" oninput="calcRCB()"></div>
+            <div class="calc-field"><label>Invasive carcinoma %</label><input type="number" id="rcb_finv" min="0" max="100" step="1" value="50" oninput="calcRCB()"></div>
+            <div class="calc-field"><label>陽性淋巴結數</label><input type="number" id="rcb_ln" min="0" max="50" value="0" oninput="calcRCB()"></div>
+            <div class="calc-field"><label>最大 LN 轉移 (mm)</label><input type="number" id="rcb_dmet" min="0" max="100" step="0.1" value="0" oninput="calcRCB()"></div>
+          </div>
+          <div id="rcb_result"></div>
+          <div class="calc-cite">
+            Symmans WF, et al. <em>Measurement of Residual Breast Cancer Burden to Predict Survival After Neoadjuvant Chemotherapy</em>. JCO 2007;25(28):4414-4422.<br>
+            完整指引：<a href="https://www3.mdanderson.org/app/medcalc/index.cfm?pagename=jsconvert3" target="_blank">MD Anderson RCB Calculator</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gail Model -->
+      <div class="calc-panel" id="calcPanel-gail">
+        <div class="calc-card">
+          <div class="calc-section-title">Gail Model — 5 年 / 終身乳癌風險</div>
+          <div style="font-size:.82rem;color:var(--text-muted);margin-bottom:.7rem;line-height:1.5">
+            <strong>適用對象</strong>：35 歲以上未有乳癌診斷的女性。用於高風險篩檢與預防性投藥決策（如 Tamoxifen / Raloxifene 化學預防）。<br>
+            <span style="color:#b45309">⚠️ 本工具為 Gail Model（BCRAT v2）簡化版；正式建議使用 <a href="https://bcrisktool.cancer.gov/" target="_blank" style="color:#0369a1">NCI 官方 BCRAT</a>（含種族 / NHANES 校正）。</span>
+          </div>
+          <div class="calc-form">
+            <div class="calc-field"><label>年齡 (35–85)</label><input type="number" id="gail_age" min="35" max="85" value="50" oninput="calcGail()"></div>
+            <div class="calc-field"><label>初經年齡</label><select id="gail_menarche" onchange="calcGail()"><option value="1.21">&lt;12 歲</option><option value="1.10" selected>12–13 歲</option><option value="1.0">≥14 歲</option></select></div>
+            <div class="calc-field"><label>第一胎活產年齡</label><select id="gail_birth" onchange="calcGail()"><option value="1.0" selected>&lt;20 歲</option><option value="1.24">20–24 歲</option><option value="1.55">25–29 歲 / 未生育</option><option value="1.93">≥30 歲</option></select></div>
+            <div class="calc-field"><label>一級親屬乳癌家族</label><select id="gail_relatives" onchange="calcGail()"><option value="1.0" selected>0 人</option><option value="2.61">1 人</option><option value="6.80">≥2 人</option></select></div>
+            <div class="calc-field"><label>過往切片次數</label><select id="gail_biopsy" onchange="calcGail()"><option value="0" selected>0 次</option><option value="1">1 次</option><option value="2">≥2 次</option></select></div>
+            <div class="calc-field"><label>切片有 atypical hyperplasia</label><select id="gail_atypia" onchange="calcGail()"><option value="0" selected>否 / 不適用</option><option value="1">有</option></select></div>
+            <div class="calc-field" style="grid-column:span 2"><label>種族（影響基線發生率）</label><select id="gail_race" onchange="calcGail()"><option value="white" selected>白人 / 一般族群</option><option value="aa">非裔美國人</option><option value="asian">亞洲人 / 亞裔</option><option value="hispanic">西班牙裔</option></select></div>
+          </div>
+          <div id="gail_result"></div>
+          <div class="calc-cite">
+            Gail MH, et al. <em>Projecting individualized probabilities of developing breast cancer for white females who are being examined annually</em>. JNCI 1989;81:1879-1886.<br>
+            BCRAT updates: Costantino JP et al. JNCI 1999; Gail MH et al. JNCI 2007 (African American). 種族係數採近似值，非絕對精準。
           </div>
         </div>
       </div>
@@ -2571,7 +2687,12 @@ function initCalcPage(){
     if(FEATURE_FLAGS.predict) calcPREDICT();
     calcCTS5();
     calcPEPI();
+    calcNPI();
     calcMagee();
+    calcIHC4();
+    calcHscore();
+    calcRCB();
+    calcGail();
 }
 function switchCalcTab(tab){
     document.querySelectorAll('#calcPage .calc-tab').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
@@ -2882,6 +3003,159 @@ function loadPredictFromWorkspace(){
         if(!isNaN(ki) && ki > 0) setVal('pred_ki67', ki >= 10 ? 'pos' : 'neg');
     }
     calcPREDICT();
+}
+
+// ── NPI (Galea 1992) ──
+function calcNPI(){
+    const el = document.getElementById('npi_result');
+    if(!el) return;
+    const size = +document.getElementById('npi_size').value;
+    const node = +document.getElementById('npi_node').value;
+    const grade = +document.getElementById('npi_grade').value;
+    if(!size||!node||!grade){ el.innerHTML=''; return; }
+    const npi = 0.2*size + node + grade;
+    let group, surv5, cls;
+    if(npi <= 2.4){ group='Excellent'; surv5='~95%'; cls='low'; }
+    else if(npi <= 3.4){ group='Good'; surv5='~85%'; cls='low'; }
+    else if(npi <= 4.4){ group='Moderate I'; surv5='~70%'; cls='med'; }
+    else if(npi <= 5.4){ group='Moderate II'; surv5='~55%'; cls='med'; }
+    else if(npi <= 6.4){ group='Poor'; surv5='~50%'; cls='high'; }
+    else { group='Very Poor'; surv5='~30%'; cls='high'; }
+    el.innerHTML=`<div class="calc-result ${cls}">
+        <div class="calc-result-label">NPI = ${npi.toFixed(2)} · ${group}</div>
+        <div class="calc-result-main">5 年存活率 ${surv5}</div>
+        <div class="calc-result-detail">0.2 × ${size}cm + ${node} (淋巴) + ${grade} (Grade) = ${npi.toFixed(2)}</div>
+    </div>`;
+}
+// ── IHC4 (Cuzick JCO 2011) ──
+function calcIHC4(){
+    const el = document.getElementById('ihc4_result');
+    if(!el) return;
+    const erH = +document.getElementById('ihc4_er').value;
+    const prH = +document.getElementById('ihc4_pr').value;
+    const her2 = +document.getElementById('ihc4_her2').value;
+    const ki67 = +document.getElementById('ihc4_ki67').value;
+    if(isNaN(erH)||isNaN(prH)||isNaN(her2)||isNaN(ki67)){ el.innerHTML=''; return; }
+    const er10 = erH/30;
+    const pr10 = prH/30;
+    const ki67d = ki67/100;
+    const ihc4 = 94.7 * (-0.100*er10 - 0.079*pr10 + 0.586*her2 + 0.240*Math.log(1 + 10*ki67d));
+    let group, cls, advice;
+    if(ihc4 < -25){ group='極低風險'; cls='low'; advice='類似 Oncotype RS &lt;18'; }
+    else if(ihc4 < 0){ group='低風險'; cls='low'; advice='endocrine alone 通常足夠'; }
+    else if(ihc4 < 25){ group='中度風險'; cls='med'; advice='類似 Oncotype RS 18–30，個案討論加 chemo'; }
+    else { group='高風險'; cls='high'; advice='類似 Oncotype RS ≥31，建議 adjuvant chemo'; }
+    el.innerHTML=`<div class="calc-result ${cls}">
+        <div class="calc-result-label">IHC4 = ${ihc4.toFixed(2)} · ${group}</div>
+        <div class="calc-result-main">${ihc4.toFixed(1)}</div>
+        <div class="calc-result-detail">${advice}<br>
+            <span style="color:var(--text-muted);font-size:.78rem">ER10=${er10.toFixed(2)} · PR10=${pr10.toFixed(2)} · HER2=${her2} · Ki67=${ki67}%</span>
+        </div>
+    </div>`;
+}
+// ── H-score ──
+function calcHscore(){
+    const el = document.getElementById('hs_result');
+    if(!el) return;
+    const p0 = +document.getElementById('hs_0').value;
+    const p1 = +document.getElementById('hs_1').value;
+    const p2 = +document.getElementById('hs_2').value;
+    const p3 = +document.getElementById('hs_3').value;
+    const total = p0+p1+p2+p3;
+    const h = 1*p1 + 2*p2 + 3*p3;
+    let warn = '';
+    if(Math.abs(total - 100) > 0.5) warn = `<br><span style="color:#b45309;font-size:.78rem">⚠️ 各強度合計 ${total}%（應為 100%）</span>`;
+    let group, cls;
+    if(h === 0){ group='陰性'; cls='low'; }
+    else if(h < 100){ group='Low'; cls='low'; }
+    else if(h < 200){ group='Intermediate'; cls='med'; }
+    else { group='High'; cls='high'; }
+    el.innerHTML=`<div class="calc-result ${cls}">
+        <div class="calc-result-label">H-score · ${group}</div>
+        <div class="calc-result-main">${h}</div>
+        <div class="calc-result-detail">1×${p1}% + 2×${p2}% + 3×${p3}% = ${h}${warn}</div>
+    </div>`;
+}
+// ── RCB (Symmans JCO 2007) ──
+function calcRCB(){
+    const el = document.getElementById('rcb_result');
+    if(!el) return;
+    const d1 = +document.getElementById('rcb_d1').value;
+    const d2 = +document.getElementById('rcb_d2').value;
+    const finv = +document.getElementById('rcb_finv').value/100;
+    const ln = +document.getElementById('rcb_ln').value;
+    const dmet = +document.getElementById('rcb_dmet').value;
+    const dprim = Math.sqrt(Math.max(d1,0) * Math.max(d2,0));
+    let primComp = 0;
+    if(dprim > 0 && finv > 0){
+        primComp = 1.4 * Math.pow(finv * dprim, 0.17);
+    }
+    let nodalComp = 0;
+    if(ln > 0 && dmet > 0){
+        nodalComp = Math.pow(4 * (1 - Math.pow(0.75, ln)) * dmet, 0.17);
+    }
+    const rcb = primComp + nodalComp;
+    let cls, klass, surv;
+    if(rcb === 0){ klass='RCB-0 (pCR)'; cls='low'; surv='10y DFS ~95%'; }
+    else if(rcb <= 1.36){ klass='RCB-I (Minimal)'; cls='low'; surv='10y DFS ~75%'; }
+    else if(rcb <= 3.28){ klass='RCB-II (Moderate)'; cls='med'; surv='10y DFS ~55%'; }
+    else { klass='RCB-III (Extensive)'; cls='high'; surv='10y DFS ~30%'; }
+    el.innerHTML=`<div class="calc-result ${cls}">
+        <div class="calc-result-label">${klass}</div>
+        <div class="calc-result-main">${rcb.toFixed(2)}</div>
+        <div class="calc-result-detail">${surv}<br>
+            <span style="color:var(--text-muted);font-size:.78rem">d_prim=${dprim.toFixed(1)}mm · 原發成份 ${primComp.toFixed(2)} · 淋巴成份 ${nodalComp.toFixed(2)}</span>
+        </div>
+    </div>`;
+}
+// ── Gail Model (BCRAT v2 simplified) ──
+function calcGail(){
+    const el = document.getElementById('gail_result');
+    if(!el) return;
+    const age = +document.getElementById('gail_age').value;
+    const rrMen = +document.getElementById('gail_menarche').value;
+    const rrBirth = +document.getElementById('gail_birth').value;
+    const rrRel = +document.getElementById('gail_relatives').value;
+    const biopsy = +document.getElementById('gail_biopsy').value;
+    const atypia = +document.getElementById('gail_atypia').value;
+    const race = document.getElementById('gail_race').value;
+    if(!age || age < 35 || age > 85){ el.innerHTML='<div class="calc-result"><div class="calc-result-detail">年齡需介於 35–85 歲。</div></div>'; return; }
+    // Biopsy + atypia RR (BCRAT lookup)
+    let rrBio = 1.0;
+    if(biopsy === 1) rrBio = atypia ? 1.93 : 1.27;
+    else if(biopsy === 2) rrBio = atypia ? 2.45 : 1.62;
+    const totalRR = rrMen * rrBirth * rrRel * rrBio;
+    // Approximate age-specific 5y baseline incidence per 100 women (rough SEER averages)
+    // Race adjustment factor
+    const raceAdj = { white: 1.0, aa: 0.95, asian: 0.5, hispanic: 0.7 };
+    const raceFactor = raceAdj[race] || 1.0;
+    // 5y baseline risk (%) by age band - rough averages from SEER 2010-2020
+    const ageBands = [
+        [35, 0.3], [40, 0.6], [45, 1.0], [50, 1.4], [55, 1.7],
+        [60, 1.9], [65, 2.0], [70, 2.0], [75, 1.9], [80, 1.7]
+    ];
+    let baseline5y = 0.3;
+    for(const [a, r] of ageBands){ if(age >= a) baseline5y = r; }
+    // Approximate 5-year risk = baseline × RR × race
+    const risk5y = baseline5y * totalRR * raceFactor;
+    const risk5yCapped = Math.min(risk5y, 50); // cap at 50% for sanity
+    // Lifetime approximation (very rough): scale by remaining life expectancy
+    const lifetimeFactor = age < 50 ? 8 : age < 60 ? 6 : age < 70 ? 4 : 2.5;
+    const lifetimeRisk = Math.min(baseline5y * totalRR * raceFactor * lifetimeFactor, 80);
+    let cls, advice;
+    if(risk5yCapped < 1.67){ cls='low'; advice='低風險（5 年 &lt;1.67%）。一般年度篩檢即可。'; }
+    else if(risk5yCapped < 3){ cls='med'; advice='中度風險。可考慮加強篩檢頻率。'; }
+    else { cls='high'; advice='<strong>高風險（5 年 ≥3%）</strong>。考慮 chemoprevention（Tamoxifen / AI / Raloxifene）；建議轉介遺傳諮詢。'; }
+    el.innerHTML=`<div class="calc-result ${cls}">
+        <div class="calc-result-label">Gail Model 5 年風險（簡化估算）</div>
+        <div class="calc-result-main">${risk5yCapped.toFixed(2)}%</div>
+        <div class="calc-result-detail">
+            <strong>終身風險（粗估）</strong>：${lifetimeRisk.toFixed(1)}%<br>
+            <strong>建議</strong>：${advice}<br>
+            <span style="color:var(--text-muted);font-size:.78rem">RR 總和 = ${totalRR.toFixed(2)} (initial=${rrMen}×birth=${rrBirth}×rel=${rrRel}×biopsy=${rrBio.toFixed(2)}) · 種族 = ${raceFactor}</span><br>
+            <span style="color:var(--text-faint);font-size:.72rem">⚠️ 此為簡化估算。臨床決策請至 <a href="https://bcrisktool.cancer.gov/" target="_blank">NCI 官方 BCRAT</a>。</span>
+        </div>
+    </div>`;
 }
 
 // ── Feature Flags ──
