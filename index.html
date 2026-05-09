@@ -465,6 +465,76 @@ body {
   .nhi-elig-list { grid-template-columns: 1fr; }
 }
 
+/* ── Dashboard (全景) Mode ── */
+.ws-mode-toggle { display: inline-flex; align-items: center; gap: .35rem; margin-left: auto; padding: .35rem .75rem; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); color: var(--text); font-size: .82rem; font-weight: 600; cursor: pointer; transition: .15s; font-family: inherit; }
+.ws-mode-toggle:hover { background: #fdf2f8; border-color: #f9a8d4; }
+.ws-mode-toggle.active { background: #ec4899; color: white; border-color: #ec4899; }
+.ws-mode-toggle.active:hover { background: #db2777; }
+body.dark .ws-mode-toggle:hover { background: #4a1d3b; }
+body.dark .ws-mode-toggle.active { background: #be185d; border-color: #be185d; }
+
+/* Layout: only active when wsPage has .dashboard-mode class */
+.dashboard-mode .page-body {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 1rem;
+    align-items: start;
+}
+.dashboard-mode .ws-input-col { display: flex; flex-direction: column; gap: .85rem; min-width: 0; }
+.dashboard-mode .ws-result-col { display: flex; flex-direction: column; gap: .85rem; min-width: 0; }
+.dashboard-mode .ws-input-col .ws-section { margin-bottom: 0; padding: .75rem .85rem; }
+.dashboard-mode .ws-input-col .ws-form { grid-template-columns: 1fr 1fr; gap: .4rem .55rem; }
+.dashboard-mode .ws-input-col .ws-section h3 { font-size: .82rem; margin-bottom: .45rem; }
+.dashboard-mode .ws-input-col .ws-derived { font-size: .76rem; padding: .45rem .6rem; gap: .35rem .7rem; }
+.dashboard-mode .ws-input-col .ws-derived-value { font-size: .9rem; }
+.dashboard-mode .ws-actions { grid-column: 1 / -1; }
+/* In form mode, hide empty results grid; in dashboard mode render via JS */
+.ws-results-grid:empty { display: none; }
+
+/* Results grid */
+.ws-results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: .75rem;
+}
+.ws-result-card { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid #ec4899; border-radius: var(--r-md); padding: .75rem .85rem; min-height: 92px; display: flex; flex-direction: column; transition: .15s; cursor: default; }
+.ws-result-card:hover { box-shadow: 0 4px 14px rgba(236,72,153,.12); transform: translateY(-1px); }
+.ws-result-card.clickable { cursor: pointer; }
+.ws-result-card.empty { border-left-color: #d1d5db; opacity: .65; }
+.ws-result-card.low { border-left-color: #16a34a; }
+.ws-result-card.med { border-left-color: #f59e0b; }
+.ws-result-card.high { border-left-color: #dc2626; }
+.ws-result-card.wide { grid-column: 1 / -1; }
+.ws-result-title { font-size: .72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .04em; margin-bottom: .35rem; display: flex; justify-content: space-between; align-items: baseline; gap: .4rem; }
+.ws-result-title .badge { font-size: .58rem; font-weight: 700; padding: 1px 5px; border-radius: 999px; text-transform: none; letter-spacing: 0; background: #fef3c7; color: #92400e; }
+.ws-result-value { font-size: 1.4rem; font-weight: 700; color: var(--text); line-height: 1.15; }
+.ws-result-card.low .ws-result-value { color: #166534; }
+.ws-result-card.med .ws-result-value { color: #92400e; }
+.ws-result-card.high .ws-result-value { color: #991b1b; }
+.ws-result-subtitle { font-size: .76rem; color: var(--text-muted); margin-top: .2rem; line-height: 1.35; }
+.ws-result-empty { font-size: .78rem; color: var(--text-faint); font-style: italic; margin: auto 0; }
+.ws-result-card .ws-result-extra { font-size: .72rem; color: var(--text-faint); margin-top: .35rem; padding-top: .3rem; border-top: 1px dashed var(--border); }
+
+body.dark .ws-result-card { background: #1e293b; }
+body.dark .ws-result-card.low .ws-result-value { color: #4ade80; }
+body.dark .ws-result-card.med .ws-result-value { color: #fbbf24; }
+body.dark .ws-result-card.high .ws-result-value { color: #f87171; }
+body.dark .ws-result-card.empty { background: #0f172a; }
+body.dark .ws-result-title .badge { background: #422006; color: #fcd34d; }
+
+@media (max-width: 1199px){
+    .dashboard-mode .page-body { grid-template-columns: 320px 1fr; }
+    .ws-results-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px){
+    .dashboard-mode .page-body { grid-template-columns: 1fr; }
+    .ws-results-grid { grid-template-columns: 1fr 1fr; }
+    .dashboard-mode .ws-input-col .ws-form { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+}
+@media (max-width: 600px){
+    .ws-results-grid { grid-template-columns: 1fr; }
+}
+
 /* ── Module Stability Badges ── */
 .module-badge { display: inline-block; font-size: .58rem; font-weight: 700; padding: 1px 5px; border-radius: 999px; vertical-align: middle; margin-left: .35rem; letter-spacing: .04em; text-transform: uppercase; }
 .module-badge.stable { background: #d1fae5; color: #065f46; }
@@ -537,6 +607,74 @@ body.dark .calc-extlink:hover { background: #164e63; }
 body.dark .ajcc-toggle { background: #1e293b; }
 body.dark th { background: #1e293b !important; color: #e2e8f0; }
 body.dark .modal { background: #1e293b; }
+/* ── Dark Mode Audit (covers calc-result colors, AJCC tables, NHI cards, badges, etc.) ── */
+/* calc-result text colours need recolouring on dark backgrounds */
+body.dark .calc-result-label { color: #67e8f9; }
+body.dark .calc-result-main { color: #67e8f9; }
+body.dark .calc-result.low .calc-result-label, body.dark .calc-result.low .calc-result-main { color: #4ade80; }
+body.dark .calc-result.med .calc-result-label, body.dark .calc-result.med .calc-result-main { color: #fbbf24; }
+body.dark .calc-result.high .calc-result-label, body.dark .calc-result.high .calc-result-main { color: #f87171; }
+body.dark .calc-result-detail { color: #cbd5e1; }
+/* PEPI table cells (highlighted row) */
+body.dark .calc-pepi-table tr.pepi-hl td { background: #422006 !important; color: #fde68a; }
+/* AJCC tables */
+body.dark .ajcc-ref-table th { background: #422006; color: #fde68a; border-color: #92400e; }
+body.dark .ajcc-cat-iv td { background: #450a0a !important; color: #fca5a5; }
+body.dark .ajcc-cat-iii td { background: #431407 !important; color: #fdba74; }
+body.dark .ajcc-cat-ii td { background: #422006 !important; color: #fde68a; }
+body.dark .ajcc-cat-i td { background: #14532d !important; color: #86efac; }
+body.dark .ajcc-cat-0 td { background: #1e293b !important; color: #cbd5e1; }
+body.dark .ajcc-ref-table tr.ajcc-highlighted td { background: #78350f !important; color: #fef3c7; outline-color: #f59e0b; }
+body.dark .ajcc-biomarker-section { background: #172554; border-color: #1e3a8a; color: #dbeafe; }
+body.dark .ajcc-note { background: #422006; color: #fde68a; border-left-color: #f59e0b; }
+body.dark .ajcc-toggle button.active { background: #b45309; }
+body.dark .ajcc-toggle button:not(.active) { color: #cbd5e1; }
+body.dark .ajcc-toggle button:not(.active):hover { color: #fde68a; background: rgba(255,255,255,.08); }
+body.dark .ajcc-reset:hover { background: #422006; color: #fde68a; border-color: #92400e; }
+body.dark .ajcc-error { background: #450a0a; color: #fca5a5; border-left-color: #ef4444; }
+/* NHI eligibility cards */
+body.dark .nhi-elig-card { background: #14532d; border-color: #166534; }
+body.dark .nhi-elig-card .nhi-elig-name { color: #86efac; }
+body.dark .nhi-elig-card.partial { background: #422006; border-left-color: #f59e0b; }
+body.dark .nhi-elig-card.partial .nhi-elig-name { color: #fde68a; }
+body.dark .nhi-elig-card.ineligible { background: #450a0a; border-left-color: #dc2626; }
+body.dark .nhi-elig-card.ineligible .nhi-elig-name { color: #fca5a5; }
+body.dark .nhi-elig-tag { background: #166534; color: #bbf7d0; }
+body.dark .nhi-elig-card.partial .nhi-elig-tag { background: #78350f; color: #fde68a; }
+body.dark .nhi-elig-reason { color: #94a3b8; }
+/* Module badges */
+body.dark .module-badge.stable { background: #14532d; color: #86efac; }
+body.dark .module-badge.beta { background: #422006; color: #fde68a; }
+body.dark .module-badge.beta-inside { background: #78350f; color: #fef3c7; }
+/* ws-derived gradient */
+body.dark .ws-derived { background: linear-gradient(135deg, #4a1d3b 0%, #422006 100%); }
+body.dark .ws-derived-label { color: #fbcfe8; }
+body.dark .ws-derived-value { color: #fce7f3; }
+/* Trials & misc cards */
+body.dark .trial-card:hover { background: #164e63; border-color: #7dd3fc; }
+body.dark .trial-badge.recruiting { background: #14532d; color: #86efac; }
+body.dark .trial-badge.active { background: #1e3a8a; color: #93c5fd; }
+body.dark .trial-phase { background: #1e293b; color: #cbd5e1; }
+body.dark .trial-locations { color: #7dd3fc; }
+/* Settings section.beta */
+body.dark .settings-section.beta { color: #fbbf24; border-bottom-color: #92400e; }
+body.dark .settings-section { color: #94a3b8; border-bottom-color: #334155; }
+/* Issue modal extras */
+body.dark .issue-card h2 { color: #fca5a5; }
+body.dark .issue-buttons button { background: #1e293b; color: #e2e8f0; }
+body.dark .issue-buttons button.primary { background: #dc2626; color: white; border-color: #dc2626; }
+/* Float toggles */
+body.dark .float-toggle { background: #1e293b; border-color: #334155; color: #e2e8f0; }
+body.dark .report-btn { background: #1e293b; color: #fca5a5; border-color: #334155; }
+body.dark .report-btn:hover { background: #450a0a; }
+/* PREDICT result inline tables (background #f8fafc / #fefce8 hardcoded inline) */
+body.dark .calc-result table th { background: #0f172a !important; color: #e2e8f0; border-color: #334155 !important; }
+body.dark .calc-result table td { border-color: #334155; }
+/* AJCC select */
+body.dark .ajcc-select { background: #1e293b; color: #e2e8f0; }
+/* Back btn in topbar */
+body.dark .back-btn { background: #1e293b; color: #cbd5e1; }
+body.dark .back-btn:hover { background: #334155; }
 .trial-card { border: 1px solid var(--border); border-radius: var(--r-md); padding: .85rem 1rem; margin-bottom: .6rem; background: var(--surface); }
 .trial-card:hover { border-color: #7dd3fc; background: #f0f9ff; }
 .trial-title { font-weight: 600; font-size: .88rem; margin-bottom: .25rem; }
@@ -1675,9 +1813,11 @@ body.dark .modal { background: #1e293b; }
     <div class="page-topbar ws">
       <button class="back-btn" onclick="showLanding()">← 返回</button>
       <h2>&#128100; 病人 Workspace</h2>
+      <button class="ws-mode-toggle" id="wsModeToggle" onclick="toggleDashboardMode()" title="切換顯示模式">&#128203; 表單模式</button>
     </div>
     <div class="page-body">
 
+     <div class="ws-input-col">
       <!-- Demographics -->
       <div class="ws-section">
         <h3>基本資料</h3>
@@ -1751,6 +1891,11 @@ body.dark .modal { background: #1e293b; }
           <div class="ws-field"><label>已用過治療</label><input type="text" id="ws_prior" oninput="setPatientField('prior',this.value)" placeholder="例如：AC-T, Trastuzumab"></div>
         </div>
       </div>
+     </div><!-- /ws-input-col -->
+
+     <div class="ws-result-col">
+      <!-- Dashboard 結果卡片網格（僅在全景模式顯示內容） -->
+      <div class="ws-results-grid" id="wsResults"></div>
 
       <!-- NHI Reverse Lookup -->
       <div class="ws-section">
@@ -1758,6 +1903,7 @@ body.dark .modal { background: #1e293b; }
         <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:.4rem">依當前 workspace 資料，列出可能符合健保給付的乳癌藥物。</div>
         <div id="ws_nhi_eligible"><div class="ws-empty">請先填入分期 + 生物標記，會自動比對</div></div>
       </div>
+     </div><!-- /ws-result-col -->
 
       <!-- Action bar -->
       <div class="ws-actions">
@@ -2520,6 +2666,7 @@ function setPatientField(key, value){
     _patient[key] = value;
     savePatient();
     refreshWorkspaceDerived();
+    refreshDashboardResults();
 }
 function clearPatient(){
     if(!confirm('確定要清除目前 workspace 全部資料嗎？此操作無法復原。')) return;
@@ -2529,12 +2676,15 @@ function clearPatient(){
 }
 function initWorkspace(){
     loadPatient();
+    loadDashboardMode();
     // Populate inputs
     Object.keys(PATIENT_DEFAULTS).forEach(k => {
         const el = document.getElementById('ws_'+k);
         if(el) el.value = _patient[k] || '';
     });
+    applyDashboardModeUI();
     refreshWorkspaceDerived();
+    refreshDashboardResults();
 }
 function refreshWorkspaceDerived(){
     const p = _patient;
@@ -2688,6 +2838,351 @@ function refreshNHIEligibility(){
     if(items.length>30) html += `<div style="font-size:.78rem;color:var(--text-muted);margin-top:.4rem">共 ${items.length} 筆，僅顯示前 30 筆</div>`;
     el.innerHTML = html;
 }
+// ─────────────────────────────────────────────────────────────────────────
+// Dashboard Mode (全景模式) — single-page panoramic view of all calculators
+// ─────────────────────────────────────────────────────────────────────────
+let _dashboardMode = false;
+function loadDashboardMode(){
+    try { _dashboardMode = localStorage.getItem('_dashboard_mode') === '1'; } catch(e){}
+}
+function applyDashboardModeUI(){
+    const ws = document.getElementById('wsPage');
+    const btn = document.getElementById('wsModeToggle');
+    if(!ws) return;
+    ws.classList.toggle('dashboard-mode', _dashboardMode);
+    if(btn){
+        btn.classList.toggle('active', _dashboardMode);
+        btn.innerHTML = _dashboardMode ? '\u{1F4CA} 全景模式' : '\u{1F4CB} 表單模式';
+    }
+}
+function toggleDashboardMode(){
+    _dashboardMode = !_dashboardMode;
+    try { localStorage.setItem('_dashboard_mode', _dashboardMode?'1':'0'); } catch(e){}
+    applyDashboardModeUI();
+    refreshDashboardResults();
+}
+
+// Result-card builder
+function _dashCard(opts){
+    // opts: { id, title, value, subtitle, extra, cls, badge, wide, missing }
+    const cls = ['ws-result-card'];
+    if(opts.cls) cls.push(opts.cls);
+    if(opts.wide) cls.push('wide');
+    if(opts.missing) cls.push('empty');
+    const badge = opts.badge ? `<span class="badge">${opts.badge}</span>` : '';
+    const body = opts.missing
+        ? `<div class="ws-result-empty">${opts.missing}</div>`
+        : `<div class="ws-result-value">${opts.value ?? '—'}</div>` +
+          (opts.subtitle ? `<div class="ws-result-subtitle">${opts.subtitle}</div>` : '') +
+          (opts.extra ? `<div class="ws-result-extra">${opts.extra}</div>` : '');
+    return `<div class="${cls.join(' ')}" id="dash-${opts.id}">
+        <div class="ws-result-title">${opts.title}${badge}</div>
+        ${body}
+    </div>`;
+}
+
+// ── Pure calc variants (no DOM access; pure functions of inputs) ──
+function calcCTS5Pure(N, T, G, A){
+    if(![N,T,G,A].every(v=>typeof v==='number'&&!isNaN(v))) return null;
+    if(T<=0||A<=0) return null;
+    const score = 0.438*N + 0.988*(0.093*T - 0.001*T*T) + 0.375*G + 0.017*A;
+    const drr10 = (1 - Math.pow(0.802, Math.exp(score))) * 100;
+    let cls='low', label='低風險';
+    if(score>=3.86){ cls='high'; label='高風險'; }
+    else if(score>=3.13){ cls='med'; label='中度風險'; }
+    return { score, drr10, cls, label };
+}
+function calcNPIPure(size_cm, nodeStage, grade){
+    if(!size_cm || !nodeStage || !grade) return null;
+    const npi = 0.2*size_cm + nodeStage + grade;
+    let group, surv5, cls;
+    if(npi <= 2.4){ group='Excellent'; surv5='~95%'; cls='low'; }
+    else if(npi <= 3.4){ group='Good'; surv5='~85%'; cls='low'; }
+    else if(npi <= 4.4){ group='Moderate I'; surv5='~70%'; cls='med'; }
+    else if(npi <= 5.4){ group='Moderate II'; surv5='~55%'; cls='med'; }
+    else if(npi <= 6.4){ group='Poor'; surv5='~50%'; cls='high'; }
+    else { group='Very Poor'; surv5='~30%'; cls='high'; }
+    return { npi, group, surv5, cls };
+}
+function calcMageePure(ns, size_mm, erH, prH, her2cat, ki67){
+    // ns = Nottingham 3-9, size_mm tumor mm, erH/prH H-score (0-300), her2cat 0/1/2, ki67 %
+    if(![ns,size_mm,erH,prH,her2cat,ki67].every(v=>typeof v==='number'&&!isNaN(v))) return null;
+    const her2 = her2cat===2 ? 1 : 0;
+    const m1 = 15.31385 + ns*1.4055 + erH*(-0.01924) + prH*(-0.02925) + her2*11.99435 + size_mm*0.0986;
+    const m2 = 18.8042 + ns*2.34123 + erH*(-0.03749) + prH*(-0.03065) + her2*11.8378 + size_mm*0.13838 + ki67*0.0035;
+    const erCat = erH>=200 ? 0 : (erH>=10 ? 1 : 2);
+    const prCat = prH>=200 ? 0 : (prH>=10 ? 1 : 2);
+    const her2Cat = her2cat>=2 ? 4 : (her2cat===1 ? 1.5 : 0);
+    const nsCat = ns<=5 ? 0 : (ns<=7 ? 1 : 2);
+    const kiCat = ki67<10 ? 0 : (ki67<20 ? 1 : 2);
+    const sizeCat = size_mm<10 ? 0 : (size_mm<20 ? 1 : (size_mm<30 ? 2 : 3));
+    const m3 = 13.424 + (erCat*1.4) + (prCat*1.6) + (her2Cat*5) + (nsCat*3) + (kiCat*1.6) + (sizeCat*0.5);
+    const avg = (m1+m2+m3)/3;
+    let cls='low', label='Low Risk';
+    if(avg>=31){ cls='high'; label='High Risk'; }
+    else if(avg>=18){ cls='med'; label='Intermediate Risk'; }
+    return { m1, m2, m3, avg, cls, label };
+}
+function calcIHC4Pure(erH, prH, her2bin, ki67){
+    if(![erH,prH,her2bin,ki67].every(v=>typeof v==='number'&&!isNaN(v))) return null;
+    const er10 = erH/30, pr10 = prH/30, ki67d = ki67/100;
+    const ihc4 = 94.7 * (-0.100*er10 - 0.079*pr10 + 0.586*her2bin + 0.240*Math.log(1 + 10*ki67d));
+    let group, cls;
+    if(ihc4 < -25){ group='相對低 (近似)'; cls='low'; }
+    else if(ihc4 < 0){ group='較低 (近似)'; cls='low'; }
+    else if(ihc4 < 25){ group='中等 (近似)'; cls='med'; }
+    else { group='相對高 (近似)'; cls='high'; }
+    return { ihc4, group, cls };
+}
+function calcPredictPure(p){
+    // p: {age, size_mm, nodes_pos, grade, er, her2, ki67Pct, mode}
+    const age = +p.age, size = +p.size_mm, nodes = +p.nodes_pos, grade = +p.grade;
+    if(!age||!size||isNaN(nodes)||!grade||age<25||age>85||size<1) return null;
+    if(p.er!=='+' && p.er!=='-') return null;
+    const isERpos = p.er === '+';
+    const her2tok = p.her2==='+' ? 'pos' : ((p.her2==='-'||p.her2==='low') ? 'neg' : 'unk');
+    const ki67tok = (typeof p.ki67Pct==='number'&&!isNaN(p.ki67Pct)) ? (p.ki67Pct>=10?'pos':'neg') : 'unk';
+    const mode = p.mode || 'symp';
+    const pi = isERpos
+        ? _predictPI_ERpos(age, size, nodes, grade, mode, her2tok, ki67tok)
+        : _predictPI_ERneg(age, size, nodes, grade, mode, her2tok);
+    const mi = _predictMI(age);
+    const years = [5,10,15];
+    const cumBC0 = [], cumOC0 = [];
+    for(let t=1; t<=15; t++){
+        cumBC0.push(_predictBaseCumBC(t, isERpos));
+        cumOC0.push(_predictBaseCumOC(t));
+    }
+    const annBC0 = cumBC0.map((v,i)=> i===0 ? v : v - cumBC0[i-1]);
+    const annOC0 = cumOC0.map((v,i)=> i===0 ? v : v - cumOC0[i-1]);
+    const annBC = annBC0.map(v => v * Math.exp(pi));
+    const annOC = annOC0.map(v => v * Math.exp(mi));
+    let acc=0; const cumBC = annBC.map(v=>(acc+=v));
+    acc=0; const cumOC = annOC.map(v=>(acc+=v));
+    const sBC = cumBC.map(c => Math.exp(-c));
+    const sOC = cumOC.map(c => Math.exp(-c));
+    const sAll = sBC.map((b,i)=> b*sOC[i]);
+    return { pi, surv: years.map(y=>sAll[y-1]*100), years };
+}
+
+// ── Renderer: read _patient, render all panels into #wsResults ──
+function refreshDashboardResults(){
+    const el = document.getElementById('wsResults');
+    if(!el) return;
+    if(!_dashboardMode){ el.innerHTML = ''; return; }
+    const p = _patient;
+    const cards = [];
+
+    // 1) AJCC stage (anatomic + v9 prognostic)
+    if(p.T && p.N && p.M){
+        let anat = '—';
+        try { anat = _ajccAnatomic(p.T,p.N,p.M) || '—'; } catch(e){}
+        let prog = '';
+        if(p.grade && p.er && p.her2){
+            try {
+                const her2Use = p.her2==='+' ? '+' : '-';
+                const lookup = _ajcc9Lookup(p.T,p.N,p.M, +p.grade, p.er, p.pr||p.er, her2Use);
+                if(lookup) prog = lookup;
+            } catch(e){}
+        }
+        const eligible = ['IIA','IIB','IIIA','IIIB','IIIC','IV'].includes(anat);
+        cards.push(_dashCard({
+            id:'ajcc',
+            title:'AJCC 期別',
+            value: anat==='—' ? '—' : ('第 '+anat+' 期'),
+            subtitle: prog ? ('v9 預後分組: '+prog) : '解剖 (8th)',
+            cls: eligible ? 'high' : (anat==='—'?'':'low')
+        }));
+    } else {
+        cards.push(_dashCard({ id:'ajcc', title:'AJCC 期別', missing:'需 T / N / M' }));
+    }
+
+    // 2) CTS5 (Dowsett 2018: tumor size in mm)
+    if(p.nodes_pos!=='' && p.size && p.grade && p.age){
+        const r = calcCTS5Pure(+p.nodes_pos, +p.size, +p.grade, +p.age);
+        if(r) cards.push(_dashCard({
+            id:'cts5', title:'CTS5',
+            value: r.score.toFixed(2),
+            subtitle: r.label + ' · 10y DRR ≈ '+r.drr10.toFixed(1)+'%',
+            cls: r.cls
+        }));
+        else cards.push(_dashCard({ id:'cts5', title:'CTS5', missing:'資料不完整' }));
+    } else {
+        cards.push(_dashCard({ id:'cts5', title:'CTS5', missing:'需 N+ / size / Grade / age' }));
+    }
+
+    // 3) PREDICT
+    if(p.age && p.size && p.nodes_pos!=='' && p.grade && p.er && p.her2){
+        const r = calcPredictPure({
+            age:+p.age, size_mm:+p.size, nodes_pos:+p.nodes_pos, grade:+p.grade,
+            er: p.er, her2: p.her2, ki67Pct: p.ki67?+p.ki67:NaN, mode: 'symp'
+        });
+        if(r){
+            const [s5,s10,s15] = r.surv;
+            cards.push(_dashCard({
+                id:'predict', title:'PREDICT v2.3',
+                value: s10.toFixed(1)+'%',
+                subtitle: '無治療 OS · 5y '+s5.toFixed(1)+'% / 10y '+s10.toFixed(1)+'% / 15y '+s15.toFixed(1)+'%',
+                extra:'PI = '+r.pi.toFixed(2),
+                cls: s10>=85?'low':(s10>=70?'med':'high')
+            }));
+        } else {
+            cards.push(_dashCard({ id:'predict', title:'PREDICT v2.3', missing:'資料超出模型範圍 (age 25-85, size≥1mm)' }));
+        }
+    } else {
+        cards.push(_dashCard({ id:'predict', title:'PREDICT v2.3', missing:'需 age/size/N+/Grade/ER/HER2' }));
+    }
+
+    // 4) NPI
+    if(p.size && p.nodes_pos!=='' && p.grade){
+        const npos = +p.nodes_pos;
+        const nodeStage = npos===0?1:(npos<=3?2:3);
+        const r = calcNPIPure(+p.size/10, nodeStage, +p.grade);
+        if(r) cards.push(_dashCard({
+            id:'npi', title:'NPI',
+            value: r.npi.toFixed(2),
+            subtitle: r.group + ' · 5y '+r.surv5,
+            cls: r.cls
+        }));
+    } else {
+        cards.push(_dashCard({ id:'npi', title:'NPI', missing:'需 size / N+ / Grade' }));
+    }
+
+    // 5) Magee (估算 Oncotype RS)
+    if(p.size && p.grade && p.er && p.pr && p.her2 && p.ki67){
+        // Map workspace fields to magee inputs.
+        // ER/PR H-score: use 200 if positive, 0 if negative (rough proxy if H-score not entered).
+        const erH = p.er==='+' ? 200 : 0;
+        const prH = p.pr==='+' ? 200 : 0;
+        const ns = (+p.grade) * 2 + 1; // 1->3, 2->5, 3->7 rough Nottingham proxy
+        const her2cat = p.her2==='+' ? 2 : (p.her2==='low' ? 1 : 0);
+        const r = calcMageePure(ns, +p.size, erH, prH, her2cat, +p.ki67);
+        if(r){
+            cards.push(_dashCard({
+                id:'magee', title:'Magee (估算 RS)',
+                value: r.avg.toFixed(1),
+                subtitle: r.label,
+                extra: 'Eq.1='+r.m1.toFixed(1)+' · Eq.2='+r.m2.toFixed(1)+' · Eq.3='+r.m3.toFixed(1),
+                cls: r.cls,
+                badge: '近似'
+            }));
+        }
+    } else {
+        cards.push(_dashCard({ id:'magee', title:'Magee (估算 RS)', missing:'需 size/Grade/ER/PR/HER2/Ki67' }));
+    }
+
+    // 6) IHC4
+    if(p.er && p.pr && p.her2 && p.ki67){
+        const erH = p.er==='+' ? 200 : 0;
+        const prH = p.pr==='+' ? 200 : 0;
+        const her2bin = p.her2==='+' ? 1 : 0;
+        const r = calcIHC4Pure(erH, prH, her2bin, +p.ki67);
+        if(r) cards.push(_dashCard({
+            id:'ihc4', title:'IHC4',
+            value: r.ihc4.toFixed(1),
+            subtitle: r.group,
+            cls: r.cls,
+            badge: '近似'
+        }));
+    } else {
+        cards.push(_dashCard({ id:'ihc4', title:'IHC4', missing:'需 ER/PR/HER2/Ki67' }));
+    }
+
+    // 7) Molecular subtype
+    let subtype = null;
+    if(p.er && p.her2){
+        if(p.her2==='+'){
+            subtype = (p.er==='+') ? 'HR+/HER2+ (Luminal B-like)' : 'HR-/HER2+';
+        } else if(p.her2==='low'){
+            subtype = (p.er==='+') ? 'HR+/HER2-low' : 'TNBC (HER2-low)';
+        } else {
+            if(p.er==='+'){
+                const ki = +p.ki67;
+                subtype = (!isNaN(ki)&&ki>=20) ? 'HR+/HER2- (Luminal B-like)' : 'HR+/HER2- (Luminal A-like)';
+            } else {
+                subtype = 'TNBC (Triple Negative)';
+            }
+        }
+    }
+    cards.push(_dashCard({
+        id:'subtype', title:'分子亞型',
+        value: subtype || '—',
+        missing: subtype ? null : '需 ER / HER2'
+    }));
+
+    // 8) ICD-10
+    let icd = null, icdSub = '';
+    if(p.quadrant && p.side){
+        const ICD_BY_QUAD = {
+            UO: {R:'C50.411', L:'C50.412', B:'C50.419'},
+            UI: {R:'C50.211', L:'C50.212', B:'C50.219'},
+            LO: {R:'C50.511', L:'C50.512', B:'C50.519'},
+            LI: {R:'C50.311', L:'C50.312', B:'C50.319'},
+            central: {R:'C50.111', L:'C50.112', B:'C50.119'},
+            overlapping: {R:'C50.811', L:'C50.812', B:'C50.819'}
+        };
+        if(p.T==='Tis') icd = 'D05.' + (p.quadrant==='central'?'81':p.quadrant==='overlapping'?'80':'82');
+        else icd = ICD_BY_QUAD[p.quadrant][p.side] || null;
+        const QUAD_LABEL = {UO:'外上',UI:'內上',LO:'外下',LI:'內下',central:'乳頭/乳暈下',overlapping:'跨象限'};
+        const SIDE_LABEL = {R:'右乳',L:'左乳',B:'雙側'};
+        icdSub = (SIDE_LABEL[p.side]||'') + ' ' + (QUAD_LABEL[p.quadrant]||'');
+    }
+    cards.push(_dashCard({
+        id:'icd', title:'ICD-10-CM',
+        value: icd,
+        subtitle: icd ? icdSub : '',
+        missing: icd ? null : '需側別 + 象限'
+    }));
+
+    // 9) 重大傷病 (Catastrophic Illness)
+    if(p.T && p.N && p.M){
+        let anat = '—';
+        try { anat = _ajccAnatomic(p.T,p.N,p.M) || '—'; } catch(e){}
+        const eligible = ['IIA','IIB','IIIA','IIIB','IIIC','IV'].includes(anat);
+        cards.push(_dashCard({
+            id:'catas', title:'重大傷病',
+            value: anat==='—' ? '—' : (eligible ? '✓ 符合' : '✗ 不符合'),
+            subtitle: anat==='—' ? '' : ('第 '+anat+' 期'),
+            cls: anat==='—' ? '' : (eligible ? 'low' : 'med')
+        }));
+    } else {
+        cards.push(_dashCard({ id:'catas', title:'重大傷病', missing:'需 T / N / M' }));
+    }
+
+    // 10) BSA / CrCl combined card
+    const h = +p.height, w = +p.weight, ageN=+p.age, scrN=+p.scr;
+    const bsa = (h>0&&w>0) ? Math.sqrt(h*w/3600) : null;
+    const crcl = (ageN>0&&w>0&&scrN>0) ? ((140-ageN)*w/(72*scrN))*(p.sex==='F'?0.85:1) : null;
+    if(bsa || crcl){
+        cards.push(_dashCard({
+            id:'bsa-crcl', title:'BSA / CrCl',
+            value: bsa ? (bsa.toFixed(2)+' m²') : '—',
+            subtitle: crcl ? ('CrCl '+crcl.toFixed(0)+' mL/min') : 'CrCl 需 age/weight/Cr'
+        }));
+    } else {
+        cards.push(_dashCard({ id:'bsa-crcl', title:'BSA / CrCl', missing:'需 身高/體重 (與 age/Cr)' }));
+    }
+
+    // 11) NCCN 對應入口
+    let nccnNode = '';
+    if(p.T && p.N && p.M){
+        let anat = '—';
+        try { anat = _ajccAnatomic(p.T,p.N,p.M) || '—'; } catch(e){}
+        if(p.M==='M1') nccnNode = 'BINV-Q (Stage IV / Recurrence)';
+        else if(['IIIA','IIIB','IIIC'].includes(anat)) nccnNode = 'BINV-3 (LABC / Neoadjuvant)';
+        else if(['IIA','IIB','IB','IA'].includes(anat)) nccnNode = 'BINV-2 (Early-stage)';
+        else if(anat==='0') nccnNode = 'DCIS-1';
+    }
+    cards.push(_dashCard({
+        id:'nccn', title:'NCCN 流程入口',
+        value: nccnNode || '—',
+        subtitle: nccnNode ? '<a href="javascript:void(0)" onclick="event.stopPropagation();showPage(\'nccn\')" style="color:var(--accent,#0369a1);text-decoration:underline">→ 開啟 NCCN 流程圖</a>' : '',
+        missing: nccnNode ? null : '需 T / N / M'
+    }));
+
+    el.innerHTML = cards.join('');
+}
+
 function exportPatientWorkspace(){
     const data = JSON.stringify(_patient, null, 2);
     const blob = new Blob([data], {type:'application/json'});
