@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>PREDICT 驗證測試</title>
+<style>
+  body{font-family:'Microsoft JhengHei',sans-serif;padding:1.5rem;max-width:1100px;margin:0 auto;color:#1f2937;background:#f8fafc}
+  h1{color:#0e7490;margin:0 0 .3rem}
+  .meta{color:#64748b;font-size:.85rem;margin-bottom:1.5rem}
+  .info{background:#eff6ff;border-left:3px solid #0369a1;padding:.7rem 1rem;border-radius:0 4px 4px 0;font-size:.88rem;margin-bottom:1rem;line-height:1.55}
+  table{width:100%;border-collapse:collapse;background:white;font-size:.82rem;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+  th,td{border:1px solid #e2e8f0;padding:.4rem .55rem;text-align:left;vertical-align:top}
+  th{background:#f1f5f9;color:#0e7490;font-weight:700;font-size:.78rem}
+  tbody td{font-size:.82rem}
+  input{width:100%;padding:.25rem .35rem;border:1px solid #cbd5e1;border-radius:3px;font-family:inherit;font-size:.82rem}
+  input.expected{background:#fef9c3;border-color:#eab308}
+  .ours{background:#dbeafe;font-weight:600;color:#0369a1}
+  .err-low{color:#16a34a;font-weight:700}
+  .err-mid{color:#b45309;font-weight:700}
+  .err-high{color:#b91c1c;font-weight:700}
+  button{padding:.5rem 1rem;background:#0369a1;color:white;border:0;border-radius:4px;font-weight:600;cursor:pointer;margin-right:.5rem}
+  button:hover{background:#075985}
+  .summary{margin-top:1rem;padding:.85rem;background:white;border:1px solid #e2e8f0;border-radius:4px;font-size:.88rem}
+  .pass{color:#16a34a}
+  .fail{color:#b91c1c}
+</style>
+</head>
+<body>
+
+<h1>🔬 PREDICT 驗證測試</h1>
+<div class="meta">本站 PREDICT v2.1/v2.3 vs NHS 官方輸出對照表</div>
+
+<div class="info">
+<strong>使用方式：</strong>
+<ol style="margin:.4rem 0 0 1.2rem;padding:0">
+<li>打開 <a href="https://breast.predict.nhs.uk/" target="_blank">NHS 官方 PREDICT</a></li>
+<li>逐一輸入下表 10 個 case 的「Inputs」</li>
+<li>把官方輸出的 5y / 10y / 15y 存活率填到「NHS 官方」欄位（黃色框）</li>
+<li>按 <strong>「跑本站計算」</strong> → 自動填入「本站結果」欄位 + 顯示誤差</li>
+<li>誤差 &lt; 2%（綠色）= 通過；&gt; 5%（紅色）= 需校正係數</li>
+</ol>
+</div>
+
+<table>
+<thead><tr>
+  <th>#</th><th>Age</th><th>Mode</th><th>Size</th><th>N+</th><th>Grade</th><th>ER</th><th>HER2</th><th>Ki67</th>
+  <th colspan="3">無治療：5y / 10y / 15y</th>
+  <th colspan="3">+Endocrine 5y</th>
+</tr>
+<tr style="background:#fef9c3">
+  <th colspan="9" style="text-align:center">Inputs</th>
+  <th>NHS</th><th>本站</th><th>誤差%</th>
+  <th>NHS</th><th>本站</th><th>誤差%</th>
+</tr>
+</thead>
+<tbody id="cases">
+<!-- Auto-populated by JS -->
+</tbody>
+</table>
+
+<div style="margin-top:1rem;text-align:center">
+<button onclick="runValidation()">▶ 跑本站計算</button>
+<button onclick="exportResults()">⬇ 匯出比對結果 CSV</button>
+</div>
+
+<div id="summary" class="summary" style="display:none"></div>
+
+<script>
+// ────────────────────────────────────────────────────────────
+// PREDICT v2.1 implementation (synced with index.html)
+// ────────────────────────────────────────────────────────────
+function _predictScreenVal(mode){
+    if(mode === 'screen') return 1;
+    if(mode === 'other')  return 0.204;
+    return 0;
+}
+function _predictPI_ERpos(age, size, nodes, grade, mode, her2, ki67){
+    const age_mfp1 = Math.pow(age/10, -2) - 0.0287449295;
+    const age_mfp2 = Math.pow(age/10, -2) * Math.log(age/10) - 0.0510121013;
+    const size_mfp = Math.log(Math.max(size,1)/100) + 1.545233938;
+    const nodes_mfp = Math.log((nodes+1)/10) + 1.387566896;
+    const screen = _predictScreenVal(mode);
+    const her2_beta = (her2==='pos') ? 0.2413 : (her2==='neg' ? -0.0762 : 0);
+    const ki67_beta = (ki67==='pos') ? 0.14904 : (ki67==='neg' ? -0.11333 : 0);
+    return 34.53642*age_mfp1 + -34.20342*age_mfp2 + 0.7530729*size_mfp
+         + 0.7060723*nodes_mfp + 0.746655*grade + -0.22763366*screen
+         + her2_beta + ki67_beta;
+}
+function _predictPI_ERneg(age, size, nodes, grade, mode, her2){
+    const age_mfp = age - 56.3254902;
+    const size_mfp = Math.pow(Math.max(size,1)/100, 0.5) - 0.5090456276;
+    const nodes_mfp = Math.log((nodes+1)/10) + 1.086916249;
+    const grade_val = (grade === 2 || grade === 3) ? 1 : 0;
+    const her2_beta = (her2==='pos') ? 0.2413 : (her2==='neg' ? -0.0762 : 0);
+    return 0.0089827*age_mfp + 2.093446*size_mfp + 0.6260541*nodes_mfp
+         + 1.129091*grade_val + her2_beta;
+}
+function _predictMI(age){
+    return 0.0698252 * (Math.pow(age/10, 2) - 34.23391957);
+}
+function _predictBaseCumBC(t, isERpos){
+    if(isERpos){
+        return Math.exp(0.7424402 - 7.527762/Math.sqrt(t) - 1.812513*Math.log(t)/Math.sqrt(t));
+    } else {
+        return Math.exp(-1.156036 + 0.4707332/(t*t) - 3.51355/t);
+    }
+}
+function _predictBaseCumOC(t){
+    return Math.exp(-6.052919 + 1.079863*Math.log(t) + 0.3255321*Math.sqrt(t));
+}
+
+function computeSurv(c, txLogHRSum){
+    const isERpos = c.er === 'pos';
+    const pi = isERpos
+        ? _predictPI_ERpos(c.age, c.size, c.nodes, c.grade, c.mode, c.her2, c.ki67)
+        : _predictPI_ERneg(c.age, c.size, c.nodes, c.grade, c.mode, c.her2);
+    const mi = _predictMI(c.age);
+    const cumBC0 = [], cumOC0 = [];
+    for(let t=1; t<=15; t++){
+        cumBC0.push(_predictBaseCumBC(t, isERpos));
+        cumOC0.push(_predictBaseCumOC(t));
+    }
+    const annBC0 = cumBC0.map((v,i)=> i===0 ? v : v - cumBC0[i-1]);
+    const annOC0 = cumOC0.map((v,i)=> i===0 ? v : v - cumOC0[i-1]);
+    const annBC = annBC0.map(v => v * Math.exp(pi + txLogHRSum));
+    const annOC = annOC0.map(v => v * Math.exp(mi));
+    let cBC=0, cOC=0;
+    const sAll=[];
+    for(let i=0; i<15; i++){
+        cBC += annBC[i]; cOC += annOC[i];
+        sAll.push(Math.exp(-cBC) * Math.exp(-cOC));
+    }
+    return sAll; // index 0 = year 1, index 4 = year 5, etc.
+}
+
+// ────────────────────────────────────────────────────────────
+// Test cases (10 representative breast cancer scenarios)
+// ────────────────────────────────────────────────────────────
+const CASES = [
+    {age:45, mode:'symp', size:15, nodes:0, grade:1, er:'pos', her2:'neg', ki67:'neg', name:'Luminal A 早期 (T1cN0G1)'},
+    {age:55, mode:'symp', size:25, nodes:0, grade:2, er:'pos', her2:'neg', ki67:'neg', name:'Luminal A 一般 (T2N0G2)'},
+    {age:50, mode:'symp', size:20, nodes:1, grade:2, er:'pos', her2:'neg', ki67:'neg', name:'T2N1 ER+ HER2-'},
+    {age:65, mode:'symp', size:30, nodes:0, grade:3, er:'pos', her2:'neg', ki67:'pos', name:'Luminal B 老年'},
+    {age:45, mode:'symp', size:25, nodes:2, grade:3, er:'pos', her2:'neg', ki67:'pos', name:'ER+ Grade 3 N+'},
+    {age:50, mode:'symp', size:20, nodes:0, grade:2, er:'pos', her2:'pos', ki67:'neg', name:'HR+/HER2+ 早期'},
+    {age:55, mode:'symp', size:30, nodes:1, grade:3, er:'pos', her2:'pos', ki67:'pos', name:'HR+/HER2+ aggressive'},
+    {age:50, mode:'symp', size:25, nodes:0, grade:3, er:'neg', her2:'neg', ki67:'pos', name:'TNBC 早期'},
+    {age:60, mode:'symp', size:35, nodes:3, grade:3, er:'neg', her2:'neg', ki67:'pos', name:'TNBC 局部晚期'},
+    {age:70, mode:'symp', size:30, nodes:1, grade:2, er:'neg', her2:'pos', ki67:'pos', name:'HER2+ 高齡'}
+];
+
+// Hazard ratios (NHS v2.1 published)
+const HR = {
+    endocrine: -0.3857,    // ER+ only
+    chemo_gen2: -0.248,
+    chemo_gen3: -0.446,
+    trastuzumab: -0.3567,  // HER2+ only
+    bisphosphonate: -0.198
+};
+
+// ────────────────────────────────────────────────────────────
+// UI rendering
+// ────────────────────────────────────────────────────────────
+function renderTable(){
+    let html = '';
+    CASES.forEach((c, i) => {
+        html += `<tr id="row-${i}">
+            <td><strong>${i+1}</strong><br><span style="color:#64748b;font-size:.7rem">${c.name}</span></td>
+            <td>${c.age}</td><td>${c.mode}</td><td>${c.size}</td>
+            <td>${c.nodes}</td><td>G${c.grade}</td>
+            <td>${c.er}</td><td>${c.her2}</td><td>${c.ki67}</td>
+            <td><input class="expected" id="nhs-no-5-${i}" placeholder="NHS"></td>
+            <td class="ours" id="ours-no-5-${i}">—</td>
+            <td id="err-no-5-${i}">—</td>
+            <td><input class="expected" id="nhs-endo-5-${i}" placeholder="NHS"></td>
+            <td class="ours" id="ours-endo-5-${i}">—</td>
+            <td id="err-endo-5-${i}">—</td>
+        </tr>`;
+    });
+    document.getElementById('cases').innerHTML = html;
+}
+
+function runValidation(){
+    let pass=0, fail=0, missing=0;
+    CASES.forEach((c, i) => {
+        const isERpos = c.er === 'pos';
+        const noTx = computeSurv(c, 0);
+        const withEndo = computeSurv(c, isERpos ? HR.endocrine : 0);
+        // 5-year survival from no-treatment (index 4)
+        const ours5_no = (noTx[4] * 100).toFixed(1);
+        const ours5_endo = (withEndo[4] * 100).toFixed(1);
+        document.getElementById(`ours-no-5-${i}`).textContent = ours5_no + '%';
+        document.getElementById(`ours-endo-5-${i}`).textContent = ours5_endo + '%';
+        // Compute error if NHS values entered
+        const nhs_no_in = document.getElementById(`nhs-no-5-${i}`).value;
+        const nhs_endo_in = document.getElementById(`nhs-endo-5-${i}`).value;
+        if(nhs_no_in){
+            const nhsVal = parseFloat(nhs_no_in);
+            const err = ((parseFloat(ours5_no) - nhsVal) / nhsVal * 100);
+            const errEl = document.getElementById(`err-no-5-${i}`);
+            errEl.textContent = (err>=0?'+':'') + err.toFixed(1) + '%';
+            errEl.className = Math.abs(err)<2 ? 'err-low' : Math.abs(err)<5 ? 'err-mid' : 'err-high';
+            if(Math.abs(err) < 5) pass++; else fail++;
+        } else { missing++; }
+        if(nhs_endo_in){
+            const nhsVal = parseFloat(nhs_endo_in);
+            const err = ((parseFloat(ours5_endo) - nhsVal) / nhsVal * 100);
+            const errEl = document.getElementById(`err-endo-5-${i}`);
+            errEl.textContent = (err>=0?'+':'') + err.toFixed(1) + '%';
+            errEl.className = Math.abs(err)<2 ? 'err-low' : Math.abs(err)<5 ? 'err-mid' : 'err-high';
+        }
+    });
+    const sum = document.getElementById('summary');
+    sum.style.display = '';
+    sum.innerHTML = `
+        <strong>本次計算結果：</strong><br>
+        • 已比對 case 數：${pass + fail} / ${CASES.length * 2}（每個 case 兩個情境）<br>
+        • <span class="pass">通過 (誤差 &lt;5%)：${pass}</span> &nbsp; <span class="fail">未通過：${fail}</span><br>
+        • 缺 NHS 值：${missing}<br>
+        ${pass+fail===0 ? '<span style="color:#b45309">⚠️ 請先到 NHS PREDICT 官網填入官方值再跑驗證。</span>' : ''}
+    `;
+}
+
+function exportResults(){
+    const headers = ['Case','Age','Mode','Size','Nodes','Grade','ER','HER2','Ki67','NHS_no_tx','Ours_no_tx','Err_no_tx','NHS_endo','Ours_endo','Err_endo'];
+    const rows = [headers.join(',')];
+    CASES.forEach((c, i) => {
+        const noVals = [
+            document.getElementById(`nhs-no-5-${i}`).value || '',
+            document.getElementById(`ours-no-5-${i}`).textContent.replace('%',''),
+            document.getElementById(`err-no-5-${i}`).textContent
+        ];
+        const endoVals = [
+            document.getElementById(`nhs-endo-5-${i}`).value || '',
+            document.getElementById(`ours-endo-5-${i}`).textContent.replace('%',''),
+            document.getElementById(`err-endo-5-${i}`).textContent
+        ];
+        rows.push([i+1, c.age, c.mode, c.size, c.nodes, c.grade, c.er, c.her2, c.ki67, ...noVals, ...endoVals].join(','));
+    });
+    const csv = '﻿' + rows.join('\n');
+    const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'predict_validation_' + new Date().toISOString().slice(0,10) + '.csv';
+    document.body.appendChild(a); a.click(); a.remove();
+}
+
+renderTable();
+</script>
+</body>
+</html>
