@@ -3490,45 +3490,44 @@ function calcAJCCPrognostic(){
     const m=document.getElementById('ajccM').value;
     const grade=document.getElementById('ajccGrade').value;
     const er=document.getElementById('ajccER').value;
+    const pr=document.getElementById('ajccPR').value;
     const her2=document.getElementById('ajccHER2').value;
     const el=document.getElementById('ajccPrognosticResult');
-    // Need at least Grade + ER + HER2 to compute (PR optional)
-    if(!t||!n||!m||!grade||!er||!her2){el.innerHTML='';return;}
-    const anat=_ajccAnatomic(t,n,m);
-    if(['IV','0','?'].includes(anat)){el.innerHTML='';return;}
-    const g=parseInt(grade), erPos=er==='+', her2Pos=her2==='+';
-    const seq=['IA','IB','IIA','IIB','IIIA','IIIB','IIIC'];
-    const ai=seq.indexOf(anat);
-    let pi=ai, mod='neutral', noteExtra='';
-    // Pathologic-only: Oncotype DX RS<11 for ER+/HER2-/N0 → IA
-    const oncotype=document.getElementById('ajccOncotype').value;
-    const tg=_ajccTGroup(t), ng=_ajccNGroup(n);
-    const oncotypeQualifies = _ajccMode==='pathologic' && oncotype==='lt11'
-                              && erPos && !her2Pos && ng===0
-                              && (tg===1||tg===2);
-    if(oncotypeQualifies){
-        pi=0; mod='favorable';
-        noteExtra=' · Oncotype RS&lt;11 降階至 IA';
-    } else if(her2Pos||(erPos&&g<=2)){
-        pi=Math.max(0,ai-1); mod='favorable';
-    } else if(!erPos&&!her2Pos&&g===3){
-        pi=Math.min(seq.length-1,ai+1); mod='unfavorable';
+    // AJCC v9 prognostic stage requires: T/N/M + Grade + ER + PR + HER2 (all 7 fields)
+    if(!t||!n||!m||!grade||!er||!pr||!her2){
+        el.innerHTML='<div style="color:var(--text-muted);font-size:.78rem;padding:.4rem">請完整填入 T/N/M、Grade、ER、PR、HER2 七項才能查 AJCC v9 預後期別。</div>';
+        return;
     }
-    const prog=seq[pi];
-    const changed=prog!==anat;
-    const modeLabel = _ajccMode==='clinical' ? '臨床' : '病理';
-    const mCfg={
-        favorable:{col:'#166534',icon:'&#9660;',lbl:'有利因子'},
-        unfavorable:{col:'#b91c1c',icon:'&#9650;',lbl:'不利因子'},
-        neutral:{col:'#475569',icon:'&#8596;',lbl:'中性'}
-    };
-    const mc=mCfg[mod];
-    el.innerHTML=`<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:.55rem .75rem;font-size:.82rem">
-        <span style="font-weight:600;color:#1d4ed8">${modeLabel}預後期別：</span>
-        <span style="font-weight:800;font-size:1.1rem;color:${mc.col}">第 ${prog} 期</span>
-        ${changed?`<span style="color:${mc.col};margin-left:.3rem;font-size:.78rem">（解剖 ${anat} → ${modeLabel}預後 ${prog}）</span>`:''}
-        <span style="color:${mc.col};margin-left:.5rem">${mc.icon} ${mc.lbl}</span>
-        <div style="color:var(--text-faint);font-size:.72rem;margin-top:.2rem">&#9432; 簡化估算${noteExtra}；完整對照請參閱 AJCC 第八版 Table 48.2 (clinical) / 48.4 (pathologic)</div>
+    const anat=_ajccAnatomic(t,n,m);
+    if(anat==='?'){
+        el.innerHTML='<div class="ajcc-error">T/N/M 組合不合理，無法判定預後期別。</div>';
+        return;
+    }
+    // Convert HER2 'low' to 'neg' for v9 lookup (HER2-low not separately staged in v9)
+    const her2Use = (her2 === 'low') ? '-' : her2;
+    const prog = _ajcc9Lookup(t, n, m, grade, er, pr, her2Use);
+    if(prog === null){
+        el.innerHTML=`<div class="ajcc-error">查表失敗：T=${t}, N=${n}, M=${m}, G${grade}, ER${er}, PR${pr}, HER2${her2}。請確認此組合是否屬於 AJCC v9 標準範圍。</div>`;
+        return;
+    }
+    const changed = prog !== anat;
+    // Determine direction
+    const seq=['0','IA','IB','IIA','IIB','IIIA','IIIB','IIIC','IV'];
+    const ai = seq.indexOf(anat), pi = seq.indexOf(prog);
+    let mod = 'neutral', icon = '&#8596;', col = '#475569';
+    if(pi < ai){ mod='favorable'; icon='&#9660;'; col='#166534'; }
+    else if(pi > ai){ mod='unfavorable'; icon='&#9650;'; col='#b91c1c'; }
+    el.innerHTML=`<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:.6rem .8rem;font-size:.82rem">
+        <div style="margin-bottom:.3rem">
+          <span style="font-weight:600;color:#1d4ed8">AJCC v9 (2023) 預後期別：</span>
+          <span style="font-weight:800;font-size:1.1rem;color:${col}">第 ${prog} 期</span>
+          ${changed?`<span style="color:${col};margin-left:.3rem;font-size:.78rem">（解剖 ${anat} → 預後 ${prog}）</span>`:'<span style="color:${col};margin-left:.3rem;font-size:.78rem">（與解剖期別相同）</span>'}
+          <span style="color:${col};margin-left:.5rem">${icon}</span>
+        </div>
+        <div style="color:var(--text-muted);font-size:.74rem;margin-top:.3rem;line-height:1.5">
+            &#9432; <strong>查表來源</strong>：AJCC 第 9 版 (2023) 1440-entry 完整 lookup table（台北榮總參考實作）。<br>
+            輸入：T=${t}, N=${n}, M=${m}, G${grade}, ER${er}, PR${pr}, HER2${her2}。
+        </div>
     </div>`;
 }
 
@@ -5113,6 +5112,28 @@ function renderAddOns(){
 // ── Util ──
 function esc(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDetail();closeEdit()}});
+</script>
+
+<!-- AJCC v9 (2023) lookup table: 1440-entry pre-computed pathologic prognostic stage -->
+<!-- Source: breast_cancer_tools/data/ajcc_staging_9_reference_lookup.json (Taiwan VGH reference) -->
+<script src="data/ajcc9_lookup.js"></script>
+
+<script>
+// ── AJCC v9 lookup wrapper ──
+function _ajcc9Lookup(t, n, m, grade, er, pr, her2){
+    if(typeof AJCC9_LOOKUP === 'undefined') return null;
+    if(m === 'M1') return 'IV';
+    // Reduce T1mi/T1a/T1b/T1c → T1; T4a/b/c/d → T4
+    const tCat = t.startsWith('T1') ? 'T1' : (t.startsWith('T4') ? 'T4' : t);
+    // Reduce N2a/b → N2; N3a/b/c → N3
+    const nCat = n.startsWith('N2') ? 'N2' : (n.startsWith('N3') ? 'N3' : n);
+    if(!grade || !er || !pr || !her2) return null;
+    const erC = (er === '+') ? 'P' : 'N';
+    const prC = (pr === '+') ? 'P' : 'N';
+    const her2C = (her2 === '+') ? 'P' : 'N';
+    const key = `${tCat}|${nCat}|${m}|${grade}|${her2C}|${erC}|${prC}`;
+    return AJCC9_LOOKUP[key] || null;
+}
 </script>
 
 <script>
