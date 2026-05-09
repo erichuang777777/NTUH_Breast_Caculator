@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>PREDICT 自動驗證</title>
+<style>
+  body{font-family:'Microsoft JhengHei',sans-serif;padding:1.2rem;max-width:1200px;margin:0 auto;color:#1f2937;background:#f8fafc}
+  h1{color:#0e7490;margin:0 0 .3rem}
+  .meta{color:#64748b;font-size:.85rem;margin-bottom:1rem}
+  .summary{padding:1rem 1.2rem;background:white;border:2px solid #06b6d4;border-radius:8px;margin-bottom:1rem;font-size:.95rem;line-height:1.6}
+  .summary.fail{border-color:#dc2626;background:#fef2f2}
+  .summary.pass{border-color:#16a34a;background:#f0fdf4}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.6rem;margin-top:.6rem}
+  .stat{background:#f8fafc;padding:.55rem .8rem;border-radius:6px;border-left:3px solid #06b6d4}
+  .stat-label{font-size:.7rem;color:#64748b;text-transform:uppercase;font-weight:600}
+  .stat-value{font-size:1.4rem;font-weight:700;color:#0e7490}
+  .stat.pass{border-left-color:#16a34a}.stat.pass .stat-value{color:#16a34a}
+  .stat.fail{border-left-color:#dc2626}.stat.fail .stat-value{color:#dc2626}
+  table{width:100%;border-collapse:collapse;background:white;font-size:.78rem}
+  th,td{border:1px solid #e2e8f0;padding:.3rem .5rem;text-align:left;vertical-align:top}
+  th{background:#f1f5f9;color:#0e7490;font-weight:700;position:sticky;top:0}
+  td.pass-cell{background:#f0fdf4}
+  td.fail-cell{background:#fef2f2;color:#b91c1c;font-weight:600}
+  .err{font-family:monospace}
+  button{padding:.5rem 1rem;background:#0369a1;color:white;border:0;border-radius:5px;font-weight:600;cursor:pointer;margin-right:.5rem}
+  button:hover{background:#075985}
+  .control-bar{margin:1rem 0;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+  input[type=number]{padding:.3rem .5rem;border:1px solid #cbd5e1;border-radius:4px;width:5rem}
+  .progress{height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden;margin-top:.5rem}
+  .progress-bar{height:100%;background:#06b6d4;transition:width .2s}
+</style>
+</head>
+<body>
+
+<h1>🔬 PREDICT 自動驗證</h1>
+<div class="meta">JS PREDICT vs R nhs.predict reference snapshot</div>
+
+<div class="control-bar">
+  <button onclick="runValidation()">▶ 跑全部驗證</button>
+  容許誤差: ±<input type="number" id="tolerance" value="2" min="0.1" step="0.1">% (絕對值)
+  <button onclick="exportFails()">⬇ 匯出失敗 case CSV</button>
+</div>
+
+<div id="summary"></div>
+<div id="progress" style="display:none">
+  <div>進度: <span id="progressText">0 / 0</span></div>
+  <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+</div>
+
+<div id="results" style="margin-top:1rem;max-height:600px;overflow-y:auto"></div>
+
+<script>
+function _predictScreenVal(mode){
+    if(mode === 'screen') return 1;
+    if(mode === 'other')  return 0.204;
+    return 0;
+}
+function _predictPI_ERpos(age, size, nodes, grade, mode, her2, ki67){
+    const age_mfp1 = Math.pow(age/10, -2) - 0.0287449295;
+    const age_mfp2 = Math.pow(age/10, -2) * Math.log(age/10) - 0.0510121013;
+    const size_mfp = Math.log(Math.max(size,1)/100) + 1.545233938;
+    const nodes_mfp = Math.log((nodes+1)/10) + 1.387566896;
+    const screen = _predictScreenVal(mode);
+    const her2_beta = (her2==='pos') ? 0.2413 : (her2==='neg' ? -0.0762 : 0);
+    const ki67_beta = (ki67==='pos') ? 0.14904 : (ki67==='neg' ? -0.11333 : 0);
+    return 34.53642*age_mfp1 + -34.20342*age_mfp2 + 0.7530729*size_mfp
+         + 0.7060723*nodes_mfp + 0.746655*grade + -0.22763366*screen
+         + her2_beta + ki67_beta;
+}
+function _predictPI_ERneg(age, size, nodes, grade, mode, her2){
+    const age_mfp = age - 56.3254902;
+    const size_mfp = Math.pow(Math.max(size,1)/100, 0.5) - 0.5090456276;
+    const nodes_mfp = Math.log((nodes+1)/10) + 1.086916249;
+    const grade_val = (grade === 2 || grade === 3) ? 1 : 0;
+    const her2_beta = (her2==='pos') ? 0.2413 : (her2==='neg' ? -0.0762 : 0);
+    return 0.0089827*age_mfp + 2.093446*size_mfp + 0.6260541*nodes_mfp
+         + 1.129091*grade_val + her2_beta;
+}
+function _predictMI(age){
+    return 0.0698252 * (Math.pow(age/10, 2) - 34.23391957);
+}
+function _predictBaseCumBC(t, isERpos){
+    if(isERpos){
+        return Math.exp(0.7424402 - 7.527762/Math.sqrt(t) - 1.812513*Math.log(t)/Math.sqrt(t));
+    } else {
+        return Math.exp(-1.156036 + 0.4707332/(t*t) - 3.51355/t);
+    }
+}
+function _predictBaseCumOC(t){
+    return Math.exp(-6.052919 + 1.079863*Math.log(t) + 0.3255321*Math.sqrt(t));
+}
+
+function computeJSPredict(c){
+    const isERpos = c.er === 'pos';
+    const pi = isERpos
+        ? _predictPI_ERpos(c.age, c.size, c.nodes, c.grade, c.mode, c.her2, c.ki67)
+        : _predictPI_ERneg(c.age, c.size, c.nodes, c.grade, c.mode, c.her2);
+    const mi = _predictMI(c.age);
+    let txLogHR = 0;
+    if(isERpos && c.tx_endo > 0)       txLogHR += -0.3857;
+    if(c.tx_chemo === 2)               txLogHR += -0.248;
+    else if(c.tx_chemo === 3)          txLogHR += -0.446;
+    if(c.her2==='pos' && c.tx_trast)   txLogHR += -0.3567;
+    if(c.tx_bis)                       txLogHR += -0.198;
+    const cumBC0 = [], cumOC0 = [];
+    for(let t=1; t<=15; t++){
+        cumBC0.push(_predictBaseCumBC(t, isERpos));
+        cumOC0.push(_predictBaseCumOC(t));
+    }
+    const annBC0 = cumBC0.map((v,i)=> i===0 ? v : v - cumBC0[i-1]);
+    const annOC0 = cumOC0.map((v,i)=> i===0 ? v : v - cumOC0[i-1]);
+    const annBC = annBC0.map(v => v * Math.exp(pi + txLogHR));
+    const annOC = annOC0.map(v => v * Math.exp(mi));
+    let cBC=0, cOC=0;
+    const sAll=[];
+    for(let i=0; i<15; i++){
+        cBC += annBC[i]; cOC += annOC[i];
+        sAll.push(Math.exp(-cBC) * Math.exp(-cOC) * 100);
+    }
+    return { surv_5y: sAll[4], surv_10y: sAll[9], surv_15y: sAll[14] };
+}
+
+let SNAPSHOT = null;
+let RESULTS = [];
+
+async function loadSnapshot(){
+    const resp = await fetch('predict_snapshot.json');
+    SNAPSHOT = await resp.json();
+    document.getElementById('summary').innerHTML = `
+      <div class="summary">
+        ✅ Snapshot 載入完成（${SNAPSHOT.count} cases）<br>
+        <span style="color:#64748b;font-size:.85rem">來源：${SNAPSHOT.source}<br>產生時間：${SNAPSHOT.generated_at}</span>
+      </div>`;
+}
+
+async function runValidation(){
+    if(!SNAPSHOT){ await loadSnapshot(); }
+    const tol = parseFloat(document.getElementById('tolerance').value) || 2;
+    document.getElementById('progress').style.display = '';
+    RESULTS = [];
+    let pass5=0, pass10=0, pass15=0, fail5=0, fail10=0, fail15=0;
+    let maxErr5=0, maxErr10=0, maxErr15=0;
+    let sumErr5=0, sumErr10=0, sumErr15=0;
+    const total = SNAPSHOT.cases.length;
+    for(let i=0; i<total; i++){
+        const c = SNAPSHOT.cases[i];
+        const js = computeJSPredict(c);
+        const e5 = js.surv_5y - c.surv_5y;
+        const e10 = js.surv_10y - c.surv_10y;
+        const e15 = js.surv_15y - c.surv_15y;
+        const p5 = Math.abs(e5) <= tol;
+        const p10 = Math.abs(e10) <= tol;
+        const p15 = Math.abs(e15) <= tol;
+        if(p5) pass5++; else fail5++;
+        if(p10) pass10++; else fail10++;
+        if(p15) pass15++; else fail15++;
+        maxErr5 = Math.max(maxErr5, Math.abs(e5));
+        maxErr10 = Math.max(maxErr10, Math.abs(e10));
+        maxErr15 = Math.max(maxErr15, Math.abs(e15));
+        sumErr5 += Math.abs(e5);
+        sumErr10 += Math.abs(e10);
+        sumErr15 += Math.abs(e15);
+        RESULTS.push({c, js, e5, e10, e15, p5, p10, p15});
+        if(i % 100 === 0){
+            document.getElementById('progressText').textContent = `${i} / ${total}`;
+            document.getElementById('progressBar').style.width = (i/total*100) + '%';
+            await new Promise(r => setTimeout(r, 0));
+        }
+    }
+    document.getElementById('progressBar').style.width = '100%';
+    document.getElementById('progressText').textContent = `${total} / ${total} ✓`;
+    const allPass = (fail5 + fail10 + fail15) === 0;
+    document.getElementById('summary').innerHTML = `
+      <div class="summary ${allPass ? 'pass' : 'fail'}">
+        ${allPass ? '✅' : '❌'} <strong>容許誤差 ±${tol}%（絕對）</strong>
+        <div class="stats">
+          <div class="stat ${pass5/total > 0.95 ? 'pass' : 'fail'}">
+            <div class="stat-label">5 年通過率</div>
+            <div class="stat-value">${(pass5/total*100).toFixed(1)}%</div>
+            <div style="font-size:.72rem;color:#64748b">${pass5} pass / ${fail5} fail</div>
+          </div>
+          <div class="stat ${pass10/total > 0.95 ? 'pass' : 'fail'}">
+            <div class="stat-label">10 年通過率</div>
+            <div class="stat-value">${(pass10/total*100).toFixed(1)}%</div>
+            <div style="font-size:.72rem;color:#64748b">${pass10} pass / ${fail10} fail</div>
+          </div>
+          <div class="stat ${pass15/total > 0.95 ? 'pass' : 'fail'}">
+            <div class="stat-label">15 年通過率</div>
+            <div class="stat-value">${(pass15/total*100).toFixed(1)}%</div>
+            <div style="font-size:.72rem;color:#64748b">${pass15} pass / ${fail15} fail</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">5y 平均/最大誤差</div>
+            <div class="stat-value" style="font-size:.95rem">${(sumErr5/total).toFixed(2)} / ${maxErr5.toFixed(2)}</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">10y 平均/最大誤差</div>
+            <div class="stat-value" style="font-size:.95rem">${(sumErr10/total).toFixed(2)} / ${maxErr10.toFixed(2)}</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">15y 平均/最大誤差</div>
+            <div class="stat-value" style="font-size:.95rem">${(sumErr15/total).toFixed(2)} / ${maxErr15.toFixed(2)}</div>
+          </div>
+        </div>
+      </div>
+    `;
+    const fails = RESULTS.filter(r => !r.p5 || !r.p10 || !r.p15);
+    if(fails.length === 0){
+        document.getElementById('results').innerHTML = '<div class="summary pass">🎉 所有 case 都在容許誤差內！</div>';
+    } else {
+        let html = `<div style="margin-bottom:.5rem;color:#b91c1c;font-weight:600">失敗 case (${fails.length} / ${total}, 顯示前 100)</div>`;
+        html += '<table><thead><tr><th>ID</th><th>輸入</th><th>5y JS</th><th>5y R</th><th>5y err</th><th>10y JS</th><th>10y R</th><th>10y err</th><th>15y JS</th><th>15y R</th><th>15y err</th></tr></thead><tbody>';
+        fails.slice(0, 100).forEach(r => {
+            const c = r.c;
+            const inp = `Age ${c.age}, T ${c.size}mm, N ${c.nodes}, G${c.grade}, ER${c.er}, HER2${c.her2}, Ki67${c.ki67}, Tx ${c.tx_endo}/${c.tx_chemo}/${c.tx_trast}/${c.tx_bis}`;
+            html += `<tr>
+                <td>${c.id}</td>
+                <td style="font-size:.7rem">${inp}</td>
+                <td>${r.js.surv_5y.toFixed(2)}</td><td>${c.surv_5y.toFixed(2)}</td>
+                <td class="${r.p5 ? 'pass-cell' : 'fail-cell'} err">${r.e5.toFixed(2)}</td>
+                <td>${r.js.surv_10y.toFixed(2)}</td><td>${c.surv_10y.toFixed(2)}</td>
+                <td class="${r.p10 ? 'pass-cell' : 'fail-cell'} err">${r.e10.toFixed(2)}</td>
+                <td>${r.js.surv_15y.toFixed(2)}</td><td>${c.surv_15y.toFixed(2)}</td>
+                <td class="${r.p15 ? 'pass-cell' : 'fail-cell'} err">${r.e15.toFixed(2)}</td>
+            </tr>`;
+        });
+        html += '</tbody></table>';
+        document.getElementById('results').innerHTML = html;
+    }
+}
+
+function exportFails(){
+    if(!RESULTS.length){ alert('請先跑驗證'); return; }
+    const fails = RESULTS.filter(r => !r.p5 || !r.p10 || !r.p15);
+    const headers = ['id','age','size','nodes','grade','er','her2','ki67','tx_endo','tx_chemo','tx_trast','tx_bis','js_5y','r_5y','err_5y','js_10y','r_10y','err_10y','js_15y','r_15y','err_15y'];
+    const rows = [headers.join(',')];
+    fails.forEach(r => {
+        const c = r.c;
+        rows.push([c.id,c.age,c.size,c.nodes,c.grade,c.er,c.her2,c.ki67,c.tx_endo,c.tx_chemo,c.tx_trast,c.tx_bis,
+                   r.js.surv_5y.toFixed(2),c.surv_5y.toFixed(2),r.e5.toFixed(2),
+                   r.js.surv_10y.toFixed(2),c.surv_10y.toFixed(2),r.e10.toFixed(2),
+                   r.js.surv_15y.toFixed(2),c.surv_15y.toFixed(2),r.e15.toFixed(2)].join(','));
+    });
+    const blob = new Blob(['﻿'+rows.join('\n')], {type:'text/csv;charset=utf-8'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'predict_fails_'+new Date().toISOString().slice(0,10)+'.csv';
+    document.body.appendChild(a); a.click(); a.remove();
+}
+
+loadSnapshot();
+</script>
+</body>
+</html>

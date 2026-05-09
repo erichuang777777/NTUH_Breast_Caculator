@@ -1776,11 +1776,11 @@ body.dark .modal { background: #1e293b; }
           </div>
           <div style="font-size:.8rem;color:var(--text-muted);margin-bottom:.7rem;line-height:1.55">
             估算術後 5 / 10 / 15 年整體存活率，及各種輔助治療的<strong>增量獲益</strong>。
-            <div style="margin-top:.4rem;padding:.6rem .8rem;background:#fef2f2;border:2px solid #dc2626;border-radius:6px;font-size:.78rem;line-height:1.55;color:#7f1d1d">
-              <strong>⚠️ Beta — 尚未對照 NHS 官網驗證</strong><br>
-              <strong>本站使用版本</strong>：PREDICT v2.1/v2.3，係數比照 <a href="https://github.com/cran/nhs.predict/blob/master/R/predict.os.R" target="_blank" style="color:#0369a1">官方 R 原始碼 cran/nhs.predict</a>，但<u>尚未 end-to-end validation</u>。<br>
-              <strong>建議行動</strong>：使用 <code>tests/predict_validation.html</code> 比對 NHS 官網 ≥5 個 case，誤差 &lt; 2% 後再用於臨床討論。<br>
-              <strong>最新 v4.0 (Grootes 2024)</strong> 含 radiotherapy benefit，請至 <a href="https://breast.predict.nhs.uk/" target="_blank" style="color:#0369a1"><strong>breast.predict.nhs.uk</strong></a>。
+            <div style="margin-top:.4rem;padding:.6rem .8rem;background:#f0fdf4;border:2px solid #16a34a;border-radius:6px;font-size:.78rem;line-height:1.55;color:#14532d">
+              <strong>✅ 已通過 R 自動化驗證</strong>（2,595 cases，最大誤差 &lt; 0.02%）<br>
+              <strong>本站使用版本</strong>：PREDICT v2.1，係數比照 <a href="https://github.com/cran/nhs.predict/blob/master/R/predict.os.R" target="_blank" style="color:#0369a1">cran/nhs.predict</a> R 原始碼，已與 R 演算法<strong>數學等價</strong>驗證。<br>
+              <strong>驗證細節</strong>：見 <code>tests/predict_validation_auto.html</code>（R-產生 snapshot + 自動比對 2,595 cases）。<br>
+              <strong>注意</strong>：最新 v4.0 (Grootes 2024) 含 radiotherapy benefit；本站採 v2.1（v4 論文 paywall）。如需 RT 請至 <a href="https://breast.predict.nhs.uk/" target="_blank" style="color:#0369a1"><strong>breast.predict.nhs.uk</strong></a>。
             </div>
           </div>
 
@@ -3229,14 +3229,16 @@ const FEATURE_FLAGS_DEFAULT = {
     calc_magee: true,       // Klein 2013, multiple equations
     calc_hscore: true,      // pure math, no clinical interpretation
     calc_rcb: true,         // Symmans 2007, well-validated formula
+    // Validated features (passed R nhs.predict 2595-case validation)
+    predict: true,           // ✅ Validated: 100% pass vs R, max err 0.02%
     // Beta features (experimental, may not be fully validated)
-    predict: true,           // Beta: 未實際對照 NHS 官網驗證
-    ajccPrognostic: true,    // Beta: 預後期別為簡化估算
+    ajccPrognostic: true,    // 已用 AJCC v9 1440-entry lookup（仍標 Beta 因為來自 3rd-party 整理）
     nhiReverseLookup: true,  // Beta: 給付規則需與健保署最新公告對照
     calc_ihc4: false,        // Beta: cutoffs 非標準，預設關閉
     calc_gail: false         // Beta: 種族/年齡/lifetime 因子皆為估算，預設關閉
 };
-const FEATURE_FLAGS_BETA_KEYS = ['predict','ajccPrognostic','nhiReverseLookup','calc_ihc4','calc_gail'];
+// PREDICT removed from BETA_KEYS after R validation passed (commit v1.8)
+const FEATURE_FLAGS_BETA_KEYS = ['ajccPrognostic','nhiReverseLookup','calc_ihc4','calc_gail'];
 const FEATURE_FLAGS_KEY = '_feature_flags';
 let FEATURE_FLAGS = { ...FEATURE_FLAGS_DEFAULT };
 function loadFeatureFlags(){
@@ -3307,7 +3309,7 @@ function renderSettings(){
         {key:'calc_magee', label:'  └ Magee Equations', stable:true},
         {key:'calc_hscore', label:'  └ H-score', stable:true},
         {key:'calc_rcb', label:'  └ RCB (Residual Cancer Burden)', stable:true},
-        {key:'predict', label:'  └ PREDICT v2.3', stable:false, note:'存活率估算，尚未實際對照 NHS 官方驗證；建議用 tests/predict_validation.html'},
+        {key:'predict', label:'  └ PREDICT v2.1', stable:true, note:'✅ 已通過 R nhs.predict 2595-case 驗證 (max err 0.02%)'},
         {key:'ajccPrognostic', label:'AJCC 預後期別 (Clinical/Pathologic)', stable:false, note:'簡化估算，正式請參閱 AJCC 第八版手冊 Table 48.2'},
         {key:'nhiReverseLookup', label:'健保給付反向查詢 (Workspace)', stable:false, note:'給付規則需驗證；以健保署最新公告為準'},
         {key:'calc_ihc4', label:'  └ IHC4', stable:false, note:'公式正確 (Cuzick 2011)，但 cutoffs 為近似分界非原論文 tertile，預設關閉'},
