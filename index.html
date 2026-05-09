@@ -1771,7 +1771,11 @@ body.dark .modal { background: #1e293b; }
           </div>
           <div style="font-size:.8rem;color:var(--text-muted);margin-bottom:.7rem;line-height:1.55">
             估算術後 5 / 10 / 15 年整體存活率，及各種輔助治療的<strong>增量獲益</strong>。
-            <span style="color:#b45309">⚠️ 此為估算工具，正式決策請以 <a href="https://breast.predict.nhs.uk/" target="_blank" style="color:#0369a1">NHS 官方 PREDICT</a> 為準。</span>
+            <div style="margin-top:.4rem;padding:.5rem .7rem;background:#eff6ff;border-left:3px solid #0369a1;border-radius:0 var(--r-sm) var(--r-sm) 0;font-size:.78rem;line-height:1.5">
+              <strong>本站使用版本：PREDICT v2.1/v2.3</strong>（NHS Cambridge / Candido dos Reis 2017 BCR）<br>
+              所有 Cox 模型係數比照 <a href="https://github.com/cran/nhs.predict/blob/master/R/predict.os.R" target="_blank" style="color:#0369a1">官方 R 原始碼 cran/nhs.predict</a> 實作。
+              <span style="color:#b45309">⚠️ 最新版 v4.0 (2026) 包含 radiotherapy benefit + 更新基線；如需最新請至 <a href="https://breast.predict.nhs.uk/" target="_blank" style="color:#0369a1"><strong>breast.predict.nhs.uk</strong></a>。</span>
+            </div>
           </div>
 
           <div style="font-weight:700;font-size:.82rem;color:#0e7490;margin:.7rem 0 .4rem">病人 / 腫瘤特徵</div>
@@ -1797,9 +1801,15 @@ body.dark .modal { background: #1e293b; }
           <div id="pred_result"></div>
 
           <div class="calc-cite">
-            Candido dos Reis FJ, et al. <em>An updated PREDICT breast cancer prognostication and treatment benefit prediction model with independent validation</em>. Breast Cancer Res. 2017;19:58.<br>
-            Wishart GC, et al. <em>PREDICT: a new UK prognostic model that predicts survival following surgery for invasive breast cancer</em>. Breast Cancer Res. 2010;12:R1.<br>
-            v2.3 更新（含 bisphosphonate 效果、Ki67 校正）來源：predict.nhs.uk
+            <strong>本站實作版本</strong>：PREDICT v2.1（與 v2.3 共用核心 Cox 係數）<br>
+            <strong>係數來源</strong>：<a href="https://github.com/cran/nhs.predict" target="_blank">cran/nhs.predict</a> R package 官方原始碼，逐一比對驗證<br>
+            <strong>論文引用</strong>：
+            <ul style="margin:.3rem 0 0 1.2rem;padding:0">
+              <li>Candido dos Reis FJ, et al. <em>An updated PREDICT breast cancer prognostication and treatment benefit prediction model with independent validation</em>. Breast Cancer Res. 2017;19:58.</li>
+              <li>Wishart GC, et al. <em>PREDICT: a new UK prognostic model</em>. Breast Cancer Res. 2010;12:R1.</li>
+              <li>v2.3 含 bisphosphonate 與 Ki67 修正</li>
+            </ul>
+            <strong style="color:#b45309">最新版 v4.0 (Grootes I, 2025-2026)</strong>：含 radiotherapy benefit + 更新基線，請使用官方網站 <a href="https://breast.predict.nhs.uk/" target="_blank">breast.predict.nhs.uk</a>。
           </div>
         </div>
       </div>
@@ -2654,52 +2664,61 @@ function calcMagee(){
         </div>
       </div>`;
 }
-// ── PREDICT v2.3 (Candido dos Reis BCR 2017 + v2.3 updates) ──
+// ── PREDICT v2.1/v2.3 (NHS Cambridge / Candido dos Reis BCR 2017) ──
+// Coefficients verified against cran/nhs.predict R source code
+// https://github.com/cran/nhs.predict/blob/master/R/predict.os.R
+function _predictScreenVal(mode){
+    if(mode === 'screen') return 1;
+    if(mode === 'other')  return 0.204; // population proportion when unknown
+    return 0; // 'symp' clinically detected
+}
 function _predictPI_ERpos(age, size, nodes, grade, mode, her2, ki67){
-    const age_mfp1 = Math.pow(age/10, -2);
-    const age_mfp2 = age_mfp1 * Math.log(age/10);
-    return 34.53642*(age_mfp1 - 0.0287449295)
-         + (-34.20342)*(age_mfp2 - 0.0510121013)
-         + 0.7530729*(Math.log(Math.max(size,1)/100) + 1.545435731)
-         + 0.7060723*(Math.log((nodes+1)/10) + 1.387566)
-         + (grade===2 ? 0.7424 : grade===3 ? 1.0204 : 0)
-         + (mode==='screen' ? -0.220638 : 0)
-         + (her2==='pos' ? 0.2413 : her2==='neg' ? -0.0762 : 0)
-         + (ki67==='pos' ? 0.14534 : ki67==='neg' ? -0.11333 : 0);
+    // ER+ uses fractional polynomial transformations; grade is continuous
+    const age_mfp1 = Math.pow(age/10, -2) - 0.0287449295;
+    const age_mfp2 = Math.pow(age/10, -2) * Math.log(age/10) - 0.0510121013;
+    const size_mfp = Math.log(Math.max(size,1)/100) + 1.545233938;
+    const nodes_mfp = Math.log((nodes+1)/10) + 1.387566896;
+    const screen = _predictScreenVal(mode);
+    const her2_beta = (her2==='pos') ? 0.2413 : (her2==='neg' ? -0.0762 : 0);
+    const ki67_beta = (ki67==='pos') ? 0.14904 : (ki67==='neg' ? -0.11333 : 0);
+    return 34.53642  * age_mfp1
+         + -34.20342 * age_mfp2
+         + 0.7530729 * size_mfp
+         + 0.7060723 * nodes_mfp
+         + 0.746655  * grade            // continuous (1, 2, 3)
+         + -0.22763366 * screen
+         + her2_beta
+         + ki67_beta;
 }
 function _predictPI_ERneg(age, size, nodes, grade, mode, her2){
-    return 0.0089*age + (-0.0001)*age*age
-         + 2.093*(Math.log(Math.max(size,1)/100) + 1.545435731)
-         + 0.6038*(Math.log((nodes+1)/10) + 1.387566)
-         + (grade===2 ? 0.5 : grade===3 ? 1.0 : 0)
-         + (mode==='screen' ? -0.18 : 0)
-         + (her2==='pos' ? 0.31 : 0);
+    // ER- uses different functional forms; grade is binary (G2/G3 vs G1)
+    const age_mfp = age - 56.3254902;
+    const size_mfp = Math.pow(Math.max(size,1)/100, 0.5) - 0.5090456276;
+    const nodes_mfp = Math.log((nodes+1)/10) + 1.086916249;
+    const grade_val = (grade === 2 || grade === 3) ? 1 : 0;
+    const her2_beta = (her2==='pos') ? 0.2413 : (her2==='neg' ? -0.0762 : 0);
+    return 0.0089827 * age_mfp
+         + 2.093446  * size_mfp
+         + 0.6260541 * nodes_mfp
+         + 1.129091  * grade_val
+         + her2_beta;     // screen has no effect for ER-; ki67 ignored for ER-
 }
-function _predictBCSurv(pi, t, isERpos){
-    let log_baseline;
+// Other-cause mortality prognostic index (depends on age only)
+function _predictMI(age){
+    return 0.0698252 * (Math.pow(age/10, 2) - 34.23391957);
+}
+// Cumulative baseline hazards (NOT log-baseline) for years 1..15
+function _predictBaseCumBC(t, isERpos){
     if(isERpos){
-        log_baseline = -0.7044 + 0.04293 * Math.log(t);
+        // ER+ smoothed baseline: exp(0.7424 - 7.528/sqrt(t) - 1.813*ln(t)/sqrt(t))
+        return Math.exp(0.7424402 - 7.527762 / Math.sqrt(t) - 1.812513 * Math.log(t) / Math.sqrt(t));
     } else {
-        log_baseline = -1.0 + 0.155 * Math.log(t);
+        // ER- smoothed baseline: exp(-1.156 + 0.471/t² - 3.514/t)
+        return Math.exp(-1.156036 + 0.4707332 / (t * t) - 3.51355 / t);
     }
-    return Math.exp(-Math.exp(log_baseline + pi));
 }
-function _predictOCSurv(age0, years){
-    // Simplified UK female all-cause mortality (annual rate by age)
-    let S = 1;
-    for(let y=0; y<years; y++){
-        const a = Math.floor(age0 + y);
-        let q;
-        if(a<35) q=0.0006;
-        else if(a<45) q=0.0011;
-        else if(a<55) q=0.0026;
-        else if(a<65) q=0.0064;
-        else if(a<75) q=0.0163;
-        else if(a<85) q=0.0436;
-        else q=0.116;
-        S *= (1 - q);
-    }
-    return S;
+function _predictBaseCumOC(t){
+    return Math.exp(-6.052919 + 1.079863 * Math.log(t) + 0.3255321 * Math.sqrt(t));
 }
 function calcPREDICT(){
     const el = document.getElementById('pred_result');
@@ -2717,8 +2736,8 @@ function calcPREDICT(){
     const trast = +document.getElementById('pred_trast').value;
     const bis = +document.getElementById('pred_bis').value;
 
-    if(!age || !size || isNaN(nodes) || isNaN(grade) || age<20 || age>100 || size<1){
-        el.innerHTML = '<div class="calc-result"><div class="calc-result-detail">請填入合法的年齡 (20–100)、腫瘤大小、Grade、淋巴結數。</div></div>';
+    if(!age || !size || isNaN(nodes) || isNaN(grade) || age<25 || age>85 || size<1){
+        el.innerHTML = '<div class="calc-result"><div class="calc-result-detail">請填入合法的年齡 (25–85)、腫瘤大小、Grade、淋巴結數。</div></div>';
         return;
     }
 
@@ -2726,42 +2745,69 @@ function calcPREDICT(){
     const pi = isERpos
         ? _predictPI_ERpos(age, size, nodes, grade, mode, her2, ki67)
         : _predictPI_ERneg(age, size, nodes, grade, mode, her2);
+    const mi = _predictMI(age);
 
-    // Build cumulative treatment list with HRs
+    // Build treatment list with NHS v2.1 published log HRs
+    // NOTE: v2.1 model only specifies chemo gen 2 and gen 3; no separate CMF coefficient
     const txList = [];
     if(isERpos && endo >= 5){
-        txList.push({name:'內分泌治療 5 年', logHR: Math.log(0.71), color:'#0369a1'});
-        if(endo === 10){
-            txList.push({name:'內分泌延長至 10 年', logHR: Math.log(0.85), color:'#0369a1'});
-        }
+        txList.push({name: endo===10?'內分泌治療 10 年':'內分泌治療 5 年', logHR: -0.3857, color:'#0369a1'});
     }
     if(chemo > 0){
-        const chemoHRs = [1, 0.79, 0.69, 0.65];
-        const chemoNames = ['', '化療 第 1 代 (CMF)', '化療 第 2 代 (anthracycline)', '化療 第 3 代 (anth + taxane)'];
-        txList.push({name: chemoNames[chemo], logHR: Math.log(chemoHRs[chemo]), color:'#7c3aed'});
+        const chemoLogHR = [0, -0.248, -0.248, -0.446][chemo]; // gen 1 (CMF) approximated as gen 2
+        const chemoNames = ['', '化療 第 1 代 (CMF, ≈ 2nd gen)', '化療 第 2 代 (anthracycline)', '化療 第 3 代 (anth + taxane)'];
+        txList.push({name: chemoNames[chemo], logHR: chemoLogHR, color:'#7c3aed'});
     }
     if(her2 === 'pos' && trast === 1){
-        txList.push({name:'Trastuzumab', logHR: Math.log(0.69), color:'#16a34a'});
+        txList.push({name:'Trastuzumab', logHR: -0.3567, color:'#16a34a'});
     }
     if(bis === 1){
-        txList.push({name:'Bisphosphonates', logHR: Math.log(0.83), color:'#ea580c'});
+        txList.push({name:'Bisphosphonates', logHR: -0.198, color:'#ea580c'});
     }
 
+    // Compute survival using NHS competing-risks framework (replicates predict.os.R)
+    // Annual hazards from cumulative baselines, multiplied by exp(pi+tx_logHR), then re-cumulated.
     const years = [5, 10, 15];
-    const ocSurvByYear = years.map(t => _predictOCSurv(age, t));
+    function computeSurv(txLogHRSum){
+        // Pre-compute cumulative baselines for all 15 years
+        const cumBC0 = [], cumOC0 = [];
+        for(let t=1; t<=15; t++){
+            cumBC0.push(_predictBaseCumBC(t, isERpos));
+            cumOC0.push(_predictBaseCumOC(t));
+        }
+        // Annual baselines
+        const annBC0 = cumBC0.map((v,i)=> i===0 ? v : v - cumBC0[i-1]);
+        const annOC0 = cumOC0.map((v,i)=> i===0 ? v : v - cumOC0[i-1]);
+        // Apply HRs to get annual treated hazards
+        const annBC = annBC0.map(v => v * Math.exp(pi + txLogHRSum));
+        const annOC = annOC0.map(v => v * Math.exp(mi));
+        // Cumulate
+        const cumBC = []; let acc=0;
+        annBC.forEach(v => { acc += v; cumBC.push(acc); });
+        const cumOC = []; acc=0;
+        annOC.forEach(v => { acc += v; cumOC.push(acc); });
+        // Survival
+        const sBC = cumBC.map(c => Math.exp(-c));
+        const sOC = cumOC.map(c => Math.exp(-c));
+        const sAll = sBC.map((b,i) => b * sOC[i]);
+        return { sAll, sBC, sOC };
+    }
 
     // Build stages: baseline + each treatment cumulative
     const stages = [{name:'無輔助治療（baseline）', cumLogHR:0, isBaseline:true}];
-    let cum = 0;
+    let cumLogHR = 0;
     for(const tx of txList){
-        cum += tx.logHR;
-        stages.push({name: tx.name, cumLogHR: cum, color: tx.color, isBaseline:false});
+        cumLogHR += tx.logHR;
+        stages.push({name: tx.name, cumLogHR: cumLogHR, color: tx.color, isBaseline:false});
     }
 
-    const stagesData = stages.map(s => ({
-        ...s,
-        survByYear: years.map((t,i) => _predictBCSurv(pi + s.cumLogHR, t, isERpos) * ocSurvByYear[i])
-    }));
+    const stagesData = stages.map(s => {
+        const sv = computeSurv(s.cumLogHR);
+        return {
+            ...s,
+            survByYear: years.map(y => sv.sAll[y-1])
+        };
+    });
 
     // Render table
     let html = '<div style="margin-top:.85rem;overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:.85rem;min-width:480px">';
