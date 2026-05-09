@@ -465,6 +465,31 @@ body {
   .nhi-elig-list { grid-template-columns: 1fr; }
 }
 
+/* ── Module Stability Badges ── */
+.module-badge { display: inline-block; font-size: .58rem; font-weight: 700; padding: 1px 5px; border-radius: 999px; vertical-align: middle; margin-left: .35rem; letter-spacing: .04em; text-transform: uppercase; }
+.module-badge.stable { background: #d1fae5; color: #065f46; }
+.module-badge.beta { background: #fef3c7; color: #92400e; }
+.module-badge.beta-inside { background: #fde68a; color: #92400e; }
+.dept-card .module-badge { position: absolute; top: .5rem; right: .55rem; }
+.dept-card { position: relative; }
+/* ── Issue Report ── */
+.report-btn { position: fixed; bottom: 1rem; left: 1rem; width: auto; height: 38px; border-radius: 19px; padding: 0 .9rem; border: 1px solid var(--border); background: var(--surface); cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.1); z-index: 100; font-size: .82rem; font-weight: 600; color: #b91c1c; display: flex; align-items: center; gap: .35rem; transition: .2s; font-family: inherit; }
+.report-btn:hover { background: #fef2f2; transform: translateY(-1px); }
+.issue-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 250; align-items: center; justify-content: center; padding: 1rem; }
+.issue-modal.show { display: flex; }
+.issue-card { background: var(--surface); border-radius: var(--r-lg); max-width: 540px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 1.3rem; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
+.issue-card h2 { font-size: 1.1rem; margin: 0 0 .5rem; color: #b91c1c; display: flex; align-items: center; justify-content: space-between; }
+.issue-card label { display: block; font-size: .82rem; font-weight: 600; color: var(--text-muted); margin: .85rem 0 .25rem; }
+.issue-card input, .issue-card select, .issue-card textarea { width: 100%; padding: .45rem .6rem; border: 1px solid var(--border); border-radius: var(--r-sm); background: var(--surface); color: var(--text); font-size: .88rem; font-family: inherit; box-sizing: border-box; }
+.issue-card textarea { min-height: 90px; resize: vertical; }
+.issue-card input:focus, .issue-card select:focus, .issue-card textarea:focus { outline: 2px solid #b91c1c; outline-offset: -1px; }
+.issue-info { background: #fef2f2; border-left: 3px solid #dc2626; padding: .55rem .75rem; font-size: .78rem; color: #7f1d1d; margin-top: .85rem; border-radius: 0 var(--r-sm) var(--r-sm) 0; line-height: 1.5; }
+.issue-buttons { display: flex; gap: .5rem; margin-top: 1rem; padding-top: .85rem; border-top: 1px solid var(--border); }
+.issue-buttons button { flex: 1; padding: .55rem; border-radius: var(--r-sm); border: 1px solid var(--border); cursor: pointer; font-weight: 600; font-size: .88rem; font-family: inherit; }
+.issue-buttons button.primary { background: #dc2626; color: white; border-color: #dc2626; }
+.issue-buttons button.primary:hover { background: #b91c1c; }
+body.dark .issue-card { background: #1e293b; }
+body.dark .issue-info { background: #450a0a; color: #fca5a5; }
 /* ── Floating Toggle Buttons ── */
 .float-toggle { position: fixed; right: 1rem; width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.1); z-index: 100; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: .2s; }
 .float-toggle:hover { transform: scale(1.08); }
@@ -2130,6 +2155,68 @@ body.dark .modal { background: #1e293b; }
   <!-- Floating Toggles -->
   <button class="float-toggle settings-toggle" onclick="showSettings()" title="設定 / 功能開關">&#9881;&#65039;</button>
   <button class="float-toggle dark-toggle" id="darkToggle" onclick="toggleDarkMode()" title="切換深色模式 (Ctrl+D)">&#127769;</button>
+  <button class="report-btn" onclick="openIssueReport()" title="回報問題 → GitHub Issue">&#128027; 回報問題</button>
+
+  <!-- Issue Report Modal -->
+  <div class="issue-modal" id="issueReportModal" onclick="if(event.target===this)closeIssueReport()">
+    <div class="issue-card">
+      <h2>&#128027; 回報問題或錯誤 <button class="close-x" onclick="closeIssueReport()" style="background:transparent;border:0;font-size:1.4rem;cursor:pointer;color:var(--text-muted);width:auto;padding:0 .3rem">&times;</button></h2>
+      <div style="font-size:.85rem;color:var(--text-muted);margin-bottom:.4rem;line-height:1.5">填完後送出會自動帶資料到 GitHub Issues 頁面，你按一下「Submit new issue」即完成。</div>
+
+      <label for="issue_module">哪個模組有問題？</label>
+      <select id="issue_module">
+        <option value="乳癌藥物清單">乳癌藥物清單</option>
+        <option value="住院化療計算">住院化療計算</option>
+        <option value="ICD 重大傷病">ICD 重大傷病</option>
+        <option value="手術自費清單">手術自費清單</option>
+        <option value="臨床試驗搜尋">臨床試驗搜尋</option>
+        <option value="NCCN 治療指引">NCCN 治療指引</option>
+        <option value="AJCC 分期">AJCC 分期</option>
+        <option value="計算機 - PREDICT">計算機 - PREDICT</option>
+        <option value="計算機 - CTS5">計算機 - CTS5</option>
+        <option value="計算機 - PEPI">計算機 - PEPI</option>
+        <option value="計算機 - NPI">計算機 - NPI</option>
+        <option value="計算機 - Magee">計算機 - Magee</option>
+        <option value="計算機 - IHC4">計算機 - IHC4</option>
+        <option value="計算機 - H-score">計算機 - H-score</option>
+        <option value="計算機 - RCB">計算機 - RCB</option>
+        <option value="計算機 - Gail">計算機 - Gail</option>
+        <option value="病人 Workspace">病人 Workspace</option>
+        <option value="健保給付反向查詢">健保給付反向查詢</option>
+        <option value="設定 / 功能開關">設定 / 功能開關</option>
+        <option value="其他 / 整體">其他 / 整體</option>
+      </select>
+
+      <label for="issue_type">問題類型</label>
+      <select id="issue_type">
+        <option value="bug">🐛 Bug — 功能壞掉或閃退</option>
+        <option value="incorrect">❗ 計算結果不正確</option>
+        <option value="ui">🎨 UI 顯示異常 / 排版跑掉</option>
+        <option value="performance">🐢 速度慢 / 卡頓</option>
+        <option value="feature">💡 功能建議 / 需求</option>
+        <option value="docs">📄 文字錯誤 / 翻譯問題</option>
+        <option value="other">❓ 其他</option>
+      </select>
+
+      <label for="issue_desc">詳細描述（包括如何重現）</label>
+      <textarea id="issue_desc" placeholder="例如：&#10;1. 我在 PREDICT 輸入 Age=55, Size=30, ...&#10;2. 按下計算&#10;3. 結果顯示 -120%（負值不合理）&#10;預期：應該是 0-100% 之間"></textarea>
+
+      <label for="issue_inputs">當時輸入的數值（選填，越詳細越好）</label>
+      <textarea id="issue_inputs" rows="2" placeholder="例如：Age 55, Size 30mm, Nodes 1, Grade 2, ER+, HER2-"></textarea>
+
+      <label><input type="checkbox" id="issue_include_state" checked style="width:auto;margin-right:.4rem"> 附上目前 Workspace 與設定狀態（協助除錯）</label>
+
+      <div class="issue-info">
+        &#9432; 你的回報會送到 <strong>GitHub 公開專案</strong>，請<strong>不要包含病人 PHI（姓名、病歷號、生日等）</strong>。<br>
+        系統會自動加上：瀏覽器版本、模組名稱、版本號、若勾選則含 Workspace 內容（你看得見再送出）。
+      </div>
+
+      <div class="issue-buttons">
+        <button onclick="closeIssueReport()">取消</button>
+        <button class="primary" onclick="submitIssue()">&rarr; 送到 GitHub</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Settings Modal -->
   <div class="settings-modal" id="settingsModal" onclick="if(event.target===this)hideSettings()">
@@ -2225,63 +2312,80 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 
 // ── Landing ──
+function _moduleBadge(beta_inside){
+    if(beta_inside) return '<span class="module-badge beta-inside">含 Beta</span>';
+    return '<span class="module-badge stable">Stable</span>';
+}
 async function loadLanding(){
     const r=await cachedFetch('/api/stats'); const d=await r.json();
     const F = FEATURE_FLAGS;
+    // Cards with Beta sub-features
+    const ajccHasBeta = F.ajccPrognostic;
+    const calcHasBeta = F.calc_ihc4 || F.calc_gail;  // predict is now stable
+    const wsHasBeta = F.nhiReverseLookup;
     let html = '';
     if(F.breast) html += `<div class="dept-card breast" onclick="showBreast()">
+            ${_moduleBadge(false)}
             <div style="font-size:2.5rem">&#127993;</div>
             <h2>乳癌</h2>
             <div class="count">${d.breast}</div>
             <div class="desc">藥物 | HER2/ER/PR 篩選 | 分期查詢</div>
         </div>`;
     if(F.inpatient) html += `<div class="dept-card inp" onclick="showInpatient()">
+            ${_moduleBadge(false)}
             <div style="font-size:2.5rem">&#127973;</div>
             <h2>住院化療計算</h2>
             <div class="count" style="color:#0d9488">BSA / AUC</div>
             <div class="desc">劑量計算 | 安瓿優化 | EC/TC/TCH/TCHP…</div>
         </div>`;
     if(F.icd) html += `<div class="dept-card icd" onclick="showICD()">
+            ${_moduleBadge(false)}
             <div style="font-size:2.5rem">&#128196;</div>
             <h2>ICD碼查詢</h2>
             <div class="count" style="color:#7c3aed">重大傷病</div>
             <div class="desc">C50 / D05 乳癌 ICD-10 碼 | 重大傷病申請</div>
         </div>`;
     if(F.surgery) html += `<div class="dept-card surg" onclick="showSurgery()">
+            ${_moduleBadge(false)}
             <div style="font-size:2.5rem">&#129657;</div>
             <h2>手術醫材清單</h2>
             <div class="count" style="color:#059669">自費項目</div>
             <div class="desc">乳癌手術自費品項 | 勾選計算總價 | 匯出</div>
         </div>`;
     if(F.trials) html += `<div class="dept-card trial" onclick="showTrials()">
+            ${_moduleBadge(false)}
             <div style="font-size:2.5rem">&#128203;</div>
             <h2>臨床試驗搜尋</h2>
             <div class="count" style="color:#0369a1">ClinicalTrials.gov</div>
             <div class="desc">乳癌相關臨床試驗 | 台灣招募中</div>
         </div>`;
     if(F.nccn) html += `<div class="dept-card nccn" onclick="window.open('nccn_viewer.html','_blank')">
+            ${_moduleBadge(false)}
             <div style="font-size:2.5rem">&#128214;</div>
             <h2>NCCN 治療指引</h2>
             <div class="count" style="color:#7c3aed">流程圖</div>
             <div class="desc">NCCN 乳癌 2026 指引 | 決策流程圖 | 跨頁參照</div>
         </div>`;
     if(F.ajcc) html += `<div class="dept-card ajcc" onclick="showAJCC()">
+            ${_moduleBadge(ajccHasBeta)}
             <div style="font-size:2.5rem">&#127981;</div>
             <h2>AJCC 分期</h2>
-            <div class="count" style="color:#b45309">第八版</div>
-            <div class="desc">T/N/M 解剖期別計算 | 預後因子 | 重大傷病申請</div>
+            <div class="count" style="color:#b45309">v8 anatomic + v9 lookup</div>
+            <div class="desc">解剖期別 (Stable) | 預後期別 (v9 1440 lookup, Beta)</div>
         </div>`;
     if(F.calculator) html += `<div class="dept-card calc" onclick="showCalc()">
+            ${_moduleBadge(calcHasBeta)}
             <div style="font-size:2.5rem">&#129518;</div>
             <h2>計算機 / Nomogram</h2>
-            <div class="count" style="color:#0e7490">CTS5 / PEPI / Magee${F.predict?' / PREDICT':''}</div>
-            <div class="desc">CTS5 | PEPI | Magee${F.predict?' | PREDICT v2.3':''} | 外連 IBIS/BCRAT</div>
+            <div class="count" style="color:#0e7490">PREDICT ✓ R-validated</div>
+            <div class="desc">PREDICT (Stable) | CTS5/PEPI/NPI/Magee/RCB (Stable) | IHC4/Gail (Beta)</div>
         </div>`;
     if(F.workspace) html += `<div class="dept-card ws" onclick="showWorkspace()">
+            ${_moduleBadge(wsHasBeta)}
             <div style="font-size:2.5rem">&#128100;</div>
             <h2>病人 Workspace</h2>
             <div class="count" style="color:#be185d">個案決策中心</div>
-            <div class="desc">輸入一次跨頁共享${F.nhiReverseLookup?' | 健保給付反向查詢':''} | 整合摘要</div>
+            <div class="desc">跨頁共享 (Stable)${F.nhiReverseLookup?' | NHI 反向查詢 (Beta)':''} | 整合摘要</div>
         </div>`;
     document.getElementById('landingCards').innerHTML = html;
 }
@@ -3342,6 +3446,90 @@ function renderSettings(){
 }
 // Init feature flags before any other code runs
 loadFeatureFlags();
+
+// ── Issue Report (GitHub Issues prefilled URL) ──
+const GITHUB_REPO = 'erichuang777777/NTUH_Breast_Caculator';
+const APP_VERSION = 'v1.8';
+
+function openIssueReport(){
+    document.getElementById('issueReportModal').classList.add('show');
+}
+function closeIssueReport(){
+    document.getElementById('issueReportModal').classList.remove('show');
+}
+function _buildIssueBody(module, type, desc, inputs, includeState){
+    const lines = [];
+    lines.push(`## 問題類型`);
+    lines.push(`${type}`);
+    lines.push(``);
+    lines.push(`## 模組`);
+    lines.push(`${module}`);
+    lines.push(``);
+    lines.push(`## 描述`);
+    lines.push(desc || '(未填)');
+    lines.push(``);
+    if(inputs && inputs.trim()){
+        lines.push(`## 當時輸入的數值`);
+        lines.push(inputs);
+        lines.push(``);
+    }
+    lines.push(`## 環境資訊`);
+    lines.push(`- App 版本: ${APP_VERSION}`);
+    lines.push(`- URL: ${window.location.href}`);
+    lines.push(`- User Agent: ${navigator.userAgent}`);
+    lines.push(`- 螢幕: ${screen.width} x ${screen.height}`);
+    lines.push(`- 時間: ${new Date().toISOString()}`);
+    lines.push(`- Dark Mode: ${document.body.classList.contains('dark') ? 'ON' : 'OFF'}`);
+    lines.push(``);
+    if(includeState){
+        try {
+            const safePatient = {...(_patient || {})};
+            // Strip potential PII even if user opted in
+            delete safePatient.mrn; delete safePatient.name;
+            lines.push(`## Workspace 狀態（已移除 MRN/姓名）`);
+            lines.push('```json');
+            lines.push(JSON.stringify(safePatient, null, 2));
+            lines.push('```');
+            lines.push(``);
+            lines.push(`## Feature Flags`);
+            lines.push('```json');
+            lines.push(JSON.stringify(FEATURE_FLAGS, null, 2));
+            lines.push('```');
+        } catch(e){
+            lines.push(`(failed to capture state: ${e.message})`);
+        }
+    }
+    return lines.join('\n');
+}
+function submitIssue(){
+    const module = document.getElementById('issue_module').value;
+    const typeEl = document.getElementById('issue_type');
+    const typeText = typeEl.options[typeEl.selectedIndex].text;
+    const typeVal = typeEl.value;
+    const desc = document.getElementById('issue_desc').value.trim();
+    const inputs = document.getElementById('issue_inputs').value.trim();
+    const includeState = document.getElementById('issue_include_state').checked;
+    if(!desc){ alert('請至少填「詳細描述」'); return; }
+    const title = `[${module}] ${typeText}`;
+    const body = _buildIssueBody(module, typeText, desc, inputs, includeState);
+    const labelMap = {bug:'bug', incorrect:'bug,clinical-accuracy', ui:'ui', performance:'performance', feature:'enhancement', docs:'documentation', other:'question'};
+    const labels = labelMap[typeVal] || 'bug';
+    const fullLabels = `${labels},user-report`;
+    let url = `https://github.com/${GITHUB_REPO}/issues/new` +
+              `?title=${encodeURIComponent(title)}` +
+              `&body=${encodeURIComponent(body)}` +
+              `&labels=${encodeURIComponent(fullLabels)}`;
+    // GitHub URL length limit ~8KB; truncate if needed
+    if(url.length > 7500){
+        const truncatedBody = body.substring(0, 4000) + '\n\n...(訊息過長已截斷，請手動補充)';
+        url = `https://github.com/${GITHUB_REPO}/issues/new` +
+              `?title=${encodeURIComponent(title)}` +
+              `&body=${encodeURIComponent(truncatedBody)}` +
+              `&labels=${encodeURIComponent(fullLabels)}`;
+    }
+    window.open(url, '_blank');
+    closeIssueReport();
+}
 
 // ── Dark Mode ──
 function toggleDarkMode(){
