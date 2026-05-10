@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NHI Oncology Admin</title>
+  <style>
+    :root {
+      --bg:#f7f8fa;
+      --surface:#ffffff;
+      --line:#d9dee7;
+      --text:#17202a;
+      --muted:#667085;
+      --accent:#14532d;
+      --danger:#991b1b;
+      --input:#fdfdfd;
+    }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    header { height:56px; display:flex; align-items:center; justify-content:space-between; padding:0 20px; border-bottom:1px solid var(--line); background:var(--surface); position:sticky; top:0; z-index:5; }
+    h1 { margin:0; font-size:18px; font-weight:750; letter-spacing:0; }
+    main { max-width:1180px; margin:0 auto; padding:20px; display:grid; gap:16px; }
+    section { background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:16px; }
+    h2 { margin:0 0 12px; font-size:15px; }
+    .muted { color:var(--muted); font-size:13px; }
+    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .grid.three { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    label { display:block; font-size:12px; color:var(--muted); font-weight:650; margin-bottom:5px; }
+    input, textarea, select { width:100%; border:1px solid var(--line); border-radius:6px; background:var(--input); padding:9px 10px; color:var(--text); font:inherit; font-size:14px; }
+    textarea { min-height:90px; resize:vertical; }
+    button { border:1px solid var(--line); border-radius:6px; background:#fff; color:var(--text); padding:8px 12px; font-weight:700; cursor:pointer; }
+    button.primary { background:var(--accent); border-color:var(--accent); color:white; }
+    button.danger { color:var(--danger); border-color:#fecaca; }
+    button:disabled { opacity:.45; cursor:not-allowed; }
+    .actions { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:12px; }
+    .status { min-height:20px; font-size:13px; color:var(--muted); }
+    .layout { display:grid; grid-template-columns:360px minmax(0,1fr); gap:16px; }
+    .list { border:1px solid var(--line); border-radius:6px; overflow:auto; max-height:520px; background:white; }
+    .row { display:grid; grid-template-columns:1fr auto; gap:8px; padding:10px 12px; border-bottom:1px solid var(--line); cursor:pointer; }
+    .row:last-child { border-bottom:0; }
+    .row:hover { background:#f2f4f7; }
+    .row strong { font-size:14px; }
+    .row span { font-size:12px; color:var(--muted); }
+    .pill { display:inline-flex; align-items:center; border:1px solid var(--line); border-radius:999px; padding:2px 8px; font-size:12px; color:var(--muted); white-space:nowrap; }
+    .hidden { display:none; }
+    @media (max-width:860px) {
+      header { padding:0 14px; }
+      main { padding:14px; }
+      .grid, .grid.three, .layout { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>後台管理</h1>
+    <div class="actions" style="margin:0">
+      <span class="muted" id="sessionLabel">未登入</span>
+      <button id="logoutBtn" class="hidden" onclick="logout()">登出</button>
+      <a class="muted" href="/">回前台</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="loginPanel">
+      <h2>Email 登入</h2>
+      <div class="grid">
+        <div>
+          <label>Email</label>
+          <input id="loginEmail" type="email" autocomplete="email" placeholder="admin@example.com">
+        </div>
+        <div>
+          <label>一次性代碼</label>
+          <input id="loginCode" inputmode="numeric" placeholder="6 位數代碼">
+        </div>
+      </div>
+      <div class="actions">
+        <button onclick="requestCode()">取得代碼</button>
+        <button class="primary" onclick="verifyCode()">登入</button>
+        <span class="status" id="loginStatus"></span>
+      </div>
+    </section>
+
+    <section id="adminPanel" class="hidden">
+      <h2>首頁藥價公告</h2>
+      <div class="grid">
+        <div>
+          <label>首頁標籤文字</label>
+          <input id="price_badge_text">
+        </div>
+        <div>
+          <label>資料來源</label>
+          <input id="price_source">
+        </div>
+        <div>
+          <label>公告日</label>
+          <input id="price_announcement_date" placeholder="115/03/23">
+        </div>
+        <div>
+          <label>生效日</label>
+          <input id="price_effective_date" placeholder="115/04/01">
+        </div>
+      </div>
+      <div style="margin-top:12px">
+        <label>更新規則</label>
+        <textarea id="price_update_schedule"></textarea>
+      </div>
+      <div class="actions">
+        <button class="primary" onclick="saveConfig()">儲存公告設定</button>
+        <span class="status" id="configStatus"></span>
+      </div>
+    </section>
+
+    <section id="drugPanel" class="hidden">
+      <h2>藥物管理</h2>
+      <div class="layout">
+        <div>
+          <div class="grid" style="grid-template-columns:1fr auto">
+            <div>
+              <label>搜尋</label>
+              <input id="drugSearch" placeholder="Generic 或 trade name" onkeydown="if(event.key==='Enter') loadDrugs()">
+            </div>
+            <div style="align-self:end">
+              <button onclick="loadDrugs()">查詢</button>
+            </div>
+          </div>
+          <div class="list" id="drugList" style="margin-top:12px"></div>
+        </div>
+        <div>
+          <input type="hidden" id="drug_id">
+          <div class="grid">
+            <div>
+              <label>Generic name</label>
+              <input id="generic_name">
+            </div>
+            <div>
+              <label>Trade names</label>
+              <input id="trade_names">
+            </div>
+            <div>
+              <label>科別</label>
+              <select id="specialty_id">
+                <option value="oncology_breast">乳癌</option>
+                <option value="oncology_heme">血液腫瘤</option>
+                <option value="oncology_other">其他腫瘤</option>
+              </select>
+            </div>
+            <div>
+              <label>Stage</label>
+              <input id="stage" placeholder="early,metastatic">
+            </div>
+            <div>
+              <label>Therapy line</label>
+              <input id="therapy_line" type="number" min="0" step="1">
+            </div>
+            <div>
+              <label>健保藥價</label>
+              <input id="nhi_price" type="number" min="0" step="0.01">
+            </div>
+            <div>
+              <label>價格單位</label>
+              <input id="price_unit" placeholder="100mg/vial">
+            </div>
+            <div>
+              <label>事前審查</label>
+              <select id="prior_auth">
+                <option value="false">否</option>
+                <option value="true">是</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid" style="margin-top:12px">
+            <div>
+              <label>Indication</label>
+              <textarea id="indication"></textarea>
+            </div>
+            <div>
+              <label>Conditions</label>
+              <textarea id="conditions"></textarea>
+            </div>
+          </div>
+          <div style="margin-top:12px">
+            <label>Dosage info JSON</label>
+            <textarea id="dosage_info" placeholder='{"type":"iv","dose_per_kg":6}'></textarea>
+          </div>
+          <div style="margin-top:12px">
+            <label>Clinical tags JSON</label>
+            <textarea id="clinical_tags" placeholder='{"her2":"positive"}'></textarea>
+          </div>
+          <div class="actions">
+            <button onclick="newDrug()">新增空白</button>
+            <button class="primary" onclick="saveDrug()">儲存藥物</button>
+            <button class="danger" onclick="deleteDrug()">刪除藥物</button>
+            <span class="status" id="drugStatus"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+<script>
+const api = async (url, opts={}) => {
+  const res = await fetch(url, {
+    credentials:'include',
+    headers:{'Content-Type':'application/json', ...(opts.headers || {})},
+    ...opts
+  });
+  const data = await res.json().catch(()=>({}));
+  if(!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+  return data;
+};
+
+function setStatus(id, text){ document.getElementById(id).textContent = text || ''; }
+
+async function checkSession(){
+  try{
+    const data = await api('/api/admin/session');
+    showAdmin(data.email);
+  }catch(e){
+    showLogin();
+  }
+}
+
+function showAdmin(email){
+  document.getElementById('sessionLabel').textContent = email;
+  document.getElementById('logoutBtn').classList.remove('hidden');
+  document.getElementById('loginPanel').classList.add('hidden');
+  document.getElementById('adminPanel').classList.remove('hidden');
+  document.getElementById('drugPanel').classList.remove('hidden');
+  loadConfig();
+  loadDrugs();
+}
+
+function showLogin(){
+  document.getElementById('sessionLabel').textContent = '未登入';
+  document.getElementById('logoutBtn').classList.add('hidden');
+  document.getElementById('loginPanel').classList.remove('hidden');
+  document.getElementById('adminPanel').classList.add('hidden');
+  document.getElementById('drugPanel').classList.add('hidden');
+}
+
+async function requestCode(){
+  try{
+    const email = document.getElementById('loginEmail').value.trim();
+    const data = await api('/api/admin/login/start', {method:'POST', body:JSON.stringify({email})});
+    setStatus('loginStatus', data.dev_code ? `本機代碼：${data.dev_code}` : data.message);
+  }catch(e){ setStatus('loginStatus', e.message); }
+}
+
+async function verifyCode(){
+  try{
+    const email = document.getElementById('loginEmail').value.trim();
+    const code = document.getElementById('loginCode').value.trim();
+    const data = await api('/api/admin/login/verify', {method:'POST', body:JSON.stringify({email, code})});
+    showAdmin(data.email);
+  }catch(e){ setStatus('loginStatus', e.message); }
+}
+
+async function logout(){
+  await api('/api/admin/logout', {method:'POST'}).catch(()=>{});
+  showLogin();
+}
+
+async function loadConfig(){
+  try{
+    const cfg = await api('/api/config');
+    ['price_badge_text','price_source','price_announcement_date','price_effective_date','price_update_schedule'].forEach(k=>{
+      document.getElementById(k).value = cfg[k] || '';
+    });
+  }catch(e){ setStatus('configStatus', e.message); }
+}
+
+async function saveConfig(){
+  try{
+    const body = {};
+    ['price_badge_text','price_source','price_announcement_date','price_effective_date','price_update_schedule'].forEach(k=>{
+      body[k] = document.getElementById(k).value;
+    });
+    await api('/api/admin/config', {method:'PUT', body:JSON.stringify(body)});
+    setStatus('configStatus', '已儲存');
+  }catch(e){ setStatus('configStatus', e.message); }
+}
+
+async function loadDrugs(){
+  try{
+    const q = encodeURIComponent(document.getElementById('drugSearch').value.trim());
+    const rows = await api('/api/drugs' + (q ? `?q=${q}` : ''));
+    const list = document.getElementById('drugList');
+    list.innerHTML = rows.map(d => `<div class="row" onclick="selectDrug(${d.id})">
+      <div><strong>${esc(d.generic_name || '')}</strong><br><span>${esc(d.trade_names || '')}</span></div>
+      <span class="pill">${esc(d.specialty_id || '')}</span>
+    </div>`).join('') || '<div class="row"><span>沒有資料</span></div>';
+  }catch(e){ setStatus('drugStatus', e.message); }
+}
+
+async function selectDrug(id){
+  try{
+    const d = await api('/api/drug/' + id);
+    setDrugForm(d);
+  }catch(e){ setStatus('drugStatus', e.message); }
+}
+
+function setDrugForm(d={}){
+  document.getElementById('drug_id').value = d.id || '';
+  document.getElementById('generic_name').value = d.generic_name || '';
+  document.getElementById('trade_names').value = d.trade_names || '';
+  document.getElementById('specialty_id').value = d.specialty_id || 'oncology_breast';
+  document.getElementById('stage').value = d.stage || '';
+  document.getElementById('therapy_line').value = d.therapy_line ?? '';
+  document.getElementById('nhi_price').value = d.nhi_price ?? '';
+  document.getElementById('price_unit').value = d.price_unit || '';
+  document.getElementById('prior_auth').value = d.prior_auth ? 'true' : 'false';
+  document.getElementById('indication').value = d.indication || '';
+  document.getElementById('conditions').value = d.conditions || '';
+  document.getElementById('dosage_info').value = d.dosage_info || '';
+  const tags = typeof d.clinical_tags === 'string' ? d.clinical_tags : JSON.stringify(d.clinical_tags || {}, null, 2);
+  document.getElementById('clinical_tags').value = tags === '{}' ? '' : tags;
+  setStatus('drugStatus', d.id ? `已載入 ID ${d.id}` : '新增模式');
+}
+
+function newDrug(){ setDrugForm({}); }
+
+function collectDrug(){
+  let tags = document.getElementById('clinical_tags').value.trim();
+  if(tags){
+    try{ tags = JSON.parse(tags); }catch(e){ throw new Error('Clinical tags 必須是合法 JSON'); }
+  }
+  return {
+    generic_name:document.getElementById('generic_name').value.trim(),
+    trade_names:document.getElementById('trade_names').value.trim(),
+    specialty_id:document.getElementById('specialty_id').value,
+    stage:document.getElementById('stage').value.trim(),
+    therapy_line:document.getElementById('therapy_line').value,
+    nhi_price:document.getElementById('nhi_price').value,
+    price_unit:document.getElementById('price_unit').value.trim(),
+    prior_auth:document.getElementById('prior_auth').value === 'true',
+    indication:document.getElementById('indication').value,
+    conditions:document.getElementById('conditions').value,
+    dosage_info:document.getElementById('dosage_info').value,
+    clinical_tags:tags || ''
+  };
+}
+
+async function saveDrug(){
+  try{
+    const id = document.getElementById('drug_id').value;
+    const body = collectDrug();
+    if(id) await api('/api/drug/' + id, {method:'PUT', body:JSON.stringify(body)});
+    else {
+      const data = await api('/api/drugs', {method:'POST', body:JSON.stringify(body)});
+      document.getElementById('drug_id').value = data.id;
+    }
+    setStatus('drugStatus', '已儲存');
+    loadDrugs();
+  }catch(e){ setStatus('drugStatus', e.message); }
+}
+
+async function deleteDrug(){
+  const id = document.getElementById('drug_id').value;
+  if(!id) return setStatus('drugStatus', '尚未選取藥物');
+  if(!confirm(`刪除藥物 ID ${id}？`)) return;
+  try{
+    await api('/api/drug/' + id, {method:'DELETE'});
+    newDrug();
+    setStatus('drugStatus', '已刪除');
+    loadDrugs();
+  }catch(e){ setStatus('drugStatus', e.message); }
+}
+
+function esc(s){
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+checkSession();
+</script>
+</body>
+</html>

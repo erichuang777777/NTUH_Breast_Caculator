@@ -2,6 +2,18 @@
   publish = "."
 
 [[redirects]]
+  from = "/nccn_viewer.html"
+  to = "/index.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/NCCN_Breast_KG/*"
+  to = "/index.html"
+  status = 404
+  force = true
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200

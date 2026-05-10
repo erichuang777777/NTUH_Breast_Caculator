@@ -13,6 +13,9 @@ import urllib.request
 import urllib.error
 import time
 import socketserver
+import os
+import secrets
+import hashlib
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from concurrent.futures import ThreadPoolExecutor
 
@@ -25,11 +28,71 @@ from datetime import datetime
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 
 DB_PATH = Path(__file__).parent / "nhi_drug_coverage.db"
+FRONTEND_PATH = Path(__file__).parent / "index.html"
+ADMIN_FRONTEND_PATH = Path(__file__).parent / "admin.html"
+
+APP_CONFIG_DEFAULTS = {
+    "price_announcement_date": "115/03/23",
+    "price_effective_date": "115/04/01",
+    "price_source": "健保署公告 PDF",
+    "price_badge_text": "藥價公告 115/03/23｜生效 115/04/01",
+    "price_update_schedule": "每月23日抓取健保署公告 PDF；單一藥物更新僅作補查或院內價追蹤",
+}
+
+ADMIN_LOGIN_CODES = {}
+ADMIN_SESSIONS = {}
+ADMIN_SESSION_SECONDS = 8 * 60 * 60
+
+
+def _norm_email(email):
+    return (email or "").strip().lower()
+
+
+def _sha(text):
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def init_app_tables(conn):
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS app_config (
+            key TEXT PRIMARY KEY,
+            value TEXT NOT NULL,
+            updated_at TEXT NOT NULL
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS admin_users (
+            email TEXT PRIMARY KEY,
+            role TEXT NOT NULL DEFAULT 'admin',
+            active INTEGER NOT NULL DEFAULT 1,
+            created_at TEXT NOT NULL
+        )
+    """)
+    now = datetime.now().isoformat(timespec="seconds")
+    for key, value in APP_CONFIG_DEFAULTS.items():
+        conn.execute(
+            "INSERT OR IGNORE INTO app_config (key, value, updated_at) VALUES (?, ?, ?)",
+            (key, value, now),
+        )
+    env_emails = [e.strip().lower() for e in os.environ.get("ADMIN_EMAILS", "").split(",") if e.strip()]
+    for email in env_emails:
+        conn.execute(
+            "INSERT OR IGNORE INTO admin_users (email, role, active, created_at) VALUES (?, 'admin', 1, ?)",
+            (email, now),
+        )
+    conn.commit()
+
+
+def get_app_config(conn):
+    rows = conn.execute("SELECT key, value FROM app_config").fetchall()
+    cfg = {r["key"]: r["value"] for r in rows}
+    return {**APP_CONFIG_DEFAULTS, **cfg}
 
 
 def get_db():
     conn = sqlite3.connect(str(DB_PATH))
     conn.row_factory = sqlite3.Row
+    init_app_tables(conn)
     # 自動補欄位（相容舊資料庫）
     cols = [r[1] for r in conn.execute('PRAGMA table_info(drugs)').fetchall()]
     if 'drug_image_url' not in cols:
@@ -1353,7 +1416,7 @@ function showDownloads(){
                 <tr style="border-bottom:1px solid #eee"><td style="padding:0.5rem"><strong>健保藥品給付規定</strong></td>
                     <td style="padding:0.5rem;color:#666">115/03/23 版本</td></tr>
                 <tr style="border-bottom:1px solid #eee"><td style="padding:0.5rem"><strong>健保藥價</strong></td>
-                    <td style="padding:0.5rem;color:#666">115 年藥品支付價格（115/04/01 生效）</td></tr>
+                    <td style="padding:0.5rem;color:#666">115/03/23 健保署 PDF 公告；115/04/01 生效</td></tr>
                 <tr style="border-bottom:1px solid #eee"><td style="padding:0.5rem"><strong>台大醫院藥價</strong></td>
                     <td style="padding:0.5rem;color:#666">2024/12/05 更新，66 品項</td></tr>
                 <tr style="border-bottom:1px solid #eee"><td style="padding:0.5rem"><strong>SQLite 資料庫</strong></td>
@@ -1495,7 +1558,7 @@ function calcCost(drugId){
             <div class="cost-line"><span>每週期次數</span><span>${adminsPerCycle} 次 / ${cycleDays} 天</span></div>
             <div class="cost-line"><span>每週期費用</span><span>NT$ ${costPerCycle.toLocaleString()}</span></div>
             <div class="cost-line total"><span>全療程費用 (${cycles} 週期, 約 ${totalMonths} 個月)</span><span>NT$ ${totalCost.toLocaleString()}</span></div>
-            <div class="cost-note">* 藥價依據「115年藥品支付價格年度例行調整結果明細表」（生效日：115/04/01），實際費用可能因劑量調整、藥品規格、耗損等因素而異。自費使用之藥價通常高於健保支付價。</div>
+            <div class="cost-note">* 藥價依據健保署 115/03/23 公告 PDF「115年藥品支付價格年度例行調整結果明細表」（115/04/01 生效），實際費用可能因劑量調整、藥品規格、耗損等因素而異。自費使用之藥價通常高於健保支付價。</div>
         </div>`;
 }
 
@@ -1733,7 +1796,7 @@ function calcCombo(comboId){
         <span>NT$ ${grandTotal.toLocaleString()}</span>
       </div>
       <div class="cost-note">* 首劑為較高的起始劑量（Herceptin 8mg/kg，Perjeta 840mg），後續為維持劑量。<br>
-        藥價依據 115年健保支付標準（生效日：115/04/01）。實際費用以醫院計算為準。</div>
+        藥價依據健保署 115/03/23 公告 PDF 之 115年健保支付標準（115/04/01 生效）。實際費用以醫院計算為準。</div>
     </div>`;
 }
 
@@ -2211,7 +2274,7 @@ function calcRegimen(){
     ${addonHtml?'<div style="border-top:1px dashed #f9a8d4;margin:.3rem 0;padding-top:.3rem;font-size:.78rem;color:var(--muted)">支持性治療：</div>'+addonHtml:''}
     <div class="sum-line sum-total sum-self"><span>患者自費總計</span><span>NT$ ${selfTotal.toLocaleString()}</span></div>
     <div class="sum-line sum-total sum-grand"><span>全療程合計（含健保）</span><span>NT$ ${grandTotal.toLocaleString()}</span></div>
-    <div class="sum-note">* 此為依健保支付標準之估算，各醫院實際收費可能不同。藥價來源：115年健保藥價調整（115/04/01生效）、台大醫院藥品價目表（2024/12/05）。含首劑loading dose。藥品搭配以最經濟組合計算。</div>
+    <div class="sum-note">* 此為依健保支付標準之估算，各醫院實際收費可能不同。藥價來源：健保署 115/03/23 公告 PDF（115/04/01 生效）、台大醫院藥品價目表（2024/12/05）。含首劑loading dose。藥品搭配以最經濟組合計算。</div>
     <div style="text-align:center;margin-top:0.75rem">
       <button class="btn btn-outline btn-sm" onclick="printRegimen()">列印 / 匯出 PDF</button>
     </div>
@@ -2537,6 +2600,12 @@ class Handler(BaseHTTPRequestHandler):
         path, params = p.path, urllib.parse.parse_qs(p.query)
         if path in ('/', '/index.html'):
             self._html()
+        elif path in ('/admin', '/admin.html'):
+            self._admin_html()
+        elif path == '/api/config':
+            self._config()
+        elif path == '/api/admin/session':
+            self._admin_session()
         elif path == '/api/stats':
             self._stats()
         elif path == '/api/drugs':
@@ -2553,28 +2622,187 @@ class Handler(BaseHTTPRequestHandler):
             self._json(404, {'error': 'Not found'})
 
     def do_PUT(self):
-        if self.path.startswith('/api/drug/'):
+        p = urllib.parse.urlparse(self.path)
+        path = p.path
+        if path == '/api/admin/config':
+            admin = self._require_admin()
+            if not admin:
+                return
+            self._update_config(self._read_json())
+        elif path.startswith('/api/drug/'):
+            admin = self._require_admin()
+            if not admin:
+                return
             drug_id = self.path.split('/')[-1]
-            body = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
-            self._update_drug(drug_id, body)
+            self._update_drug(drug_id, self._read_json())
+        else:
+            self._json(404, {'error': 'Not found'})
 
     def do_POST(self):
-        if self.path == '/api/drugs':
-            body = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
-            self._add_drug(body)
+        p = urllib.parse.urlparse(self.path)
+        path = p.path
+        if path == '/api/admin/login/start':
+            self._admin_login_start(self._read_json())
+        elif path == '/api/admin/login/verify':
+            self._admin_login_verify(self._read_json())
+        elif path == '/api/admin/logout':
+            self._admin_logout()
+        elif path == '/api/drugs':
+            admin = self._require_admin()
+            if not admin:
+                return
+            self._add_drug(self._read_json())
+        else:
+            self._json(404, {'error': 'Not found'})
 
     def do_DELETE(self):
-        if self.path.startswith('/api/drug/'):
+        p = urllib.parse.urlparse(self.path)
+        path = p.path
+        if path.startswith('/api/drug/'):
+            admin = self._require_admin()
+            if not admin:
+                return
             drug_id = self.path.split('/')[-1]
             self._delete_drug(drug_id)
+        else:
+            self._json(404, {'error': 'Not found'})
 
     # ── Handlers ──
 
     def _html(self):
+        content = FRONTEND_PATH.read_text(encoding='utf-8') if FRONTEND_PATH.exists() else HTML_PAGE
         self.send_response(200)
         self.send_header('Content-Type', 'text/html; charset=utf-8')
         self.end_headers()
-        self.wfile.write(HTML_PAGE.encode('utf-8'))
+        self.wfile.write(content.encode('utf-8'))
+
+    def _admin_html(self):
+        content = ADMIN_FRONTEND_PATH.read_text(encoding='utf-8') if ADMIN_FRONTEND_PATH.exists() else "<!doctype html><meta charset='utf-8'><p>admin.html not found</p>"
+        self.send_response(200)
+        self.send_header('Content-Type', 'text/html; charset=utf-8')
+        self.end_headers()
+        self.wfile.write(content.encode('utf-8'))
+
+    def _read_json(self):
+        try:
+            n = int(self.headers.get('Content-Length') or 0)
+            if n <= 0:
+                return {}
+            return json.loads(self.rfile.read(n).decode('utf-8'))
+        except Exception:
+            return {}
+
+    def _is_local_request(self):
+        return self.client_address[0] in ('127.0.0.1', '::1', 'localhost')
+
+    def _parse_cookies(self):
+        cookies = {}
+        for part in (self.headers.get('Cookie') or '').split(';'):
+            if '=' in part:
+                k, v = part.strip().split('=', 1)
+                cookies[k] = urllib.parse.unquote(v)
+        return cookies
+
+    def _current_admin(self):
+        token = self._parse_cookies().get('admin_session') or self.headers.get('X-Admin-Session')
+        if not token:
+            return None
+        sess = ADMIN_SESSIONS.get(token)
+        if not sess or sess['expires_at'] < time.time():
+            ADMIN_SESSIONS.pop(token, None)
+            return None
+        return sess['email']
+
+    def _require_admin(self):
+        email = self._current_admin()
+        if not email:
+            self._json(401, {'error': 'Admin login required'})
+            return None
+        return email
+
+    def _admin_count(self, conn):
+        return conn.execute("SELECT COUNT(*) AS c FROM admin_users WHERE active=1").fetchone()["c"]
+
+    def _config(self):
+        c = get_db()
+        cfg = get_app_config(c)
+        c.close()
+        self._json(200, cfg)
+
+    def _update_config(self, body):
+        allowed = set(APP_CONFIG_DEFAULTS.keys())
+        now = datetime.now().isoformat(timespec="seconds")
+        c = get_db()
+        changed = {}
+        for key in allowed:
+            if key in body:
+                value = str(body.get(key) or '').strip()
+                c.execute(
+                    "INSERT INTO app_config (key, value, updated_at) VALUES (?, ?, ?) "
+                    "ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=excluded.updated_at",
+                    (key, value, now),
+                )
+                changed[key] = value
+        c.commit()
+        cfg = get_app_config(c)
+        c.close()
+        self._json(200, {'ok': True, 'changed': changed, 'config': cfg})
+
+    def _admin_session(self):
+        email = self._current_admin()
+        if not email:
+            return self._json(401, {'ok': False, 'email': None})
+        self._json(200, {'ok': True, 'email': email})
+
+    def _admin_login_start(self, body):
+        email = _norm_email(body.get('email'))
+        if not email or '@' not in email:
+            return self._json(400, {'error': 'Valid email required'})
+        c = get_db()
+        now = datetime.now().isoformat(timespec="seconds")
+        if self._admin_count(c) == 0 and self._is_local_request():
+            c.execute(
+                "INSERT OR IGNORE INTO admin_users (email, role, active, created_at) VALUES (?, 'admin', 1, ?)",
+                (email, now),
+            )
+            c.commit()
+        user = c.execute("SELECT email FROM admin_users WHERE email=? AND active=1", (email,)).fetchone()
+        c.close()
+        if not user:
+            return self._json(403, {'error': 'Email is not authorized for admin access'})
+        code = f"{secrets.randbelow(1000000):06d}"
+        ADMIN_LOGIN_CODES[email] = {
+            'hash': _sha(f"{email}:{code}"),
+            'expires_at': time.time() + 10 * 60,
+            'attempts': 0,
+        }
+        print(f"[admin-login] {email} code: {code}")
+        payload = {'ok': True, 'message': 'Login code generated. Check server console.'}
+        if self._is_local_request():
+            payload['dev_code'] = code
+        self._json(200, payload)
+
+    def _admin_login_verify(self, body):
+        email = _norm_email(body.get('email'))
+        code = str(body.get('code') or '').strip()
+        rec = ADMIN_LOGIN_CODES.get(email)
+        if not rec or rec['expires_at'] < time.time():
+            ADMIN_LOGIN_CODES.pop(email, None)
+            return self._json(400, {'error': 'Code expired'})
+        rec['attempts'] += 1
+        if rec['attempts'] > 5 or rec['hash'] != _sha(f"{email}:{code}"):
+            return self._json(400, {'error': 'Invalid code'})
+        ADMIN_LOGIN_CODES.pop(email, None)
+        token = secrets.token_urlsafe(32)
+        ADMIN_SESSIONS[token] = {'email': email, 'expires_at': time.time() + ADMIN_SESSION_SECONDS}
+        cookie = f"admin_session={urllib.parse.quote(token)}; Path=/; HttpOnly; SameSite=Lax; Max-Age={ADMIN_SESSION_SECONDS}"
+        self._json(200, {'ok': True, 'email': email}, headers={'Set-Cookie': cookie})
+
+    def _admin_logout(self):
+        token = self._parse_cookies().get('admin_session')
+        if token:
+            ADMIN_SESSIONS.pop(token, None)
+        self._json(200, {'ok': True}, headers={'Set-Cookie': 'admin_session=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0'})
 
     def _formulations(self, params):
         c = get_db(); cur = c.cursor()
@@ -2601,7 +2829,7 @@ class Handler(BaseHTTPRequestHandler):
     def _drugs(self, params):
         c = get_db(); cur = c.cursor()
         q = params.get('q', [''])[0]
-        cat = params.get('category', [''])[0]
+        cat = params.get('category', params.get('specialty', ['']))[0]
         sql = """SELECT d.id, d.generic_name, d.trade_names, d.specialty_id, d.indication, d.clinical_tags, d.stage,
                         cr.therapy_line, cr.prior_auth_required as prior_auth, cr.condition as conditions,
                         d.nhi_price, d.price_unit, d.dosage_info
@@ -2653,22 +2881,68 @@ class Handler(BaseHTTPRequestHandler):
         })
 
     def _update_drug(self, drug_id, body):
+        if not body.get('generic_name') or not body.get('specialty_id'):
+            return self._json(400, {'error': 'generic_name and specialty_id are required'})
         c = get_db(); cur = c.cursor()
-        cur.execute("UPDATE drugs SET generic_name=?, trade_names=?, specialty_id=?, indication=?, stage=? WHERE id=?",
-                    (body['generic_name'], body.get('trade_names', ''), body['specialty_id'], body.get('indication', ''), body.get('stage', ''), drug_id))
-        if body.get('conditions') is not None:
-            cur.execute("UPDATE coverage_rules SET condition=? WHERE drug_id=?", (body['conditions'], drug_id))
-        if body.get('therapy_line') is not None:
-            cur.execute("UPDATE coverage_rules SET therapy_line=? WHERE drug_id=?", (body['therapy_line'], drug_id))
+        tags = body.get('clinical_tags')
+        if isinstance(tags, (dict, list)):
+            tags = json.dumps(tags, ensure_ascii=False)
+        elif tags is None:
+            tags = ''
+        price = body.get('nhi_price')
+        price = None if price in ('', None) else float(price)
+        cur.execute("""UPDATE drugs
+                          SET generic_name=?, trade_names=?, specialty_id=?, indication=?, stage=?,
+                              nhi_price=?, price_unit=?, dosage_info=?, clinical_tags=?
+                        WHERE id=?""",
+                    (body['generic_name'], body.get('trade_names', ''), body['specialty_id'],
+                     body.get('indication', ''), body.get('stage', ''), price,
+                     body.get('price_unit', ''), body.get('dosage_info', ''), tags, drug_id))
+        if cur.rowcount == 0:
+            c.close()
+            return self._json(404, {'error': 'Not found'})
+        therapy_line = body.get('therapy_line')
+        therapy_line = None if therapy_line in ('', None) else int(therapy_line)
+        raw_prior = body.get('prior_auth_required', body.get('prior_auth', False))
+        prior_auth = 1 if (str(raw_prior).lower() in ('1', 'true', 'yes', 'on') if isinstance(raw_prior, str) else bool(raw_prior)) else 0
+        cur.execute("SELECT id FROM coverage_rules WHERE drug_id=? LIMIT 1", (drug_id,))
+        rule = cur.fetchone()
+        if rule:
+            cur.execute("""UPDATE coverage_rules
+                              SET condition=?, therapy_line=?, prior_auth_required=?
+                            WHERE id=?""",
+                        (body.get('conditions', ''), therapy_line, prior_auth, rule['id']))
+        else:
+            cur.execute("""INSERT INTO coverage_rules (drug_id, condition, therapy_line, prior_auth_required)
+                           VALUES (?,?,?,?)""",
+                        (drug_id, body.get('conditions', ''), therapy_line, prior_auth))
         c.commit(); c.close()
         self._json(200, {'ok': True})
 
     def _add_drug(self, body):
+        if not body.get('generic_name') or not body.get('specialty_id'):
+            return self._json(400, {'error': 'generic_name and specialty_id are required'})
         c = get_db(); cur = c.cursor()
-        cur.execute("INSERT INTO drugs (generic_name, trade_names, specialty_id, indication, stage, created_date) VALUES (?,?,?,?,?,?)",
-                    (body['generic_name'], body.get('trade_names', ''), body['specialty_id'], body.get('indication', ''), body.get('stage', ''), datetime.now().date()))
+        tags = body.get('clinical_tags')
+        if isinstance(tags, (dict, list)):
+            tags = json.dumps(tags, ensure_ascii=False)
+        elif tags is None:
+            tags = ''
+        price = body.get('nhi_price')
+        price = None if price in ('', None) else float(price)
+        cur.execute("""INSERT INTO drugs
+                       (generic_name, trade_names, specialty_id, indication, stage, nhi_price, price_unit, dosage_info, clinical_tags, created_date)
+                       VALUES (?,?,?,?,?,?,?,?,?,?)""",
+                    (body['generic_name'], body.get('trade_names', ''), body['specialty_id'],
+                     body.get('indication', ''), body.get('stage', ''), price,
+                     body.get('price_unit', ''), body.get('dosage_info', ''), tags, datetime.now().date()))
         drug_id = cur.lastrowid
-        cur.execute("INSERT INTO coverage_rules (drug_id, condition, therapy_line) VALUES (?,?,?)", (drug_id, body.get('conditions', ''), body.get('therapy_line')))
+        therapy_line = body.get('therapy_line')
+        therapy_line = None if therapy_line in ('', None) else int(therapy_line)
+        raw_prior = body.get('prior_auth_required', body.get('prior_auth', False))
+        prior_auth = 1 if (str(raw_prior).lower() in ('1', 'true', 'yes', 'on') if isinstance(raw_prior, str) else bool(raw_prior)) else 0
+        cur.execute("INSERT INTO coverage_rules (drug_id, condition, therapy_line, prior_auth_required) VALUES (?,?,?,?)",
+                    (drug_id, body.get('conditions', ''), therapy_line, prior_auth))
         c.commit(); c.close()
         self._json(201, {'ok': True, 'id': drug_id})
 
@@ -2701,18 +2975,23 @@ class Handler(BaseHTTPRequestHandler):
             info['last_modified'] = datetime.fromtimestamp(newest.stat().st_mtime).strftime('%Y-%m-%d')
         self._json(200, info)
 
-    def _json(self, code, data):
+    def _json(self, code, data, headers=None):
         self.send_response(code)
         self.send_header('Content-Type', 'application/json; charset=utf-8')
-        self.send_header('Access-Control-Allow-Origin', '*')
+        origin = self.headers.get('Origin') or '*'
+        self.send_header('Access-Control-Allow-Origin', origin)
+        self.send_header('Access-Control-Allow-Credentials', 'true')
         self.send_header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type, X-Admin-Session')
+        if headers:
+            for k, v in headers.items():
+                self.send_header(k, v)
         self.end_headers()
         self.wfile.write(json.dumps(data, ensure_ascii=False).encode('utf-8'))
 
     def do_HEAD(self):
         p = urllib.parse.urlparse(self.path)
-        if p.path in ('/', '/index.html'):
+        if p.path in ('/', '/index.html', '/admin', '/admin.html'):
             self.send_response(200)
             self.send_header('Content-Type', 'text/html; charset=utf-8')
             self.end_headers()
@@ -2723,9 +3002,11 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_OPTIONS(self):
         self.send_response(200)
-        self.send_header('Access-Control-Allow-Origin', '*')
+        origin = self.headers.get('Origin') or '*'
+        self.send_header('Access-Control-Allow-Origin', origin)
+        self.send_header('Access-Control-Allow-Credentials', 'true')
         self.send_header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type, X-Admin-Session')
         self.end_headers()
 
 
