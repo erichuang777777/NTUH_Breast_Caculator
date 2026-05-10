@@ -2700,19 +2700,8 @@ function refreshWorkspaceDerived(){
     }
     document.getElementById('ws_d_crcl').textContent = crcl ? crcl.toFixed(0)+' mL/min' : '—';
     // ICD code
-    let icdCode = '—';
-    const ICD_BY_QUAD = {
-        UO: {R:'C50.411', L:'C50.412', B:'C50.419'},
-        UI: {R:'C50.211', L:'C50.212', B:'C50.219'},
-        LO: {R:'C50.511', L:'C50.512', B:'C50.519'},
-        LI: {R:'C50.311', L:'C50.312', B:'C50.319'},
-        central: {R:'C50.111', L:'C50.112', B:'C50.119'},
-        overlapping: {R:'C50.811', L:'C50.812', B:'C50.819'}
-    };
-    if(p.quadrant && p.side && ICD_BY_QUAD[p.quadrant]){
-        if(p.T==='Tis') icdCode = 'D05.' + (p.quadrant==='central'?'81':p.quadrant==='overlapping'?'80':'82');
-        else icdCode = ICD_BY_QUAD[p.quadrant][p.side] || '—';
-    }
+    const icdInfo = deriveWorkspaceICD(p);
+    const icdCode = icdInfo ? icdInfo.code : '—';
     document.getElementById('ws_d_icd').textContent = icdCode;
     // AJCC stage
     let anat = '—';
@@ -2737,21 +2726,7 @@ function refreshWorkspaceDerived(){
     }
     document.getElementById('ws_d_cts5').textContent = cts5Display;
     // Molecular subtype
-    let subtype = '—';
-    if(p.er && p.her2){
-        if(p.her2==='+'){
-            subtype = (p.er==='+') ? 'HR+/HER2+ (Luminal B-like)' : 'HR-/HER2+';
-        } else if(p.her2==='low'){
-            subtype = (p.er==='+') ? 'HR+/HER2-low' : 'TNBC (HER2-low)';
-        } else {
-            if(p.er==='+'){
-                const ki = +p.ki67;
-                subtype = (ki>=20) ? 'HR+/HER2- (Luminal B-like)' : 'HR+/HER2- (Luminal A-like)';
-            } else {
-                subtype = 'TNBC (Triple Negative)';
-            }
-        }
-    }
+    let subtype = deriveWorkspaceSubtype(p) || '—';
     document.getElementById('ws_d_subtype').textContent = subtype;
     // NHI eligibility
     refreshNHIEligibility();
@@ -2864,24 +2839,70 @@ function toggleDashboardMode(){
 
 // Result-card builder
 function _dashCard(opts){
-    // opts: { id, title, value, subtitle, extra, cls, badge, wide, missing }
+    // opts: { id, title, value, subtitle, extra, cls, badge, wide, missing, tab, titleAttr }
     const cls = ['ws-result-card'];
     if(opts.cls) cls.push(opts.cls);
     if(opts.wide) cls.push('wide');
     if(opts.missing) cls.push('empty');
+    if(opts.tab) cls.push('clickable');
     const badge = opts.badge ? `<span class="badge">${opts.badge}</span>` : '';
     const body = opts.missing
         ? `<div class="ws-result-empty">${opts.missing}</div>`
         : `<div class="ws-result-value">${opts.value ?? '—'}</div>` +
           (opts.subtitle ? `<div class="ws-result-subtitle">${opts.subtitle}</div>` : '') +
           (opts.extra ? `<div class="ws-result-extra">${opts.extra}</div>` : '');
-    return `<div class="${cls.join(' ')}" id="dash-${opts.id}">
+    const click = opts.tab ? ` onclick="showCalc();switchCalcTab('${opts.tab}')"` : '';
+    const title = opts.titleAttr || (opts.tab ? '點擊開啟詳細計算機' : '');
+    return `<div class="${cls.join(' ')}" id="dash-${opts.id}"${click}${title ? ` title="${title}"` : ''}>
         <div class="ws-result-title">${opts.title}${badge}</div>
         ${body}
     </div>`;
 }
 
 // ── Pure calc variants (no DOM access; pure functions of inputs) ──
+function deriveWorkspaceICD(p){
+    if(!p.quadrant || !p.side) return null;
+    const ICD_BY_QUAD = {
+        UO: {R:'C50.411', L:'C50.412', B:'C50.419'},
+        UI: {R:'C50.211', L:'C50.212', B:'C50.219'},
+        LO: {R:'C50.511', L:'C50.512', B:'C50.519'},
+        LI: {R:'C50.311', L:'C50.312', B:'C50.319'},
+        central: {R:'C50.111', L:'C50.112', B:'C50.119'},
+        overlapping: {R:'C50.811', L:'C50.812', B:'C50.819'}
+    };
+    const QUAD_LABEL = {UO:'外上',UI:'內上',LO:'外下',LI:'內下',central:'乳頭/乳暈下',overlapping:'跨象限'};
+    const SIDE_LABEL = {R:'右乳',L:'左乳',B:'雙側'};
+    let code = null;
+    if(p.T === 'Tis') code = 'D05.' + (p.quadrant==='central'?'81':p.quadrant==='overlapping'?'80':'82');
+    else code = ICD_BY_QUAD[p.quadrant] ? ICD_BY_QUAD[p.quadrant][p.side] : null;
+    if(!code) return null;
+    return { code, subtitle: (SIDE_LABEL[p.side]||'') + ' ' + (QUAD_LABEL[p.quadrant]||'') };
+}
+function deriveWorkspaceSubtype(p){
+    if(!p.er || !p.her2) return null;
+    if(p.her2==='+') return (p.er==='+') ? 'HR+/HER2+ (Luminal B-like)' : 'HR-/HER2+';
+    if(p.her2==='low') return (p.er==='+') ? 'HR+/HER2-low' : 'TNBC (HER2-low)';
+    if(p.er==='+'){
+        const ki = +p.ki67;
+        return (!isNaN(ki) && ki>=20) ? 'HR+/HER2- (Luminal B-like)' : 'HR+/HER2- (Luminal A-like)';
+    }
+    return 'TNBC (Triple Negative)';
+}
+function calcPEPIPure(tPts, nPts, erPts, ki67){
+    if(![tPts,nPts,erPts,ki67].every(v=>typeof v==='number'&&!isNaN(v))) return null;
+    let kiPts;
+    if(ki67<=2.7) kiPts=0;
+    else if(ki67<=7.3) kiPts=1;
+    else if(ki67<=19.7) kiPts=2;
+    else if(ki67<=53.1) kiPts=3;
+    else kiPts=4;
+    const total = tPts+nPts+erPts+kiPts;
+    let grp, cls, label, advice, rfs;
+    if(total===0){ grp=1; cls='low'; label='Group 1（極佳）'; advice='Endocrine alone 即可，不需 adjuvant chemo。'; rfs='~95%'; }
+    else if(total<=3){ grp=2; cls='med'; label='Group 2（中等）'; advice='個案討論加 chemo 的必要；視整體風險與病人偏好。'; rfs='~78%'; }
+    else { grp=3; cls='high'; label='Group 3（高風險）'; advice='強烈建議 adjuvant chemo（在 endocrine 之外）。'; rfs='~58%'; }
+    return { total, grp, cls, label, advice, rfs, parts:{ t:tPts, n:nPts, er:erPts, ki:kiPts } };
+}
 function calcCTS5Pure(N, T, G, A){
     if(![N,T,G,A].every(v=>typeof v==='number'&&!isNaN(v))) return null;
     if(T<=0||A<=0) return null;
@@ -2933,6 +2954,57 @@ function calcIHC4Pure(erH, prH, her2bin, ki67){
     else if(ihc4 < 25){ group='中等 (近似)'; cls='med'; }
     else { group='相對高 (近似)'; cls='high'; }
     return { ihc4, group, cls };
+}
+function calcHscorePure(p0, p1, p2, p3){
+    if(![p0,p1,p2,p3].every(v=>typeof v==='number'&&!isNaN(v))) return null;
+    const total = p0+p1+p2+p3;
+    const h = 1*p1 + 2*p2 + 3*p3;
+    let group, cls;
+    if(h === 0){ group='陰性'; cls='low'; }
+    else if(h < 100){ group='Low'; cls='low'; }
+    else if(h < 200){ group='Intermediate'; cls='med'; }
+    else { group='High'; cls='high'; }
+    return { h, total, group, cls };
+}
+function calcRCBPure(d1, d2, finvPct, ln, dmet){
+    if(![d1,d2,finvPct,ln,dmet].every(v=>typeof v==='number'&&!isNaN(v))) return null;
+    const finv = finvPct/100;
+    const dprim = Math.sqrt(Math.max(d1,0) * Math.max(d2,0));
+    let primComp = 0;
+    if(dprim > 0 && finv > 0) primComp = 1.4 * Math.pow(finv * dprim, 0.17);
+    let nodalComp = 0;
+    if(ln > 0 && dmet > 0) nodalComp = Math.pow(4 * (1 - Math.pow(0.75, ln)) * dmet, 0.17);
+    const rcb = primComp + nodalComp;
+    let cls, klass, surv;
+    if(rcb === 0){ klass='RCB-0 (pCR)'; cls='low'; surv='10y DFS ~95%'; }
+    else if(rcb <= 1.36){ klass='RCB-I (Minimal)'; cls='low'; surv='10y DFS ~75%'; }
+    else if(rcb <= 3.28){ klass='RCB-II (Moderate)'; cls='med'; surv='10y DFS ~55%'; }
+    else { klass='RCB-III (Extensive)'; cls='high'; surv='10y DFS ~30%'; }
+    return { rcb, cls, klass, surv, dprim, primComp, nodalComp };
+}
+function calcGailPure(age, rrMen, rrBirth, rrRel, biopsy, atypia, race){
+    if(!age || age < 35 || age > 85) return null;
+    let rrBio = 1.0;
+    if(biopsy === 1) rrBio = atypia ? 1.93 : 1.27;
+    else if(biopsy === 2) rrBio = atypia ? 2.45 : 1.62;
+    const totalRR = rrMen * rrBirth * rrRel * rrBio;
+    const raceAdj = { white: 1.0, aa: 0.95, asian: 0.5, hispanic: 0.7 };
+    const raceFactor = raceAdj[race] || 1.0;
+    const ageBands = [
+        [35, 0.3], [40, 0.6], [45, 1.0], [50, 1.4], [55, 1.7],
+        [60, 1.9], [65, 2.0], [70, 2.0], [75, 1.9], [80, 1.7]
+    ];
+    let baseline5y = 0.3;
+    for(const [a, r] of ageBands){ if(age >= a) baseline5y = r; }
+    const risk5y = baseline5y * totalRR * raceFactor;
+    const risk5yCapped = Math.min(risk5y, 50);
+    const lifetimeFactor = age < 50 ? 8 : age < 60 ? 6 : age < 70 ? 4 : 2.5;
+    const lifetimeRisk = Math.min(baseline5y * totalRR * raceFactor * lifetimeFactor, 80);
+    let cls, advice;
+    if(risk5yCapped < 1.67){ cls='low'; advice='低風險（5 年 &lt;1.67%）。一般年度篩檢即可。'; }
+    else if(risk5yCapped < 3){ cls='med'; advice='中度風險。可考慮加強篩檢頻率。'; }
+    else { cls='high'; advice='<strong>高風險（5 年 ≥3%）</strong>。考慮 chemoprevention（Tamoxifen / AI / Raloxifene）；建議轉介遺傳諮詢。'; }
+    return { risk5y: risk5yCapped, lifetimeRisk, totalRR, rrBio, raceFactor, cls, advice };
 }
 function calcPredictPure(p){
     // p: {age, size_mm, nodes_pos, grade, er, her2, ki67Pct, mode}
@@ -2991,7 +3063,8 @@ function refreshDashboardResults(){
             title:'AJCC 期別',
             value: anat==='—' ? '—' : ('第 '+anat+' 期'),
             subtitle: prog ? ('v9 預後分組: '+prog) : '解剖 (8th)',
-            cls: eligible ? 'high' : (anat==='—'?'':'low')
+            cls: eligible ? 'high' : (anat==='—'?'':'low'),
+            titleAttr:'依 Workspace TNM / biomarker 即時計算'
         }));
     } else {
         cards.push(_dashCard({ id:'ajcc', title:'AJCC 期別', missing:'需 T / N / M' }));
@@ -3004,11 +3077,36 @@ function refreshDashboardResults(){
             id:'cts5', title:'CTS5',
             value: r.score.toFixed(2),
             subtitle: r.label + ' · 10y DRR ≈ '+r.drr10.toFixed(1)+'%',
-            cls: r.cls
+            cls: r.cls,
+            tab:'cts5'
         }));
         else cards.push(_dashCard({ id:'cts5', title:'CTS5', missing:'資料不完整' }));
     } else {
         cards.push(_dashCard({ id:'cts5', title:'CTS5', missing:'需 N+ / size / Grade / age' }));
+    }
+
+    // 2b) PEPI (post-neoadjuvant endocrine; Workspace uses current pathology as proxy)
+    if(p.er && p.er !== '+'){
+        cards.push(_dashCard({
+            id:'pepi', title:'PEPI',
+            missing:'主要適用 ER+ 且完成術前內分泌治療後',
+            tab:'pepi'
+        }));
+    } else if(p.er==='+' && p.size && p.nodes_pos!=='' && p.ki67){
+        const tPts = (+p.size > 50 || /^T[34]/.test(p.T||'')) ? 3 : 0;
+        const nPts = (+p.nodes_pos > 0 || (p.N && p.N !== 'N0')) ? 3 : 0;
+        const r = calcPEPIPure(tPts, nPts, 0, +p.ki67);
+        if(r) cards.push(_dashCard({
+            id:'pepi', title:'PEPI',
+            value: r.total,
+            subtitle: r.label + ' · 5y RFS '+r.rfs,
+            extra:'以目前 Workspace 病理作近似：pT '+r.parts.t+' / pN '+r.parts.n+' / ER '+r.parts.er+' / Ki67 '+r.parts.ki,
+            cls: r.cls,
+            badge:'近似',
+            tab:'pepi'
+        }));
+    } else {
+        cards.push(_dashCard({ id:'pepi', title:'PEPI', missing:'需 ER+ / size / N+ / Ki67', tab:'pepi' }));
     }
 
     // 3) PREDICT
@@ -3024,7 +3122,8 @@ function refreshDashboardResults(){
                 value: s10.toFixed(1)+'%',
                 subtitle: '無治療 OS · 5y '+s5.toFixed(1)+'% / 10y '+s10.toFixed(1)+'% / 15y '+s15.toFixed(1)+'%',
                 extra:'PI = '+r.pi.toFixed(2),
-                cls: s10>=85?'low':(s10>=70?'med':'high')
+                cls: s10>=85?'low':(s10>=70?'med':'high'),
+                tab:'predict'
             }));
         } else {
             cards.push(_dashCard({ id:'predict', title:'PREDICT v2.3', missing:'資料超出模型範圍 (age 25-85, size≥1mm)' }));
@@ -3042,7 +3141,8 @@ function refreshDashboardResults(){
             id:'npi', title:'NPI',
             value: r.npi.toFixed(2),
             subtitle: r.group + ' · 5y '+r.surv5,
-            cls: r.cls
+            cls: r.cls,
+            tab:'npi'
         }));
     } else {
         cards.push(_dashCard({ id:'npi', title:'NPI', missing:'需 size / N+ / Grade' }));
@@ -3064,7 +3164,8 @@ function refreshDashboardResults(){
                 subtitle: r.label,
                 extra: 'Eq.1='+r.m1.toFixed(1)+' · Eq.2='+r.m2.toFixed(1)+' · Eq.3='+r.m3.toFixed(1),
                 cls: r.cls,
-                badge: '近似'
+                badge: '近似',
+                tab:'magee'
             }));
         }
     } else {
@@ -3082,28 +3183,49 @@ function refreshDashboardResults(){
             value: r.ihc4.toFixed(1),
             subtitle: r.group,
             cls: r.cls,
-            badge: '近似'
+            badge: '近似',
+            tab:'ihc4'
         }));
     } else {
         cards.push(_dashCard({ id:'ihc4', title:'IHC4', missing:'需 ER/PR/HER2/Ki67' }));
     }
 
-    // 7) Molecular subtype
-    let subtype = null;
-    if(p.er && p.her2){
-        if(p.her2==='+'){
-            subtype = (p.er==='+') ? 'HR+/HER2+ (Luminal B-like)' : 'HR-/HER2+';
-        } else if(p.her2==='low'){
-            subtype = (p.er==='+') ? 'HR+/HER2-low' : 'TNBC (HER2-low)';
-        } else {
-            if(p.er==='+'){
-                const ki = +p.ki67;
-                subtype = (!isNaN(ki)&&ki>=20) ? 'HR+/HER2- (Luminal B-like)' : 'HR+/HER2- (Luminal A-like)';
-            } else {
-                subtype = 'TNBC (Triple Negative)';
-            }
-        }
+    // 6b) H-score requires intensity percentages not collected by Workspace.
+    cards.push(_dashCard({
+        id:'hscore',
+        title:'H-score',
+        missing:'需 0/1+/2+/3+ 染色百分比',
+        tab:'hscore'
+    }));
+
+    // 6c) RCB requires post-neoadjuvant residual pathology fields not collected by Workspace.
+    cards.push(_dashCard({
+        id:'rcb',
+        title:'RCB',
+        missing:'需 tumor bed / invasive % / LN metastasis size',
+        tab:'rcb'
+    }));
+
+    // 6d) Gail simplified estimate using calculator defaults for missing family/reproductive history.
+    if(p.age){
+        const r = calcGailPure(+p.age, 1.10, 1.0, 1.0, 0, 0, 'asian');
+        if(r) cards.push(_dashCard({
+            id:'gail',
+            title:'Gail Model',
+            value: r.risk5y.toFixed(2)+'%',
+            subtitle:'5 年風險 · 終身粗估 '+r.lifetimeRisk.toFixed(1)+'%',
+            extra:'以亞洲族群與低風險預設值估算；正式決策請用 NCI BCRAT。',
+            cls:r.cls,
+            badge:'簡化',
+            tab:'gail'
+        }));
+        else cards.push(_dashCard({ id:'gail', title:'Gail Model', missing:'年齡需 35–85 歲', tab:'gail' }));
+    } else {
+        cards.push(_dashCard({ id:'gail', title:'Gail Model', missing:'需 age', tab:'gail' }));
     }
+
+    // 7) Molecular subtype
+    let subtype = deriveWorkspaceSubtype(p);
     cards.push(_dashCard({
         id:'subtype', title:'分子亞型',
         value: subtype || '—',
@@ -3111,27 +3233,12 @@ function refreshDashboardResults(){
     }));
 
     // 8) ICD-10
-    let icd = null, icdSub = '';
-    if(p.quadrant && p.side){
-        const ICD_BY_QUAD = {
-            UO: {R:'C50.411', L:'C50.412', B:'C50.419'},
-            UI: {R:'C50.211', L:'C50.212', B:'C50.219'},
-            LO: {R:'C50.511', L:'C50.512', B:'C50.519'},
-            LI: {R:'C50.311', L:'C50.312', B:'C50.319'},
-            central: {R:'C50.111', L:'C50.112', B:'C50.119'},
-            overlapping: {R:'C50.811', L:'C50.812', B:'C50.819'}
-        };
-        if(p.T==='Tis') icd = 'D05.' + (p.quadrant==='central'?'81':p.quadrant==='overlapping'?'80':'82');
-        else icd = ICD_BY_QUAD[p.quadrant][p.side] || null;
-        const QUAD_LABEL = {UO:'外上',UI:'內上',LO:'外下',LI:'內下',central:'乳頭/乳暈下',overlapping:'跨象限'};
-        const SIDE_LABEL = {R:'右乳',L:'左乳',B:'雙側'};
-        icdSub = (SIDE_LABEL[p.side]||'') + ' ' + (QUAD_LABEL[p.quadrant]||'');
-    }
+    const icdInfo = deriveWorkspaceICD(p);
     cards.push(_dashCard({
         id:'icd', title:'ICD-10-CM',
-        value: icd,
-        subtitle: icd ? icdSub : '',
-        missing: icd ? null : '需側別 + 象限'
+        value: icdInfo ? icdInfo.code : null,
+        subtitle: icdInfo ? icdInfo.subtitle : '',
+        missing: icdInfo ? null : '需側別 + 象限'
     }));
 
     // 9) 重大傷病 (Catastrophic Illness)
@@ -3176,7 +3283,7 @@ function refreshDashboardResults(){
     cards.push(_dashCard({
         id:'nccn', title:'NCCN 流程入口',
         value: nccnNode || '—',
-        subtitle: nccnNode ? '<a href="javascript:void(0)" onclick="event.stopPropagation();showPage(\'nccn\')" style="color:var(--accent,#0369a1);text-decoration:underline">→ 開啟 NCCN 流程圖</a>' : '',
+        subtitle: nccnNode ? '<a href="javascript:void(0)" onclick="event.stopPropagation();window.open(\'nccn_viewer.html\',\'_blank\')" style="color:var(--accent,#0369a1);text-decoration:underline">→ 開啟 NCCN 流程圖</a>' : '',
         missing: nccnNode ? null : '需 T / N / M'
     }));
 
@@ -3219,10 +3326,9 @@ function printWorkspaceSummary(){
     const v = (k, fmt) => p[k] ? (fmt?fmt(p[k]):esc(p[k])) : '—';
     const bsa = (+p.height>0 && +p.weight>0) ? Math.sqrt(p.height*p.weight/3600).toFixed(2) : '—';
     const anat = (p.T && p.N && p.M) ? (_ajccAnatomic(p.T,p.N,p.M)||'—') : '—';
-    const subtypeEl = document.getElementById('ws_d_subtype');
-    const subtype = subtypeEl ? subtypeEl.textContent : '—';
-    const icdEl = document.getElementById('ws_d_icd');
-    const icd = icdEl ? icdEl.textContent : '—';
+    const subtype = deriveWorkspaceSubtype(p) || '—';
+    const icdInfo = deriveWorkspaceICD(p);
+    const icd = icdInfo ? icdInfo.code : '—';
     const sexLabel = p.sex==='F'?'女':'男';
     const sideLabel = {R:'右乳',L:'左乳',B:'雙側'}[p.side]||'—';
     const quadrantLabel = {UO:'外上',UI:'內上',LO:'外下',LI:'內下',central:'中央/乳頭',overlapping:'跨象限'}[p.quadrant]||'—';
@@ -3376,24 +3482,15 @@ function calcPEPI(){
     const n=+document.getElementById('pepi_n').value;
     const er=+document.getElementById('pepi_er').value;
     const ki=+document.getElementById('pepi_ki67').value;
-    let kiPts;
-    if(ki<=2.7) kiPts=0;
-    else if(ki<=7.3) kiPts=1;
-    else if(ki<=19.7) kiPts=2;
-    else if(ki<=53.1) kiPts=3;
-    else kiPts=4;
-    const total=t+n+er+kiPts;
-    let grp, cls, label, advice, rfs;
-    if(total===0){ grp=1; cls='low'; label='Group 1（極佳）'; advice='Endocrine alone 即可，不需 adjuvant chemo。'; rfs='~95%'; }
-    else if(total<=3){ grp=2; cls='med'; label='Group 2（中等）'; advice='個案討論加 chemo 的必要；視整體風險與病人偏好。'; rfs='~78%'; }
-    else { grp=3; cls='high'; label='Group 3（高風險）'; advice='強烈建議 adjuvant chemo（在 endocrine 之外）。'; rfs='~58%'; }
+    const r = calcPEPIPure(t, n, er, ki);
+    if(!r) return;
     document.getElementById('pepi_result').innerHTML=`
-      <div class="calc-result ${cls}">
-        <div class="calc-result-label">PEPI Score = ${total} · ${label}</div>
-        <div class="calc-result-main">5 年 RFS ${rfs}</div>
-        <div class="calc-result-detail">${advice}<br><span style="color:var(--text-muted);font-size:.78rem">pT: ${t} 分；pN: ${n} 分；ER: ${er} 分；Ki67 ${ki}%: ${kiPts} 分</span></div>
+      <div class="calc-result ${r.cls}">
+        <div class="calc-result-label">PEPI Score = ${r.total} · ${r.label}</div>
+        <div class="calc-result-main">5 年 RFS ${r.rfs}</div>
+        <div class="calc-result-detail">${r.advice}<br><span style="color:var(--text-muted);font-size:.78rem">pT: ${r.parts.t} 分；pN: ${r.parts.n} 分；ER: ${r.parts.er} 分；Ki67 ${ki}%: ${r.parts.ki} 分</span></div>
       </div>`;
-    document.querySelectorAll('#pepi_table tr[data-grp]').forEach(r=>r.classList.toggle('pepi-hl', +r.dataset.grp===grp));
+    document.querySelectorAll('#pepi_table tr[data-grp]').forEach(row=>row.classList.toggle('pepi-hl', +row.dataset.grp===r.grp));
 }
 // ── Magee Equations (Klein Mod Pathol 2013) ──
 function calcMagee(){
@@ -3711,19 +3808,14 @@ function calcHscore(){
     const p1 = +document.getElementById('hs_1').value;
     const p2 = +document.getElementById('hs_2').value;
     const p3 = +document.getElementById('hs_3').value;
-    const total = p0+p1+p2+p3;
-    const h = 1*p1 + 2*p2 + 3*p3;
+    const r = calcHscorePure(p0, p1, p2, p3);
+    if(!r) return;
     let warn = '';
-    if(Math.abs(total - 100) > 0.5) warn = `<br><span style="color:#b45309;font-size:.78rem">⚠️ 各強度合計 ${total}%（應為 100%）</span>`;
-    let group, cls;
-    if(h === 0){ group='陰性'; cls='low'; }
-    else if(h < 100){ group='Low'; cls='low'; }
-    else if(h < 200){ group='Intermediate'; cls='med'; }
-    else { group='High'; cls='high'; }
-    el.innerHTML=`<div class="calc-result ${cls}">
-        <div class="calc-result-label">H-score · ${group}</div>
-        <div class="calc-result-main">${h}</div>
-        <div class="calc-result-detail">1×${p1}% + 2×${p2}% + 3×${p3}% = ${h}${warn}</div>
+    if(Math.abs(r.total - 100) > 0.5) warn = `<br><span style="color:#b45309;font-size:.78rem">⚠️ 各強度合計 ${r.total}%（應為 100%）</span>`;
+    el.innerHTML=`<div class="calc-result ${r.cls}">
+        <div class="calc-result-label">H-score · ${r.group}</div>
+        <div class="calc-result-main">${r.h}</div>
+        <div class="calc-result-detail">1×${p1}% + 2×${p2}% + 3×${p3}% = ${r.h}${warn}</div>
     </div>`;
 }
 // ── RCB (Symmans JCO 2007) ──
@@ -3732,29 +3824,16 @@ function calcRCB(){
     if(!el) return;
     const d1 = +document.getElementById('rcb_d1').value;
     const d2 = +document.getElementById('rcb_d2').value;
-    const finv = +document.getElementById('rcb_finv').value/100;
+    const finv = +document.getElementById('rcb_finv').value;
     const ln = +document.getElementById('rcb_ln').value;
     const dmet = +document.getElementById('rcb_dmet').value;
-    const dprim = Math.sqrt(Math.max(d1,0) * Math.max(d2,0));
-    let primComp = 0;
-    if(dprim > 0 && finv > 0){
-        primComp = 1.4 * Math.pow(finv * dprim, 0.17);
-    }
-    let nodalComp = 0;
-    if(ln > 0 && dmet > 0){
-        nodalComp = Math.pow(4 * (1 - Math.pow(0.75, ln)) * dmet, 0.17);
-    }
-    const rcb = primComp + nodalComp;
-    let cls, klass, surv;
-    if(rcb === 0){ klass='RCB-0 (pCR)'; cls='low'; surv='10y DFS ~95%'; }
-    else if(rcb <= 1.36){ klass='RCB-I (Minimal)'; cls='low'; surv='10y DFS ~75%'; }
-    else if(rcb <= 3.28){ klass='RCB-II (Moderate)'; cls='med'; surv='10y DFS ~55%'; }
-    else { klass='RCB-III (Extensive)'; cls='high'; surv='10y DFS ~30%'; }
-    el.innerHTML=`<div class="calc-result ${cls}">
-        <div class="calc-result-label">${klass}</div>
-        <div class="calc-result-main">${rcb.toFixed(2)}</div>
-        <div class="calc-result-detail">${surv}<br>
-            <span style="color:var(--text-muted);font-size:.78rem">d_prim=${dprim.toFixed(1)}mm · 原發成份 ${primComp.toFixed(2)} · 淋巴成份 ${nodalComp.toFixed(2)}</span>
+    const r = calcRCBPure(d1, d2, finv, ln, dmet);
+    if(!r) return;
+    el.innerHTML=`<div class="calc-result ${r.cls}">
+        <div class="calc-result-label">${r.klass}</div>
+        <div class="calc-result-main">${r.rcb.toFixed(2)}</div>
+        <div class="calc-result-detail">${r.surv}<br>
+            <span style="color:var(--text-muted);font-size:.78rem">d_prim=${r.dprim.toFixed(1)}mm · 原發成份 ${r.primComp.toFixed(2)} · 淋巴成份 ${r.nodalComp.toFixed(2)}</span>
         </div>
     </div>`;
 }
@@ -3770,39 +3849,15 @@ function calcGail(){
     const atypia = +document.getElementById('gail_atypia').value;
     const race = document.getElementById('gail_race').value;
     if(!age || age < 35 || age > 85){ el.innerHTML='<div class="calc-result"><div class="calc-result-detail">年齡需介於 35–85 歲。</div></div>'; return; }
-    // Biopsy + atypia RR (BCRAT lookup)
-    let rrBio = 1.0;
-    if(biopsy === 1) rrBio = atypia ? 1.93 : 1.27;
-    else if(biopsy === 2) rrBio = atypia ? 2.45 : 1.62;
-    const totalRR = rrMen * rrBirth * rrRel * rrBio;
-    // Approximate age-specific 5y baseline incidence per 100 women (rough SEER averages)
-    // Race adjustment factor
-    const raceAdj = { white: 1.0, aa: 0.95, asian: 0.5, hispanic: 0.7 };
-    const raceFactor = raceAdj[race] || 1.0;
-    // 5y baseline risk (%) by age band - rough averages from SEER 2010-2020
-    const ageBands = [
-        [35, 0.3], [40, 0.6], [45, 1.0], [50, 1.4], [55, 1.7],
-        [60, 1.9], [65, 2.0], [70, 2.0], [75, 1.9], [80, 1.7]
-    ];
-    let baseline5y = 0.3;
-    for(const [a, r] of ageBands){ if(age >= a) baseline5y = r; }
-    // Approximate 5-year risk = baseline × RR × race
-    const risk5y = baseline5y * totalRR * raceFactor;
-    const risk5yCapped = Math.min(risk5y, 50); // cap at 50% for sanity
-    // Lifetime approximation (very rough): scale by remaining life expectancy
-    const lifetimeFactor = age < 50 ? 8 : age < 60 ? 6 : age < 70 ? 4 : 2.5;
-    const lifetimeRisk = Math.min(baseline5y * totalRR * raceFactor * lifetimeFactor, 80);
-    let cls, advice;
-    if(risk5yCapped < 1.67){ cls='low'; advice='低風險（5 年 &lt;1.67%）。一般年度篩檢即可。'; }
-    else if(risk5yCapped < 3){ cls='med'; advice='中度風險。可考慮加強篩檢頻率。'; }
-    else { cls='high'; advice='<strong>高風險（5 年 ≥3%）</strong>。考慮 chemoprevention（Tamoxifen / AI / Raloxifene）；建議轉介遺傳諮詢。'; }
-    el.innerHTML=`<div class="calc-result ${cls}">
+    const r = calcGailPure(age, rrMen, rrBirth, rrRel, biopsy, atypia, race);
+    if(!r) return;
+    el.innerHTML=`<div class="calc-result ${r.cls}">
         <div class="calc-result-label">Gail Model 5 年風險（簡化估算）</div>
-        <div class="calc-result-main">${risk5yCapped.toFixed(2)}%</div>
+        <div class="calc-result-main">${r.risk5y.toFixed(2)}%</div>
         <div class="calc-result-detail">
-            <strong>終身風險（粗估）</strong>：${lifetimeRisk.toFixed(1)}%<br>
-            <strong>建議</strong>：${advice}<br>
-            <span style="color:var(--text-muted);font-size:.78rem">RR 總和 = ${totalRR.toFixed(2)} (initial=${rrMen}×birth=${rrBirth}×rel=${rrRel}×biopsy=${rrBio.toFixed(2)}) · 種族 = ${raceFactor}</span><br>
+            <strong>終身風險（粗估）</strong>：${r.lifetimeRisk.toFixed(1)}%<br>
+            <strong>建議</strong>：${r.advice}<br>
+            <span style="color:var(--text-muted);font-size:.78rem">RR 總和 = ${r.totalRR.toFixed(2)} (initial=${rrMen}×birth=${rrBirth}×rel=${rrRel}×biopsy=${r.rrBio.toFixed(2)}) · 種族 = ${r.raceFactor}</span><br>
             <span style="color:var(--text-faint);font-size:.72rem">⚠️ 此為簡化估算。臨床決策請至 <a href="https://bcrisktool.cancer.gov/" target="_blank">NCI 官方 BCRAT</a>。</span>
         </div>
     </div>`;
