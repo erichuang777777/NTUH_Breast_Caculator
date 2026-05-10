@@ -19,6 +19,7 @@
 - [x] JSON export/import for Workspace
 - [x] Integrated Workspace print summary
 - [x] Broad Dark Mode CSS coverage for new Dashboard/result elements
+- [x] Experimental outpatient explanation summary module (`patientJourney`, 開發中)
 
 ---
 
@@ -29,6 +30,8 @@
 Run the app locally and verify:
 
 - [ ] Workspace opens without console errors
+- [ ] Patient Journey module opens from landing page when Beta features are enabled
+- [ ] Patient Journey refreshes from current Workspace data
 - [ ] Form mode / Dashboard mode toggle works
 - [ ] Dashboard mode persists after refresh
 - [ ] Editing Workspace fields updates all cards
@@ -87,6 +90,23 @@ Potential next implementation:
 - [ ] Add optional Dashboard-only advanced pathology inputs, or
 - [ ] Add "Load from calculator detail tab" workflow, or
 - [ ] Keep these cards as explicit missing-data/approximation cards.
+
+### 5. Patient-centered explanation module
+
+Current scope: a lightweight, experimental explanation layer for NP/physician use while facing patients. It summarizes existing Workspace data and does not make treatment recommendations.
+
+- [x] Owner decision: module title is `門診說明摘要`
+- [x] Owner decision: keep landing-page card during experiment; mature version should likely become a Workspace subview
+- [x] Owner decision: keep `patientJourney` disabled by default while it is marked 開發中
+- [x] Owner decision: mixed wording, operated by NP/physician but understandable to patients
+- [x] Owner decision: journey stages are diagnosis/staging, neoadjuvant, surgery, adjuvant, metastatic/follow-up
+- [x] Owner decision: soften catastrophic illness wording; avoid "可能不符合" in this patient-facing explanation module
+- [x] Owner decision: keep simplified model outputs (PREDICT/CTS5/etc.) out of this module for now
+- [ ] Review wording with NP/physician workflow: concise, patient-facing, non-decisional
+- [ ] Add print-specific layout for a one-page patient explanation sheet
+- [ ] Add visual treatment journey refinements after real clinic feedback
+- [ ] Decide whether this remains a landing-page module or becomes a Workspace subview
+- [ ] Keep future Share Decision Making separate until options/preferences/documentation are ready
 
 ---
 

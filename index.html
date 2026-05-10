@@ -465,6 +465,58 @@ body {
   .nhi-elig-list { grid-template-columns: 1fr; }
 }
 
+/* ── Patient Journey / Explanation Module ── */
+.dept-card.journey::before { background: #f97316; }
+.dept-card.journey:hover { border-color: #fed7aa; }
+.page-topbar.journey h2 { color: #ea580c; }
+.journey-dev-tag { display: inline-flex; align-items: center; gap: .25rem; background: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; border-radius: 999px; padding: .2rem .55rem; font-size: .72rem; font-weight: 700; }
+.journey-layout { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(280px, .85fr); gap: 1rem; align-items: start; }
+.journey-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); padding: 1rem 1.1rem; }
+.journey-panel h3 { font-size: .92rem; color: #ea580c; margin: 0 0 .65rem; }
+.journey-hero { border-left: 4px solid #f97316; background: #fff7ed; }
+.journey-stage { display: inline-flex; align-items: center; background: #fed7aa; color: #9a3412; border-radius: 999px; padding: .25rem .7rem; font-size: .78rem; font-weight: 700; margin-bottom: .55rem; }
+.journey-main { font-size: 1.35rem; font-weight: 800; color: #9a3412; line-height: 1.25; margin-bottom: .45rem; }
+.journey-sub { color: var(--text-muted); font-size: .86rem; line-height: 1.6; }
+.journey-steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: .4rem; margin-top: .85rem; }
+.journey-step { min-height: 62px; padding: .55rem .45rem; border: 1px solid var(--border); border-radius: var(--r-sm); background: var(--surface); text-align: center; color: var(--text-muted); font-size: .72rem; font-weight: 600; }
+.journey-step.active { border-color: #f97316; background: #ffedd5; color: #9a3412; box-shadow: inset 0 0 0 1px #fdba74; }
+.journey-step.done { border-color: #bbf7d0; background: #f0fdf4; color: #166534; }
+.journey-step .num { display:block; width: 20px; height: 20px; margin: 0 auto .25rem; border-radius: 999px; background: #e5e7eb; color: #475569; line-height: 20px; font-size: .7rem; }
+.journey-step.active .num { background: #f97316; color: white; }
+.journey-step.done .num { background: #16a34a; color: white; }
+.journey-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: .55rem; }
+.journey-fact { border: 1px solid var(--border); border-radius: var(--r-sm); padding: .65rem .7rem; background: var(--bg); min-height: 72px; }
+.journey-fact-label { font-size: .68rem; font-weight: 700; color: var(--text-faint); text-transform: uppercase; letter-spacing: .04em; }
+.journey-fact-value { font-size: 1.05rem; font-weight: 800; color: var(--text); margin-top: .15rem; line-height: 1.25; }
+.journey-fact-note { font-size: .72rem; color: var(--text-muted); margin-top: .2rem; line-height: 1.35; }
+.journey-marker-row { display: flex; flex-wrap: wrap; gap: .45rem; }
+.journey-marker { display: inline-flex; align-items: center; gap: .35rem; border: 1px solid var(--border); border-radius: 999px; padding: .28rem .6rem; background: var(--surface); font-size: .8rem; font-weight: 700; color: var(--text); }
+.journey-dot { width: 9px; height: 9px; border-radius: 999px; background: #94a3b8; }
+.journey-dot.pos { background: #16a34a; }
+.journey-dot.neg { background: #64748b; }
+.journey-dot.warn { background: #f59e0b; }
+.journey-list { display: grid; gap: .45rem; }
+.journey-item { display: flex; gap: .55rem; align-items: flex-start; padding: .55rem .65rem; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-sm); font-size: .84rem; line-height: 1.55; }
+.journey-item .icon { width: 1.25rem; flex: 0 0 1.25rem; text-align: center; }
+.journey-actions { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .8rem; }
+.journey-note { margin-top: .75rem; padding: .65rem .8rem; background: #f8fafc; border-left: 3px solid #94a3b8; border-radius: 0 var(--r-sm) var(--r-sm) 0; color: var(--text-muted); font-size: .78rem; line-height: 1.55; }
+body.dark .journey-dev-tag { background: #431407; color: #fed7aa; border-color: #9a3412; }
+body.dark .journey-hero { background: #431407; }
+body.dark .journey-stage { background: #7c2d12; color: #fed7aa; }
+body.dark .journey-main { color: #fdba74; }
+body.dark .journey-step.active { background: #7c2d12; color: #fed7aa; border-color: #f97316; }
+body.dark .journey-step.done { background: #14532d; color: #86efac; border-color: #166534; }
+body.dark .journey-fact { background: #0f172a; }
+body.dark .journey-item { background: #0f172a; }
+body.dark .journey-note { background: #0f172a; }
+@media (max-width: 900px){
+  .journey-layout { grid-template-columns: 1fr; }
+  .journey-steps { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 560px){
+  .journey-steps { grid-template-columns: 1fr 1fr; }
+}
+
 /* ── Dashboard (全景) Mode ── */
 .ws-mode-toggle { display: inline-flex; align-items: center; gap: .35rem; margin-left: auto; padding: .35rem .75rem; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); color: var(--text); font-size: .82rem; font-weight: 600; cursor: pointer; transition: .15s; font-family: inherit; }
 .ws-mode-toggle:hover { background: #fdf2f8; border-color: #f9a8d4; }
@@ -1917,6 +1969,46 @@ body.dark .back-btn:hover { background: #334155; }
     </div>
   </div><!-- /wsPage -->
 
+  <!-- ===== PATIENT JOURNEY EXPLANATION PAGE (BETA) ===== -->
+  <div id="journeyPage" class="dept-page">
+    <div class="page-topbar journey">
+      <button class="back-btn" onclick="showLanding()">← 返回</button>
+      <h2>&#128506; 門診說明摘要</h2>
+      <span class="journey-dev-tag">開發中</span>
+    </div>
+    <div class="journey-layout">
+      <div>
+        <div class="journey-panel journey-hero" id="journeyHero"></div>
+        <div class="journey-panel" style="margin-top:1rem">
+          <h3>目前重點</h3>
+          <div class="journey-facts" id="journeyFacts"></div>
+        </div>
+        <div class="journey-panel" style="margin-top:1rem">
+          <h3>生物標記與治療脈絡</h3>
+          <div class="journey-marker-row" id="journeyMarkers"></div>
+        </div>
+      </div>
+      <div>
+        <div class="journey-panel">
+          <h3>需要補齊或確認</h3>
+          <div class="journey-list" id="journeyMissing"></div>
+        </div>
+        <div class="journey-panel" style="margin-top:1rem">
+          <h3>門診說明提示</h3>
+          <div class="journey-list" id="journeyQuestions"></div>
+          <div class="journey-actions">
+            <button class="ws-btn ws-btn-primary" onclick="renderPatientJourney()">重新整理</button>
+            <button class="ws-btn" onclick="showWorkspace()">回 Workspace</button>
+            <button class="ws-btn" onclick="window.print()">列印</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="journey-note">
+      此模組為開發中：用途是協助專科護理師或醫師把 Workspace 已輸入的病人資料整理成門診說明重點，不取代醫療判斷，也不產生治療建議。
+    </div>
+  </div><!-- /journeyPage -->
+
   <!-- ===== CALCULATOR PAGE ===== -->
   <div id="calcPage" class="dept-page">
     <div class="page-topbar calc">
@@ -2533,6 +2625,13 @@ async function loadLanding(){
             <div class="count" style="color:#be185d">個案決策中心</div>
             <div class="desc">跨頁共享 (Stable)${F.nhiReverseLookup?' | NHI 反向查詢 (Beta)':''} | 整合摘要</div>
         </div>`;
+    if(F.patientJourney) html += `<div class="dept-card journey" onclick="showPatientJourney()">
+            <span class="module-badge beta">開發中</span>
+            <div style="font-size:2.5rem">&#128506;</div>
+            <h2>門診說明摘要</h2>
+            <div class="count" style="color:#ea580c">Patient Journey</div>
+            <div class="desc">Workspace 延伸 | 精華重點 | 費用/健保提醒</div>
+        </div>`;
     document.getElementById('landingCards').innerHTML = html;
 }
 
@@ -2546,6 +2645,7 @@ function showLanding(){
     document.getElementById('ajccPage').classList.remove('active');
     document.getElementById('calcPage').classList.remove('active');
     document.getElementById('wsPage').classList.remove('active');
+    document.getElementById('journeyPage').classList.remove('active');
 }
 function showInpatient(){
     document.getElementById('landingPage').style.display='none';
@@ -2557,6 +2657,7 @@ function showInpatient(){
     document.getElementById('ajccPage').classList.remove('active');
     document.getElementById('calcPage').classList.remove('active');
     document.getElementById('wsPage').classList.remove('active');
+    document.getElementById('journeyPage').classList.remove('active');
     if(!_inpInited) initInpCalc();
 }
 async function showBreast(){
@@ -2569,6 +2670,7 @@ async function showBreast(){
     document.getElementById('ajccPage').classList.remove('active');
     document.getElementById('calcPage').classList.remove('active');
     document.getElementById('wsPage').classList.remove('active');
+    document.getElementById('journeyPage').classList.remove('active');
     activeFilters={};
     switchBreastTab('drugs');
 }
@@ -2582,6 +2684,7 @@ function showICD(){
     document.getElementById('ajccPage').classList.remove('active');
     document.getElementById('calcPage').classList.remove('active');
     document.getElementById('wsPage').classList.remove('active');
+    document.getElementById('journeyPage').classList.remove('active');
     if(!_icdInited) initIcdPage();
 }
 function showSurgery(){
@@ -2594,6 +2697,7 @@ function showSurgery(){
     document.getElementById('ajccPage').classList.remove('active');
     document.getElementById('calcPage').classList.remove('active');
     document.getElementById('wsPage').classList.remove('active');
+    document.getElementById('journeyPage').classList.remove('active');
     if(!_surgInited) initSurgeryList();
 }
 function showTrials(){
@@ -2606,6 +2710,7 @@ function showTrials(){
     document.getElementById('ajccPage').classList.remove('active');
     document.getElementById('calcPage').classList.remove('active');
     document.getElementById('wsPage').classList.remove('active');
+    document.getElementById('journeyPage').classList.remove('active');
 }
 function showAJCC(){
     document.getElementById('landingPage').style.display='none';
@@ -2616,6 +2721,7 @@ function showAJCC(){
     document.getElementById('trialsPage').classList.remove('active');
     document.getElementById('calcPage').classList.remove('active');
     document.getElementById('wsPage').classList.remove('active');
+    document.getElementById('journeyPage').classList.remove('active');
     document.getElementById('ajccPage').classList.add('active');
 }
 function showCalc(){
@@ -2627,6 +2733,7 @@ function showCalc(){
     document.getElementById('trialsPage').classList.remove('active');
     document.getElementById('ajccPage').classList.remove('active');
     document.getElementById('wsPage').classList.remove('active');
+    document.getElementById('journeyPage').classList.remove('active');
     document.getElementById('calcPage').classList.add('active');
     if(!_calcInited){ initCalcPage(); _calcInited=true; }
 }
@@ -2639,8 +2746,23 @@ function showWorkspace(){
     document.getElementById('trialsPage').classList.remove('active');
     document.getElementById('ajccPage').classList.remove('active');
     document.getElementById('calcPage').classList.remove('active');
+    document.getElementById('journeyPage').classList.remove('active');
     document.getElementById('wsPage').classList.add('active');
     if(!_wsInited){ initWorkspace(); _wsInited=true; }
+}
+function showPatientJourney(){
+    document.getElementById('landingPage').style.display='none';
+    document.getElementById('breastPage').classList.remove('active');
+    document.getElementById('inpatientPage').classList.remove('active');
+    document.getElementById('icdPage').classList.remove('active');
+    document.getElementById('surgeryPage').classList.remove('active');
+    document.getElementById('trialsPage').classList.remove('active');
+    document.getElementById('ajccPage').classList.remove('active');
+    document.getElementById('calcPage').classList.remove('active');
+    document.getElementById('wsPage').classList.remove('active');
+    document.getElementById('journeyPage').classList.add('active');
+    loadPatient();
+    renderPatientJourney();
 }
 // ── Patient Workspace ──
 const PATIENT_DEFAULTS = {
@@ -3404,6 +3526,101 @@ function printWorkspaceSummary(){
     w.document.write(html);
     w.document.close();
 }
+
+// ── Patient Journey Explanation (Beta / 開發中) ──
+function _journeyEsc(s){
+    return String(s==null?'':s).replace(/[<>&"]/g, c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+}
+function _journeyItem(icon, text){
+    return `<div class="journey-item"><span class="icon">${icon}</span><span>${text}</span></div>`;
+}
+function _journeyFact(label, value, note){
+    return `<div class="journey-fact">
+        <div class="journey-fact-label">${label}</div>
+        <div class="journey-fact-value">${value}</div>
+        ${note ? `<div class="journey-fact-note">${note}</div>` : ''}
+    </div>`;
+}
+function _journeyMarker(label, value){
+    let dot = 'warn';
+    if(value==='+' || value==='陽性' || value==='brca1' || value==='brca2') dot = 'pos';
+    if(value==='-' || value==='陰性' || value==='wt') dot = 'neg';
+    const shown = value ? _journeyEsc(value) : '未填';
+    return `<span class="journey-marker"><span class="journey-dot ${dot}"></span>${label}: ${shown}</span>`;
+}
+function _journeyStageInfo(p, anat){
+    if(!p.T && !p.N && !p.M) return { idx:0, label:'資料整理中', main:'先把病理與分期資料集中到同一頁', sub:'這個模組會把 Workspace 內容整理成面對病人說明時的精華摘要。' };
+    if(p.M === 'M1' || anat === 'IV') return { idx:4, label:'轉移性治療', main:'目前重點是治療目標、用藥條件與費用資訊', sub:'可先整理生物標記、前線治療與健保條件，方便門診說明。' };
+    if(p.phase === 'neoadjuvant') return { idx:1, label:'術前治療', main:'目前重點是術前治療目標與後續手術規劃', sub:'需要把腫瘤特性、藥物選項、治療反應評估與費用討論串在一起。' };
+    if(p.phase === 'adjuvant') return { idx:3, label:'術後輔助治療', main:'目前重點是降低復發風險與說明輔助治療選項', sub:'分期與生物標記可協助說明為什麼需要討論不同治療。' };
+    if(p.phase === 'advanced') return { idx:1, label:'局部晚期規劃', main:'目前重點是治療順序與跨科溝通', sub:'可先確認分期、receptor 狀態、是否需要術前治療與影像追蹤。' };
+    return { idx:1, label:'診斷與分期說明', main:'目前重點是讓病人理解分期與腫瘤特性', sub:'接下來通常會確認治療階段、是否需要補檢驗，以及費用/健保相關問題。' };
+}
+function renderPatientJourney(){
+    const p = _patient || {};
+    const hero = document.getElementById('journeyHero');
+    const facts = document.getElementById('journeyFacts');
+    const markers = document.getElementById('journeyMarkers');
+    const missing = document.getElementById('journeyMissing');
+    const questions = document.getElementById('journeyQuestions');
+    if(!hero || !facts || !markers || !missing || !questions) return;
+
+    let anat = '—';
+    if(p.T && p.N && p.M){
+        try { anat = _ajccAnatomic(p.T, p.N, p.M) || '—'; } catch(e){ anat = '—'; }
+    }
+    const subtype = deriveWorkspaceSubtype(p) || '—';
+    const icdInfo = deriveWorkspaceICD(p);
+    const stageInfo = _journeyStageInfo(p, anat);
+    const stageText = anat==='—' ? '尚未完成' : `第 ${anat} 期`;
+    const phaseLabel = {neoadjuvant:'術前治療',adjuvant:'術後輔助治療',advanced:'局部晚期',metastatic:'轉移性 first-line',metastatic_2L:'轉移性後線'}[p.phase] || '尚未設定';
+    const steps = ['診斷分期','術前治療','手術','術後輔助','轉移/追蹤'];
+
+    hero.innerHTML = `
+      <div class="journey-stage">${stageInfo.label}</div>
+      <div class="journey-main">${stageInfo.main}</div>
+      <div class="journey-sub">${stageInfo.sub}</div>
+      <div class="journey-steps">
+        ${steps.map((s,i)=>`<div class="journey-step ${i<stageInfo.idx?'done':i===stageInfo.idx?'active':''}"><span class="num">${i+1}</span>${s}</div>`).join('')}
+      </div>`;
+
+    const nhiReady = p.T && p.N && p.M && p.er && p.her2 && p.phase;
+    const catas = ['IIA','IIB','IIIA','IIIB','IIIC','IV'].includes(anat) ? '可協助準備申請資料' : (anat==='—' ? '目前資料不足' : '需依正式條件確認');
+    facts.innerHTML = [
+        _journeyFact('分期', stageText, p.T&&p.N&&p.M ? `${_journeyEsc(p.T)} / ${_journeyEsc(p.N)} / ${_journeyEsc(p.M)}` : '需 T/N/M'),
+        _journeyFact('治療階段', _journeyEsc(phaseLabel), '用來對齊費用與健保條件'),
+        _journeyFact('腫瘤亞型', _journeyEsc(subtype), subtype==='—' ? '需 ER/HER2' : '用白話解釋治療分類'),
+        _journeyFact('ICD / 重大傷病', _journeyEsc(icdInfo ? icdInfo.code : '待確認'), catas),
+        _journeyFact('健保條件對照', nhiReady ? '可初步對照' : '需補資料', nhiReady ? '仍以院內與健保署審核為準' : '通常需分期、receptor、治療階段'),
+        _journeyFact('費用說明', '聚焦自費差異', '適合搭配藥物費用與手術自費清單')
+    ].join('');
+
+    markers.innerHTML = [
+        _journeyMarker('ER', p.er),
+        _journeyMarker('PR', p.pr),
+        _journeyMarker('HER2', p.her2),
+        _journeyMarker('Ki-67', p.ki67 ? `${p.ki67}%` : ''),
+        _journeyMarker('BRCA', p.brca),
+        _journeyMarker('PD-L1', p.pdl1)
+    ].join('');
+
+    const gaps = [];
+    if(!p.T || !p.N || !p.M) gaps.push('補齊 T / N / M，才能清楚說明分期、重大傷病與部分健保條件。');
+    if(!p.er || !p.pr || !p.her2) gaps.push('補齊 ER / PR / HER2，這是乳癌治療分類與藥物條件的核心資料。');
+    if(!p.phase) gaps.push('設定目前治療階段，才能把費用與健保條件放在正確情境。');
+    if(!p.size || p.nodes_pos==='') gaps.push('補上腫瘤大小與陽性淋巴結數，方便用圖像化方式說明風險與模型。');
+    if(!p.brca && (p.her2==='-' || p.her2==='low')) gaps.push('若後續討論特定標靶或遺傳風險，可確認是否需要 BRCA 資料。');
+    if(!gaps.length) gaps.push('目前核心說明資料大致齊全，可進一步搭配藥物費用與整合摘要列印。');
+    missing.innerHTML = gaps.map(x=>_journeyItem('□', _journeyEsc(x))).join('');
+
+    const q = [];
+    q.push('今天最需要讓病人理解的是：目前在哪個治療階段，以及下一步為什麼。');
+    if(!nhiReady) q.push('若要討論健保或自費，先確認是否還缺分期、生物標記或治療線別。');
+    else q.push('健保欄位適合用「條件對照」說明，不直接說成最終給付判定。');
+    if(anat !== '—') q.push(`可用「第 ${anat} 期」搭配 receptor 狀態，簡短說明目前為什麼要討論這些項目。`);
+    q.push('若病人關心費用，先分成健保、可能自費、需補資料三類，避免一次列出太多細節。');
+    questions.innerHTML = q.map(x=>_journeyItem('•', _journeyEsc(x))).join('');
+}
 // Auto-load workspace on app start
 document.addEventListener('DOMContentLoaded', ()=>{
     loadPatient();
@@ -3876,6 +4093,7 @@ const FEATURE_FLAGS_DEFAULT = {
     calculator: true,
     workspace: true,
     darkMode: true,
+    patientJourney: false,    // Experimental: off by default until clinic wording/layout is reviewed
     // Calculator sub-features (stable: well-validated formulas)
     calc_cts5: true,        // Dowsett 2018, well-validated
     calc_pepi: true,        // Ellis 2008, well-validated
@@ -3892,7 +4110,7 @@ const FEATURE_FLAGS_DEFAULT = {
     calc_gail: false         // Beta: 種族/年齡/lifetime 因子皆為估算，預設關閉
 };
 // PREDICT removed from BETA_KEYS after R validation passed (commit v1.8)
-const FEATURE_FLAGS_BETA_KEYS = ['ajccPrognostic','nhiReverseLookup','calc_ihc4','calc_gail'];
+const FEATURE_FLAGS_BETA_KEYS = ['patientJourney','ajccPrognostic','nhiReverseLookup','calc_ihc4','calc_gail'];
 const FEATURE_FLAGS_KEY = '_feature_flags';
 let FEATURE_FLAGS = { ...FEATURE_FLAGS_DEFAULT };
 function loadFeatureFlags(){
@@ -3964,6 +4182,7 @@ function renderSettings(){
         {key:'calc_hscore', label:'  └ H-score', stable:true},
         {key:'calc_rcb', label:'  └ RCB (Residual Cancer Burden)', stable:true},
         {key:'predict', label:'  └ PREDICT v2.1', stable:true, note:'✅ 已通過 R nhs.predict 2595-case 驗證 (max err 0.02%)'},
+        {key:'patientJourney', label:'門診說明摘要 / Patient Journey', stable:false, note:'開發中：Workspace 延伸模組；供專科護理師或醫師面對病人時快速整理重點，不產生治療建議'},
         {key:'ajccPrognostic', label:'AJCC 預後期別 (Clinical/Pathologic)', stable:false, note:'簡化估算，正式請參閱 AJCC 第八版手冊 Table 48.2'},
         {key:'nhiReverseLookup', label:'健保給付反向查詢 (Workspace)', stable:false, note:'給付規則需驗證；以健保署最新公告為準'},
         {key:'calc_ihc4', label:'  └ IHC4', stable:false, note:'公式正確 (Cuzick 2011)，但 cutoffs 為近似分界非原論文 tertile，預設關閉'},
