@@ -11,7 +11,7 @@
 - [x] Dashboard/Form mode persistence in `localStorage`
 - [x] Responsive Dashboard two-column layout
 - [x] Dashboard result grid and result-card component
-- [x] Dashboard cards for AJCC, CTS5, PREDICT, NPI, Magee, IHC4, subtype, ICD-10, catastrophic illness, BSA/CrCl, NCCN entry
+- [x] Dashboard cards for AJCC, CTS5, PREDICT, NPI, Magee, IHC4, subtype, ICD-10, catastrophic illness, BSA/CrCl
 - [x] Dashboard cards for PEPI, H-score, RCB, Gail
 - [x] Pure calculator helpers for CTS5, PEPI, NPI, Magee, IHC4, H-score, RCB, Gail, and PREDICT Dashboard use
 - [x] Workspace summary no longer depends on Dashboard DOM ids for subtype / ICD
@@ -39,7 +39,6 @@ Run the app locally and verify:
 - [ ] Clicking calculator cards opens the matching calculator tab
 - [ ] `產生整合摘要` shows correct subtype and ICD-10
 - [ ] `匯出 JSON` / `匯入 JSON` still work
-- [ ] NCCN flow link opens correctly
 - [ ] Ctrl+D Dark Mode still works
 
 ### 2. Responsive audit

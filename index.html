@@ -474,10 +474,6 @@ body {
 .dept-card.trial::before { background: #0369a1; }
 .dept-card.trial:hover { border-color: #bae6fd; }
 
-/* ── NCCN Guidelines Card ── */
-.dept-card.nccn::before { background: #7c3aed; }
-.dept-card.nccn:hover { border-color: #c4b5fd; }
-
 /* ── AJCC Staging Page ── */
 .page-topbar.ajcc h2 { color: #b45309; }
 .dept-card.ajcc::before { background: #d97706; }
@@ -3229,13 +3225,6 @@ async function loadLanding(){
             <div class="count" style="color:#0369a1">ClinicalTrials.gov</div>
             <div class="desc">乳癌相關臨床試驗 | 台灣招募中</div>
         </div>`;
-    if(F.nccn && isDevMode()) html += `<div class="dept-card nccn" onclick="window.open('nccn_viewer.html','_blank')">
-            <span class="module-badge beta">Dev only</span>
-            <div style="font-size:2.5rem">&#128214;</div>
-            <h2>NCCN 治療指引</h2>
-            <div class="count" style="color:#7c3aed">內部開發</div>
-            <div class="desc">版權內容不公開；僅本機或 dev 模式顯示入口</div>
-        </div>`;
     if(F.workspace) html += `<div class="dept-card ws" onclick="showWorkspace()">
             ${_moduleBadge(wsHasBeta)}
             <div style="font-size:2.5rem">&#128100;</div>
@@ -5133,7 +5122,6 @@ const FEATURE_FLAGS_DEFAULT = {
     icd: true,
     surgery: true,
     trials: true,
-    nccn: false,            // Hidden publicly: NCCN visualized content has copyright constraints
     ajcc: true,
     calculator: true,
     workspace: true,
@@ -5163,6 +5151,7 @@ function loadFeatureFlags(){
     try {
         const saved = localStorage.getItem(FEATURE_FLAGS_KEY);
         if(saved) FEATURE_FLAGS = { ...FEATURE_FLAGS_DEFAULT, ...JSON.parse(saved) };
+        delete FEATURE_FLAGS.nccn;
         FEATURE_FLAGS.calc_ihc4 = true;
         FEATURE_FLAGS.calc_gail = true;
     } catch(e){ console.warn('Failed to load feature flags', e); }
@@ -5177,7 +5166,7 @@ function loadFeatureFlags(){
         }
     } catch(e){}
     FEATURE_FLAGS.patientJourney = false;
-    if(!isDevMode()) FEATURE_FLAGS.nccn = false;
+    delete FEATURE_FLAGS.nccn;
 }
 function saveFeatureFlags(){
     try { localStorage.setItem(FEATURE_FLAGS_KEY, JSON.stringify(FEATURE_FLAGS)); } catch(e){}
@@ -5199,7 +5188,7 @@ function setDevMode(enableAll){
     FEATURE_FLAGS.calc_ihc4 = true;
     FEATURE_FLAGS.calc_gail = true;
     FEATURE_FLAGS.patientJourney = false;
-    if(!isDevMode()) FEATURE_FLAGS.nccn = false;
+    delete FEATURE_FLAGS.nccn;
     saveFeatureFlags();
     renderSettings();
     if(typeof loadLanding === 'function') loadLanding();

@@ -9,10 +9,8 @@
 ```
 D:\NHI_Drug_Caculator\
 ├── index.html                      ← 線上靜態版本（Netlify 部署）
-├── nccn_viewer.html                ← NCCN 治療指引獨立 viewer
 ├── data/                           ← 執行期資料
 │   ├── ajcc_lookup.json
-│   ├── viz_data.json               (NCCN 視覺化資料)
 │   ├── flowcharts.json             (29 個 BINV 流程圖)
 │   ├── page_index.json
 │   ├── cross_references.json
@@ -160,7 +158,7 @@ if(F.myNewFeature) html += `<div class="dept-card ...">...</div>`;
 ```
 v1.0    初版（基礎乳癌藥物 + 住院化療）
 v1.1    費用比較表 + 病患摘要列印
-v1.2    PREDICT v2.3 + Workspace + Calculator + AJCC + NCCN  ← 目前
+v1.2    PREDICT v2.3 + Workspace + Calculator + AJCC
 v1.x    下一版
 ```
 

@@ -2,6 +2,7 @@
   publish = "."
 
 [[redirects]]
+  # Legacy NCCN module is removed until it is rebuilt as a separate plugin.
   from = "/nccn_viewer.html"
   to = "/index.html"
   status = 404
