@@ -615,6 +615,30 @@ body {
 .ws-field label { display:block; font-size: .72rem; font-weight: 600; color: var(--text-muted); margin-bottom: .18rem; letter-spacing: .02em; }
 .ws-field input, .ws-field select { width: 100%; padding: .4rem .55rem; border: 1px solid var(--border); border-radius: var(--r-sm); background: var(--surface); color: var(--text); font-size: .86rem; font-family: inherit; }
 .ws-field input:focus, .ws-field select:focus { outline: 2px solid #ec4899; outline-offset: -1px; border-color: #ec4899; }
+.ws-intake-section { border-left: 3px solid #0f766e; }
+.ws-intake-section h3 { color: #0f766e; }
+.ws-intake-section h3::before { background: #0f766e; }
+.ws-quick-btn {
+    border: 1px solid #99f6e4;
+    background: #ccfbf1;
+    color: #0f766e;
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: .76rem;
+    font-weight: 800;
+    height: 1.65rem;
+    padding: 0 .65rem;
+}
+.ws-intake-missing {
+    flex: 1 1 280px;
+    min-width: 240px;
+    color: var(--text-muted);
+    font-size: .72rem;
+    line-height: 1.35;
+}
+.ws-intake-missing strong { color: #0f766e; }
+.ws-intake-missing .missing { color: #b45309; }
 .dashboard-mode .ws-field input,
 .dashboard-mode .ws-field select {
     width: var(--ws-control-w, 10ch);
@@ -656,6 +680,10 @@ body {
 .dashboard-mode #ws_axillary_surgery,
 .dashboard-mode #ws_reconstruction_surgery { --ws-control-w: 8ch; }
 .dashboard-mode #ws_menopause { --ws-control-w: 9ch; }
+.dashboard-mode #ws_visit_type { --ws-control-w: 8ch; }
+.dashboard-mode #ws_initial_visit_date { --ws-control-w: 14ch; }
+.dashboard-mode #ws_referral_source { --ws-control-w: 13ch; }
+.dashboard-mode #ws_initial_status { --ws-control-w: 16ch; }
 .dashboard-mode #ws_phase { --ws-control-w: 16ch; }
 .dashboard-mode #ws_prior { --ws-control-w: 22ch; }
 .ws-derived { display: flex; flex-wrap: wrap; gap: .5rem .9rem; padding: .6rem .8rem; background: linear-gradient(135deg, #fdf2f8 0%, #fef3c7 100%); border-radius: var(--r-sm); margin-top: .6rem; font-size: .82rem; }
@@ -2440,6 +2468,18 @@ body.dark .back-btn:hover { background: #334155; }
 
      <div class="ws-step-label">1. 共用病人變數</div>
      <div class="ws-input-col">
+      <div class="ws-section ws-intake-section">
+        <h3>初診快填</h3>
+        <div class="ws-form">
+          <div class="ws-field"><label>門診類型</label><select id="ws_visit_type" onchange="setPatientField('visit_type',this.value)"><option value="">—</option><option value="initial">初診</option><option value="followup">複診</option></select></div>
+          <div class="ws-field"><label>初診日</label><input type="date" id="ws_initial_visit_date" onchange="setPatientField('initial_visit_date',this.value)"></div>
+          <div class="ws-field"><label>來源</label><select id="ws_referral_source" onchange="setPatientField('referral_source',this.value)"><option value="">—</option><option value="self">自行就醫</option><option value="outside">外院轉入</option><option value="screening">篩檢轉介</option><option value="consult">院內會診</option></select></div>
+          <div class="ws-field"><label>初診狀態</label><select id="ws_initial_status" onchange="setPatientField('initial_status',this.value)"><option value="">—</option><option value="suspected">疑似乳癌</option><option value="biopsy_proven">已切片確診</option><option value="postop_outside">外院術後</option><option value="recurrence">疑似復發/轉移</option></select></div>
+          <button type="button" class="ws-quick-btn" onclick="applyInitialVisitPreset()">套用初診</button>
+          <button type="button" class="ws-quick-btn" onclick="startNextInitialVisit()">下一位初診</button>
+          <div class="ws-intake-missing" id="wsInitialMissing"></div>
+        </div>
+      </div>
       <div class="ws-section">
         <h3>基本資料 / 標記</h3>
         <div class="ws-form">
@@ -2489,7 +2529,7 @@ body.dark .back-btn:hover { background: #334155; }
         <div class="ws-form">
           <div class="ws-field"><label>停經狀態</label><select id="ws_menopause" onchange="setPatientField('menopause',this.value)"><option value="">—</option><option value="pre">未停經</option><option value="post">已停經</option></select></div>
           <div class="ws-field"><label>ECOG PS</label><select id="ws_ecog" onchange="setPatientField('ecog',this.value)"><option value="">—</option><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
-          <div class="ws-field"><label>治療線別/情境</label><select id="ws_phase" onchange="setPatientField('phase',this.value)"><option value="">—</option><option value="neoadjuvant">術前 Neoadjuvant</option><option value="adjuvant">術後 Adjuvant</option><option value="advanced">局部晚期</option><option value="metastatic">轉移性 / 第一線</option><option value="metastatic_2L">轉移性 / 第二線以上</option></select></div>
+          <div class="ws-field"><label>治療線別/情境</label><select id="ws_phase" onchange="setPatientField('phase',this.value)"><option value="">—</option><option value="initial">初診 / 待決策</option><option value="neoadjuvant">術前 Neoadjuvant</option><option value="adjuvant">術後 Adjuvant</option><option value="advanced">局部晚期</option><option value="metastatic">轉移性 / 第一線</option><option value="metastatic_2L">轉移性 / 第二線以上</option></select></div>
           <div class="ws-field"><label>已用過治療</label><input type="text" id="ws_prior" oninput="setPatientField('prior',this.value)" placeholder="例如：AC-T, Trastuzumab"></div>
         </div>
       </div>
@@ -3512,6 +3552,7 @@ function showPatientJourney(){
 // ── Patient Workspace ──
 const PATIENT_DEFAULTS = {
     mrn:'', age:'', sex:'F', height:'', weight:'', scr:'',
+    visit_type:'', initial_visit_date:'', referral_source:'', initial_status:'',
     side:'', quadrant:'',
     T:'', N:'', M:'', cT:'', cN:'', cM:'', pT:'', pN:'', pM:'',
     size:'', nodes_total:'', nodes_pos:'', grade:'',
@@ -3543,6 +3584,74 @@ function setPatientField(key, value){
     savePatient();
     refreshWorkspaceDerived();
     refreshDashboardResults();
+    refreshInitialVisitChecklist();
+}
+function syncWorkspaceInputs(keys=Object.keys(PATIENT_DEFAULTS)){
+    keys.forEach(k => {
+        const el = document.getElementById('ws_'+k);
+        if(el) el.value = _patient[k] || '';
+    });
+}
+const INITIAL_VISIT_REQUIRED = [
+    {key:'age', label:'年齡'},
+    {key:'size', label:'Tumor size'},
+    {key:'grade', label:'Grade'},
+    {key:'er', label:'ER'},
+    {key:'pr', label:'PR'},
+    {key:'her2', label:'HER2'},
+    {key:'cT', label:'cT'},
+    {key:'cN', label:'cN'},
+    {key:'cM', label:'cM'},
+    {key:'ecog', label:'ECOG'}
+];
+function getInitialVisitPreset(){
+    return {
+        ...PATIENT_DEFAULTS,
+        visit_type: 'initial',
+        initial_visit_date: new Date().toISOString().slice(0,10),
+        phase: 'initial',
+        cM: 'M0'
+    };
+}
+function applyInitialVisitPreset(){
+    _patient.visit_type = 'initial';
+    if(!_patient.initial_visit_date) _patient.initial_visit_date = new Date().toISOString().slice(0,10);
+    if(!_patient.phase) _patient.phase = 'initial';
+    if(!_patient.cM) _patient.cM = 'M0';
+    normalizeWorkspaceStage();
+    savePatient();
+    syncWorkspaceInputs(['visit_type','initial_visit_date','phase','cM','T','N','M']);
+    refreshWorkspaceDerived();
+    refreshDashboardResults();
+    refreshInitialVisitChecklist();
+}
+function startNextInitialVisit(){
+    if(!confirm('清空目前 workspace，並建立下一位初診？')) return;
+    _patient = getInitialVisitPreset();
+    normalizeWorkspaceStage();
+    savePatient();
+    syncWorkspaceInputs();
+    refreshWorkspaceDerived();
+    refreshDashboardResults();
+    refreshInitialVisitChecklist();
+}
+function hasPatientValue(key){
+    const v = _patient[key];
+    return v !== undefined && v !== null && String(v).trim() !== '';
+}
+function refreshInitialVisitChecklist(){
+    const el = document.getElementById('wsInitialMissing');
+    if(!el) return;
+    const missing = INITIAL_VISIT_REQUIRED.filter(item => !hasPatientValue(item.key)).map(item => item.label);
+    if(_patient.visit_type !== 'initial' && missing.length === INITIAL_VISIT_REQUIRED.length){
+        el.innerHTML = '初診時可先按「套用初診」，系統會標出分期與治療決策常缺欄位。';
+        return;
+    }
+    if(!missing.length){
+        el.innerHTML = '<strong>初診核心欄位已足夠</strong>，可先看 AJCC 與風險分數。';
+        return;
+    }
+    el.innerHTML = `<strong>待補 ${missing.length} 項：</strong><span class="missing">${missing.join(' / ')}</span>`;
 }
 function migrateWorkspaceSurgeryFields(){
     const old = _patient.surgery_type;
@@ -3564,13 +3673,11 @@ function initWorkspace(){
     loadPatient();
     loadDashboardMode();
     // Populate inputs
-    Object.keys(PATIENT_DEFAULTS).forEach(k => {
-        const el = document.getElementById('ws_'+k);
-        if(el) el.value = _patient[k] || '';
-    });
+    syncWorkspaceInputs();
     applyDashboardModeUI();
     refreshWorkspaceDerived();
     refreshDashboardResults();
+    refreshInitialVisitChecklist();
 }
 function normalizeWorkspaceStage(){
     if(!_patient.cT && _patient.T) _patient.cT = _patient.T;
