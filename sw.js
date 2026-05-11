@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'ntuh-breast-v2';
+const CACHE_VERSION = 'ntuh-breast-v3';
 const APP_SHELL = [
   '/',
   '/index.html',
