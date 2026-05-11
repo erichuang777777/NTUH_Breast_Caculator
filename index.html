@@ -300,12 +300,18 @@ body {
   }
   body.desktop-dashboard-mode #landingPage { display: none !important; }
   body.desktop-dashboard-mode .clinical-notice,
+  body.desktop-dashboard-mode .view-mode-panel,
   body.desktop-dashboard-mode .version-banner,
   body.desktop-dashboard-mode #wsPage,
   body.desktop-dashboard-mode #breastPage {
     grid-column: 1 / -1;
   }
   body.desktop-dashboard-mode .clinical-notice { order: 0; }
+  body.desktop-dashboard-mode .view-mode-panel {
+    order: 0;
+    justify-content: flex-end;
+    padding: .1rem 0;
+  }
   body.desktop-dashboard-mode .version-banner { order: 0; }
   body.desktop-dashboard-mode #wsPage { order: 1; }
   body.desktop-dashboard-mode #breastPage { order: 2; }
@@ -348,8 +354,11 @@ body {
     margin: 0 !important;
   }
   body.desktop-dashboard-mode #breastPage .content-layout {
-    grid-template-columns: 260px minmax(0, 1fr);
-    gap: .8rem;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+  body.desktop-dashboard-mode #breastPage .filter-sidebar {
+    display: none;
   }
   body.desktop-dashboard-mode #breastPage .drug-list,
   body.desktop-dashboard-mode #surgeryList,
@@ -365,6 +374,40 @@ body {
 .landing-actions {
   text-align: center;
   padding: .5rem 0 2rem;
+}
+
+.view-mode-panel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: .45rem;
+  margin: .45rem 0 .65rem;
+}
+.view-mode-label {
+  color: var(--text-muted);
+  font-size: .76rem;
+  font-weight: 700;
+}
+.view-mode-btn {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-2);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: .78rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: .46rem .68rem;
+}
+.view-mode-btn.active {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  color: #fff;
+}
+.view-mode-btn:not(.active):hover {
+  border-color: #1d4ed8;
+  color: #1d4ed8;
 }
 
 /* ── DEPARTMENT PAGE ── */
@@ -1807,6 +1850,12 @@ body.dark .back-btn:hover { background: #334155; }
     <button class="btn btn-sm btn-primary" onclick="location.reload()">重新載入</button>
   </div>
 
+  <div class="view-mode-panel" role="group" aria-label="介面模式">
+    <span class="view-mode-label">介面模式</span>
+    <button type="button" class="view-mode-btn" id="viewModeCardsBtn" onclick="setAppViewMode('cards')">手機卡片</button>
+    <button type="button" class="view-mode-btn" id="viewModeDashboardBtn" onclick="setAppViewMode('dashboard')">桌面 Dashboard</button>
+  </div>
+
   <!-- ===== LANDING PAGE ===== -->
   <div id="landingPage">
     <div class="landing-wrap">
@@ -3169,9 +3218,11 @@ document.addEventListener('DOMContentLoaded', async ()=>{
     cachedFetch('/api/drugs?specialty=oncology_breast');
     cachedFetch('/api/drugs?specialty=oncology_heme');
     cachedFetch('/api/formulations');
+    updateViewModeToggle();
     const params = new URLSearchParams(window.location.search);
     if(params.get('page') === 'workspace') showWorkspace();
-    else if(isDesktopDashboardViewport()) showDesktopDashboard();
+    else if(getAppViewMode() === 'dashboard') showDesktopDashboard();
+    else updateViewModeToggle();
 });
 
 // ── Landing ──
@@ -3249,6 +3300,28 @@ function isDesktopDashboardViewport(){
     try { return window.matchMedia('(min-width: 1180px)').matches; }
     catch(e){ return false; }
 }
+const APP_VIEW_MODE_KEY = 'nhi_ui_view_mode';
+function getAppViewMode(){
+    try {
+        const saved = localStorage.getItem(APP_VIEW_MODE_KEY);
+        if(saved === 'cards' || saved === 'dashboard') return saved;
+    } catch(e){}
+    return isDesktopDashboardViewport() ? 'dashboard' : 'cards';
+}
+function updateViewModeToggle(){
+    const mode = getAppViewMode();
+    const cardsBtn = document.getElementById('viewModeCardsBtn');
+    const dashBtn = document.getElementById('viewModeDashboardBtn');
+    if(cardsBtn) cardsBtn.classList.toggle('active', mode === 'cards');
+    if(dashBtn) dashBtn.classList.toggle('active', mode === 'dashboard');
+}
+function setAppViewMode(mode){
+    const next = mode === 'dashboard' ? 'dashboard' : 'cards';
+    try { localStorage.setItem(APP_VIEW_MODE_KEY, next); } catch(e){}
+    updateViewModeToggle();
+    if(next === 'dashboard') showDesktopDashboard();
+    else showLandingCards();
+}
 function setPageActive(id, active){
     const el = document.getElementById(id);
     if(el) el.classList.toggle('active', !!active);
@@ -3275,6 +3348,7 @@ function initDashboardBreastPanel(){
 }
 function showDesktopDashboard(){
     document.body.classList.add('desktop-dashboard-mode');
+    updateViewModeToggle();
     document.getElementById('landingPage').style.display='none';
     const F = FEATURE_FLAGS;
     setPageActive('breastPage', !!F.breast);
@@ -3296,12 +3370,9 @@ function showDesktopDashboard(){
         switchCalcTab('gail');
     }
 }
-function showLanding(){
-    if(isDesktopDashboardViewport()){
-        showDesktopDashboard();
-        return;
-    }
+function showLandingCards(){
     leaveDesktopDashboard();
+    updateViewModeToggle();
     document.getElementById('landingPage').style.display='';
     document.getElementById('breastPage').classList.remove('active');
     document.getElementById('inpatientPage').classList.remove('active');
@@ -3312,6 +3383,13 @@ function showLanding(){
     document.getElementById('calcPage').classList.remove('active');
     document.getElementById('wsPage').classList.remove('active');
     document.getElementById('journeyPage').classList.remove('active');
+}
+function showLanding(){
+    if(getAppViewMode() === 'dashboard'){
+        showDesktopDashboard();
+        return;
+    }
+    showLandingCards();
 }
 function showInpatient(){
     leaveDesktopDashboard();
@@ -3705,8 +3783,8 @@ function toggleRiskCard(id){
 function _markerSign(v){
     const s = String(v ?? '').trim().toLowerCase();
     if(!s) return '';
-    if(s === '+' || s.includes('陽') || s === 'pos' || s === 'positive') return '+';
-    if(s === '-' || s.includes('陰') || s === 'neg' || s === 'negative') return '-';
+    if(s === '+' || s.startsWith('+') || s.includes('陽') || s === 'pos' || s === 'positive') return '+';
+    if(s === '-' || s.startsWith('-') || s.includes('陰') || s === 'neg' || s === 'negative') return '-';
     const n = Number(s.replace('%',''));
     if(!Number.isNaN(n)) return n >= 1 ? '+' : '-';
     return '';
@@ -3993,7 +4071,7 @@ function refreshDashboardResults(){
     const erSign = _markerSign(p.er);
     const prSign = _markerSign(p.pr);
 
-    // 1) AJCC stage (anatomic + v9 prognostic)
+    // 1) AJCC stage (anatomic + v8 prognostic)
     if(p.T && p.N && p.M){
         let anat = '—';
         try { anat = _ajccAnatomic(p.T,p.N,p.M) || '—'; } catch(e){}
@@ -4010,7 +4088,7 @@ function refreshDashboardResults(){
             id:'ajcc',
             title:'AJCC 期別',
             value: anat==='—' ? '—' : ('第 '+anat+' 期'),
-            subtitle: prog ? ('v9 預後分組: '+prog) : '解剖 (8th)',
+            subtitle: prog ? ('v8 預後期別: '+prog) : '解剖 (8th)',
             cls: eligible ? 'high' : (anat==='—'?'':'low'),
             titleAttr:'依 Workspace TNM / biomarker 即時計算'
         }));
