@@ -2119,53 +2119,53 @@ body.dark .back-btn:hover { background: #334155; }
         <div style="display:flex;flex-wrap:wrap;gap:1.5rem;align-items:flex-start;justify-content:center">
           <!-- Two separate breast diagrams -->
           <div style="display:flex;gap:1.2rem;flex-wrap:wrap;justify-content:center">
-            <!-- Right Breast (右乳) — outer=right side of diagram -->
+            <!-- Right Breast (右乳) - mirrored view: outer=left side of diagram -->
             <div class="icd-breast-wrap">
               <div class="icd-breast-label">右乳<br><small>Right Breast</small></div>
               <svg class="icd-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                 <!-- Background ellipse -->
                 <ellipse cx="100" cy="108" rx="84" ry="74" fill="#fff1f2" stroke="#fda4af" stroke-width="1.5"/>
-                <!-- Quadrant paths — right breast: outer(外)=right, inner(內)=left -->
-                <path class="icd-q" data-side="R" data-zone="UO" d="M100,108 L100,34 A84,74 0 0,1 184,108 Z" onclick="selectIcdZone('R','UO')"/>
-                <path class="icd-q" data-side="R" data-zone="UI" d="M100,108 L100,34 A84,74 0 0,0 16,108 Z" onclick="selectIcdZone('R','UI')"/>
-                <path class="icd-q" data-side="R" data-zone="LO" d="M100,108 L184,108 A84,74 0 0,1 100,182 Z" onclick="selectIcdZone('R','LO')"/>
-                <path class="icd-q" data-side="R" data-zone="LI" d="M100,108 L16,108 A84,74 0 0,0 100,182 Z" onclick="selectIcdZone('R','LI')"/>
+                <!-- Quadrant paths - right breast: outer(外)=left, inner(內)=right -->
+                <path class="icd-q" data-side="R" data-zone="UO" d="M100,108 L100,34 A84,74 0 0,0 16,108 Z" onclick="selectIcdZone('R','UO')"/>
+                <path class="icd-q" data-side="R" data-zone="UI" d="M100,108 L100,34 A84,74 0 0,1 184,108 Z" onclick="selectIcdZone('R','UI')"/>
+                <path class="icd-q" data-side="R" data-zone="LO" d="M100,108 L16,108 A84,74 0 0,0 100,182 Z" onclick="selectIcdZone('R','LO')"/>
+                <path class="icd-q" data-side="R" data-zone="LI" d="M100,108 L184,108 A84,74 0 0,1 100,182 Z" onclick="selectIcdZone('R','LI')"/>
                 <!-- Divider lines -->
                 <line x1="100" y1="34" x2="100" y2="182" stroke="#fca5a5" stroke-width="1.2" stroke-dasharray="3,2" pointer-events="none"/>
                 <line x1="16" y1="108" x2="184" y2="108" stroke="#fca5a5" stroke-width="1.2" stroke-dasharray="3,2" pointer-events="none"/>
                 <!-- Nipple/areola -->
                 <circle class="icd-q icd-nipple" data-side="R" data-zone="nipple" cx="100" cy="108" r="15" onclick="selectIcdZone('R','nipple')"/>
                 <!-- Zone labels -->
-                <text x="152" y="72" text-anchor="middle" font-size="10" fill="#be123c" font-weight="700" pointer-events="none">外上</text>
-                <text x="48" y="72" text-anchor="middle" font-size="10" fill="#9f1239" font-weight="700" pointer-events="none">內上</text>
-                <text x="152" y="155" text-anchor="middle" font-size="10" fill="#be123c" font-weight="700" pointer-events="none">外下</text>
-                <text x="48" y="155" text-anchor="middle" font-size="10" fill="#9f1239" font-weight="700" pointer-events="none">內下</text>
-                <text x="100" y="111" text-anchor="middle" font-size="8" fill="#7f1d1d" pointer-events="none">乳頭</text>
-                <!-- Side arrows -->
-                <text x="164" y="22" text-anchor="middle" font-size="8.5" fill="#e11d48" pointer-events="none">外→</text>
-                <text x="36" y="22" text-anchor="middle" font-size="8.5" fill="#be123c" pointer-events="none">←內</text>
-              </svg>
-            </div>
-            <!-- Left Breast (左乳) — outer=left side of diagram -->
-            <div class="icd-breast-wrap">
-              <div class="icd-breast-label">左乳<br><small>Left Breast</small></div>
-              <svg class="icd-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                <ellipse cx="100" cy="108" rx="84" ry="74" fill="#fff1f2" stroke="#fda4af" stroke-width="1.5"/>
-                <!-- Left breast: outer(外)=left, inner(內)=right -->
-                <path class="icd-q" data-side="L" data-zone="UO" d="M100,108 L100,34 A84,74 0 0,0 16,108 Z" onclick="selectIcdZone('L','UO')"/>
-                <path class="icd-q" data-side="L" data-zone="UI" d="M100,108 L100,34 A84,74 0 0,1 184,108 Z" onclick="selectIcdZone('L','UI')"/>
-                <path class="icd-q" data-side="L" data-zone="LO" d="M100,108 L16,108 A84,74 0 0,0 100,182 Z" onclick="selectIcdZone('L','LO')"/>
-                <path class="icd-q" data-side="L" data-zone="LI" d="M100,108 L184,108 A84,74 0 0,1 100,182 Z" onclick="selectIcdZone('L','LI')"/>
-                <line x1="100" y1="34" x2="100" y2="182" stroke="#fca5a5" stroke-width="1.2" stroke-dasharray="3,2" pointer-events="none"/>
-                <line x1="16" y1="108" x2="184" y2="108" stroke="#fca5a5" stroke-width="1.2" stroke-dasharray="3,2" pointer-events="none"/>
-                <circle class="icd-q icd-nipple" data-side="L" data-zone="nipple" cx="100" cy="108" r="15" onclick="selectIcdZone('L','nipple')"/>
                 <text x="48" y="72" text-anchor="middle" font-size="10" fill="#be123c" font-weight="700" pointer-events="none">外上</text>
                 <text x="152" y="72" text-anchor="middle" font-size="10" fill="#9f1239" font-weight="700" pointer-events="none">內上</text>
                 <text x="48" y="155" text-anchor="middle" font-size="10" fill="#be123c" font-weight="700" pointer-events="none">外下</text>
                 <text x="152" y="155" text-anchor="middle" font-size="10" fill="#9f1239" font-weight="700" pointer-events="none">內下</text>
                 <text x="100" y="111" text-anchor="middle" font-size="8" fill="#7f1d1d" pointer-events="none">乳頭</text>
+                <!-- Side arrows -->
                 <text x="36" y="22" text-anchor="middle" font-size="8.5" fill="#e11d48" pointer-events="none">←外</text>
                 <text x="164" y="22" text-anchor="middle" font-size="8.5" fill="#be123c" pointer-events="none">內→</text>
+              </svg>
+            </div>
+            <!-- Left Breast (左乳) - mirrored view: outer=right side of diagram -->
+            <div class="icd-breast-wrap">
+              <div class="icd-breast-label">左乳<br><small>Left Breast</small></div>
+              <svg class="icd-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="100" cy="108" rx="84" ry="74" fill="#fff1f2" stroke="#fda4af" stroke-width="1.5"/>
+                <!-- Left breast: outer(外)=right, inner(內)=left -->
+                <path class="icd-q" data-side="L" data-zone="UO" d="M100,108 L100,34 A84,74 0 0,1 184,108 Z" onclick="selectIcdZone('L','UO')"/>
+                <path class="icd-q" data-side="L" data-zone="UI" d="M100,108 L100,34 A84,74 0 0,0 16,108 Z" onclick="selectIcdZone('L','UI')"/>
+                <path class="icd-q" data-side="L" data-zone="LO" d="M100,108 L184,108 A84,74 0 0,1 100,182 Z" onclick="selectIcdZone('L','LO')"/>
+                <path class="icd-q" data-side="L" data-zone="LI" d="M100,108 L16,108 A84,74 0 0,0 100,182 Z" onclick="selectIcdZone('L','LI')"/>
+                <line x1="100" y1="34" x2="100" y2="182" stroke="#fca5a5" stroke-width="1.2" stroke-dasharray="3,2" pointer-events="none"/>
+                <line x1="16" y1="108" x2="184" y2="108" stroke="#fca5a5" stroke-width="1.2" stroke-dasharray="3,2" pointer-events="none"/>
+                <circle class="icd-q icd-nipple" data-side="L" data-zone="nipple" cx="100" cy="108" r="15" onclick="selectIcdZone('L','nipple')"/>
+                <text x="152" y="72" text-anchor="middle" font-size="10" fill="#be123c" font-weight="700" pointer-events="none">外上</text>
+                <text x="48" y="72" text-anchor="middle" font-size="10" fill="#9f1239" font-weight="700" pointer-events="none">內上</text>
+                <text x="152" y="155" text-anchor="middle" font-size="10" fill="#be123c" font-weight="700" pointer-events="none">外下</text>
+                <text x="48" y="155" text-anchor="middle" font-size="10" fill="#9f1239" font-weight="700" pointer-events="none">內下</text>
+                <text x="100" y="111" text-anchor="middle" font-size="8" fill="#7f1d1d" pointer-events="none">乳頭</text>
+                <text x="36" y="22" text-anchor="middle" font-size="8.5" fill="#e11d48" pointer-events="none">←內</text>
+                <text x="164" y="22" text-anchor="middle" font-size="8.5" fill="#be123c" pointer-events="none">外→</text>
               </svg>
             </div>
           </div>
