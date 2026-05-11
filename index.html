@@ -4161,6 +4161,47 @@ function calcPredictPure(p){
     return { pi, surv: years.map(y=>sAll[y-1]*100), years };
 }
 
+function _ajccCleanToken(v, kind){
+    let s = String(v ?? '').trim();
+    if(!s) return '';
+    if(kind === 'T') s = s.replace(/^[cp]T/i, 'T');
+    if(kind === 'N') s = s.replace(/^[cp]N/i, 'N');
+    if(kind === 'M') s = s.replace(/^[cp]M/i, 'M');
+    return s;
+}
+function _gradeNumber(v){
+    const s = String(v ?? '').trim();
+    if(!s) return null;
+    const m = s.match(/[123]/);
+    return m ? Number(m[0]) : null;
+}
+function _her2StageSign(v){
+    const s = String(v ?? '').trim().toLowerCase();
+    if(!s) return '';
+    if(s === '+' || s.startsWith('+') || s.includes('positive') || s.includes('pos') || s.includes('陽')) return '+';
+    if(s === '-' || s.startsWith('-') || s === 'low' || s.includes('negative') || s.includes('neg') || s.includes('陰')) return '-';
+    return '';
+}
+function calcWorkspaceAjccPrognostic(p){
+    const t = _ajccCleanToken(p.T, 'T');
+    const n = _ajccCleanToken(p.N, 'N');
+    const m = _ajccCleanToken(p.M, 'M');
+    const grade = _gradeNumber(p.grade);
+    const er = _markerSign(p.er);
+    const pr = _markerSign(p.pr);
+    const her2 = _her2StageSign(p.her2);
+    const missing = [];
+    if(!t || !n || !m) missing.push('TNM');
+    if(!grade) missing.push('Grade');
+    if(!er) missing.push('ER');
+    if(!pr) missing.push('PR');
+    if(!her2) missing.push('HER2');
+    if(missing.length) return { stage:null, missing, t, n, m, grade, er, pr, her2 };
+    let stage = null;
+    try { stage = _ajcc9Lookup(t, n, m, grade, er, pr, her2); } catch(e){}
+    return { stage, missing:[], t, n, m, grade, er, pr, her2 };
+}
+
 function renderWorkspaceStageSummary(p){
     const el = document.getElementById('wsStageResults');
     if(!el) return;
@@ -4173,16 +4214,13 @@ function renderWorkspaceStageSummary(p){
     let anat = '—';
     try { anat = _ajccAnatomic(p.T, p.N, p.M) || '—'; } catch(e){}
     const stageClass = anat === 'IV' ? 'bad' : (['IIA','IIB','IIIA','IIIB','IIIC'].includes(anat) ? 'warn' : 'good');
-    let prog = null;
-    const erSign = _markerSign(p.er);
-    const prSign = _markerSign(p.pr) || erSign;
-    if(p.grade && erSign && p.her2){
-        try {
-            const her2Use = p.her2==='+' ? '+' : '-';
-            prog = _ajcc9Lookup(p.T, p.N, p.M, +p.grade, erSign, prSign, her2Use);
-        } catch(e){}
-    }
-    const progText = prog ? `病理/臨床預後期別：第 ${prog} 期` : '需 Grade、ER、PR、HER2 才能嘗試查 AJCC v8 預後期別';
+    const progCalc = calcWorkspaceAjccPrognostic(p);
+    const prog = progCalc.stage;
+    const progText = prog
+        ? `病理/臨床預後期別：第 ${prog} 期`
+        : (progCalc.missing.length
+            ? `尚缺：${progCalc.missing.join(' / ')}`
+            : `AJCC v8 查表未命中：${progCalc.t}/${progCalc.n}/${progCalc.m} G${progCalc.grade} ER${progCalc.er} PR${progCalc.pr} HER2${progCalc.her2}`);
     const subtype = deriveWorkspaceSubtype(p);
     const subtypeText = subtype ? `分子亞型：${subtype}` : '';
     el.innerHTML = `
@@ -4218,20 +4256,14 @@ function refreshDashboardResults(){
     if(p.T && p.N && p.M){
         let anat = '—';
         try { anat = _ajccAnatomic(p.T,p.N,p.M) || '—'; } catch(e){}
-        let prog = '';
-        if(p.grade && erSign && p.her2){
-            try {
-                const her2Use = p.her2==='+' ? '+' : '-';
-                const lookup = _ajcc9Lookup(p.T,p.N,p.M, +p.grade, erSign, prSign||erSign, her2Use);
-                if(lookup) prog = lookup;
-            } catch(e){}
-        }
+        const progCalc = calcWorkspaceAjccPrognostic(p);
+        const prog = progCalc.stage || '';
         const eligible = ['IIA','IIB','IIIA','IIIB','IIIC','IV'].includes(anat);
         cards.push(_dashCard({
             id:'ajcc',
             title:'AJCC 期別',
             value: anat==='—' ? '—' : ('第 '+anat+' 期'),
-            subtitle: prog ? ('v8 預後期別: '+prog) : '解剖 (8th)',
+            subtitle: prog ? ('v8 預後期別: '+prog) : (progCalc.missing.length ? ('缺 '+progCalc.missing.join('/')) : 'v8 預後期別查表未命中'),
             cls: eligible ? 'high' : (anat==='—'?'':'low'),
             titleAttr:'依 Workspace TNM / biomarker 即時計算'
         }));
@@ -7366,6 +7398,10 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDetail();close
 // ── AJCC prognostic lookup wrapper ──
 function _ajcc9Lookup(t, n, m, grade, er, pr, her2){
     if(typeof AJCC9_LOOKUP === 'undefined') return null;
+    t = _ajccCleanToken(t, 'T');
+    n = _ajccCleanToken(n, 'N');
+    m = _ajccCleanToken(m, 'M');
+    grade = _gradeNumber(grade);
     if(m === 'M1') return 'IV';
     n = _ajccNForCalc(n);
     // Reduce T1mi/T1a/T1b/T1c → T1; T4a/b/c/d → T4
