@@ -302,41 +302,57 @@ body {
     max-width: none;
     height: calc(100vh - 58px);
     padding: .45rem .75rem .65rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: .55rem;
-    align-items: stretch;
-    align-content: flex-start;
+    display: block;
+    position: relative;
     overflow: auto;
+  }
+  body.desktop-dashboard-mode .container::after {
+    content: '';
+    display: block;
+    width: var(--dashboard-canvas-w, 100%);
+    height: var(--dashboard-canvas-h, 980px);
+    pointer-events: none;
   }
   body.desktop-dashboard-mode #landingPage { display: none !important; }
   body.desktop-dashboard-mode .clinical-notice {
-    order: 0;
-    align-self: center;
-    justify-self: start;
+    position: absolute;
+    left: .75rem;
+    top: .45rem;
+    z-index: 15;
     margin: 0;
   }
   body.desktop-dashboard-mode .view-mode-panel {
-    order: 0;
-    flex: 1 1 auto;
+    position: absolute;
+    right: .75rem;
+    top: .35rem;
+    z-index: 15;
     justify-content: flex-end;
-    align-self: center;
     margin: 0;
     padding: 0;
   }
   body.desktop-dashboard-mode .dashboard-controls {
-    order: 1;
+    position: absolute;
+    left: .75rem;
+    right: .75rem;
+    top: 2.65rem;
+    z-index: 14;
     display: flex;
   }
   body.desktop-dashboard-mode .version-banner {
-    order: 1;
-    flex: 0 0 100%;
+    position: absolute;
+    left: .75rem;
+    right: .75rem;
+    top: 2.65rem;
+    z-index: 16;
   }
   body.desktop-dashboard-mode .site-footer {
     display: none;
   }
   body.desktop-dashboard-mode .dept-page.active {
-    order: 2;
+    position: absolute;
+    left: var(--dash-x, .75rem);
+    top: var(--dash-y, 6rem);
+    z-index: 5;
     display: flex;
     flex-direction: column;
     margin: 0;
@@ -347,13 +363,18 @@ body {
     min-height: 0;
     height: var(--dash-h, 260px);
     width: var(--dash-w, 520px);
-    flex: 0 0 var(--dash-w, 520px);
-    max-width: calc(100vw - 1.5rem);
+    max-width: none;
   }
   body.desktop-dashboard-mode .dept-page.dashboard-widget.active {
     resize: both;
     min-width: 320px;
     min-height: 170px;
+    box-shadow: 0 2px 9px rgba(15,23,42,.06);
+  }
+  body.desktop-dashboard-mode .dept-page.dashboard-widget.dragging {
+    z-index: 20;
+    opacity: .96;
+    box-shadow: 0 12px 28px rgba(15,23,42,.18);
   }
   body.desktop-dashboard-mode .page-topbar {
     margin: 0;
@@ -361,6 +382,9 @@ body {
     background: var(--surface-2);
     border-bottom: 1px solid var(--border);
     min-height: 34px;
+    cursor: move;
+    user-select: none;
+    touch-action: none;
   }
   body.desktop-dashboard-mode .page-topbar h2 { font-size: .9rem; line-height: 1.1; }
   body.desktop-dashboard-mode .back-btn { display: none; }
@@ -3495,18 +3519,19 @@ function setPageActive(id, active){
 }
 
 const DASHBOARD_WIDGETS = [
-    { id:'wsPage', flag:'workspace', label:'分期與分數', w:1880, h:360, cw:1320, ch:360 },
-    { id:'breastPage', flag:'breast', label:'乳癌藥物', w:940, h:300, cw:890, ch:170 },
-    { id:'inpatientPage', flag:'inpatient', label:'住院化療', w:460, h:300, cw:440, ch:170 },
-    { id:'icdPage', flag:'icd', label:'ICD 碼', w:460, h:300, cw:440, ch:170 },
-    { id:'surgeryPage', flag:'surgery', label:'手術醫材', w:460, h:280, cw:440, ch:150 },
-    { id:'trialsPage', flag:'trials', label:'臨床試驗', w:460, h:280, cw:440, ch:150 },
-    { id:'calcPage', flag:'calc_gail', label:'乳癌計算機', w:940, h:300, cw:890, ch:180, defaultVisible:false }
+    { id:'wsPage', flag:'workspace', label:'分期與分數', x:12, y:92, w:1880, h:360, cx:12, cy:92, cw:1320, ch:360 },
+    { id:'breastPage', flag:'breast', label:'乳癌藥物', x:12, y:464, w:940, h:300, cx:12, cy:464, cw:890, ch:170 },
+    { id:'inpatientPage', flag:'inpatient', label:'住院化療', x:964, y:464, w:460, h:300, cx:914, cy:464, cw:440, ch:170 },
+    { id:'icdPage', flag:'icd', label:'ICD 碼', x:1432, y:464, w:460, h:300, cx:12, cy:646, cw:440, ch:170 },
+    { id:'surgeryPage', flag:'surgery', label:'手術醫材', x:12, y:776, w:460, h:280, cx:464, cy:646, cw:440, ch:150 },
+    { id:'trialsPage', flag:'trials', label:'臨床試驗', x:484, y:776, w:460, h:280, cx:916, cy:646, cw:440, ch:150 },
+    { id:'calcPage', flag:'calc_gail', label:'乳癌計算機', x:964, y:776, w:940, h:300, cx:12, cy:808, cw:890, ch:180, defaultVisible:false }
 ];
 const DASHBOARD_VISIBLE_KEY = 'nhi_dashboard_widgets_v1';
 const DASHBOARD_LAYOUT_KEY = 'nhi_dashboard_layout_v1';
 let _dashboardResizeObserver = null;
 let _dashboardResizeSaveTimer = null;
+let _dashboardDrag = null;
 
 function readDashboardJson(key, fallback){
     try {
@@ -3529,7 +3554,9 @@ function dashboardDefaultSize(widget){
     const maxWidth = Math.max(320, window.innerWidth - 28);
     const w = compact ? (widget.cw || widget.w) : widget.w;
     const h = compact ? (widget.ch || widget.h) : widget.h;
-    return { w: Math.min(w, maxWidth), h };
+    const x = compact ? (widget.cx ?? widget.x) : widget.x;
+    const y = compact ? (widget.cy ?? widget.y) : widget.y;
+    return { x, y, w: Math.min(w, maxWidth), h };
 }
 function isDashboardWidgetAvailable(widget){
     return !!FEATURE_FLAGS[widget.flag];
@@ -3542,7 +3569,7 @@ function renderDashboardControls(){
         .filter(isDashboardWidgetAvailable)
         .map(w => `<label class="dashboard-widget-toggle"><input type="checkbox" ${visible[w.id] !== false ? 'checked' : ''} onchange="setDashboardWidgetVisible('${w.id}',this.checked)"> ${w.label}</label>`)
         .join('');
-    box.innerHTML = `<span class="dashboard-controls-title">Dashboard 模組</span>${items}<button type="button" onclick="resetDashboardLayout()">重設</button><span class="dashboard-controls-hint">面板右下角可拖拉調整大小，開關與大小會自動記住</span>`;
+    box.innerHTML = `<span class="dashboard-controls-title">Dashboard 模組</span>${items}<button type="button" onclick="resetDashboardLayout()">重設</button><span class="dashboard-controls-hint">拖曳標題列移動，右下角調整大小；位置與大小會自動記住</span>`;
 }
 function setDashboardWidgetVisible(id, checked){
     const visible = getDashboardVisible();
@@ -3560,6 +3587,8 @@ function resetDashboardLayout(){
 function applyDashboardWidgetLayout(){
     const visible = getDashboardVisible();
     const layout = getDashboardLayout();
+    let maxRight = window.innerWidth;
+    let maxBottom = 980;
     DASHBOARD_WIDGETS.forEach((widget, index) => {
         const el = document.getElementById(widget.id);
         if(!el) return;
@@ -3567,15 +3596,95 @@ function applyDashboardWidgetLayout(){
         setPageActive(widget.id, enabled);
         el.classList.toggle('dashboard-widget', enabled);
         if(!enabled) return;
-        const size = layout[widget.id] || dashboardDefaultSize(widget);
+        const size = { ...dashboardDefaultSize(widget), ...(layout[widget.id] || {}) };
         const maxWidth = Math.max(320, window.innerWidth - 28);
         const width = Math.min(Number(size.w) || widget.w, maxWidth);
         const height = Math.max(150, Number(size.h) || widget.h);
+        const x = Math.max(0, Number(size.x) || 0);
+        const y = Math.max(84, Number(size.y) || 92);
         el.style.order = String(20 + index);
+        el.style.setProperty('--dash-x', `${Math.round(x)}px`);
+        el.style.setProperty('--dash-y', `${Math.round(y)}px`);
         el.style.setProperty('--dash-w', `${Math.round(width)}px`);
         el.style.setProperty('--dash-h', `${Math.round(height)}px`);
+        maxRight = Math.max(maxRight, x + width + 24);
+        maxBottom = Math.max(maxBottom, y + height + 24);
+        prepareDashboardWidgetDrag(el);
     });
+    updateDashboardCanvasSize(maxRight, maxBottom);
     observeDashboardWidgetSizes();
+}
+function updateDashboardCanvasSize(width, height){
+    const container = document.querySelector('body.desktop-dashboard-mode .container');
+    if(!container) return;
+    container.style.setProperty('--dashboard-canvas-w', `${Math.round(width)}px`);
+    container.style.setProperty('--dashboard-canvas-h', `${Math.round(height)}px`);
+}
+function saveDashboardWidgetLayout(id, patch){
+    const layout = getDashboardLayout();
+    layout[id] = { ...(layout[id] || {}), ...patch };
+    try { localStorage.setItem(DASHBOARD_LAYOUT_KEY, JSON.stringify(layout)); } catch(e){}
+}
+function prepareDashboardWidgetDrag(el){
+    if(el.dataset.dashboardDragReady === '1') return;
+    const handle = el.querySelector('.page-topbar');
+    if(!handle) return;
+    el.dataset.dashboardDragReady = '1';
+    handle.addEventListener('pointerdown', event => {
+        if(!document.body.classList.contains('desktop-dashboard-mode')) return;
+        if(event.button !== undefined && event.button !== 0) return;
+        const container = document.querySelector('body.desktop-dashboard-mode .container');
+        if(!container) return;
+        const rect = el.getBoundingClientRect();
+        const parentRect = container.getBoundingClientRect();
+        _dashboardDrag = {
+            id: el.id,
+            el,
+            container,
+            startClientX: event.clientX,
+            startClientY: event.clientY,
+            startX: rect.left - parentRect.left + container.scrollLeft,
+            startY: rect.top - parentRect.top + container.scrollTop
+        };
+        el.classList.add('dragging');
+        handle.setPointerCapture?.(event.pointerId);
+        event.preventDefault();
+    });
+    handle.addEventListener('pointermove', event => {
+        if(!_dashboardDrag || _dashboardDrag.id !== el.id) return;
+        const dx = event.clientX - _dashboardDrag.startClientX;
+        const dy = event.clientY - _dashboardDrag.startClientY;
+        const x = Math.max(0, _dashboardDrag.startX + dx);
+        const y = Math.max(84, _dashboardDrag.startY + dy);
+        el.style.setProperty('--dash-x', `${Math.round(x)}px`);
+        el.style.setProperty('--dash-y', `${Math.round(y)}px`);
+        updateDashboardCanvasFromWidgets();
+    });
+    const finishDrag = event => {
+        if(!_dashboardDrag || _dashboardDrag.id !== el.id) return;
+        const x = parseInt(el.style.getPropertyValue('--dash-x'), 10) || 0;
+        const y = parseInt(el.style.getPropertyValue('--dash-y'), 10) || 92;
+        saveDashboardWidgetLayout(el.id, { x, y });
+        el.classList.remove('dragging');
+        try { handle.releasePointerCapture?.(event.pointerId); } catch(e){}
+        _dashboardDrag = null;
+    };
+    handle.addEventListener('pointerup', finishDrag);
+    handle.addEventListener('pointercancel', finishDrag);
+}
+function updateDashboardCanvasFromWidgets(){
+    let maxRight = window.innerWidth;
+    let maxBottom = 980;
+    DASHBOARD_WIDGETS.forEach(widget => {
+        const el = document.getElementById(widget.id);
+        if(!el || !el.classList.contains('active')) return;
+        const x = parseInt(el.style.getPropertyValue('--dash-x'), 10) || 0;
+        const y = parseInt(el.style.getPropertyValue('--dash-y'), 10) || 0;
+        const r = el.getBoundingClientRect();
+        maxRight = Math.max(maxRight, x + r.width + 24);
+        maxBottom = Math.max(maxBottom, y + r.height + 24);
+    });
+    updateDashboardCanvasSize(maxRight, maxBottom);
 }
 function observeDashboardWidgetSizes(){
     if(_dashboardResizeObserver) _dashboardResizeObserver.disconnect();
@@ -3587,8 +3696,11 @@ function observeDashboardWidgetSizes(){
             const id = entry.target && entry.target.id;
             if(!id) return;
             const r = entry.target.getBoundingClientRect();
-            layout[id] = { w: Math.round(r.width), h: Math.round(r.height) };
+            const x = parseInt(entry.target.style.getPropertyValue('--dash-x'), 10) || 0;
+            const y = parseInt(entry.target.style.getPropertyValue('--dash-y'), 10) || 92;
+            layout[id] = { ...(layout[id] || {}), x, y, w: Math.round(r.width), h: Math.round(r.height) };
         });
+        updateDashboardCanvasFromWidgets();
         clearTimeout(_dashboardResizeSaveTimer);
         _dashboardResizeSaveTimer = setTimeout(() => {
             try { localStorage.setItem(DASHBOARD_LAYOUT_KEY, JSON.stringify(layout)); } catch(e){}
@@ -3606,6 +3718,9 @@ function leaveDesktopDashboard(){
         const el = document.getElementById(widget.id);
         if(!el) return;
         el.classList.remove('dashboard-widget');
+        el.classList.remove('dragging');
+        el.style.removeProperty('--dash-x');
+        el.style.removeProperty('--dash-y');
         el.style.removeProperty('--dash-w');
         el.style.removeProperty('--dash-h');
         el.style.removeProperty('order');
