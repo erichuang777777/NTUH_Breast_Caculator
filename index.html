@@ -305,6 +305,11 @@ body {
     display: block;
     position: relative;
     overflow: auto;
+    background-image:
+      linear-gradient(rgba(148,163,184,.18) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148,163,184,.18) 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-position: .75rem .45rem;
   }
   body.desktop-dashboard-mode .container::after {
     content: '';
@@ -432,21 +437,78 @@ body {
     overflow: auto;
   }
   body.desktop-dashboard-mode #breastPage .content-layout {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0;
+    display: flex;
+    flex-direction: column;
+    gap: .45rem;
+    height: 100%;
+    min-height: 0;
   }
   body.desktop-dashboard-mode #breastPage .filter-sidebar {
+    display: block;
+    position: static;
+    padding: .45rem .55rem;
+    border-radius: var(--r-sm);
+    max-height: 118px;
+    overflow: auto;
+    flex: 0 0 auto;
+  }
+  body.desktop-dashboard-mode #breastPage .sidebar-title {
     display: none;
   }
+  body.desktop-dashboard-mode #breastPage .search-row {
+    margin-bottom: .42rem;
+  }
+  body.desktop-dashboard-mode #breastPage .filter-section {
+    display: inline-block;
+    vertical-align: top;
+    margin: 0 .55rem .35rem 0;
+  }
+  body.desktop-dashboard-mode #breastPage .filter-section-label {
+    margin-bottom: .25rem;
+    font-size: .66rem;
+  }
+  body.desktop-dashboard-mode #breastPage .filter-chip {
+    padding: .16rem .42rem;
+    font-size: .68rem;
+  }
+  body.desktop-dashboard-mode #breastPage .filter-divider,
+  body.desktop-dashboard-mode #breastPage .sidebar-actions {
+    display: none;
+  }
+  body.desktop-dashboard-mode #breastPage .content-main {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
   body.desktop-dashboard-mode #breastPage .drug-list,
-  body.desktop-dashboard-mode #surgeryList,
   body.desktop-dashboard-mode #trialResults {
     max-height: none;
     overflow: auto;
   }
-  body.desktop-dashboard-mode #breastPage .drug-list { max-height: 155px; }
-  body.desktop-dashboard-mode #surgeryList,
   body.desktop-dashboard-mode #trialResults { max-height: 122px; }
+  body.desktop-dashboard-mode #breastPage .drug-list {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+  body.desktop-dashboard-mode #surgeryPage > div:not(.page-topbar) {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  body.desktop-dashboard-mode #surgeryPage .reg-section {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+  }
+  body.desktop-dashboard-mode #surgeryList {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    overflow: auto;
+  }
   body.desktop-dashboard-mode .reg-section { margin-bottom: .4rem; }
   body.desktop-dashboard-mode .calc-card { margin-bottom: 0; }
   body.desktop-dashboard-mode .ws-actions { display: none; }
@@ -3529,9 +3591,14 @@ const DASHBOARD_WIDGETS = [
 ];
 const DASHBOARD_VISIBLE_KEY = 'nhi_dashboard_widgets_v1';
 const DASHBOARD_LAYOUT_KEY = 'nhi_dashboard_layout_v1';
+const DASHBOARD_GRID = 20;
 let _dashboardResizeObserver = null;
 let _dashboardResizeSaveTimer = null;
 let _dashboardDrag = null;
+
+function snapDashboard(value){
+    return Math.round(Number(value || 0) / DASHBOARD_GRID) * DASHBOARD_GRID;
+}
 
 function readDashboardJson(key, fallback){
     try {
@@ -3556,7 +3623,7 @@ function dashboardDefaultSize(widget){
     const h = compact ? (widget.ch || widget.h) : widget.h;
     const x = compact ? (widget.cx ?? widget.x) : widget.x;
     const y = compact ? (widget.cy ?? widget.y) : widget.y;
-    return { x, y, w: Math.min(w, maxWidth), h };
+    return { x: snapDashboard(x), y: snapDashboard(y), w: snapDashboard(Math.min(w, maxWidth)), h: snapDashboard(h) };
 }
 function isDashboardWidgetAvailable(widget){
     return !!FEATURE_FLAGS[widget.flag];
@@ -3569,7 +3636,7 @@ function renderDashboardControls(){
         .filter(isDashboardWidgetAvailable)
         .map(w => `<label class="dashboard-widget-toggle"><input type="checkbox" ${visible[w.id] !== false ? 'checked' : ''} onchange="setDashboardWidgetVisible('${w.id}',this.checked)"> ${w.label}</label>`)
         .join('');
-    box.innerHTML = `<span class="dashboard-controls-title">Dashboard 模組</span>${items}<button type="button" onclick="resetDashboardLayout()">重設</button><span class="dashboard-controls-hint">拖曳標題列移動，右下角調整大小；位置與大小會自動記住</span>`;
+    box.innerHTML = `<span class="dashboard-controls-title">Dashboard 模組</span>${items}<button type="button" onclick="resetDashboardLayout()">重設</button><span class="dashboard-controls-hint">拖曳標題列移動，右下角調整大小；會自動貼齊 20px 格線並記住</span>`;
 }
 function setDashboardWidgetVisible(id, checked){
     const visible = getDashboardVisible();
@@ -3598,10 +3665,10 @@ function applyDashboardWidgetLayout(){
         if(!enabled) return;
         const size = { ...dashboardDefaultSize(widget), ...(layout[widget.id] || {}) };
         const maxWidth = Math.max(320, window.innerWidth - 28);
-        const width = Math.min(Number(size.w) || widget.w, maxWidth);
-        const height = Math.max(150, Number(size.h) || widget.h);
-        const x = Math.max(0, Number(size.x) || 0);
-        const y = Math.max(84, Number(size.y) || 92);
+        const width = Math.max(320, snapDashboard(Math.min(Number(size.w) || widget.w, maxWidth)));
+        const height = Math.max(160, snapDashboard(Number(size.h) || widget.h));
+        const x = Math.max(0, snapDashboard(Number(size.x) || 0));
+        const y = Math.max(80, snapDashboard(Number(size.y) || 92));
         el.style.order = String(20 + index);
         el.style.setProperty('--dash-x', `${Math.round(x)}px`);
         el.style.setProperty('--dash-y', `${Math.round(y)}px`);
@@ -3654,8 +3721,8 @@ function prepareDashboardWidgetDrag(el){
         if(!_dashboardDrag || _dashboardDrag.id !== el.id) return;
         const dx = event.clientX - _dashboardDrag.startClientX;
         const dy = event.clientY - _dashboardDrag.startClientY;
-        const x = Math.max(0, _dashboardDrag.startX + dx);
-        const y = Math.max(84, _dashboardDrag.startY + dy);
+        const x = Math.max(0, snapDashboard(_dashboardDrag.startX + dx));
+        const y = Math.max(80, snapDashboard(_dashboardDrag.startY + dy));
         el.style.setProperty('--dash-x', `${Math.round(x)}px`);
         el.style.setProperty('--dash-y', `${Math.round(y)}px`);
         updateDashboardCanvasFromWidgets();
@@ -3696,9 +3763,15 @@ function observeDashboardWidgetSizes(){
             const id = entry.target && entry.target.id;
             if(!id) return;
             const r = entry.target.getBoundingClientRect();
-            const x = parseInt(entry.target.style.getPropertyValue('--dash-x'), 10) || 0;
-            const y = parseInt(entry.target.style.getPropertyValue('--dash-y'), 10) || 92;
-            layout[id] = { ...(layout[id] || {}), x, y, w: Math.round(r.width), h: Math.round(r.height) };
+            const x = snapDashboard(parseInt(entry.target.style.getPropertyValue('--dash-x'), 10) || 0);
+            const y = snapDashboard(parseInt(entry.target.style.getPropertyValue('--dash-y'), 10) || 92);
+            const w = Math.max(320, snapDashboard(r.width));
+            const h = Math.max(160, snapDashboard(r.height));
+            entry.target.style.setProperty('--dash-x', `${x}px`);
+            entry.target.style.setProperty('--dash-y', `${y}px`);
+            entry.target.style.setProperty('--dash-w', `${w}px`);
+            entry.target.style.setProperty('--dash-h', `${h}px`);
+            layout[id] = { ...(layout[id] || {}), x, y, w, h };
         });
         updateDashboardCanvasFromWidgets();
         clearTimeout(_dashboardResizeSaveTimer);
