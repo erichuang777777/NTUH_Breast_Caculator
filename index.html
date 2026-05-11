@@ -7392,12 +7392,12 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDetail();close
 
 <!-- AJCC prognostic lookup table: pre-computed breast prognostic stage entries -->
 <!-- Source: breast_cancer_tools/data/ajcc_staging_9_reference_lookup.json (Taiwan VGH reference) -->
-<script src="data/ajcc9_lookup.js?v=20260511"></script>
+<script src="data/ajcc9_lookup.js?v=20260511b"></script>
 
 <script>
 // ── AJCC prognostic lookup wrapper ──
 function _ajcc9Lookup(t, n, m, grade, er, pr, her2){
-    const lookupTable = globalThis.AJCC9_LOOKUP;
+    const lookupTable = globalThis.AJCC9_LOOKUP || (typeof AJCC9_LOOKUP !== 'undefined' ? AJCC9_LOOKUP : null);
     if(!lookupTable) return null;
     t = _ajccCleanToken(t, 'T');
     n = _ajccCleanToken(n, 'N');
