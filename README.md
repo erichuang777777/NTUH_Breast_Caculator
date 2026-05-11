@@ -1,5 +1,14 @@
 # NHI Oncology Drug Calculator
 
+## Deployment Model
+
+- Frontend: static SPA in `index.html`, deployable on Netlify.
+- Netlify API: `/api/*` routes to `netlify/functions/api.js` for read-only lookup and calculation endpoints.
+- Local API/admin: `python web_app.py` serves the same public `/api/*` plus admin write endpoints backed by SQLite.
+- PWA: `manifest.webmanifest`, `sw.js`, `offline.html`, and `icons/` support installable/cached use.
+
+See `API.md` for endpoint examples and Netlify data export steps.
+
 ## 前後端入口
 
 - 前台：`index.html`，由 `GET /` 或 `GET /index.html` 提供。

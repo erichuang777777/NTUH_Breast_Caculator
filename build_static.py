@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
 Refresh embedded static data in index.html from SQLite.
+For separated Netlify/API deployments, run api_export.py as well.
 Run: python build_static.py
 Output: index.html (self-contained, no backend needed)
 """

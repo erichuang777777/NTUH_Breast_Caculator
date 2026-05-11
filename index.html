@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f766e">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icons/icon-192.png">
 <title>乳癌小幫手</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -5257,6 +5260,12 @@ function renderSettings(){
 }
 // Init feature flags before any other code runs
 loadFeatureFlags();
+
+if('serviceWorker' in navigator && window.location.protocol !== 'file:'){
+    window.addEventListener('load', ()=>{
+        navigator.serviceWorker.register('/sw.js').catch(err => console.warn('Service worker registration failed', err));
+    });
+}
 
 // ── Issue Report (GitHub Issues prefilled URL) ──
 const GITHUB_REPO = 'erichuang777777/NTUH_Breast_Caculator';

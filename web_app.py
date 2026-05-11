@@ -24,12 +24,22 @@ class ThreadingHTTPServer(socketserver.ThreadingMixIn, HTTPServer):
     daemon_threads = True
 from pathlib import Path
 from datetime import datetime
+from api_calculators import calculate_scores, staging_score
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 
 DB_PATH = Path(__file__).parent / "nhi_drug_coverage.db"
 FRONTEND_PATH = Path(__file__).parent / "index.html"
 ADMIN_FRONTEND_PATH = Path(__file__).parent / "admin.html"
+STATIC_ASSET_TYPES = {
+    ".js": "application/javascript; charset=utf-8",
+    ".json": "application/json; charset=utf-8",
+    ".webmanifest": "application/manifest+json; charset=utf-8",
+    ".css": "text/css; charset=utf-8",
+    ".png": "image/png",
+    ".svg": "image/svg+xml; charset=utf-8",
+    ".html": "text/html; charset=utf-8",
+}
 
 APP_CONFIG_DEFAULTS = {
     "price_announcement_date": "115/03/23",
@@ -2618,6 +2628,10 @@ class Handler(BaseHTTPRequestHandler):
             self._formulations(params)
         elif path == '/api/trials':
             self._trials(params)
+        elif path == '/api/health':
+            self._json(200, {'ok': True, 'runtime': 'local-python', 'mode': 'read-write'})
+        elif path in ('/manifest.webmanifest', '/sw.js', '/offline.html') or path.startswith('/icons/'):
+            self._static_file(path)
         else:
             self._json(404, {'error': 'Not found'})
 
@@ -2652,6 +2666,10 @@ class Handler(BaseHTTPRequestHandler):
             if not admin:
                 return
             self._add_drug(self._read_json())
+        elif path == '/api/calculate/risk-scores':
+            self._calculate_risk_scores(self._read_json())
+        elif path == '/api/calculate/staging-score':
+            self._calculate_staging_score(self._read_json())
         else:
             self._json(404, {'error': 'Not found'})
 
@@ -2668,6 +2686,20 @@ class Handler(BaseHTTPRequestHandler):
             self._json(404, {'error': 'Not found'})
 
     # ── Handlers ──
+
+    def _static_file(self, path):
+        rel = path.lstrip('/')
+        target = (Path(__file__).parent / rel).resolve()
+        root = Path(__file__).parent.resolve()
+        if not str(target).startswith(str(root)) or not target.exists() or not target.is_file():
+            return self._json(404, {'error': 'Not found'})
+        suffix = target.suffix.lower()
+        self.send_response(200)
+        self.send_header('Content-Type', STATIC_ASSET_TYPES.get(suffix, 'application/octet-stream'))
+        if target.name == 'sw.js':
+            self.send_header('Cache-Control', 'no-cache')
+        self.end_headers()
+        self.wfile.write(target.read_bytes())
 
     def _html(self):
         content = FRONTEND_PATH.read_text(encoding='utf-8') if FRONTEND_PATH.exists() else HTML_PAGE
@@ -2975,6 +3007,12 @@ class Handler(BaseHTTPRequestHandler):
             info['last_modified'] = datetime.fromtimestamp(newest.stat().st_mtime).strftime('%Y-%m-%d')
         self._json(200, info)
 
+    def _calculate_risk_scores(self, body):
+        self._json(200, {'ok': True, 'scores': calculate_scores(body or {})})
+
+    def _calculate_staging_score(self, body):
+        self._json(200, {'ok': True, 'result': staging_score(body or {})})
+
     def _json(self, code, data, headers=None):
         self.send_response(code)
         self.send_header('Content-Type', 'application/json; charset=utf-8')
@@ -2982,7 +3020,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Origin', origin)
         self.send_header('Access-Control-Allow-Credentials', 'true')
         self.send_header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type, X-Admin-Session')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type, X-Admin-Session, Authorization')
         if headers:
             for k, v in headers.items():
                 self.send_header(k, v)
@@ -2991,9 +3029,9 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_HEAD(self):
         p = urllib.parse.urlparse(self.path)
-        if p.path in ('/', '/index.html', '/admin', '/admin.html'):
+        if p.path in ('/', '/index.html', '/admin', '/admin.html', '/manifest.webmanifest', '/sw.js', '/offline.html') or p.path.startswith('/icons/'):
             self.send_response(200)
-            self.send_header('Content-Type', 'text/html; charset=utf-8')
+            self.send_header('Content-Type', STATIC_ASSET_TYPES.get(Path(p.path).suffix.lower(), 'text/html; charset=utf-8'))
             self.end_headers()
         else:
             self.send_response(200)
@@ -3006,7 +3044,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Origin', origin)
         self.send_header('Access-Control-Allow-Credentials', 'true')
         self.send_header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type, X-Admin-Session')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type, X-Admin-Session, Authorization')
         self.end_headers()
 
 
