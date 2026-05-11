@@ -285,6 +285,80 @@ body {
 .dept-card.heme .count { color: var(--heme); }
 .dept-card .desc { font-size: .82rem; color: var(--text-muted); }
 
+/* Desktop home dashboard: all major tools visible without card navigation */
+@media (min-width: 1180px){
+  body.desktop-dashboard-mode .container {
+    max-width: 1600px;
+    padding: 1rem 1.15rem 2rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1.12fr) minmax(420px, .88fr);
+    gap: .85rem;
+    align-items: start;
+  }
+  body.desktop-dashboard-mode #landingPage { display: none !important; }
+  body.desktop-dashboard-mode .clinical-notice,
+  body.desktop-dashboard-mode .version-banner,
+  body.desktop-dashboard-mode #wsPage,
+  body.desktop-dashboard-mode #breastPage {
+    grid-column: 1 / -1;
+  }
+  body.desktop-dashboard-mode .clinical-notice { order: 0; }
+  body.desktop-dashboard-mode .version-banner { order: 0; }
+  body.desktop-dashboard-mode #wsPage { order: 1; }
+  body.desktop-dashboard-mode #breastPage { order: 2; }
+  body.desktop-dashboard-mode #inpatientPage { order: 3; }
+  body.desktop-dashboard-mode #icdPage { order: 4; }
+  body.desktop-dashboard-mode #surgeryPage { order: 5; }
+  body.desktop-dashboard-mode #trialsPage { order: 6; }
+  body.desktop-dashboard-mode #calcPage { order: 7; }
+  body.desktop-dashboard-mode .site-footer {
+    grid-column: 1 / -1;
+    order: 99;
+  }
+  body.desktop-dashboard-mode .dept-page.active {
+    display: block;
+    margin: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    overflow: hidden;
+  }
+  body.desktop-dashboard-mode .page-topbar {
+    margin: 0;
+    padding: .6rem .8rem;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+  }
+  body.desktop-dashboard-mode .page-topbar h2 { font-size: 1rem; }
+  body.desktop-dashboard-mode .back-btn { display: none; }
+  body.desktop-dashboard-mode .inner-tabs {
+    margin: .65rem .8rem;
+  }
+  body.desktop-dashboard-mode .tab-content,
+  body.desktop-dashboard-mode #inpatientPage > div:not(.page-topbar),
+  body.desktop-dashboard-mode #icdPage > div:not(.page-topbar),
+  body.desktop-dashboard-mode #surgeryPage > div:not(.page-topbar),
+  body.desktop-dashboard-mode #trialsPage > div:not(.page-topbar),
+  body.desktop-dashboard-mode #calcPage > .page-body {
+    padding: .75rem .85rem 1rem !important;
+    max-width: none !important;
+    margin: 0 !important;
+  }
+  body.desktop-dashboard-mode #breastPage .content-layout {
+    grid-template-columns: 260px minmax(0, 1fr);
+    gap: .8rem;
+  }
+  body.desktop-dashboard-mode #breastPage .drug-list,
+  body.desktop-dashboard-mode #surgeryList,
+  body.desktop-dashboard-mode #trialResults {
+    max-height: 430px;
+    overflow: auto;
+  }
+  body.desktop-dashboard-mode .reg-section { margin-bottom: .75rem; }
+  body.desktop-dashboard-mode .calc-card { margin-bottom: 0; }
+  body.desktop-dashboard-mode .ws-actions { position: static; }
+}
+
 .landing-actions {
   text-align: center;
   padding: .5rem 0 2rem;
@@ -2467,6 +2541,7 @@ body.dark .back-btn:hover { background: #334155; }
         <button class="calc-tab" data-tab="hscore" onclick="switchCalcTab('hscore')">H-score</button>
         <button class="calc-tab" data-tab="rcb" onclick="switchCalcTab('rcb')">RCB</button>
         <button class="calc-tab" data-tab="gail" onclick="switchCalcTab('gail')">Gail</button>
+        <button class="calc-tab" data-tab="ln" onclick="switchCalcTab('ln')">LN 預測</button>
         <button class="calc-tab" data-tab="ext" onclick="switchCalcTab('ext')">外連</button>
       </div>
 
@@ -2797,6 +2872,63 @@ body.dark .back-btn:hover { background: #334155; }
         </div>
       </div>
 
+      <!-- LN Prediction -->
+      <div class="calc-panel" id="calcPanel-ln">
+        <div class="calc-card">
+          <div class="calc-section-title">LN 預測 — Axillary / Sentinel Node Nomograms</div>
+          <div style="background:#fffbeb;border-left:3px solid #f59e0b;padding:.55rem .8rem;border-radius:0 4px 4px 0;font-size:.8rem;color:#92400e;margin-bottom:.8rem;line-height:1.55">
+            本區為論文公式版 LN 預測，非 MSK 官方線上版重製。MSK SLN / Non-SLN 原始 nomogram 可整合，但需要先完成圖表點數 digitization 與抽樣校驗；目前仍保留官方外連。
+          </div>
+
+          <div class="calc-section-title" style="font-size:.95rem;margin-top:.3rem">1. Positive axillary US 後 ALN metastasis</div>
+          <div style="font-size:.82rem;color:var(--text-muted);margin-bottom:.7rem;line-height:1.5">
+            適用：早期乳癌且術前 axillary ultrasound 判讀陽性時，估算病理 ALN metastasis 機率。Qiu 2016 Scientific Reports 公式。
+          </div>
+          <div class="calc-form">
+            <div class="calc-field"><label>LN 橫徑 a (mm)</label><input type="number" id="ln_aln_td" min="1" max="80" step="0.1" value="16" oninput="calcLN()"></div>
+            <div class="calc-field"><label>皮質厚度 b (mm)</label><input type="number" id="ln_aln_cortex" min="0" max="30" step="0.1" value="4" oninput="calcLN()"></div>
+            <div class="calc-field"><label>Hilum</label><select id="ln_aln_hilum" onchange="calcLN()"><option value="0" selected>存在</option><option value="1">消失</option></select></div>
+            <div class="calc-field"><label>Grade</label><select id="ln_aln_grade" onchange="calcLN()"><option value="1">G1</option><option value="2" selected>G2</option><option value="3">G3</option></select></div>
+            <div class="calc-field"><label>腫瘤大小 e (cm)</label><input type="number" id="ln_aln_size" min="0.1" max="20" step="0.1" value="2" oninput="calcLN()"></div>
+            <div class="calc-field"><label>ER 強度 f</label><select id="ln_aln_er" onchange="calcLN()"><option value="0">陰性</option><option value="1">1+</option><option value="2" selected>2+</option><option value="3">3+</option></select></div>
+          </div>
+          <div id="ln_aln_result"></div>
+
+          <div class="calc-section-title" style="font-size:.95rem;margin-top:1rem">2. SLN+ 後 non-SLN metastasis</div>
+          <div style="font-size:.82rem;color:var(--text-muted);margin-bottom:.7rem;line-height:1.5">
+            適用：sentinel node 已陽性後，估算 additional non-SLN metastasis 機率。使用公開 logistic equation，功能定位接近 MSK Non-SLN nomogram，但不是 MSK 係數。
+          </div>
+          <div class="calc-form">
+            <div class="calc-field"><label>腫瘤大小 a (cm)</label><input type="number" id="ln_nsln_size" min="0.1" max="20" step="0.1" value="2" oninput="calcLN()"></div>
+            <div class="calc-field"><label>Multifocality b</label><select id="ln_nsln_multi" onchange="calcLN()"><option value="0" selected>否</option><option value="1">是</option></select></div>
+            <div class="calc-field"><label>LVI c</label><select id="ln_nsln_lvi" onchange="calcLN()"><option value="0" selected>否</option><option value="1">是</option></select></div>
+            <div class="calc-field"><label>陽性 SLN 數 d</label><input type="number" id="ln_nsln_pos" min="1" max="20" value="1" oninput="calcLN()"></div>
+            <div class="calc-field"><label>陰性 SLN 數 e</label><input type="number" id="ln_nsln_neg" min="0" max="30" value="2" oninput="calcLN()"></div>
+          </div>
+          <div id="ln_nsln_result"></div>
+
+          <div class="calc-section-title" style="font-size:.95rem;margin-top:1rem">3. Level I node-positive 後 Level II ALN metastasis</div>
+          <div style="font-size:.82rem;color:var(--text-muted);margin-bottom:.7rem;line-height:1.5">
+            適用：已證實 level I axillary node-positive 的病人，估算 level II ALN metastasis 機率。Jiang 2017 Oncotarget 公式。
+          </div>
+          <div class="calc-form">
+            <div class="calc-field"><label>Positive level I ALN 數 a</label><input type="number" id="ln_l2_pos" min="1" max="20" value="1" oninput="calcLN()"></div>
+            <div class="calc-field"><label>腫瘤大小 b</label><select id="ln_l2_t" onchange="calcLN()"><option value="1">T1 ≤2 cm</option><option value="2" selected>T2 2–3 cm</option><option value="3">T3 3–5 cm</option><option value="4">T4 &gt;5 cm</option></select></div>
+            <div class="calc-field"><label>Ki-67 c</label><select id="ln_l2_ki" onchange="calcLN()"><option value="0">≤20%</option><option value="1" selected>&gt;20%</option></select></div>
+            <div class="calc-field"><label>Grade</label><select id="ln_l2_grade" onchange="calcLN()"><option value="1">G1</option><option value="2" selected>G2</option><option value="3">G3</option></select></div>
+          </div>
+          <div id="ln_l2_result"></div>
+
+          <div class="calc-cite">
+            <strong>來源</strong>：
+            <a href="https://pubmed.ncbi.nlm.nih.gov/26875677/" target="_blank">Qiu SQ, et al. <em>Sci Rep</em> 2016;6:21196</a>（positive axillary US ALN model）；
+            <a href="https://www.oncotarget.com/article/20395/text/" target="_blank">Jiang Y, et al. <em>Oncotarget</em> 2017;8:72389-72399</a>（Level II ALN model）；
+            <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8894031/" target="_blank">A predictive model for nonsentinel node status after SLN biopsy</a>（Non-SLN logistic equation）。<br>
+            <strong>MSK</strong>：Bevilacqua JCO 2007（SLN metastasis）與 Van Zee Ann Surg Oncol 2003（Non-SLN metastasis）仍列於外連；待完成原圖點數重建與校驗後可替換為 MSK paper-version。
+          </div>
+        </div>
+      </div>
+
       <!-- External Links -->
       <div class="calc-panel" id="calcPanel-ext">
         <div class="calc-card">
@@ -2844,7 +2976,7 @@ body.dark .back-btn:hover { background: #334155; }
             </a>
           </div>
           <div class="calc-cite">
-            註：MSK nomograms 目前維持外連。若官方未提供可重製的完整係數/API 或授權條款不明，本站不直接內建計算，以免產生版本、驗證與授權風險；建議手動帶入計算後將結果記錄回病歷。
+            註：MSK 線上版目前維持外連；若原始論文已公開 nomogram 圖表，可依論文版重建並標示來源與版本。整合前需逐項轉換點數/機率刻度並與論文範例或官方線上版抽樣比對。
           </div>
         </div>
       </div>
@@ -3040,6 +3172,7 @@ document.addEventListener('DOMContentLoaded', async ()=>{
     cachedFetch('/api/formulations');
     const params = new URLSearchParams(window.location.search);
     if(params.get('page') === 'workspace') showWorkspace();
+    else if(isDesktopDashboardViewport()) showDesktopDashboard();
 });
 
 // ── Landing ──
@@ -3120,7 +3253,63 @@ async function loadLanding(){
     document.getElementById('landingCards').innerHTML = html;
 }
 
+function isDesktopDashboardViewport(){
+    try { return window.matchMedia('(min-width: 1180px)').matches; }
+    catch(e){ return false; }
+}
+function setPageActive(id, active){
+    const el = document.getElementById(id);
+    if(el) el.classList.toggle('active', !!active);
+}
+function leaveDesktopDashboard(){
+    document.body.classList.remove('desktop-dashboard-mode');
+}
+function initDashboardBreastPanel(){
+    document.querySelectorAll('#breastPage .inner-tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('#breastPage .tab-content').forEach(c=>c.classList.remove('active'));
+    document.getElementById('tabDrugs').classList.add('active');
+    document.getElementById('tabDrugsContent').classList.add('active');
+    const sync = () => {
+        renderBreast(breastDrugs);
+        syncTableToCards('breastBody', 'breastList', 'breastInfo');
+    };
+    if(!breastDrugs.length){
+        cachedFetch('/api/drugs?category=oncology_breast')
+            .then(r=>r.json())
+            .then(d=>{ breastDrugs=d; sync(); });
+    } else {
+        sync();
+    }
+}
+function showDesktopDashboard(){
+    document.body.classList.add('desktop-dashboard-mode');
+    document.getElementById('landingPage').style.display='none';
+    const F = FEATURE_FLAGS;
+    setPageActive('breastPage', !!F.breast);
+    setPageActive('inpatientPage', !!F.inpatient);
+    setPageActive('icdPage', !!F.icd);
+    setPageActive('surgeryPage', !!F.surgery);
+    setPageActive('trialsPage', !!F.trials);
+    setPageActive('wsPage', !!F.workspace);
+    setPageActive('calcPage', !!F.calc_gail);
+    setPageActive('ajccPage', false);
+    setPageActive('journeyPage', false);
+    if(F.breast) initDashboardBreastPanel();
+    if(F.inpatient && !_inpInited) initInpCalc();
+    if(F.icd && !_icdInited) initIcdPage();
+    if(F.surgery && !_surgInited) initSurgeryList();
+    if(F.workspace && !_wsInited){ initWorkspace(); _wsInited=true; }
+    if(F.calc_gail){
+        if(!_calcInited){ initCalcPage(); _calcInited=true; }
+        switchCalcTab('gail');
+    }
+}
 function showLanding(){
+    if(isDesktopDashboardViewport()){
+        showDesktopDashboard();
+        return;
+    }
+    leaveDesktopDashboard();
     document.getElementById('landingPage').style.display='';
     document.getElementById('breastPage').classList.remove('active');
     document.getElementById('inpatientPage').classList.remove('active');
@@ -3133,6 +3322,7 @@ function showLanding(){
     document.getElementById('journeyPage').classList.remove('active');
 }
 function showInpatient(){
+    leaveDesktopDashboard();
     document.getElementById('landingPage').style.display='none';
     document.getElementById('breastPage').classList.remove('active');
     document.getElementById('inpatientPage').classList.add('active');
@@ -3146,6 +3336,7 @@ function showInpatient(){
     if(!_inpInited) initInpCalc();
 }
 async function showBreast(){
+    leaveDesktopDashboard();
     document.getElementById('landingPage').style.display='none';
     document.getElementById('breastPage').classList.add('active');
     document.getElementById('inpatientPage').classList.remove('active');
@@ -3160,6 +3351,7 @@ async function showBreast(){
     switchBreastTab('drugs');
 }
 function showICD(){
+    leaveDesktopDashboard();
     document.getElementById('landingPage').style.display='none';
     document.getElementById('breastPage').classList.remove('active');
     document.getElementById('inpatientPage').classList.remove('active');
@@ -3173,6 +3365,7 @@ function showICD(){
     if(!_icdInited) initIcdPage();
 }
 function showSurgery(){
+    leaveDesktopDashboard();
     document.getElementById('landingPage').style.display='none';
     document.getElementById('breastPage').classList.remove('active');
     document.getElementById('inpatientPage').classList.remove('active');
@@ -3186,6 +3379,7 @@ function showSurgery(){
     if(!_surgInited) initSurgeryList();
 }
 function showTrials(){
+    leaveDesktopDashboard();
     document.getElementById('landingPage').style.display='none';
     document.getElementById('breastPage').classList.remove('active');
     document.getElementById('inpatientPage').classList.remove('active');
@@ -3198,6 +3392,7 @@ function showTrials(){
     document.getElementById('journeyPage').classList.remove('active');
 }
 function showAJCC(){
+    leaveDesktopDashboard();
     document.getElementById('landingPage').style.display='none';
     document.getElementById('breastPage').classList.remove('active');
     document.getElementById('inpatientPage').classList.remove('active');
@@ -3210,6 +3405,7 @@ function showAJCC(){
     document.getElementById('ajccPage').classList.add('active');
 }
 function showCalc(){
+    leaveDesktopDashboard();
     document.getElementById('landingPage').style.display='none';
     document.getElementById('breastPage').classList.remove('active');
     document.getElementById('inpatientPage').classList.remove('active');
@@ -3227,6 +3423,7 @@ function showGailCalculator(){
     switchCalcTab('gail');
 }
 function showWorkspace(){
+    leaveDesktopDashboard();
     document.getElementById('landingPage').style.display='none';
     document.getElementById('breastPage').classList.remove('active');
     document.getElementById('inpatientPage').classList.remove('active');
@@ -3591,6 +3788,14 @@ function calcCTS5Pure(N, T, G, A){
     else if(score>=3.13){ cls='med'; label='中度風險'; }
     return { score, drr10, cls, label };
 }
+function _logistic(x){
+    return 1 / (1 + Math.exp(-x));
+}
+function _riskClass(pct, lowCut=10, highCut=30){
+    if(pct < lowCut) return 'low';
+    if(pct < highCut) return 'med';
+    return 'high';
+}
 function getCTS5Exclusion(erSign, prSign, her2){
     if(erSign === '-' && prSign === '-') return 'CTS5 不適用於 ER−/PR−（HR−）乳癌。';
     if(her2 === '+') return 'CTS5 原模型不適用於 HER2+ 乳癌。';
@@ -3688,6 +3893,29 @@ function calcGailPure(age, rrMen, rrBirth, rrRel, biopsy, atypia, race){
     else if(risk5yCapped < 3){ cls='med'; advice='中度風險。可考慮加強篩檢頻率。'; }
     else { cls='high'; advice='<strong>高風險（5 年 ≥3%）</strong>。考慮 chemoprevention（Tamoxifen / AI / Raloxifene）；建議轉介遺傳諮詢。'; }
     return { risk5y: risk5yCapped, lifetimeRisk, totalRR, rrBio, raceFactor, cls, advice };
+}
+function calcQiuAlnPure(td, cortex, hilumAbsent, grade, sizeCm, erScore){
+    if(![td,cortex,hilumAbsent,grade,sizeCm,erScore].every(v=>typeof v==='number'&&!isNaN(v))) return null;
+    const d1 = grade === 2 ? 1 : 0;
+    const d2 = grade === 3 ? 1 : 0;
+    const logit = 0.063*td + 0.277*cortex + 1.420*hilumAbsent + 1.502*d1 + 2.090*d2 + 0.305*sizeCm + 0.379*erScore - 5.710;
+    const risk = _logistic(logit) * 100;
+    return { logit, risk, cls:_riskClass(risk, 13.8, 50) };
+}
+function calcNonSlnPure(sizeCm, multifocal, lvi, positiveSln, negativeSln){
+    if(![sizeCm,multifocal,lvi,positiveSln,negativeSln].every(v=>typeof v==='number'&&!isNaN(v))) return null;
+    const logit = 0.267*sizeCm + 1.443*multifocal + 1.078*lvi + 0.471*positiveSln - 0.618*negativeSln - 2.541;
+    const risk = _logistic(logit) * 100;
+    return { logit, risk, cls:_riskClass(risk, 10, 30) };
+}
+function calcLevel2AlnPure(posLevel1, tumorT, ki67High, grade){
+    if(![posLevel1,tumorT,ki67High,grade].every(v=>typeof v==='number'&&!isNaN(v))) return null;
+    const a = Math.min(Math.max(Math.round(posLevel1), 1), 5);
+    const d1 = grade === 2 ? 1 : 0;
+    const d2 = grade === 3 ? 1 : 0;
+    const logit = 0.683*a + 0.552*tumorT + 0.728*ki67High + 0.922*d1 + 1.506*d2 - 5.314;
+    const risk = _logistic(logit) * 100;
+    return { logit, risk, cls:_riskClass(risk, 10, 30) };
 }
 function calcPredictPure(p){
     // p: {age, size_mm, nodes_pos, grade, er, her2, ki67Pct, mode}
@@ -4262,7 +4490,8 @@ function initCalcPage(){
         ihc4: 'calc_ihc4',
         hscore: 'calc_hscore',
         rcb: 'calc_rcb',
-        gail: 'calc_gail'
+        gail: 'calc_gail',
+        ln: 'calc_ln'
     };
     let firstVisibleTab = 'ext';
     Object.entries(tabFlagMap).forEach(([tab, flag]) => {
@@ -4290,6 +4519,7 @@ function initCalcPage(){
     if(FEATURE_FLAGS.calc_hscore) calcHscore();
     if(FEATURE_FLAGS.calc_rcb) calcRCB();
     if(FEATURE_FLAGS.calc_gail) calcGail();
+    if(FEATURE_FLAGS.calc_ln) calcLN();
 }
 function switchCalcTab(tab){
     document.querySelectorAll('#calcPage .calc-tab').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
@@ -4389,6 +4619,26 @@ function syncCalculatorFromWorkspace(tab){
         _setCalcVal('gail_atypia', p.gail_atypia);
         _setCalcVal('gail_race', p.gail_race);
         calcGail();
+    } else if(tab === 'ln'){
+        if(sizeMm){
+            _setCalcVal('ln_aln_size', (sizeMm / 10).toFixed(1));
+            _setCalcVal('ln_nsln_size', (sizeMm / 10).toFixed(1));
+            if(sizeMm <= 20) _setCalcVal('ln_l2_t', '1');
+            else if(sizeMm <= 30) _setCalcVal('ln_l2_t', '2');
+            else if(sizeMm <= 50) _setCalcVal('ln_l2_t', '3');
+            else _setCalcVal('ln_l2_t', '4');
+        }
+        if(grade){
+            _setCalcVal('ln_aln_grade', grade);
+            _setCalcVal('ln_l2_grade', grade);
+        }
+        if(erSign) _setCalcVal('ln_aln_er', erSign === '+' ? '2' : '0');
+        if(has(p.ki67)) _setCalcVal('ln_l2_ki', (+p.ki67 > 20) ? '1' : '0');
+        if(has(p.nodes_pos)){
+            _setCalcVal('ln_nsln_pos', Math.max(1, +p.nodes_pos || 1));
+            _setCalcVal('ln_l2_pos', Math.max(1, +p.nodes_pos || 1));
+        }
+        calcLN();
     }
 }
 // ── CTS5 (Dowsett JCO 2018) ──
@@ -4822,6 +5072,59 @@ function calcGail(){
     </div>`;
 }
 
+// ── LN Prediction Nomograms ──
+function calcLN(){
+    const alnEl = document.getElementById('ln_aln_result');
+    if(!alnEl) return;
+
+    const aln = calcQiuAlnPure(
+        +document.getElementById('ln_aln_td').value,
+        +document.getElementById('ln_aln_cortex').value,
+        +document.getElementById('ln_aln_hilum').value,
+        +document.getElementById('ln_aln_grade').value,
+        +document.getElementById('ln_aln_size').value,
+        +document.getElementById('ln_aln_er').value
+    );
+    if(aln){
+        alnEl.innerHTML=`<div class="calc-result ${aln.cls}">
+            <div class="calc-result-label">Positive axillary US 後 ALN metastasis</div>
+            <div class="calc-result-main">${aln.risk.toFixed(1)}%</div>
+            <div class="calc-result-detail">logit = ${aln.logit.toFixed(3)}。Qiu 2016 validation：13.8% cutoff 的 FNR 約 5.3%；結果僅供模型參考。</div>
+        </div>`;
+    }
+
+    const nslnEl = document.getElementById('ln_nsln_result');
+    const nsln = calcNonSlnPure(
+        +document.getElementById('ln_nsln_size').value,
+        +document.getElementById('ln_nsln_multi').value,
+        +document.getElementById('ln_nsln_lvi').value,
+        +document.getElementById('ln_nsln_pos').value,
+        +document.getElementById('ln_nsln_neg').value
+    );
+    if(nslnEl && nsln){
+        nslnEl.innerHTML=`<div class="calc-result ${nsln.cls}">
+            <div class="calc-result-label">SLN+ 後 non-SLN metastasis</div>
+            <div class="calc-result-main">${nsln.risk.toFixed(1)}%</div>
+            <div class="calc-result-detail">logit = ${nsln.logit.toFixed(3)}。此為公開 logistic equation，不是 MSK 官方 Non-SLN nomogram 係數。</div>
+        </div>`;
+    }
+
+    const l2El = document.getElementById('ln_l2_result');
+    const l2 = calcLevel2AlnPure(
+        +document.getElementById('ln_l2_pos').value,
+        +document.getElementById('ln_l2_t').value,
+        +document.getElementById('ln_l2_ki').value,
+        +document.getElementById('ln_l2_grade').value
+    );
+    if(l2El && l2){
+        l2El.innerHTML=`<div class="calc-result ${l2.cls}">
+            <div class="calc-result-label">Level II ALN metastasis</div>
+            <div class="calc-result-main">${l2.risk.toFixed(1)}%</div>
+            <div class="calc-result-detail">logit = ${l2.logit.toFixed(3)}。Jiang 2017 validation AUC 0.816；低於 10% 時原研究 FNR 約 7.41%。</div>
+        </div>`;
+    }
+}
+
 // ── Feature Flags ──
 const FEATURE_FLAGS_DEFAULT = {
     // Stable features (production-ready)
@@ -4843,6 +5146,7 @@ const FEATURE_FLAGS_DEFAULT = {
     calc_magee: true,       // Klein 2013, multiple equations
     calc_hscore: true,      // pure math, no clinical interpretation
     calc_rcb: true,         // Symmans 2007, well-validated formula
+    calc_ln: true,          // LN prediction models with published equations
     // Validated features (passed R nhs.predict 2595-case validation)
     predict: true,           // ✅ Validated: 100% pass vs R, max err 0.02%
     // Beta features (experimental, may not be fully validated)
@@ -4931,6 +5235,7 @@ function renderSettings(){
         {key:'calc_magee', label:'  └ Magee Equations', stable:true},
         {key:'calc_hscore', label:'  └ H-score', stable:true},
         {key:'calc_rcb', label:'  └ RCB (Residual Cancer Burden)', stable:true},
+        {key:'calc_ln', label:'  └ LN 預測', stable:true},
         {key:'predict', label:'  └ PREDICT v2.3', stable:true, note:'已通過 R nhs.predict 2595-case 驗證 (max err 0.02%)'},
         {key:'ajccPrognostic', label:'AJCC v8 預後期別 (Clinical/Pathologic)', stable:false, note:'正式分期請對照 AJCC 第八版手冊 Table 48.2'},
         {key:'calc_ihc4', label:'  └ IHC4', stable:true},
