@@ -290,58 +290,78 @@ body {
 
 /* Desktop home dashboard: all major tools visible without card navigation */
 @media (min-width: 1180px){
+  body.desktop-dashboard-mode {
+    overflow: hidden;
+  }
+  body.desktop-dashboard-mode .header {
+    position: static;
+    padding: .55rem 1rem;
+  }
   body.desktop-dashboard-mode .container {
-    max-width: 1600px;
-    padding: 1rem 1.15rem 2rem;
+    width: 100%;
+    max-width: none;
+    height: calc(100vh - 58px);
+    padding: .45rem .75rem .65rem;
     display: grid;
-    grid-template-columns: minmax(0, 1.12fr) minmax(420px, .88fr);
-    gap: .85rem;
-    align-items: start;
+    grid-template-columns: minmax(560px, 1.45fr) minmax(260px, .78fr) minmax(260px, .78fr);
+    grid-template-rows: 30px clamp(190px, 26vh, 250px) clamp(145px, 18vh, 175px) clamp(145px, 18vh, 175px) clamp(170px, 22vh, 220px);
+    gap: .45rem;
+    align-items: stretch;
+    align-content: stretch;
+    overflow: hidden;
   }
   body.desktop-dashboard-mode #landingPage { display: none !important; }
-  body.desktop-dashboard-mode .clinical-notice,
-  body.desktop-dashboard-mode .view-mode-panel,
-  body.desktop-dashboard-mode .version-banner,
-  body.desktop-dashboard-mode #wsPage,
-  body.desktop-dashboard-mode #breastPage {
-    grid-column: 1 / -1;
+  body.desktop-dashboard-mode .clinical-notice {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
+    justify-self: start;
+    margin: 0;
   }
-  body.desktop-dashboard-mode .clinical-notice { order: 0; }
   body.desktop-dashboard-mode .view-mode-panel {
-    order: 0;
+    grid-column: 2 / 4;
+    grid-row: 1;
     justify-content: flex-end;
-    padding: .1rem 0;
+    align-self: center;
+    margin: 0;
+    padding: 0;
   }
-  body.desktop-dashboard-mode .version-banner { order: 0; }
-  body.desktop-dashboard-mode #wsPage { order: 1; }
-  body.desktop-dashboard-mode #breastPage { order: 2; }
-  body.desktop-dashboard-mode #inpatientPage { order: 3; }
-  body.desktop-dashboard-mode #icdPage { order: 4; }
-  body.desktop-dashboard-mode #surgeryPage { order: 5; }
-  body.desktop-dashboard-mode #trialsPage { order: 6; }
-  body.desktop-dashboard-mode #calcPage { order: 7; }
+  body.desktop-dashboard-mode .version-banner { grid-column: 1 / 4; grid-row: 1; }
+  body.desktop-dashboard-mode #wsPage { grid-column: 1; grid-row: 2 / 6; }
+  body.desktop-dashboard-mode #breastPage { grid-column: 2 / 4; grid-row: 2; }
+  body.desktop-dashboard-mode #inpatientPage { grid-column: 2; grid-row: 3; }
+  body.desktop-dashboard-mode #icdPage { grid-column: 3; grid-row: 3; }
+  body.desktop-dashboard-mode #surgeryPage { grid-column: 2; grid-row: 4; }
+  body.desktop-dashboard-mode #trialsPage { grid-column: 3; grid-row: 4; }
+  body.desktop-dashboard-mode #calcPage { grid-column: 2 / 4; grid-row: 5; }
+  body.desktop-dashboard-mode #calcPage {
+    min-height: clamp(150px, 20vh, 220px);
+  }
   body.desktop-dashboard-mode .site-footer {
-    grid-column: 1 / -1;
-    order: 99;
+    display: none;
   }
   body.desktop-dashboard-mode .dept-page.active {
-    display: block;
+    display: flex;
+    flex-direction: column;
     margin: 0;
     border: 1px solid var(--border);
     border-radius: var(--r-md);
     background: var(--surface);
     overflow: hidden;
+    min-height: 0;
+    height: 100%;
   }
   body.desktop-dashboard-mode .page-topbar {
     margin: 0;
-    padding: .6rem .8rem;
+    padding: .38rem .55rem;
     background: var(--surface-2);
     border-bottom: 1px solid var(--border);
+    min-height: 34px;
   }
-  body.desktop-dashboard-mode .page-topbar h2 { font-size: 1rem; }
+  body.desktop-dashboard-mode .page-topbar h2 { font-size: .9rem; line-height: 1.1; }
   body.desktop-dashboard-mode .back-btn { display: none; }
   body.desktop-dashboard-mode .inner-tabs {
-    margin: .65rem .8rem;
+    margin: .35rem .5rem;
   }
   body.desktop-dashboard-mode .tab-content,
   body.desktop-dashboard-mode #inpatientPage > div:not(.page-topbar),
@@ -349,9 +369,16 @@ body {
   body.desktop-dashboard-mode #surgeryPage > div:not(.page-topbar),
   body.desktop-dashboard-mode #trialsPage > div:not(.page-topbar),
   body.desktop-dashboard-mode #calcPage > .page-body {
-    padding: .75rem .85rem 1rem !important;
+    padding: .45rem .55rem !important;
     max-width: none !important;
     margin: 0 !important;
+    min-height: 0;
+    overflow: auto;
+  }
+  body.desktop-dashboard-mode #wsPage > .page-body {
+    padding: .45rem !important;
+    overflow: auto;
+    min-height: 0;
   }
   body.desktop-dashboard-mode #breastPage .content-layout {
     grid-template-columns: minmax(0, 1fr);
@@ -363,12 +390,21 @@ body {
   body.desktop-dashboard-mode #breastPage .drug-list,
   body.desktop-dashboard-mode #surgeryList,
   body.desktop-dashboard-mode #trialResults {
-    max-height: 430px;
+    max-height: none;
     overflow: auto;
   }
-  body.desktop-dashboard-mode .reg-section { margin-bottom: .75rem; }
+  body.desktop-dashboard-mode #breastPage .drug-list { max-height: 132px; }
+  body.desktop-dashboard-mode #surgeryList,
+  body.desktop-dashboard-mode #trialResults { max-height: 92px; }
+  body.desktop-dashboard-mode .reg-section { margin-bottom: .4rem; }
   body.desktop-dashboard-mode .calc-card { margin-bottom: 0; }
-  body.desktop-dashboard-mode .ws-actions { position: static; }
+  body.desktop-dashboard-mode .ws-actions { display: none; }
+  body.desktop-dashboard-mode .ws-step-label { margin: .2rem 0 .18rem; font-size: .76rem; }
+  body.desktop-dashboard-mode .ws-stage-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .4rem; }
+  body.desktop-dashboard-mode .ws-empty { padding: .75rem; }
+  body.desktop-dashboard-mode .ws-score-sections { gap: .35rem; }
+  body.desktop-dashboard-mode .ws-score-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .35rem; }
+  body.desktop-dashboard-mode .ws-result-card { min-height: 58px; padding: .42rem .5rem; }
 }
 
 .landing-actions {
