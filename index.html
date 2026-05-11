@@ -302,45 +302,41 @@ body {
     max-width: none;
     height: calc(100vh - 58px);
     padding: .45rem .75rem .65rem;
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    grid-template-rows: 30px minmax(360px, 1fr) minmax(230px, .85fr) minmax(230px, .85fr);
+    display: flex;
+    flex-wrap: wrap;
     gap: .55rem;
     align-items: stretch;
-    align-content: stretch;
-    overflow: hidden;
+    align-content: flex-start;
+    overflow: auto;
   }
   body.desktop-dashboard-mode #landingPage { display: none !important; }
   body.desktop-dashboard-mode .clinical-notice {
-    grid-column: 1;
-    grid-row: 1;
+    order: 0;
     align-self: center;
     justify-self: start;
     margin: 0;
   }
   body.desktop-dashboard-mode .view-mode-panel {
-    grid-column: 2 / 5;
-    grid-row: 1;
+    order: 0;
+    flex: 1 1 auto;
     justify-content: flex-end;
     align-self: center;
     margin: 0;
     padding: 0;
   }
-  body.desktop-dashboard-mode .version-banner { grid-column: 1 / 5; grid-row: 1; }
-  body.desktop-dashboard-mode #wsPage { grid-column: 1 / 5; grid-row: 2; }
-  body.desktop-dashboard-mode #breastPage { grid-column: 1 / 3; grid-row: 3; }
-  body.desktop-dashboard-mode #inpatientPage { grid-column: 3; grid-row: 3; }
-  body.desktop-dashboard-mode #icdPage { grid-column: 4; grid-row: 3; }
-  body.desktop-dashboard-mode #surgeryPage { grid-column: 1; grid-row: 4; }
-  body.desktop-dashboard-mode #trialsPage { grid-column: 2; grid-row: 4; }
-  body.desktop-dashboard-mode #calcPage { grid-column: 3 / 5; grid-row: 4; }
-  body.desktop-dashboard-mode #calcPage {
-    min-height: 0;
+  body.desktop-dashboard-mode .dashboard-controls {
+    order: 1;
+    display: flex;
+  }
+  body.desktop-dashboard-mode .version-banner {
+    order: 1;
+    flex: 0 0 100%;
   }
   body.desktop-dashboard-mode .site-footer {
     display: none;
   }
   body.desktop-dashboard-mode .dept-page.active {
+    order: 2;
     display: flex;
     flex-direction: column;
     margin: 0;
@@ -349,7 +345,15 @@ body {
     background: var(--surface);
     overflow: hidden;
     min-height: 0;
-    height: 100%;
+    height: var(--dash-h, 260px);
+    width: var(--dash-w, 520px);
+    flex: 0 0 var(--dash-w, 520px);
+    max-width: calc(100vw - 1.5rem);
+  }
+  body.desktop-dashboard-mode .dept-page.dashboard-widget.active {
+    resize: both;
+    min-width: 320px;
+    min-height: 170px;
   }
   body.desktop-dashboard-mode .page-topbar {
     margin: 0;
@@ -431,23 +435,66 @@ body {
 }
 
 @media (min-width: 1180px) and (max-width: 1450px){
-  body.desktop-dashboard-mode .container {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-template-rows: 30px minmax(360px, 1fr) minmax(125px, .55fr) minmax(125px, .55fr);
-  }
-  body.desktop-dashboard-mode .view-mode-panel { grid-column: 2 / 4; }
-  body.desktop-dashboard-mode .version-banner { grid-column: 1 / 4; }
-  body.desktop-dashboard-mode #wsPage { grid-column: 1 / 4; }
-  body.desktop-dashboard-mode #breastPage { grid-column: 1 / 3; grid-row: 3; }
-  body.desktop-dashboard-mode #inpatientPage { grid-column: 3; grid-row: 3; }
-  body.desktop-dashboard-mode #icdPage { grid-column: 1; grid-row: 4; }
-  body.desktop-dashboard-mode #surgeryPage { grid-column: 2; grid-row: 4; }
-  body.desktop-dashboard-mode #trialsPage { grid-column: 3; grid-row: 4; }
-  body.desktop-dashboard-mode #calcPage { display: none !important; }
   body.desktop-dashboard-mode #wsPage > .page-body {
     grid-template-columns: minmax(0, 1fr) minmax(410px, .72fr);
     overflow: auto;
   }
+}
+
+.dashboard-controls {
+  display: none;
+  flex: 0 0 100%;
+  align-items: center;
+  gap: .45rem;
+  padding: .35rem .55rem;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  overflow-x: auto;
+}
+.dashboard-controls-title {
+  flex: 0 0 auto;
+  font-size: .72rem;
+  font-weight: 850;
+  color: var(--text-muted);
+}
+.dashboard-widget-toggle {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: .25rem;
+  padding: .18rem .5rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-2);
+  font-size: .72rem;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+}
+.dashboard-widget-toggle input {
+  width: 14px;
+  height: 14px;
+  accent-color: #2563eb;
+}
+.dashboard-controls button {
+  flex: 0 0 auto;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  border-radius: var(--r-sm);
+  padding: .22rem .55rem;
+  font-size: .72rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.dashboard-controls-hint {
+  flex: 1 1 auto;
+  min-width: 180px;
+  color: var(--text-faint);
+  font-size: .7rem;
+  text-align: right;
+  white-space: nowrap;
 }
 
 .landing-actions {
@@ -1962,6 +2009,7 @@ body.dark .back-btn:hover { background: #334155; }
     <button type="button" class="view-mode-btn" id="viewModeCardsBtn" onclick="setAppViewMode('cards')">手機卡片</button>
     <button type="button" class="view-mode-btn" id="viewModeDashboardBtn" onclick="setAppViewMode('dashboard')">桌面 Dashboard</button>
   </div>
+  <div class="dashboard-controls" id="dashboardControls" aria-label="Dashboard 模組控制"></div>
 
   <!-- ===== LANDING PAGE ===== -->
   <div id="landingPage">
@@ -3445,8 +3493,123 @@ function setPageActive(id, active){
     const el = document.getElementById(id);
     if(el) el.classList.toggle('active', !!active);
 }
+
+const DASHBOARD_WIDGETS = [
+    { id:'wsPage', flag:'workspace', label:'分期與分數', w:1880, h:360, cw:1320, ch:360 },
+    { id:'breastPage', flag:'breast', label:'乳癌藥物', w:940, h:300, cw:890, ch:170 },
+    { id:'inpatientPage', flag:'inpatient', label:'住院化療', w:460, h:300, cw:440, ch:170 },
+    { id:'icdPage', flag:'icd', label:'ICD 碼', w:460, h:300, cw:440, ch:170 },
+    { id:'surgeryPage', flag:'surgery', label:'手術醫材', w:460, h:280, cw:440, ch:150 },
+    { id:'trialsPage', flag:'trials', label:'臨床試驗', w:460, h:280, cw:440, ch:150 },
+    { id:'calcPage', flag:'calc_gail', label:'乳癌計算機', w:940, h:300, cw:890, ch:180, defaultVisible:false }
+];
+const DASHBOARD_VISIBLE_KEY = 'nhi_dashboard_widgets_v1';
+const DASHBOARD_LAYOUT_KEY = 'nhi_dashboard_layout_v1';
+let _dashboardResizeObserver = null;
+let _dashboardResizeSaveTimer = null;
+
+function readDashboardJson(key, fallback){
+    try {
+        const saved = localStorage.getItem(key);
+        return saved ? { ...fallback, ...JSON.parse(saved) } : { ...fallback };
+    } catch(e){
+        return { ...fallback };
+    }
+}
+function getDashboardVisible(){
+    const defaults = {};
+    DASHBOARD_WIDGETS.forEach(w => defaults[w.id] = w.defaultVisible !== false);
+    return readDashboardJson(DASHBOARD_VISIBLE_KEY, defaults);
+}
+function getDashboardLayout(){
+    return readDashboardJson(DASHBOARD_LAYOUT_KEY, {});
+}
+function dashboardDefaultSize(widget){
+    const compact = window.innerWidth <= 1450;
+    const maxWidth = Math.max(320, window.innerWidth - 28);
+    const w = compact ? (widget.cw || widget.w) : widget.w;
+    const h = compact ? (widget.ch || widget.h) : widget.h;
+    return { w: Math.min(w, maxWidth), h };
+}
+function isDashboardWidgetAvailable(widget){
+    return !!FEATURE_FLAGS[widget.flag];
+}
+function renderDashboardControls(){
+    const box = document.getElementById('dashboardControls');
+    if(!box) return;
+    const visible = getDashboardVisible();
+    const items = DASHBOARD_WIDGETS
+        .filter(isDashboardWidgetAvailable)
+        .map(w => `<label class="dashboard-widget-toggle"><input type="checkbox" ${visible[w.id] !== false ? 'checked' : ''} onchange="setDashboardWidgetVisible('${w.id}',this.checked)"> ${w.label}</label>`)
+        .join('');
+    box.innerHTML = `<span class="dashboard-controls-title">Dashboard 模組</span>${items}<button type="button" onclick="resetDashboardLayout()">重設</button><span class="dashboard-controls-hint">面板右下角可拖拉調整大小，開關與大小會自動記住</span>`;
+}
+function setDashboardWidgetVisible(id, checked){
+    const visible = getDashboardVisible();
+    visible[id] = !!checked;
+    try { localStorage.setItem(DASHBOARD_VISIBLE_KEY, JSON.stringify(visible)); } catch(e){}
+    showDesktopDashboard();
+}
+function resetDashboardLayout(){
+    try {
+        localStorage.removeItem(DASHBOARD_VISIBLE_KEY);
+        localStorage.removeItem(DASHBOARD_LAYOUT_KEY);
+    } catch(e){}
+    showDesktopDashboard();
+}
+function applyDashboardWidgetLayout(){
+    const visible = getDashboardVisible();
+    const layout = getDashboardLayout();
+    DASHBOARD_WIDGETS.forEach((widget, index) => {
+        const el = document.getElementById(widget.id);
+        if(!el) return;
+        const enabled = isDashboardWidgetAvailable(widget) && visible[widget.id] !== false;
+        setPageActive(widget.id, enabled);
+        el.classList.toggle('dashboard-widget', enabled);
+        if(!enabled) return;
+        const size = layout[widget.id] || dashboardDefaultSize(widget);
+        const maxWidth = Math.max(320, window.innerWidth - 28);
+        const width = Math.min(Number(size.w) || widget.w, maxWidth);
+        const height = Math.max(150, Number(size.h) || widget.h);
+        el.style.order = String(20 + index);
+        el.style.setProperty('--dash-w', `${Math.round(width)}px`);
+        el.style.setProperty('--dash-h', `${Math.round(height)}px`);
+    });
+    observeDashboardWidgetSizes();
+}
+function observeDashboardWidgetSizes(){
+    if(_dashboardResizeObserver) _dashboardResizeObserver.disconnect();
+    if(typeof ResizeObserver === 'undefined') return;
+    _dashboardResizeObserver = new ResizeObserver(entries => {
+        if(!document.body.classList.contains('desktop-dashboard-mode')) return;
+        const layout = getDashboardLayout();
+        entries.forEach(entry => {
+            const id = entry.target && entry.target.id;
+            if(!id) return;
+            const r = entry.target.getBoundingClientRect();
+            layout[id] = { w: Math.round(r.width), h: Math.round(r.height) };
+        });
+        clearTimeout(_dashboardResizeSaveTimer);
+        _dashboardResizeSaveTimer = setTimeout(() => {
+            try { localStorage.setItem(DASHBOARD_LAYOUT_KEY, JSON.stringify(layout)); } catch(e){}
+        }, 250);
+    });
+    DASHBOARD_WIDGETS.forEach(widget => {
+        const el = document.getElementById(widget.id);
+        if(el && el.classList.contains('active')) _dashboardResizeObserver.observe(el);
+    });
+}
 function leaveDesktopDashboard(){
     document.body.classList.remove('desktop-dashboard-mode');
+    if(_dashboardResizeObserver) _dashboardResizeObserver.disconnect();
+    DASHBOARD_WIDGETS.forEach(widget => {
+        const el = document.getElementById(widget.id);
+        if(!el) return;
+        el.classList.remove('dashboard-widget');
+        el.style.removeProperty('--dash-w');
+        el.style.removeProperty('--dash-h');
+        el.style.removeProperty('order');
+    });
 }
 function initDashboardBreastPanel(){
     document.querySelectorAll('#breastPage .inner-tab').forEach(b=>b.classList.remove('active'));
@@ -3468,17 +3631,12 @@ function initDashboardBreastPanel(){
 function showDesktopDashboard(){
     document.body.classList.add('desktop-dashboard-mode');
     updateViewModeToggle();
+    renderDashboardControls();
     document.getElementById('landingPage').style.display='none';
     const F = FEATURE_FLAGS;
-    setPageActive('breastPage', !!F.breast);
-    setPageActive('inpatientPage', !!F.inpatient);
-    setPageActive('icdPage', !!F.icd);
-    setPageActive('surgeryPage', !!F.surgery);
-    setPageActive('trialsPage', !!F.trials);
-    setPageActive('wsPage', !!F.workspace);
-    setPageActive('calcPage', !!F.calc_gail);
     setPageActive('ajccPage', false);
     setPageActive('journeyPage', false);
+    applyDashboardWidgetLayout();
     if(F.breast) initDashboardBreastPanel();
     if(F.inpatient && !_inpInited) initInpCalc();
     if(F.icd && !_icdInited) initIcdPage();
