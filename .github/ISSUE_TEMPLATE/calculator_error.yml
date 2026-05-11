@@ -1,0 +1,50 @@
+name: 計算器錯誤 / Calculator Error
+description: 回報 AJCC、PREDICT、IHC4、CTS5、PEPI、NPI、RCB 等計算疑似錯誤
+title: "[計算器] "
+labels: ["calculator", "bug"]
+assignees:
+  - erichuang777777
+body:
+  - type: markdown
+    attributes:
+      value: |
+        請勿填入病人姓名、病歷號、身分證字號或可識別個資。可用去識別化測試值。
+  - type: dropdown
+    id: calculator
+    attributes:
+      label: 計算器
+      options:
+        - 分期與分數
+        - AJCC v8
+        - PREDICT
+        - IHC4
+        - CTS5
+        - PEPI
+        - NPI
+        - Magee
+        - RCB
+        - LN nomogram
+        - Gail
+        - 其他
+    validations:
+      required: true
+  - type: textarea
+    id: inputs
+    attributes:
+      label: 輸入值
+      description: 去識別化後的欄位與數值
+      render: json
+  - type: textarea
+    id: current_result
+    attributes:
+      label: 目前結果
+  - type: textarea
+    id: expected_result
+    attributes:
+      label: 預期結果與依據
+    validations:
+      required: true
+  - type: textarea
+    id: reference
+    attributes:
+      label: Reference / 來源

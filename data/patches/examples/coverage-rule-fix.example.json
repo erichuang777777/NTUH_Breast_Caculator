@@ -1,0 +1,18 @@
+{
+  "issue": 124,
+  "title": "Fix bevacizumab coverage rule",
+  "source": "NHI drug coverage rule 115/04/01",
+  "operations": [
+    {
+      "type": "coverage_rule_update",
+      "drug_id": 1730,
+      "reason": "Correct prior authorization flag and line",
+      "source": "NHI coverage rule 115/04/01",
+      "changes": {
+        "therapy_line": 1,
+        "prior_auth_required": 1,
+        "condition": "Updated coverage condition text here"
+      }
+    }
+  ]
+}

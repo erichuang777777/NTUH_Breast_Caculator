@@ -1,0 +1,53 @@
+name: 藥價錯誤 / Drug Price Fix
+description: 回報健保藥價、自費價、規格或生效日錯誤
+title: "[藥價] "
+labels: ["drug-price", "data-fix"]
+assignees:
+  - erichuang777777
+body:
+  - type: markdown
+    attributes:
+      value: |
+        請勿填入病人姓名、病歷號、身分證字號或可識別個資。
+  - type: input
+    id: drug_name
+    attributes:
+      label: 藥品名稱
+      description: Generic / brand name 都可以
+      placeholder: trastuzumab / Herceptin
+    validations:
+      required: true
+  - type: input
+    id: formulation
+    attributes:
+      label: 規格或劑型
+      placeholder: 440mg/vial
+  - type: input
+    id: current_price
+    attributes:
+      label: 目前網站顯示價格
+      placeholder: 28518
+  - type: input
+    id: correct_price
+    attributes:
+      label: 正確價格
+      placeholder: 28400
+    validations:
+      required: true
+  - type: input
+    id: effective_date
+    attributes:
+      label: 生效日
+      placeholder: 115/04/01
+  - type: textarea
+    id: source
+    attributes:
+      label: 來源
+      description: 健保公告 PDF、院內清單、截圖或文字說明
+      placeholder: 健保公告 115/03/23 PDF 第 X 頁
+    validations:
+      required: true
+  - type: textarea
+    id: note
+    attributes:
+      label: 補充說明

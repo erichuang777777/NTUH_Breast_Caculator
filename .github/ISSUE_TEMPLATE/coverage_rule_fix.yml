@@ -1,0 +1,48 @@
+name: 健保給付條件錯誤 / Coverage Rule Fix
+description: 回報給付條件、線別、事前審查、適應症文字錯誤
+title: "[給付條件] "
+labels: ["coverage-rule", "data-fix"]
+assignees:
+  - erichuang777777
+body:
+  - type: markdown
+    attributes:
+      value: |
+        請勿填入病人姓名、病歷號、身分證字號或可識別個資。
+  - type: input
+    id: drug_name
+    attributes:
+      label: 藥品名稱
+      placeholder: pembrolizumab / Keytruda
+    validations:
+      required: true
+  - type: dropdown
+    id: field
+    attributes:
+      label: 錯誤類型
+      options:
+        - 治療線別
+        - 事前審查
+        - 給付條件文字
+        - 適應症
+        - 生物標記條件
+        - 其他
+    validations:
+      required: true
+  - type: textarea
+    id: current_text
+    attributes:
+      label: 目前網站內容
+  - type: textarea
+    id: correct_text
+    attributes:
+      label: 建議修正內容
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: 來源
+      placeholder: 健保給付規定版本、公告日期、頁碼或連結
+    validations:
+      required: true

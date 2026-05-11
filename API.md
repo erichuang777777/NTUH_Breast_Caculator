@@ -40,6 +40,20 @@ git commit -m "Update API data export"
 git push origin master
 ```
 
+## Agent Data Fix Workflow
+
+For issue-driven data fixes, do not update SQLite directly. Create a JSON patch
+under `data/patches/` and apply it with:
+
+```bash
+python tools/db_patch.py data/patches/issue-123-topic.json --dry-run
+python tools/db_patch.py data/patches/issue-123-topic.json
+python tools/check_api.py
+```
+
+`tools/db_patch.py` writes an audit line to `data/patches/applied_log.jsonl` and
+reruns `api_export.py` after successful apply.
+
 ## PWA
 
 The deployed frontend includes:

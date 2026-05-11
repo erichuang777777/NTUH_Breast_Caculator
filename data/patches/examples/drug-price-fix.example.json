@@ -1,0 +1,35 @@
+{
+  "issue": 123,
+  "title": "Fix trastuzumab NHI price",
+  "source": "NHI announcement 115/04/23 PDF",
+  "operations": [
+    {
+      "type": "drug_update",
+      "drug_id": 1768,
+      "reason": "Correct NHI listed price",
+      "source": "NHI announcement 115/04/23 PDF page X",
+      "changes": {
+        "nhi_price": 28400,
+        "price_unit": "440mg/vial"
+      }
+    },
+    {
+      "type": "formulation_update",
+      "formulation_id": 26,
+      "reason": "Keep regimen calculator formulation price in sync",
+      "changes": {
+        "nhi_price": 28400,
+        "source": "NHI 115/04/23"
+      }
+    },
+    {
+      "type": "app_config_update",
+      "reason": "Update public price badge",
+      "changes": {
+        "price_announcement_date": "115/04/23",
+        "price_effective_date": "115/05/01",
+        "price_badge_text": "藥價公告 115/04/23｜生效 115/05/01"
+      }
+    }
+  ]
+}

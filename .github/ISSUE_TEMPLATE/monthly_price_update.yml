@@ -1,0 +1,39 @@
+name: 每月藥價更新 / Monthly Price Update
+description: 建立每月健保公告藥價更新工單
+title: "[每月藥價更新] 115/MM 公告"
+labels: ["monthly-update", "drug-price"]
+assignees:
+  - erichuang777777
+body:
+  - type: input
+    id: announcement_date
+    attributes:
+      label: 健保公告日
+      placeholder: 115/04/23
+    validations:
+      required: true
+  - type: input
+    id: effective_date
+    attributes:
+      label: 生效日
+      placeholder: 115/05/01
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: 公告來源
+      placeholder: PDF 檔名、URL 或上傳附件說明
+    validations:
+      required: true
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Agent checklist
+      options:
+        - label: 匯入或解析公告資料
+        - label: 產生差異清單
+        - label: 套用已確認修正
+        - label: 更新 app_config 價格公告文字
+        - label: 執行 python api_export.py
+        - label: 執行 python tools/check_api.py
