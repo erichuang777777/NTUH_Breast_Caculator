@@ -140,7 +140,8 @@ body {
   top: calc(100% + .45rem);
   left: 0;
   z-index: 160;
-  width: min(520px, calc(100vw - 2rem));
+  width: max-content;
+  max-width: calc(100vw - 2rem);
   padding: .65rem .75rem;
   border: 1px solid #bfdbfe;
   border-left: 4px solid #2563eb;
@@ -150,14 +151,14 @@ body {
   box-shadow: 0 12px 28px rgba(15,23,42,.16);
   font-size: .82rem;
   line-height: 1.55;
-  white-space: normal;
-  word-break: break-all;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
+  word-break: normal;
+  overflow-wrap: normal;
   text-align: left;
 }
 .clinical-notice:hover .clinical-notice-text,
 .clinical-notice:focus .clinical-notice-text { display: block; }
-.clinical-notice-line { display: block; }
+.clinical-notice-line { display: inline; }
 .version-banner {
   display: none;
   background: var(--auth-bg);
@@ -535,7 +536,9 @@ body {
 .dashboard-mode #ws_tp53,
 .dashboard-mode #ws_esr1,
 .dashboard-mode #ws_margin_involved { --ws-control-w: 13ch; }
-.dashboard-mode #ws_surgery_type { --ws-control-w: 15ch; }
+.dashboard-mode #ws_breast_surgery,
+.dashboard-mode #ws_axillary_surgery,
+.dashboard-mode #ws_reconstruction_surgery { --ws-control-w: 8ch; }
 .dashboard-mode #ws_menopause { --ws-control-w: 9ch; }
 .dashboard-mode #ws_phase { --ws-control-w: 16ch; }
 .dashboard-mode #ws_prior { --ws-control-w: 22ch; }
@@ -567,19 +570,21 @@ body {
 .nhi-elig-reason { font-size: .72rem; color: var(--text-muted); margin-top: .15rem; line-height: 1.4; }
 .ws-empty { text-align: center; color: var(--text-faint); font-size: .82rem; padding: 1.5rem; }
 .ws-step-label { font-size: .78rem; font-weight: 800; color: var(--text-muted); letter-spacing: .08em; text-transform: uppercase; margin: .2rem 0 .65rem; }
-.ws-stage-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: .75rem; }
-.ws-stage-card { border: 1px solid var(--border); border-left: 4px solid #64748b; border-radius: var(--r-md); background: var(--surface); padding: .85rem .95rem; min-height: 110px; }
+.ws-stage-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); gap: .75rem; align-items: start; }
+.ws-stage-card { border: 1px solid var(--border); border-left: 4px solid #64748b; border-radius: var(--r-md); background: var(--surface); padding: .58rem .72rem; min-height: 0; overflow-x: auto; }
 .ws-stage-card.primary { border-left-color: #334155; background: #f8fafc; }
 .ws-stage-card.good { border-left-color: #16a34a; background: #f0fdf4; }
 .ws-stage-card.warn { border-left-color: #f59e0b; background: #fffbeb; }
 .ws-stage-card.bad { border-left-color: #dc2626; background: #fef2f2; }
 .ws-stage-label { font-size: .72rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: .05em; margin-bottom: .3rem; }
+.ws-stage-inline { display: flex; align-items: baseline; gap: .55rem; flex-wrap: nowrap; }
 .ws-stage-value { font-size: 1.65rem; font-weight: 850; color: var(--text); line-height: 1.1; }
 .ws-stage-card.primary .ws-stage-value { color: #1f2937; }
 .ws-stage-card.good .ws-stage-value { color: #166534; }
 .ws-stage-card.warn .ws-stage-value { color: #92400e; }
 .ws-stage-card.bad .ws-stage-value { color: #991b1b; }
 .ws-stage-sub { font-size: .78rem; color: var(--text-muted); margin-top: .35rem; line-height: 1.45; }
+.ws-stage-inline .ws-stage-sub { margin-top: 0; white-space: nowrap; }
 @media (max-width: 760px){
   .ws-form { grid-template-columns: 1fr 1fr; }
   .nhi-elig-list { grid-template-columns: 1fr; }
@@ -627,7 +632,9 @@ body {
   .dashboard-mode #ws_tp53,
   .dashboard-mode #ws_esr1,
   .dashboard-mode #ws_margin_involved { --ws-control-w: 10ch; }
-  .dashboard-mode #ws_surgery_type { --ws-control-w: 12ch; }
+  .dashboard-mode #ws_breast_surgery,
+  .dashboard-mode #ws_axillary_surgery,
+  .dashboard-mode #ws_reconstruction_surgery { --ws-control-w: 8ch; }
   .dashboard-mode #ws_phase { --ws-control-w: 14ch; }
   .dashboard-mode #ws_prior { --ws-control-w: 16ch; }
   .dashboard-mode .ws-actions {
@@ -819,6 +826,7 @@ body.dark .ws-result-title .badge { background: #422006; color: #fcd34d; }
   .clinical-notice-text {
     width: calc(100vw - 2rem);
     font-size: .78rem;
+    white-space: normal;
   }
     .ws-results-grid { grid-template-columns: 1fr; }
     .ws-score-grid { grid-template-columns: 1fr; }
@@ -869,7 +877,9 @@ body.dark .ws-result-title .badge { background: #422006; color: #fcd34d; }
     .dashboard-mode #ws_tp53,
     .dashboard-mode #ws_esr1,
     .dashboard-mode #ws_margin_involved { --ws-control-w: 10ch; }
-    .dashboard-mode #ws_surgery_type { --ws-control-w: 12ch; }
+    .dashboard-mode #ws_breast_surgery,
+    .dashboard-mode #ws_axillary_surgery,
+    .dashboard-mode #ws_reconstruction_surgery { --ws-control-w: 8ch; }
     .dashboard-mode #ws_phase { --ws-control-w: 14ch; }
     .dashboard-mode #ws_prior { --ws-control-w: 16ch; }
     .dashboard-mode .ws-actions {
@@ -1713,9 +1723,7 @@ body.dark .back-btn:hover { background: #334155; }
   <button class="clinical-notice" type="button" aria-label="本工具僅供醫療人員使用，不構成醫療建議" title="本工具僅供醫療人員使用，不構成醫療建議">
     <span class="icon">&#9432;</span>
     <span class="clinical-notice-text">
-      <span class="clinical-notice-line"><strong>本工具僅供醫療人員使用</strong>，作為臨床查詢與試算輔助。</span>
-      <span class="clinical-notice-line">不構成醫療建議；實際診療、健保給付與用藥決策</span>
-      <span class="clinical-notice-line">請以醫師判斷、病人狀況及官方公告為準。</span>
+      <span class="clinical-notice-line"><strong>本工具僅供醫療人員使用</strong>，作為臨床查詢與試算輔助。不構成醫療建議；實際診療、健保給付與用藥決策請以醫師判斷、病人狀況及官方公告為準。</span>
     </span>
   </button>
 
@@ -2341,10 +2349,12 @@ body.dark .back-btn:hover { background: #334155; }
       <div class="ws-section">
         <h3>手術後</h3>
         <div class="ws-form">
-          <div class="ws-field"><label>手術術式</label><select id="ws_surgery_type" onchange="setPatientField('surgery_type',this.value)"><option value="">—</option><option value="BCS">BCS</option><option value="mastectomy">Mastectomy</option><option value="SLNB">SLNB</option><option value="ALND">ALND</option></select></div>
+          <div class="ws-field"><label title="乳房手術">乳房</label><select id="ws_breast_surgery" onchange="setPatientField('breast_surgery',this.value)"><option value="">—</option><option value="BCS">BCS</option><option value="SM">SM</option></select></div>
+          <div class="ws-field"><label title="腋下手術">腋下</label><select id="ws_axillary_surgery" onchange="setPatientField('axillary_surgery',this.value)"><option value="">—</option><option value="SLNB">SLNB</option><option value="ALND">ALND</option></select></div>
+          <div class="ws-field"><label title="重建術式">重建</label><select id="ws_reconstruction_surgery" onchange="setPatientField('reconstruction_surgery',this.value)"><option value="">—</option><option value="none">無</option><option value="TE">TE</option><option value="implant">Implant</option><option value="autologous">Auto</option></select></div>
+          <div class="ws-field"><label title="LN positive">LN+</label><input type="number" id="ws_nodes_pos" min="0" max="50" oninput="setPatientField('nodes_pos',this.value)"></div>
           <div class="ws-field"><label>LN total</label><input type="number" id="ws_nodes_total" min="0" max="100" oninput="setPatientField('nodes_total',this.value)"></div>
-          <div class="ws-field"><label>LN positive</label><input type="number" id="ws_nodes_pos" min="0" max="50" oninput="setPatientField('nodes_pos',this.value)"></div>
-          <div class="ws-field"><label>Margin involved</label><select id="ws_margin_involved" onchange="setPatientField('margin_involved',this.value)"><option value="">—</option><option value="no">No</option><option value="yes">Involved</option><option value="close">Close</option></select></div>
+          <div class="ws-field"><label title="Margin involved">Margin</label><select id="ws_margin_involved" onchange="setPatientField('margin_involved',this.value)"><option value="">—</option><option value="no">No</option><option value="yes">Involved</option><option value="close">Close</option></select></div>
           <div class="ws-field"><label>pT</label><select id="ws_pT" onchange="setPatientField('pT',this.value)"><option value="">—</option><option value="Tis">Tis</option><option value="T0">T0</option><option value="T1mi">T1mi</option><option value="T1a">T1a</option><option value="T1b">T1b</option><option value="T1c">T1c</option><option value="T2">T2</option><option value="T3">T3</option><option value="T4a">T4a</option><option value="T4b">T4b</option><option value="T4c">T4c</option><option value="T4d">T4d</option></select></div>
           <div class="ws-field"><label>pN</label><select id="ws_pN" onchange="setPatientField('pN',this.value)"><option value="">—</option><option value="N0">N0</option><option value="N0(i-)">N0(i-)</option><option value="N0(i+)">N0(i+)</option><option value="N1mi">N1mi</option><option value="N1">N1</option><option value="N2a">N2a</option><option value="N2b">N2b</option><option value="N3a">N3a</option><option value="N3b">N3b</option><option value="N3c">N3c</option></select></div>
           <div class="ws-field"><label>pM</label><select id="ws_pM" onchange="setPatientField('pM',this.value)"><option value="">—</option><option value="M0">M0</option><option value="M1">M1</option></select></div>
@@ -2519,9 +2529,30 @@ body.dark .back-btn:hover { background: #334155; }
         <div class="calc-card">
           <div class="calc-section-title">CTS5 — 5 年後晚期復發風險（DRR years 5–10）</div>
           <div style="font-size:.82rem;color:var(--text-muted);margin-bottom:.7rem;line-height:1.5">
-            適用對象：ER+ HER2− 完成 5 年 endocrine therapy 的病人。決定是否延長 tamoxifen / AI 至 10 年。
+            適用對象：HR+（ER 或 PR 陽性）、HER2−，且已完成 5 年 endocrine therapy 的病人。ER−/PR− 或 HER2+ 不應使用 CTS5。
           </div>
           <div class="calc-form">
+            <div class="calc-field">
+              <label>ER 狀態</label>
+              <select id="cts5_er" onchange="calcCTS5()">
+                <option value="pos" selected>ER 陽性</option>
+                <option value="neg">ER 陰性</option>
+              </select>
+            </div>
+            <div class="calc-field">
+              <label>PR 狀態</label>
+              <select id="cts5_pr" onchange="calcCTS5()">
+                <option value="pos" selected>PR 陽性</option>
+                <option value="neg">PR 陰性</option>
+              </select>
+            </div>
+            <div class="calc-field">
+              <label>HER2 狀態</label>
+              <select id="cts5_her2" onchange="calcCTS5()">
+                <option value="neg" selected>HER2 陰性</option>
+                <option value="pos">HER2 陽性</option>
+              </select>
+            </div>
             <div class="calc-field">
               <label>淋巴結陽性數 (N)</label>
               <input type="number" id="cts5_n" min="0" max="50" value="0" oninput="calcCTS5()">
@@ -2813,7 +2844,7 @@ body.dark .back-btn:hover { background: #334155; }
             </a>
           </div>
           <div class="calc-cite">
-            註：上述工具有的官方無 API，有的因版權無法 port 進本工具。建議手動帶入計算後將結果記錄回病歷。
+            註：MSK nomograms 目前維持外連。若官方未提供可重製的完整係數/API 或授權條款不明，本站不直接內建計算，以免產生版本、驗證與授權風險；建議手動帶入計算後將結果記錄回病歷。
           </div>
         </div>
       </div>
@@ -3218,7 +3249,7 @@ const PATIENT_DEFAULTS = {
     T:'', N:'', M:'', cT:'', cN:'', cM:'', pT:'', pN:'', pM:'',
     size:'', nodes_total:'', nodes_pos:'', grade:'',
     er:'', pr:'', her2:'', ki67:'', brca:'', pdl1:'', tp53:'', esr1:'',
-    surgery_type:'', margin_involved:'',
+    surgery_type:'', breast_surgery:'', axillary_surgery:'', reconstruction_surgery:'', margin_involved:'',
     menopause:'', ecog:'', phase:'', prior:'',
     h_p0:'', h_p1:'', h_p2:'', h_p3:'',
     rcb_d1:'', rcb_d2:'', rcb_finv:'', rcb_ln:'', rcb_dmet:'',
@@ -3231,6 +3262,7 @@ function loadPatient(){
     try {
         const saved = localStorage.getItem('_patient_workspace');
         if(saved) _patient = { ...PATIENT_DEFAULTS, ...JSON.parse(saved) };
+        migrateWorkspaceSurgeryFields();
         normalizeWorkspaceStage();
     } catch(e){ console.warn('Failed to load patient workspace', e); }
 }
@@ -3244,6 +3276,16 @@ function setPatientField(key, value){
     savePatient();
     refreshWorkspaceDerived();
     refreshDashboardResults();
+}
+function migrateWorkspaceSurgeryFields(){
+    const old = _patient.surgery_type;
+    if(!old) return;
+    if(['BCS','SM','mastectomy'].includes(old) && !_patient.breast_surgery){
+        _patient.breast_surgery = old === 'mastectomy' ? 'SM' : old;
+    }
+    if(['SLNB','ALND'].includes(old) && !_patient.axillary_surgery){
+        _patient.axillary_surgery = old;
+    }
 }
 function clearPatient(){
     if(!confirm('確定要清除目前 workspace 全部資料嗎？此操作無法復原。')) return;
@@ -3549,6 +3591,11 @@ function calcCTS5Pure(N, T, G, A){
     else if(score>=3.13){ cls='med'; label='中度風險'; }
     return { score, drr10, cls, label };
 }
+function getCTS5Exclusion(erSign, prSign, her2){
+    if(erSign === '-' && prSign === '-') return 'CTS5 不適用於 ER−/PR−（HR−）乳癌。';
+    if(her2 === '+') return 'CTS5 原模型不適用於 HER2+ 乳癌。';
+    return null;
+}
 function calcNPIPure(size_cm, nodeStage, grade){
     if(!size_cm || !nodeStage || !grade) return null;
     const npi = 0.2*size_cm + nodeStage + grade;
@@ -3696,16 +3743,21 @@ function renderWorkspaceStageSummary(p){
     }
     const progText = prog ? `病理/臨床預後期別：第 ${prog} 期` : '需 Grade、ER、PR、HER2 才能嘗試查 AJCC v8 預後期別';
     const subtype = deriveWorkspaceSubtype(p);
+    const subtypeText = subtype ? `分子亞型：${subtype}` : '';
     el.innerHTML = `
       <div class="ws-stage-card primary ${stageClass}">
         <div class="ws-stage-label">AJCC v8 解剖期別</div>
-        <div class="ws-stage-value">${anat==='—' ? '—' : '第 ' + anat + ' 期'}</div>
-        <div class="ws-stage-sub">${p.stageKind || 'TNM'}: ${p.T} / ${p.N} / ${p.M}</div>
+        <div class="ws-stage-inline">
+          <span class="ws-stage-value">${anat==='—' ? '—' : '第 ' + anat + ' 期'}</span>
+          <span class="ws-stage-sub">${p.stageKind || 'TNM'}: ${p.T} / ${p.N} / ${p.M}</span>
+        </div>
       </div>
       <div class="ws-stage-card">
         <div class="ws-stage-label">AJCC v8 預後期別</div>
-        <div class="ws-stage-value">${prog ? '第 ' + prog + ' 期' : '—'}</div>
-        <div class="ws-stage-sub">${progText}${subtype ? '<br>分子亞型：' + subtype : ''}</div>
+        <div class="ws-stage-inline">
+          <span class="ws-stage-value">${prog ? '第 ' + prog + ' 期' : '—'}</span>
+          <span class="ws-stage-sub">${progText}${subtypeText ? '　' + subtypeText : ''}</span>
+        </div>
       </div>`;
 }
 
@@ -3747,7 +3799,14 @@ function refreshDashboardResults(){
     }
 
     // 2) CTS5 (Dowsett 2018: tumor size in mm)
-    if(p.nodes_pos!=='' && p.size && p.grade && p.age){
+    const cts5Exclusion = getCTS5Exclusion(erSign, prSign, p.her2);
+    if(cts5Exclusion){
+        cards.push(_dashCard({
+            id:'cts5', title:'CTS5', desc:'內分泌治療後晚期遠端復發風險',
+            missing: cts5Exclusion,
+            tab:'cts5'
+        }));
+    } else if(p.nodes_pos!=='' && p.size && p.grade && p.age){
         const r = calcCTS5Pure(+p.nodes_pos, +p.size, +p.grade, +p.age);
         if(r) cards.push(_dashCard({
             id:'cts5', title:'CTS5', desc:'內分泌治療 5 年後，估算第 5–10 年遠端復發風險',
@@ -3999,6 +4058,7 @@ function importPatientWorkspace(){
             try {
                 const obj = JSON.parse(ev.target.result);
                 _patient = { ...PATIENT_DEFAULTS, ...obj };
+                migrateWorkspaceSurgeryFields();
                 savePatient();
                 initWorkspace();
                 alert('已載入 workspace');
@@ -4274,6 +4334,9 @@ function syncCalculatorFromWorkspace(tab){
         }
         calcPREDICT();
     } else if(tab === 'cts5'){
+        if(erSign) _setCalcVal('cts5_er', erSign === '+' ? 'pos' : 'neg');
+        if(prSign) _setCalcVal('cts5_pr', prSign === '+' ? 'pos' : 'neg');
+        if(p.her2) _setCalcVal('cts5_her2', p.her2 === '+' ? 'pos' : 'neg');
         if(has(p.nodes_pos)) _setCalcVal('cts5_n', p.nodes_pos);
         if(sizeMm) _setCalcVal('cts5_t', sizeMm);
         if(grade) _setCalcVal('cts5_g', grade);
@@ -4330,10 +4393,23 @@ function syncCalculatorFromWorkspace(tab){
 }
 // ── CTS5 (Dowsett JCO 2018) ──
 function calcCTS5(){
+    const er = document.getElementById('cts5_er')?.value === 'pos' ? '+' : '-';
+    const pr = document.getElementById('cts5_pr')?.value === 'pos' ? '+' : '-';
+    const her2 = document.getElementById('cts5_her2')?.value === 'pos' ? '+' : '-';
     const N=+document.getElementById('cts5_n').value;
     const T=+document.getElementById('cts5_t').value;
     const G=+document.getElementById('cts5_g').value;
     const A=+document.getElementById('cts5_age').value;
+    const exclusion = getCTS5Exclusion(er, pr, her2);
+    if(exclusion){
+        document.getElementById('cts5_result').innerHTML=`
+          <div class="calc-result med">
+            <div class="calc-result-label">CTS5 不適用</div>
+            <div class="calc-result-main">${exclusion}</div>
+            <div class="calc-result-detail">CTS5 應限用於 HR+（ER 或 PR 陽性）、HER2− 且完成 5 年內分泌治療後的病人。</div>
+          </div>`;
+        return;
+    }
     if(isNaN(N)||isNaN(T)||isNaN(G)||isNaN(A)||T<=0||A<=0){
         document.getElementById('cts5_result').innerHTML='<div class="calc-result"><div class="calc-result-detail">請輸入完整資料。</div></div>';
         return;
