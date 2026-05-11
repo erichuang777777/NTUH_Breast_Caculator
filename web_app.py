@@ -2691,7 +2691,11 @@ class Handler(BaseHTTPRequestHandler):
         rel = path.lstrip('/')
         target = (Path(__file__).parent / rel).resolve()
         root = Path(__file__).parent.resolve()
-        if not str(target).startswith(str(root)) or not target.exists() or not target.is_file():
+        try:
+            target.relative_to(root)
+        except ValueError:
+            return self._json(404, {'error': 'Not found'})
+        if not target.exists() or not target.is_file():
             return self._json(404, {'error': 'Not found'})
         suffix = target.suffix.lower()
         self.send_response(200)

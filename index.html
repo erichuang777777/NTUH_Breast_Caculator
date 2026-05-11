@@ -3774,7 +3774,7 @@ function calcCTS5Pure(N, T, G, A){
     if(![N,T,G,A].every(v=>typeof v==='number'&&!isNaN(v))) return null;
     if(T<=0||A<=0) return null;
     const score = 0.438*N + 0.988*(0.093*T - 0.001*T*T) + 0.375*G + 0.017*A;
-    const drr10 = (1 - Math.pow(0.802, Math.exp(score))) * 100;
+    const drr10 = (1 - Math.exp(-0.00223 * Math.exp(score))) * 100;
     let cls='low', label='低風險';
     if(score>=3.86){ cls='high'; label='高風險'; }
     else if(score>=3.13){ cls='med'; label='中度風險'; }
@@ -4659,8 +4659,8 @@ function calcCTS5(){
     // CTS5 = 0.438×N + 0.988×(0.093×T - 0.001×T²) + 0.375×G + 0.017×A
     const cts5 = 0.438*N + 0.988*(0.093*T - 0.001*T*T) + 0.375*G + 0.017*A;
     // 10-year DRR (years 5-10) per Dowsett 2018 derivation:
-    // Risk = 1 - 0.802^exp(CTS5)
-    const drr10 = (1 - Math.pow(0.802, Math.exp(cts5))) * 100;
+    // Years 5-10 DR risk = 1 - exp(-0.00223 * exp(CTS5))
+    const drr10 = (1 - Math.exp(-0.00223 * Math.exp(cts5))) * 100;
     let cls='low', label='低風險', advice='不建議延長 endocrine therapy；標準 5 年即可。';
     if(cts5>=3.86){ cls='high'; label='高風險'; advice='強烈建議延長 endocrine therapy 至 10 年。'; }
     else if(cts5>=3.13){ cls='med'; label='中度風險'; advice='可考慮延長 endocrine therapy；個案討論利弊（骨密、心血管、子宮內膜）。'; }

@@ -192,7 +192,9 @@ OP_HANDLERS = {
 }
 
 
-def apply_patch(path: Path, dry_run: bool):
+def apply_patch(path: Path, dry_run: bool, allow_example: bool = False):
+    if not dry_run and not allow_example and "examples" in path.parts:
+        raise ValueError("Refusing to apply example patch without --allow-example")
     patch = load_patch(path)
     conn = sqlite3.connect(str(DB_PATH))
     conn.row_factory = sqlite3.Row
@@ -239,8 +241,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("patch_file", type=Path)
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--allow-example", action="store_true", help="Allow applying files under data/patches/examples")
     args = parser.parse_args()
-    apply_patch(args.patch_file.resolve(), args.dry_run)
+    apply_patch(args.patch_file.resolve(), args.dry_run, args.allow_example)
 
 
 if __name__ == "__main__":

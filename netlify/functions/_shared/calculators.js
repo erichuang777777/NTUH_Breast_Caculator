@@ -19,9 +19,8 @@ function cts5(input) {
   const grade = num(input.grade);
   const age = num(input.age);
   if (nodes === null || sizeMm === null || grade === null || age === null || sizeMm <= 0 || age <= 0) return null;
-  const sizeCm = sizeMm / 10;
-  const score = 0.438 * nodes + 0.988 * (0.093 * sizeCm - 0.001 * sizeCm * sizeCm) + 0.375 * grade + 0.017 * age;
-  const distantRecurrence10y = (1 - Math.pow(0.802, Math.exp(score))) * 100;
+  const score = 0.438 * nodes + 0.988 * (0.093 * sizeMm - 0.001 * sizeMm * sizeMm) + 0.375 * grade + 0.017 * age;
+  const distantRecurrence10y = (1 - Math.exp(-0.00223 * Math.exp(score))) * 100;
   let cls = 'low';
   if (score >= 3.86) cls = 'high';
   else if (score >= 3.13) cls = 'medium';

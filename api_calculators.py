@@ -40,9 +40,8 @@ def calc_cts5(data):
     age = _num(data.get("age"))
     if None in (nodes, size_mm, grade, age) or size_mm <= 0 or age <= 0:
         return None
-    size_cm = size_mm / 10
-    score = 0.438 * nodes + 0.988 * (0.093 * size_cm - 0.001 * size_cm * size_cm) + 0.375 * grade + 0.017 * age
-    drr10 = (1 - math.pow(0.802, math.exp(score))) * 100
+    score = 0.438 * nodes + 0.988 * (0.093 * size_mm - 0.001 * size_mm * size_mm) + 0.375 * grade + 0.017 * age
+    drr10 = (1 - math.exp(-0.00223 * math.exp(score))) * 100
     risk = "high" if score >= 3.86 else ("medium" if score >= 3.13 else "low")
     return {"score": score, "distant_recurrence_10y_pct": drr10, "risk": risk}
 

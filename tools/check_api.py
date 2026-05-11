@@ -70,6 +70,9 @@ def check_python_calculators():
     for key in ("cts5", "npi", "ihc4", "magee"):
         if key not in result["scores"]:
             fail(f"Missing score from calculator smoke test: {key}")
+    cts5_risk = result["scores"]["cts5"]["distant_recurrence_10y_pct"]
+    if not 4 <= cts5_risk <= 6:
+        fail(f"CTS5 smoke test risk should be about 5%, got {cts5_risk}")
 
 
 def check_netlify_function():
