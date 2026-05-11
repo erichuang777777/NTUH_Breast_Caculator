@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Build static index.html from NP_dashboard/NHI Drug Calculator.html + SQLite DB.
+Refresh embedded static data in index.html from SQLite.
 Run: python build_static.py
 Output: index.html (self-contained, no backend needed)
 """
@@ -11,7 +11,7 @@ from pathlib import Path
 
 HERE = Path(__file__).parent
 DB_PATH = HERE / "nhi_drug_coverage.db"
-TEMPLATE = HERE / "NP_dashboard" / "NHI Drug Calculator.html"
+TEMPLATE = HERE / "index.html"
 
 
 def export_data():
@@ -155,7 +155,7 @@ def build():
     print(f"[OK] index.html generated ({len(html):,} chars)")
     print(f"  Drugs: {len(drugs)} | Formulations: {len(formulations)}")
     print(f"  Stats: {stats}")
-    print("  Template: NP_dashboard/NHI Drug Calculator.html")
+    print("  Source: index.html")
     print("  Ready to deploy to Netlify!")
 
 

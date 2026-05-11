@@ -9,8 +9,6 @@
 ```
 D:\NHI_Drug_Caculator\
 ├── index.html                      ← 線上靜態版本（Netlify 部署）
-├── NP_dashboard/
-│   └── NHI Drug Calculator.html    ← 開發模板（build_static.py 從這裡產生 index.html）
 ├── nccn_viewer.html                ← NCCN 治療指引獨立 viewer
 ├── data/                           ← 執行期資料
 │   ├── ajcc_lookup.json
@@ -25,7 +23,7 @@ D:\NHI_Drug_Caculator\
 ├── core/                           ← Specialty loader
 ├── app/                            ← Flask web 整合 app
 ├── tests/                          ← Python 測試
-├── build_static.py                 ← 從 template 產生 index.html
+├── build_static.py                 ← 以 index.html 為來源刷新內嵌靜態資料
 ├── web_app.py                      ← Flask backend（local dev）
 ├── nhi_drug_coverage.db            ← SQLite 健保藥物資料
 └── DEVELOPMENT.md                  ← 你正在看的這份
@@ -206,7 +204,7 @@ git push origin master
 
 ### 手動部署（緊急用）
 
-1. 本地：`python build_static.py`（如果改了 template）
+1. 本地：`python build_static.py`（如果更新 SQLite 藥物資料）
 2. Netlify → Deploys → "Trigger deploy" → "Deploy site"
 
 ### `netlify.toml` 設定（已有）
@@ -224,22 +222,15 @@ Netlify → Site settings → Build & deploy → Environment
 
 ## 7. build_static.py 流程
 
-從 `NP_dashboard/NHI Drug Calculator.html`（template）+ `nhi_drug_coverage.db`（SQLite）→ 產生 `index.html`。
+從根目錄 `index.html` + `nhi_drug_coverage.db`（SQLite）→ 更新 `index.html` 內嵌靜態資料。
 
 ### 兩個檔案的關係
 
-- **template** (`NP_dashboard/NHI Drug Calculator.html`)：完整版（含 fetch API 呼叫）
-- **index.html**：static 版（fetch 換成 alert read-only）
+- **index.html**：唯一前端來源；static 版會在 fetch 失敗時使用內嵌資料
 
 ### 同步原則
 
-由於我們手動編輯了 `index.html`，目前的策略是 **每次 push 前都把 index.html 複製回 template**：
-
-```powershell
-Copy-Item D:\NHI_Drug_Caculator\index.html "D:\NHI_Drug_Caculator\NP_dashboard\NHI Drug Calculator.html" -Force
-```
-
-下次跑 `python build_static.py` 時，所有 transform 都是 idempotent，只會刷新 SQLite 藥物資料區塊。
+`NP_dashboard` 是舊版副本，已移除且不再作為 template 使用。下次跑 `python build_static.py` 時，只會刷新 `index.html` 裡的 SQLite 藥物資料區塊。
 
 ---
 
@@ -250,7 +241,7 @@ Copy-Item D:\NHI_Drug_Caculator\index.html "D:\NHI_Drug_Caculator\NP_dashboard\N
 - [ ] 沒有 `console.log` 殘留
 - [ ] 沒有 hardcoded 病人資料 / API key
 - [ ] 新功能有用 `FEATURE_FLAGS` 包起來（如果是實驗性）
-- [ ] 改過 `index.html` 後**已同步到 template**
+- [ ] 改過 `index.html` 後已在手機/桌機瀏覽器檢查
 - [ ] 本地用瀏覽器試過所有相關分頁
 - [ ] localStorage 寫入有 try/catch
 - [ ] 手機 viewport 顯示 OK（Chrome DevTools mobile mode）
@@ -290,7 +281,7 @@ Copy-Item D:\NHI_Drug_Caculator\index.html "D:\NHI_Drug_Caculator\NP_dashboard\N
 ## 11. 已知技術債
 
 - `index.html` 仍是單一 480KB+ 檔案（未模組化）— 下次重構目標：拆 `src/modules/`
-- Template 與 `index.html` 需手動同步（沒有自動 watch script）
+- 舊版 `NP_dashboard` template 已移除；`index.html` 是目前唯一前端來源
 - 沒有自動化測試（Playwright / Jest 都沒設定）
 - Build 流程依賴本地 SQLite DB，CI 環境難重現
 
