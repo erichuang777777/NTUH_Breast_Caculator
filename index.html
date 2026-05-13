@@ -1092,12 +1092,12 @@ body {
 .journey-item .icon { width: 1.25rem; flex: 0 0 1.25rem; text-align: center; }
 .journey-actions { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .8rem; }
 .journey-note { margin-top: .75rem; padding: .65rem .8rem; background: #f8fafc; border-left: 3px solid #94a3b8; border-radius: 0 var(--r-sm) var(--r-sm) 0; color: var(--text-muted); font-size: .78rem; line-height: 1.55; }
-body.dark .journey-dev-tag { background: #431407; color: #fed7aa; border-color: #9a3412; }
-body.dark .journey-hero { background: #431407; }
-body.dark .journey-stage { background: #7c2d12; color: #fed7aa; }
-body.dark .journey-main { color: #fdba74; }
-body.dark .journey-step.active { background: #7c2d12; color: #fed7aa; border-color: #f97316; }
-body.dark .journey-step.done { background: #14532d; color: #86efac; border-color: #166534; }
+body.dark .journey-dev-tag { background: #1e293b; color: #cbd5e1; border-color: #475569; }
+body.dark .journey-hero { background: #1e293b; }
+body.dark .journey-stage { background: #263244; color: #cbd5e1; }
+body.dark .journey-main { color: #f1f5f9; }
+body.dark .journey-step.active { background: #263244; color: #f1f5f9; border-color: #7c3aed; }
+body.dark .journey-step.done { background: #1e293b; color: #4ade80; border-color: #22c55e; }
 body.dark .journey-fact { background: #0f172a; }
 body.dark .journey-item { background: #0f172a; }
 body.dark .journey-note { background: #0f172a; }
@@ -1219,7 +1219,7 @@ body.dark .ws-result-card.low .ws-result-value { color: #4ade80; }
 body.dark .ws-result-card.med .ws-result-value { color: #fbbf24; }
 body.dark .ws-result-card.high .ws-result-value { color: #f87171; }
 body.dark .ws-result-card.empty { background: #0f172a; }
-body.dark .ws-result-title .badge { background: #422006; color: #fcd34d; }
+body.dark .ws-result-title .badge { background: #263244; color: #fbbf24; }
 
 @media (max-width: 1199px){
     .ws-results-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1359,7 +1359,7 @@ body.dark .ws-result-title .badge { background: #422006; color: #fcd34d; }
 .issue-buttons button.primary { background: #dc2626; color: white; border-color: #dc2626; }
 .issue-buttons button.primary:hover { background: #b91c1c; }
 body.dark .issue-card { background: #1e293b; }
-body.dark .issue-info { background: #450a0a; color: #fca5a5; }
+body.dark .issue-info { background: #1e293b; color: #f87171; border-left-color: #ef4444; }
 /* ── Floating Toggle Buttons ── */
 .float-toggle { position: fixed; right: 1rem; width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.1); z-index: 100; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: .2s; }
 .float-toggle:hover { transform: scale(1.08); }
@@ -1388,100 +1388,95 @@ body.dark .issue-info { background: #450a0a; color: #fca5a5; }
 .settings-actions button { flex: 1; padding: .5rem; border-radius: var(--r-sm); border: 1px solid var(--border); background: var(--surface); cursor: pointer; font-weight: 600; font-size: .85rem; }
 .settings-actions button.primary { background: #06b6d4; color: white; border-color: #06b6d4; }
 .settings-info { font-size: .72rem; color: var(--text-muted); padding: .5rem .7rem; background: #fffbeb; border-left: 3px solid #f59e0b; border-radius: 0 var(--r-sm) var(--r-sm) 0; margin-top: .8rem; }
-body.dark .settings-card { background: #1e293b; }
-body.dark .settings-mode { background: #0f172a; }
-body.dark .settings-info { background: #422006; }
 /* ── Dark Mode Theme ── */
 body.dark { color-scheme: dark; }
-body.dark { --bg: #0f172a; --surface: #1e293b; --border: #334155; --text: #e2e8f0; --text-muted: #c4cdd6; --text-faint: #94a3b8; }
-body.dark { background: #0f172a; color: #e2e8f0; }
+body.dark { --bg: #0f172a; --surface: #1e293b; --border: #334155; --text: #f1f5f9; --text-muted: #cbd5e1; --text-faint: #94a3b8; }
+body.dark { background: #0f172a; color: #f1f5f9; }
 body.dark .dept-card { background: #1e293b; }
-body.dark input, body.dark select, body.dark textarea { background: #1e293b; color: #e2e8f0; border-color: #334155; }
-body.dark .calc-tab:hover { background: #164e63; }
-body.dark .calc-result { background: #164e63; }
-body.dark .calc-result.low { background: #14532d; }
-body.dark .calc-result.med { background: #422006; }
-body.dark .calc-result.high { background: #450a0a; }
-body.dark .calc-pepi-table th { background: #164e63; }
-body.dark .calc-extlink:hover { background: #164e63; }
+body.dark input, body.dark select, body.dark textarea { background: #1e293b; color: #f1f5f9; border-color: #334155; }
+body.dark .calc-tab:hover { background: #263244; }
+/* calc-result: uniform dark surface, status via text + left-border only */
+body.dark .calc-result { background: #1e293b; border-left: 3px solid #475569; }
+body.dark .calc-result.low  { border-left-color: #22c55e; }
+body.dark .calc-result.med  { border-left-color: #f59e0b; }
+body.dark .calc-result.high { border-left-color: #ef4444; }
+body.dark .calc-pepi-table th { background: #263244; }
+body.dark .calc-extlink:hover { background: #263244; }
 body.dark .ajcc-toggle { background: #1e293b; }
-body.dark th { background: #1e293b !important; color: #e2e8f0; }
+body.dark th { background: #1e293b !important; color: #f1f5f9; }
 body.dark .modal { background: #1e293b; }
-/* ── Dark Mode Audit (covers calc-result colors, AJCC tables, NHI cards, badges, etc.) ── */
-/* calc-result text colours need recolouring on dark backgrounds */
-body.dark .calc-result-label { color: #67e8f9; }
-body.dark .calc-result-main { color: #67e8f9; }
-body.dark .calc-result.low .calc-result-label, body.dark .calc-result.low .calc-result-main { color: #4ade80; }
-body.dark .calc-result.med .calc-result-label, body.dark .calc-result.med .calc-result-main { color: #fbbf24; }
+/* calc-result text */
+body.dark .calc-result-label { color: #93c5fd; }
+body.dark .calc-result-main  { color: #93c5fd; }
+body.dark .calc-result.low  .calc-result-label, body.dark .calc-result.low  .calc-result-main { color: #4ade80; }
+body.dark .calc-result.med  .calc-result-label, body.dark .calc-result.med  .calc-result-main { color: #fbbf24; }
 body.dark .calc-result.high .calc-result-label, body.dark .calc-result.high .calc-result-main { color: #f87171; }
 body.dark .calc-result-detail { color: #cbd5e1; }
-body.dark .clinical-notice { background: #172554; border-color: #1e3a8a; border-left-color: #60a5fa; color: #bfdbfe; }
-body.dark .clinical-notice-text { background: #172554; border-color: #1e3a8a; border-left-color: #60a5fa; color: #bfdbfe; }
-body.dark .clinical-notice strong { color: #93c5fd; }
-/* PEPI table cells (highlighted row) */
-body.dark .calc-pepi-table tr.pepi-hl td { background: #422006 !important; color: #fde68a; }
-/* AJCC tables */
-body.dark .ajcc-ref-table th { background: #422006; color: #fde68a; border-color: #92400e; }
-body.dark .ajcc-cat-iv td { background: #450a0a !important; color: #fca5a5; }
-body.dark .ajcc-cat-iii td { background: #431407 !important; color: #fdba74; }
-body.dark .ajcc-cat-ii td { background: #422006 !important; color: #fde68a; }
-body.dark .ajcc-cat-i td { background: #14532d !important; color: #86efac; }
-body.dark .ajcc-cat-0 td { background: #1e293b !important; color: #cbd5e1; }
-body.dark .ajcc-ref-table tr.ajcc-highlighted td { background: #78350f !important; color: #fef3c7; outline-color: #f59e0b; }
-body.dark .ajcc-biomarker-section { background: #172554; border-color: #1e3a8a; color: #dbeafe; }
-body.dark .ajcc-note { background: #422006; color: #fde68a; border-left-color: #f59e0b; }
-body.dark .ajcc-toggle button.active { background: #b45309; }
+body.dark .clinical-notice, body.dark .clinical-notice-text { background: #1e293b; border-color: #334155; border-left-color: #60a5fa; color: #dbeafe; }
+body.dark .clinical-notice strong, body.dark .clinical-notice-text strong { color: #93c5fd; }
+/* PEPI highlighted row */
+body.dark .calc-pepi-table tr.pepi-hl td { background: #263244 !important; color: #fde68a; }
+/* AJCC tables — uniform surface, status by text colour */
+body.dark .ajcc-ref-table th { background: #263244; color: #cbd5e1; border-color: #334155; }
+body.dark .ajcc-cat-iv td { background: #1e293b !important; color: #f87171; }
+body.dark .ajcc-cat-iii td { background: #1e293b !important; color: #fdba74; }
+body.dark .ajcc-cat-ii  td { background: #1e293b !important; color: #fde68a; }
+body.dark .ajcc-cat-i   td { background: #1e293b !important; color: #86efac; }
+body.dark .ajcc-cat-0   td { background: #1e293b !important; color: #cbd5e1; }
+body.dark .ajcc-ref-table tr.ajcc-highlighted td { background: #263244 !important; color: #fef3c7; outline-color: #f59e0b; }
+body.dark .ajcc-biomarker-section { background: #1e293b; border-color: #334155; color: #dbeafe; }
+body.dark .ajcc-note { background: #1e293b; color: #fbbf24; border-left-color: #f59e0b; }
+body.dark .ajcc-toggle button.active { background: #6d28d9; }
 body.dark .ajcc-toggle button:not(.active) { color: #cbd5e1; }
-body.dark .ajcc-toggle button:not(.active):hover { color: #fde68a; background: rgba(255,255,255,.08); }
+body.dark .ajcc-toggle button:not(.active):hover { color: #f1f5f9; background: rgba(255,255,255,.08); }
 body.dark .ajcc-chipset button { background: #1e293b; color: #e2e8f0; border-color: #334155; }
-body.dark .ajcc-chipset button.active { background: #b45309; border-color: #d97706; color: #fff; }
-body.dark .touch-picker button,
-body.dark .touch-presets button { background: #1e293b; color: #e2e8f0; border-color: #334155; }
-body.dark .touch-picker button.active,
-body.dark .touch-presets button.active { background: #0f766e; border-color: #14b8a6; color: #fff; }
-body.dark .ajcc-reset:hover { background: #422006; color: #fde68a; border-color: #92400e; }
-body.dark .ajcc-error { background: #450a0a; color: #fca5a5; border-left-color: #ef4444; }
-/* NHI eligibility cards */
-body.dark .nhi-elig-card { background: #14532d; border-color: #166534; }
-body.dark .nhi-elig-card .nhi-elig-name { color: #86efac; }
-body.dark .nhi-elig-card.partial { background: #422006; border-left-color: #f59e0b; }
-body.dark .nhi-elig-card.partial .nhi-elig-name { color: #fde68a; }
-body.dark .nhi-elig-card.ineligible { background: #450a0a; border-left-color: #dc2626; }
-body.dark .nhi-elig-card.ineligible .nhi-elig-name { color: #fca5a5; }
+body.dark .ajcc-chipset button.active { background: #6d28d9; border-color: #7c3aed; color: #fff; }
+body.dark .touch-picker button, body.dark .touch-presets button { background: #1e293b; color: #e2e8f0; border-color: #334155; }
+body.dark .touch-picker button.active, body.dark .touch-presets button.active { background: #6d28d9; border-color: #7c3aed; color: #fff; }
+body.dark .ajcc-reset:hover { background: #263244; color: #cbd5e1; border-color: #475569; }
+body.dark .ajcc-error { background: #1e293b; color: #f87171; border-left-color: #ef4444; }
+/* NHI eligibility cards — border accent only */
+body.dark .nhi-elig-card { background: #1e293b; border-color: #22c55e; }
+body.dark .nhi-elig-card .nhi-elig-name { color: #4ade80; }
+body.dark .nhi-elig-card.partial { background: #1e293b; border-left-color: #f59e0b; }
+body.dark .nhi-elig-card.partial .nhi-elig-name { color: #fbbf24; }
+body.dark .nhi-elig-card.ineligible { background: #1e293b; border-left-color: #ef4444; }
+body.dark .nhi-elig-card.ineligible .nhi-elig-name { color: #f87171; }
 body.dark .nhi-elig-tag { background: #166534; color: #bbf7d0; }
 body.dark .nhi-elig-card.partial .nhi-elig-tag { background: #78350f; color: #fde68a; }
 body.dark .nhi-elig-reason { color: #94a3b8; }
 /* Module badges */
-body.dark .module-badge.stable { background: #14532d; color: #86efac; }
-body.dark .module-badge.beta { background: #422006; color: #fde68a; }
+body.dark .module-badge.stable { background: #166534; color: #86efac; }
+body.dark .module-badge.beta { background: #78350f; color: #fde68a; }
 body.dark .module-badge.beta-inside { background: #78350f; color: #fef3c7; }
-/* ws-derived gradient */
-body.dark .ws-derived { background: linear-gradient(135deg, #4a1d3b 0%, #422006 100%); }
-body.dark .ws-derived-label { color: #fbcfe8; }
-body.dark .ws-derived-value { color: #fce7f3; }
-/* Trials & misc cards */
-body.dark .trial-card:hover { background: #164e63; border-color: #7dd3fc; }
-body.dark .trial-badge.recruiting { background: #14532d; color: #86efac; }
+/* ws-derived */
+body.dark .ws-derived { background: #263244; }
+body.dark .ws-derived-label { color: #94a3b8; }
+body.dark .ws-derived-value { color: #f1f5f9; }
+/* Trials */
+body.dark .trial-card:hover { background: #263244; border-color: #60a5fa; }
+body.dark .trial-badge.recruiting { background: #166534; color: #86efac; }
 body.dark .trial-badge.active { background: #1e3a8a; color: #93c5fd; }
 body.dark .trial-phase { background: #1e293b; color: #cbd5e1; }
-body.dark .trial-locations { color: #7dd3fc; }
-/* Settings section.beta */
-body.dark .settings-section.beta { color: #fbbf24; border-bottom-color: #92400e; }
+body.dark .trial-locations { color: #60a5fa; }
+/* Settings */
+body.dark .settings-section.beta { color: #fbbf24; border-bottom-color: #78350f; }
 body.dark .settings-section { color: #94a3b8; border-bottom-color: #334155; }
-/* Issue modal extras */
-body.dark .issue-card h2 { color: #fca5a5; }
+body.dark .settings-card { background: #1e293b; }
+body.dark .settings-mode { background: #0f172a; }
+body.dark .settings-info { background: #1e293b; border-left-color: #f59e0b; }
+/* Issue modal */
+body.dark .issue-card h2 { color: #f87171; }
 body.dark .issue-buttons button { background: #1e293b; color: #e2e8f0; }
 body.dark .issue-buttons button.primary { background: #dc2626; color: white; border-color: #dc2626; }
 /* Float toggles */
 body.dark .float-toggle { background: #1e293b; border-color: #334155; color: #e2e8f0; }
-body.dark .report-btn { background: #1e293b; color: #fca5a5; border-color: #334155; }
-body.dark .report-btn:hover { background: #450a0a; }
-/* PREDICT result inline tables (background #f8fafc / #fefce8 hardcoded inline) */
-body.dark .calc-result table th { background: #0f172a !important; color: #e2e8f0; border-color: #334155 !important; }
+body.dark .report-btn { background: #1e293b; color: #f87171; border-color: #334155; }
+body.dark .report-btn:hover { background: #263244; }
+/* Inline table cells */
+body.dark .calc-result table th { background: #0f172a !important; color: #f1f5f9; border-color: #334155 !important; }
 body.dark .calc-result table td { border-color: #334155; }
-/* AJCC select */
-body.dark .ajcc-select { background: #1e293b; color: #e2e8f0; }
-/* Back btn in topbar */
+body.dark .ajcc-select { background: #1e293b; color: #f1f5f9; }
 body.dark .back-btn { background: #1e293b; color: #cbd5e1; }
 body.dark .back-btn:hover { background: #334155; }
 .trial-card { border: 1px solid var(--border); border-radius: var(--r-md); padding: .85rem 1rem; margin-bottom: .6rem; background: var(--surface); }
@@ -2056,6 +2051,8 @@ body.dark .back-btn:hover { background: #334155; }
 .drug-row .drug-name-r { font-weight: 600; font-size: .82rem; }
 .drug-row .drug-dose { font-size: .72rem; color: var(--text-muted); }
 .drug-row .vial-combo { font-size: .72rem; color: var(--purple); font-weight: 500; }
+.drug-row .drug-note { font-size: .68rem; color: #b45309; margin-top: .1rem; font-style: italic; }
+.on-nhi-disabled { opacity: .35; cursor: not-allowed; pointer-events: none; }
 .drug-row .drug-cost { font-weight: 700; font-size: .85rem; color: var(--purple); min-width: 100px; text-align: right; }
 .nhi-toggle {
   display: inline-flex; border-radius: var(--r-sm);
@@ -2174,7 +2171,7 @@ body.dark .back-btn:hover { background: #334155; }
     <div class="landing-wrap">
       <div class="landing-hero">
         <h1>健保腫瘤藥物查詢</h1>
-        <p>涵蓋乳癌與血液腫瘤科 86 種健保給付藥物・藥價・適應症・事前審查規定</p>
+        <p>涵蓋 86 種健保給付藥物・藥價・適應症・事前審查規定</p>
       </div>
 
       <div class="global-search">
@@ -7535,6 +7532,7 @@ let _regimenNHI = {};     // drug_key → true/false
 let _regimenAddOns = {};  // addon_key → true/false
 let _patientConditions = {};  // her2, hr, ln
 let _regimenSkip = {};    // drug_key → true = exclude from calc & print
+let _regimenCycleOverride = null; // number override for regimens with cycle_options
 
 const REGIMENS = [
   {
@@ -7544,7 +7542,7 @@ const REGIMENS = [
       {name:'EC+H Phase', freq:'q3w', cycles:4, drugs:[
         {key:'epirubicin', name:'Epirubicin', dose_type:'bsa', dose:90, unit:'mg/m²'},
         {key:'cyclophosphamide', name:'Cyclophosphamide', dose_type:'bsa', dose:600, unit:'mg/m²'},
-        {key:'trastuzumab', name:'Herceptin', dose_type:'kg', dose:6, loading:8, unit:'mg/kg'}
+        {key:'trastuzumab', name:'Herceptin', dose_type:'kg', dose:6, loading:8, unit:'mg/kg', note:'間隔 >4 週需重新 Loading 8mg/kg；體重較重者 SC 劑型（固定 600mg）可能更划算'}
       ]},
       {name:'THP Phase', freq:'q3w', cycles:4, drugs:[
         {key:'docetaxel', name:'Docetaxel', dose_type:'bsa', dose:75, unit:'mg/m²'},
@@ -7562,13 +7560,14 @@ const REGIMENS = [
     }
   },
   {
-    id:'tchp', name:'TCHP → HP', tags:['HER2+','early'],
-    desc:'Docetaxel + Carboplatin + Herceptin + Perjeta',
+    id:'tchp', name:'TCH(P) → H(P)', tags:['HER2+','early'],
+    perjeta_toggle:true,
+    desc:'TCH×6 → H×12（可切換含/不含 Perjeta）',
     phases:[
       {name:'TCHP Phase', freq:'q3w', cycles:6, drugs:[
         {key:'docetaxel', name:'Docetaxel', dose_type:'bsa', dose:75, unit:'mg/m²'},
-        {key:'carboplatin', name:'Carboplatin', dose_type:'auc', dose:6, unit:'AUC'},
-        {key:'trastuzumab', name:'Herceptin', dose_type:'kg', dose:6, loading:8, unit:'mg/kg'},
+        {key:'carboplatin', name:'Carboplatin', dose_type:'auc', dose:6, unit:'AUC', no_nhi:true},
+        {key:'trastuzumab', name:'Herceptin', dose_type:'kg', dose:6, loading:8, unit:'mg/kg', note:'間隔 >4 週需重新 Loading 8mg/kg；體重較重者 SC 劑型（固定 600mg）可能更划算'},
         {key:'pertuzumab', name:'Perjeta', dose_type:'fixed', dose:420, loading:840, unit:'mg'}
       ]},
       {name:'HP 維持 Phase', freq:'q3w', cycles:12, drugs:[
@@ -7578,7 +7577,7 @@ const REGIMENS = [
     ],
     nhi_rules:{
       'N+': {docetaxel:true,carboplatin:false,trastuzumab:true,pertuzumab:true},
-      'N0': {docetaxel:true,carboplatin:false,trastuzumab:false,pertuzumab:false}
+      'N0': {docetaxel:false,carboplatin:false,trastuzumab:false,pertuzumab:false}
     }
   },
   {
@@ -7596,21 +7595,11 @@ const REGIMENS = [
     nhi_rules:{'default':{epirubicin:true,cyclophosphamide:true,docetaxel:true}}
   },
   {
-    id:'tc', name:'TC × 4', tags:['HER2-','early'],
-    desc:'Docetaxel + Cyclophosphamide × 4（標準低風險）',
+    id:'tc', name:'TC (×4 / ×6)', tags:['HER2-','early'],
+    desc:'Docetaxel + Cyclophosphamide（低風險 ×4，高/中高風險 ×6）',
+    cycle_options:[4,6],
     phases:[
       {name:'TC Phase', freq:'q3w', cycles:4, drugs:[
-        {key:'docetaxel', name:'Docetaxel', dose_type:'bsa', dose:75, unit:'mg/m²'},
-        {key:'cyclophosphamide', name:'Cyclophosphamide', dose_type:'bsa', dose:600, unit:'mg/m²'}
-      ]}
-    ],
-    nhi_rules:{'default':{docetaxel:true,cyclophosphamide:true}}
-  },
-  {
-    id:'tc6', name:'TC × 6', tags:['HER2-','early'],
-    desc:'Docetaxel + Cyclophosphamide × 6（高風險或中高風險）',
-    phases:[
-      {name:'TC Phase', freq:'q3w', cycles:6, drugs:[
         {key:'docetaxel', name:'Docetaxel', dose_type:'bsa', dose:75, unit:'mg/m²'},
         {key:'cyclophosphamide', name:'Cyclophosphamide', dose_type:'bsa', dose:600, unit:'mg/m²'}
       ]}
@@ -7638,6 +7627,7 @@ const REGIMENS = [
   {
     id:'tdm1', name:'T-DM1 (Kadcyla)', tags:['HER2+','metastatic'],
     desc:'Trastuzumab emtansine 3.6mg/kg q3w（第二線）',
+    donated_note:'廠商贈藥方案：最多可減免 2 次費用，但方案隨時可能調整，請向醫療團隊確認',
     phases:[
       {name:'T-DM1', freq:'q3w', cycles:14, drugs:[
         {key:'trastuzumab_emtansine', name:'Kadcyla', dose_type:'kg', dose:3.6, unit:'mg/kg'}
@@ -7755,7 +7745,6 @@ async function initRegimenCalc(){
         <button class="cond-btn" data-g="ln" data-v="negative" onclick="toggleCond(this)">淋巴結無轉移 N0</button>
         <button class="cond-btn" data-g="stage" data-v="early" onclick="toggleCond(this)">早期</button>
         <button class="cond-btn" data-g="stage" data-v="metastatic" onclick="toggleCond(this)">轉移性</button>
-        <button class="cond-btn" data-g="perjeta" data-v="exclude" onclick="toggleCond(this)" title="不含 Perjeta 時，列印不顯示 Pertuzumab">不含 Perjeta (TH)</button>
       </div>
     </div>
     <div class="reg-section">
@@ -7834,6 +7823,7 @@ function selectRegimen(id){
   _selectedRegimen = REGIMENS.find(r=>r.id===id);
   if(!_selectedRegimen) return;
   _regimenSkip = {};
+  _regimenCycleOverride = null;
   document.querySelectorAll('.cond-btn[data-g="perjeta"]').forEach(b=>b.classList.remove('active'));
   renderRegimenCards();
   applyNHIRules();
@@ -7880,17 +7870,6 @@ function optimizeVials(doseMg, drugKey, useNHI){
   const large = available[0];
   const small = available.length > 1 ? available[available.length-1] : large;
 
-  if(drugKey === 'docetaxel' && large && Number(large.dose_mg) === 80){
-    const nL = Math.ceil(doseMg / large.dose_mg);
-    if(nL > 0 && nL <= 2){
-      return {
-        cost: nL * large.price,
-        totalMg: nL * large.dose_mg,
-        combo: [{count:nL, dose_mg:large.dose_mg, price:large.price, desc:large.desc, unit:large.unit}]
-      };
-    }
-  }
-
   const maxLarge = Math.ceil(doseMg / large.dose_mg) + 1;
   for(let nL=0; nL<=maxLarge; nL++){
     const rem = doseMg - nL * large.dose_mg;
@@ -7909,12 +7888,30 @@ function optimizeVials(doseMg, drugKey, useNHI){
   return best;
 }
 
+function setRegimenCycles(n){ _regimenCycleOverride = n; calcRegimen(); }
+
 function calcRegimen(){
   if(!_selectedRegimen) return;
   const reg = _selectedRegimen;
   let detailHtml = '';
   let nhiTotal = 0, selfTotal = 0;
   const gfr = parseFloat(document.getElementById('regGFR')?.value)||80;
+
+  if(reg.perjeta_toggle){
+    const excl = !!_regimenSkip['pertuzumab'];
+    detailHtml += `<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap">
+      <span style="font-size:.8rem;color:var(--text-muted)">Perjeta：</span>
+      <button class="cond-btn${!excl?' active':''}" onclick="_regimenSkip['pertuzumab']=false;calcRegimen()">含 Perjeta (TCHP)</button>
+      <button class="cond-btn${excl?' active':''}" onclick="_regimenSkip['pertuzumab']=true;calcRegimen()">不含 Perjeta (TCH)</button>
+    </div>`;
+  }
+  if(reg.cycle_options){
+    const cur = _regimenCycleOverride || reg.phases[0].cycles;
+    detailHtml += `<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap">
+      <span style="font-size:.8rem;color:var(--text-muted)">療程次數：</span>
+      ${reg.cycle_options.map(n=>`<button class="cond-btn${cur===n?' active':''}" onclick="setRegimenCycles(${n})">×${n}</button>`).join('')}
+    </div>`;
+  }
 
   reg.phases.forEach((phase, pi) => {
     let phaseNHI = 0, phaseSelf = 0;
@@ -7962,7 +7959,7 @@ function calcRegimen(){
 
       // Calculate cost per cycle with vial optimization
       let costPerCycle = 0, vialInfo = '';
-      const cycles = phase.cycles;
+      const cycles = (reg.cycle_options && _regimenCycleOverride) ? _regimenCycleOverride : phase.cycles;
 
       if(drug.dose_type === 'fixed_oral'){
         // Oral: tablets per day × days per cycle
@@ -8023,10 +8020,11 @@ function calcRegimen(){
     });
 
     nhiTotal += phaseNHI; selfTotal += phaseSelf;
+    const effectiveCycles = (reg.cycle_options && _regimenCycleOverride) ? _regimenCycleOverride : phase.cycles;
     const cycleDays = phase.freq==='q3w'?21:phase.freq==='q4w'?28:phase.freq==='weekly'?7:21;
-    const months = (phase.cycles * cycleDays / 30).toFixed(1);
+    const months = (effectiveCycles * cycleDays / 30).toFixed(1);
     detailHtml += `<div class="phase-box">
-      <h4><span>${phase.name} (${phase.freq} × ${phase.cycles})</span><span style="font-size:.73rem;color:var(--text-muted)">~${months} 個月</span></h4>
+      <h4><span>${phase.name} (${phase.freq} × ${effectiveCycles})</span><span style="font-size:.73rem;color:var(--text-muted)">~${months} 個月</span></h4>
       ${drugRows}
       <div style="display:flex;justify-content:space-between;font-size:.78rem;font-weight:600;margin-top:.4rem;padding-top:.4rem;border-top:1px dashed var(--border)">
         <span>Phase 小計</span>
@@ -8041,7 +8039,7 @@ function calcRegimen(){
     if(!_regimenAddOns[a.key]) return;
     let cost = a.price;
     if(a.per==='cycle'){
-      const totalCycles = reg.phases.reduce((s,p)=>s+p.cycles,0);
+      const totalCycles = reg.phases.reduce((s,p)=>s+((reg.cycle_options&&_regimenCycleOverride)?_regimenCycleOverride:p.cycles),0);
       cost = a.price * totalCycles;
     } else if(a.per==='month'){
       const totalMonths = reg.phases.reduce((s,p)=>s+p.cycles*(p.freq==='q3w'?21:p.freq==='q4w'?28:7)/30,0);
@@ -8062,6 +8060,7 @@ function calcRegimen(){
     <div class="sum-line sum-total sum-grand"><span>全療程合計（含健保）</span><span>NT$ ${grandTotal.toLocaleString()}</span></div>
     <div class="sum-note">* 此為依健保支付標準之估算，各醫院實際收費可能不同。藥價來源：健保署 115/03/23 公告 PDF（115/04/01 生效）、台大醫院藥品價目表（2024/12/05）。含首劑loading dose。藥品搭配以最經濟組合計算。</div>
     <div class="sum-note" style="color:#b45309;margin-top:.3rem">⚠ 若廠商有提供贈藥方案，實際自費金額可能有所調整，請向醫療團隊確認。</div>
+    ${reg.donated_note?`<div class="sum-note" style="color:#b45309;margin-top:.15rem;font-weight:600">📋 ${reg.donated_note}</div>`:''}
     <div style="text-align:center;margin-top:0.75rem;display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap">
       <button class="btn btn-outline btn-sm" onclick="printRegimen()">列印 / 匯出 PDF</button>
       <button class="btn btn-outline btn-sm" onclick="requestNewRegimen()" style="border-color:#0369a1;color:#0369a1">📋 通報：建議新增處方</button>
@@ -8075,9 +8074,12 @@ function buildDrugRow(drug, doseLabel, vialInfo, costPerCycle, totalCost, cycles
       <div class="drug-name-r">${drug.name}</div>
       <div class="drug-dose">${doseLabel}</div>
       <div class="vial-combo">${vialInfo}</div>
+      ${drug.note?`<div class="drug-note">⚠ ${drug.note}</div>`:''}
     </div>
     <div class="nhi-toggle">
-      <button class="${nhiClass}" onclick="_regimenNHI['${drug.key}']=true;calcRegimen()">健保</button>
+      ${drug.no_nhi
+        ? `<button class="on-nhi-disabled" disabled title="此藥無健保給付">健保</button>`
+        : `<button class="${nhiClass}" onclick="_regimenNHI['${drug.key}']=true;calcRegimen()">健保</button>`}
       <button class="${selfClass}" onclick="_regimenNHI['${drug.key}']=false;calcRegimen()">自費</button>
     </div>
     <div class="drug-cost">
@@ -9039,16 +9041,6 @@ function inpOptimizeVials(doseMg, drugKey, priceType){
   if(!drug || !drug.vials) return {cost:0, combo:[], totalMg:doseMg};
   const vials = [...drug.vials].sort((a,b)=>b.size-a.size);
   const large = vials[0], small = vials[vials.length-1];
-  if(drugKey === 'docetaxel' && large && large.size === 80){
-    const nL = Math.ceil(doseMg / large.size);
-    if(nL > 0 && nL <= 2){
-      return {
-        cost: nL * (large[priceType]||large.nhi),
-        combo: [{n:nL, label:large.label, price:large[priceType]||large.nhi}],
-        totalMg: nL * large.size
-      };
-    }
-  }
   let best = {cost:Infinity, combo:[], totalMg:0};
   const maxL = Math.ceil(doseMg/large.size)+1;
   for(let nL=0; nL<=maxL; nL++){
