@@ -105,7 +105,6 @@ body {
   margin-top: .05rem;
 }
 .header-badge {
-  margin-left: auto;
   background: rgba(255,255,255,.08);
   color: #94A3B8;
   font-size: .72rem;
@@ -326,15 +325,6 @@ body {
     top: .45rem;
     z-index: 15;
     margin: 0;
-  }
-  body.desktop-dashboard-mode .view-mode-panel {
-    position: absolute;
-    right: .75rem;
-    top: .35rem;
-    z-index: 15;
-    justify-content: flex-end;
-    margin: 0;
-    padding: 0;
   }
   body.desktop-dashboard-mode .dashboard-controls {
     position: absolute;
@@ -634,39 +624,43 @@ body {
   padding: .5rem 0 2rem;
 }
 
-.view-mode-panel {
+/* ── Mode Slider (header toggle) ── */
+.header-right { margin-left: auto; display: flex; align-items: center; gap: .75rem; }
+.mode-slider {
+  position: relative;
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: .45rem;
-  margin: .45rem 0 .65rem;
-}
-.view-mode-label {
-  color: var(--text-muted);
-  font-size: .76rem;
-  font-weight: 700;
-}
-.view-mode-btn {
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text-2);
-  border-radius: var(--r-sm);
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 999px;
+  padding: 3px;
   cursor: pointer;
-  font-family: inherit;
-  font-size: .78rem;
+  user-select: none;
+  flex-shrink: 0;
+}
+.mode-slider-thumb {
+  position: absolute;
+  top: 3px; left: 3px;
+  width: calc(50% - 3px);
+  bottom: 3px;
+  background: #fff;
+  border-radius: 999px;
+  transition: transform .28s cubic-bezier(.4,0,.2,1);
+  box-shadow: 0 1px 4px rgba(0,0,0,.25);
+}
+body.desktop-dashboard-mode .mode-slider-thumb { transform: translateX(100%); }
+.mode-slider-opt {
+  position: relative;
+  z-index: 1;
+  padding: .24rem .6rem;
+  font-size: .72rem;
   font-weight: 700;
-  line-height: 1;
-  padding: .46rem .68rem;
+  color: rgba(255,255,255,.5);
+  transition: color .28s;
+  white-space: nowrap;
 }
-.view-mode-btn.active {
-  background: #1d4ed8;
-  border-color: #1d4ed8;
-  color: #fff;
-}
-.view-mode-btn:not(.active):hover {
-  border-color: #1d4ed8;
-  color: #1d4ed8;
-}
+body:not(.desktop-dashboard-mode) .mode-slider .mode-slider-opt:first-of-type { color: #1e293b; }
+body.desktop-dashboard-mode .mode-slider .mode-slider-opt:last-of-type { color: #1e293b; }
 
 /* ── DEPARTMENT PAGE ── */
 .dept-page { display: none; }
@@ -837,6 +831,82 @@ body {
   .ajcc-biomarker-section > div[style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
   .ajcc-quick-grid { grid-template-columns: 1fr; }
 }
+
+/* ── AJCC Quick / Full Mode ── */
+.ajcc-tab-switcher { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-bottom: 1rem; }
+.ajcc-tab-card { border: 2px solid var(--border); border-radius: var(--r-md); padding: .75rem 1rem; cursor: pointer; background: var(--surface); text-align: center; transition: border-color .18s, background .18s, box-shadow .18s; user-select: none; }
+.ajcc-tab-card:hover { border-color: #d97706; }
+.ajcc-tab-card.active { border-color: #92400e; background: #fef3c7; box-shadow: 0 2px 10px rgba(146,64,14,.15); }
+.ajcc-tab-title { font-weight: 700; font-size: .92rem; color: var(--text-muted); transition: color .18s; }
+.ajcc-tab-card.active .ajcc-tab-title { color: #92400e; }
+.ajcc-tab-sub { font-size: .7rem; color: var(--text-faint); margin-top: .2rem; }
+.ajcc-tab-card.active .ajcc-tab-sub { color: #b45309; }
+body.dark .ajcc-tab-card.active { background: #1c1407; border-color: #d97706; }
+body.dark .ajcc-tab-card.active .ajcc-tab-title { color: #fcd34d; }
+body.dark .ajcc-tab-card.active .ajcc-tab-sub { color: #fbbf24; }
+.ajcc-quick-only { display: none !important; }
+.ajcc-quick-mode .ajcc-quick-only { display: block !important; }
+.ajcc-quick-mode #ajccTumorGroup,
+.ajcc-quick-mode #ajccTGroup,
+.ajcc-quick-mode #ajccNGroup,
+.ajcc-quick-mode #ajccCMGroup,
+.ajcc-quick-mode #ajccNACGroup,
+.ajcc-quick-mode #ajccPTNMPanel,
+.ajcc-quick-mode #ajccOncotypeGroup { display: none !important; }
+.ajcc-quick-mode #ajccBioSection { display: block !important; }
+.ajcc-qchips { display: flex; gap: .3rem; flex-wrap: wrap; }
+.ajcc-qchip { border: 1.5px solid var(--border); background: var(--surface); border-radius: var(--r-sm); padding: .28rem .65rem; font-size: .82rem; font-weight: 700; cursor: pointer; color: var(--text-muted); transition: .12s; font-family: inherit; }
+.ajcc-qchip.active { background: #92400e; border-color: #92400e; color: #fff; }
+.ajcc-qchip:not(.active):hover { border-color: #92400e; color: #92400e; }
+
+/* ── Workspace Quick / Full Mode ── */
+.ws-tab-switcher { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-bottom: 1rem; }
+.ws-tab-card { border: 2px solid var(--border); border-radius: var(--r-md); padding: .75rem 1rem; cursor: pointer; background: var(--surface); text-align: center; transition: border-color .18s, background .18s, box-shadow .18s; user-select: none; }
+.ws-tab-card:hover { border-color: #0369a1; }
+.ws-tab-card.active { border-color: #0c4a6e; background: #e0f2fe; box-shadow: 0 2px 10px rgba(12,74,110,.15); }
+.ws-tab-title { font-weight: 700; font-size: .92rem; color: var(--text-muted); transition: color .18s; }
+.ws-tab-card.active .ws-tab-title { color: #0c4a6e; }
+.ws-tab-sub { font-size: .7rem; color: var(--text-faint); margin-top: .2rem; }
+.ws-tab-card.active .ws-tab-sub { color: #0369a1; }
+body.dark .ws-tab-card.active { background: #071e2e; border-color: #0ea5e9; }
+body.dark .ws-tab-card.active .ws-tab-title { color: #7dd3fc; }
+body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
+.ws-quick-section { display: none; }
+.ws-input-col.ws-quick-mode .ws-quick-section { display: block; }
+.ws-input-col.ws-quick-mode .ws-section:not(.ws-quick-section) { display: none; }
+@keyframes wsModeFlipOut {
+    0%   { transform: scaleX(1); opacity: 1; }
+    100% { transform: scaleX(0); opacity: 0; }
+}
+@keyframes wsModeFlipIn {
+    0%   { transform: scaleX(0); opacity: 0; }
+    100% { transform: scaleX(1); opacity: 1; }
+}
+.ws-input-col.ws-flipping-out { animation: wsModeFlipOut 0.15s ease-in forwards; transform-origin: left center; }
+.ws-input-col.ws-flipping-in  { animation: wsModeFlipIn 0.15s ease-out forwards; transform-origin: left center; }
+/* Quick mode grid layout */
+.ws-q-infobar { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-bottom: .6rem; }
+.ws-q-infofield { display: flex; flex-direction: column; gap: .2rem; }
+.ws-q-infolabel { font-size: .72rem; font-weight: 700; color: var(--text-muted); }
+.ws-q-divline { border: none; border-top: 1px dashed var(--border); margin: .5rem 0; }
+.ws-q-block { margin-bottom: .55rem; }
+.ws-q-blocklabel { font-size: .7rem; font-weight: 700; color: var(--text-faint); text-transform: uppercase; letter-spacing: .04em; margin-bottom: .28rem; }
+.ws-q-row4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: .28rem; }
+.ws-q-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: .25rem; }
+.ws-q-row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: .25rem; }
+.ws-q-biogrid { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem .75rem; }
+.ws-q-row4 .ws-qchip { padding: .58rem .2rem; font-size: .92rem; text-align: center; width: 100%; }
+.ws-q-row2 .ws-qchip, .ws-q-row3 .ws-qchip { padding: .48rem .2rem; text-align: center; width: 100%; }
+.ws-qform { display: flex; flex-direction: column; gap: .5rem; }
+.ws-qrow { display: flex; align-items: center; gap: .5rem; }
+.ws-qlabel { min-width: 80px; font-size: .8rem; font-weight: 700; color: var(--text-muted); }
+.ws-qchips { display: flex; gap: .28rem; flex-wrap: wrap; }
+.ws-qchip { border: 1.5px solid var(--border); background: var(--surface); border-radius: var(--r-sm); padding: .28rem .65rem; font-size: .82rem; font-weight: 700; cursor: pointer; color: var(--text-muted); transition: .12s; font-family: inherit; }
+.ws-qchip.active { background: #0c4a6e; border-color: #0c4a6e; color: #fff; }
+.ws-qchip:not(.active):hover { border-color: #0369a1; color: #0369a1; }
+.ws-qinput { width: 80px; border: 1.5px solid var(--border); border-radius: var(--r-sm); padding: .28rem .45rem; font-size: .85rem; color: var(--text); background: var(--surface); font-family: inherit; }
+.ws-qinput:focus { outline: 2px solid #0369a1; border-color: #0369a1; outline-offset: -1px; }
+.ws-qdivider { border: none; border-top: 1px dashed var(--border); margin: .3rem 0; }
 
 /* ── Calculator Page ── */
 .page-topbar.calc h2 { color: #0e7490; }
@@ -1369,10 +1439,6 @@ body.dark .issue-info { background: #1e293b; color: #f87171; border-left-color: 
 .toggle-bar button { width: 36px; height: 36px; border-radius: 50%; border: none; background: transparent; cursor: pointer; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; transition: background .15s; font-family: inherit; }
 .toggle-bar button:hover { background: rgba(0,0,0,.07); }
 .beta-badge { position: absolute; top: -3px; right: -3px; background: #f59e0b; color: white; font-size: .58rem; font-weight: 700; padding: 1px 5px; border-radius: 999px; }
-/* ── Mobile Preview Mode ── */
-body.mobile-preview { background: #475569; }
-body.mobile-preview .header,
-body.mobile-preview .container { max-width: 390px; margin-left: auto; margin-right: auto; overflow-x: hidden; }
 /* ── Settings Modal ── */
 .settings-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; align-items: center; justify-content: center; padding: 1rem; }
 .settings-modal.show { display: flex; }
@@ -2155,7 +2221,14 @@ body.dark .back-btn:hover { background: #334155; }
     <div class="header-title">健保腫瘤藥物查詢系統</div>
     <div class="header-sub">NHI Oncology Drug Reference</div>
   </div>
-  <div class="header-badge" id="priceBadge">藥價公告 115/03/23｜生效 115/04/01</div>
+  <div class="header-right">
+    <div class="mode-slider" id="modeSlider" onclick="toggleViewMode()" title="切換介面模式">
+      <div class="mode-slider-thumb"></div>
+      <span class="mode-slider-opt">📱 手機</span>
+      <span class="mode-slider-opt">🖥 桌面</span>
+    </div>
+    <div class="header-badge" id="priceBadge">藥價公告 115/03/23｜生效 115/04/01</div>
+  </div>
 </header>
 
 <div class="container">
@@ -2174,11 +2247,6 @@ body.dark .back-btn:hover { background: #334155; }
     <button class="btn btn-sm btn-primary" onclick="location.reload()">重新載入</button>
   </div>
 
-  <div class="view-mode-panel" role="group" aria-label="介面模式">
-    <span class="view-mode-label">介面模式</span>
-    <button type="button" class="view-mode-btn" id="viewModeCardsBtn" onclick="setAppViewMode('cards')">手機卡片</button>
-    <button type="button" class="view-mode-btn" id="viewModeDashboardBtn" onclick="setAppViewMode('dashboard')">桌面 Dashboard</button>
-  </div>
   <div class="dashboard-controls" id="dashboardControls" aria-label="Dashboard 模組控制"></div>
 
   <!-- ===== LANDING PAGE ===== -->
@@ -2553,23 +2621,55 @@ body.dark .back-btn:hover { background: #334155; }
     </div>
     <div class="page-body">
 
+      <!-- Mode Switcher -->
+      <div class="ajcc-tab-switcher">
+        <div class="ajcc-tab-card active" id="ajccTabQuick" onclick="setAJCCMode('quick')">
+          <div class="ajcc-tab-title">📱 快速模式</div>
+          <div class="ajcc-tab-sub">cT / cN / ER / PR / HER2 / Ki67 / Grade</div>
+        </div>
+        <div class="ajcc-tab-card" id="ajccTabFull" onclick="setAJCCMode('full')">
+          <div class="ajcc-tab-title">📋 完整模式</div>
+          <div class="ajcc-tab-sub">完整欄位・癌症登記格式</div>
+        </div>
+      </div>
+
       <!-- Anatomic Stage Calculator -->
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:1rem;margin-bottom:1rem">
         <button type="button" class="ajcc-reset" onclick="resetAJCC()">&#8635; 清除</button>
         <div style="font-weight:700;font-size:.9rem;color:#92400e;margin-bottom:.5rem">分期計算</div>
-        <div class="ajcc-stage-panels">
+        <div class="ajcc-stage-panels ajcc-quick-mode" id="ajccStagePanels">
           <div class="ajcc-stage-panel">
             <div class="ajcc-stage-panel-title">臨床期別 <span>cTNM</span></div>
             <div class="ajcc-calc">
               <div>
-                <div class="ajcc-group" style="margin-bottom:.3rem">
+                <div class="ajcc-quick-only">
+                  <div class="ajcc-group" style="margin-bottom:.45rem">
+                    <label>cT — 臨床 T 分期</label>
+                    <div class="ajcc-qchips" id="quickTChips">
+                      <button type="button" class="ajcc-qchip" onclick="setAJCCQuickT('T1')">T1</button>
+                      <button type="button" class="ajcc-qchip" onclick="setAJCCQuickT('T2')">T2</button>
+                      <button type="button" class="ajcc-qchip" onclick="setAJCCQuickT('T3')">T3</button>
+                      <button type="button" class="ajcc-qchip" onclick="setAJCCQuickT('T4')">T4</button>
+                    </div>
+                  </div>
+                  <div class="ajcc-group" style="margin-bottom:.5rem">
+                    <label>cN — 區域淋巴結</label>
+                    <div class="ajcc-qchips" id="quickNChips">
+                      <button type="button" class="ajcc-qchip" onclick="setAJCCQuickN('N0')">N0</button>
+                      <button type="button" class="ajcc-qchip" onclick="setAJCCQuickN('N1')">N1</button>
+                      <button type="button" class="ajcc-qchip" onclick="setAJCCQuickN('N2')">N2</button>
+                      <button type="button" class="ajcc-qchip" onclick="setAJCCQuickN('N3')">N3</button>
+                    </div>
+                  </div>
+                </div>
+                <div id="ajccTumorGroup" class="ajcc-group" style="margin-bottom:.3rem">
                   <label>腫瘤大小（cm）→ 自動推算 cT</label>
                   <div style="display:flex;gap:.4rem;align-items:center">
                     <input type="number" id="tumorSizeCm" min="0" max="30" step="0.1" placeholder="e.g. 1.5" style="width:90px;padding:.3rem .5rem;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:.85rem;background:var(--surface);color:var(--text)" oninput="autoSelectCT(this.value)">
                     <span id="tumorSizeLabel" style="font-size:.76rem;color:var(--text-muted)">cm → 對應 T 分期</span>
                   </div>
                 </div>
-                <div class="ajcc-group">
+                <div id="ajccTGroup" class="ajcc-group">
                   <label>cT — 腫瘤大小/範圍</label>
                   <select id="ajccT" class="ajcc-select" onchange="calcAJCC()">
                     <option value="">Tx</option>
@@ -2584,7 +2684,7 @@ body.dark .back-btn:hover { background: #334155; }
                     <option value="T4">T4 — 延伸至胸壁或皮膚 / 發炎性乳癌</option>
                   </select>
                 </div>
-                <div class="ajcc-group">
+                <div id="ajccNGroup" class="ajcc-group">
                   <label>cN — 區域淋巴結</label>
                   <select id="ajccN" class="ajcc-select" onchange="calcAJCC()">
                     <option value="">Nx</option>
@@ -2600,7 +2700,7 @@ body.dark .back-btn:hover { background: #334155; }
                     <option value="N3c">N3c — 鎖骨上淋巴</option>
                   </select>
                 </div>
-                <div class="ajcc-group">
+                <div id="ajccCMGroup" class="ajcc-group">
                   <label>cM — 遠端轉移</label>
                   <select id="ajccM" class="ajcc-select" onchange="calcAJCC()">
                     <option value="">Mx</option>
@@ -2608,7 +2708,7 @@ body.dark .back-btn:hover { background: #334155; }
                     <option value="M1">M1 — 有遠端轉移（骨、肝、肺、腦等）</option>
                   </select>
                 </div>
-                <div class="ajcc-group" style="margin-top:.5rem;padding:.45rem .6rem;background:var(--surface-2,#f8fafc);border-radius:var(--r-sm);border:1px solid var(--border)">
+                <div id="ajccNACGroup" class="ajcc-group" style="margin-top:.5rem;padding:.45rem .6rem;background:var(--surface-2,#f8fafc);border-radius:var(--r-sm);border:1px solid var(--border)">
                   <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-weight:600;font-size:.83rem">
                     <input type="checkbox" id="nacReceived" onchange="toggleNAC()" style="width:15px;height:15px;accent-color:#be185d">
                     接受術前化療（NAC）？
@@ -2622,7 +2722,7 @@ body.dark .back-btn:hover { background: #334155; }
             </div>
           </div>
 
-          <div class="ajcc-stage-panel">
+          <div class="ajcc-stage-panel" id="ajccPTNMPanel">
             <div class="ajcc-stage-panel-title" id="pTNMPanelTitle">病理期別 <span>pTNM</span></div>
             <div class="ajcc-calc">
               <div>
@@ -2728,6 +2828,18 @@ body.dark .back-btn:hover { background: #334155; }
                 <option value="-">HER2 陰性</option>
               </select>
             </div>
+            <div class="ajcc-group" style="margin:0">
+              <label>Ki-67</label>
+              <div class="ajcc-chipset" data-target="ajccKi67">
+                <button type="button" data-value="low" onclick="setAJCCQuick('ajccKi67','low')">&lt;14%</button>
+                <button type="button" data-value="high" onclick="setAJCCQuick('ajccKi67','high')">≥14%</button>
+              </div>
+              <select id="ajccKi67" class="ajcc-select ajcc-hidden-select" onchange="syncAJCCQuick('ajccKi67');calcAJCCPrognostic()">
+                <option value="">未知</option>
+                <option value="low">低 (&lt;14%)</option>
+                <option value="high">高 (≥14%)</option>
+              </select>
+            </div>
           </div>
           <div class="ajcc-group" id="ajccOncotypeGroup" style="margin:.5rem 0 0 0">
             <label>Oncotype DX 復發指數 (RS) — 僅用於 AJCC v8 病理預後期別，限 ER+/HER2-/pN0</label>
@@ -2790,7 +2902,90 @@ body.dark .back-btn:hover { background: #334155; }
     <div class="page-body">
 
      <div class="ws-step-label">1. 共用病人變數</div>
-     <div class="ws-input-col">
+     <div class="ws-input-col" id="wsInputCol">
+      <!-- Quick / Full mode tab switcher -->
+      <div class="ws-tab-switcher">
+        <div class="ws-tab-card active" id="wsTabQuick" onclick="setWsQuickMode('quick')">
+          <div class="ws-tab-title">📱 快速模式</div>
+          <div class="ws-tab-sub">cT / cN / ER / PR / HER2 / Grade</div>
+        </div>
+        <div class="ws-tab-card" id="wsTabFull" onclick="setWsQuickMode('full')">
+          <div class="ws-tab-title">📋 完整模式</div>
+          <div class="ws-tab-sub">完整欄位・癌症登記格式</div>
+        </div>
+      </div>
+
+      <!-- Quick entry section (visible only in quick mode) -->
+      <div class="ws-section ws-quick-section">
+        <!-- Age + Size -->
+        <div class="ws-q-infobar">
+          <div class="ws-q-infofield">
+            <label class="ws-q-infolabel">年齡</label>
+            <input type="number" class="ws-qinput" id="wsQuickAge" min="20" max="120" placeholder="歲"
+              oninput="document.getElementById('ws_age').value=this.value;setPatientField('age',this.value)">
+          </div>
+          <div class="ws-q-infofield">
+            <label class="ws-q-infolabel">Tumor size (mm)</label>
+            <input type="number" class="ws-qinput" id="wsQuickSize" min="0" max="500" step="0.1" placeholder="mm"
+              oninput="document.getElementById('ws_size').value=this.value;setPatientField('size',this.value)">
+          </div>
+        </div>
+        <div class="ws-q-divline"></div>
+        <!-- cT -->
+        <div class="ws-q-block">
+          <div class="ws-q-blocklabel">cT — 臨床腫瘤</div>
+          <div class="ws-q-row4" id="wsQuickTChips">
+            <button class="ws-qchip" onclick="setWsQuickT('T1')">T1</button>
+            <button class="ws-qchip" onclick="setWsQuickT('T2')">T2</button>
+            <button class="ws-qchip" onclick="setWsQuickT('T3')">T3</button>
+            <button class="ws-qchip" onclick="setWsQuickT('T4')">T4</button>
+          </div>
+        </div>
+        <!-- cN -->
+        <div class="ws-q-block">
+          <div class="ws-q-blocklabel">cN — 淋巴結</div>
+          <div class="ws-q-row4" id="wsQuickNChips">
+            <button class="ws-qchip" onclick="setWsQuickN('N0')">N0</button>
+            <button class="ws-qchip" onclick="setWsQuickN('N1')">N1</button>
+            <button class="ws-qchip" onclick="setWsQuickN('N2')">N2</button>
+            <button class="ws-qchip" onclick="setWsQuickN('N3')">N3</button>
+          </div>
+        </div>
+        <div class="ws-q-divline"></div>
+        <!-- Biomarkers 2×2 grid -->
+        <div class="ws-q-biogrid">
+          <div class="ws-q-biocol">
+            <div class="ws-q-blocklabel">ER</div>
+            <div class="ws-q-row2" id="wsQuickErChips">
+              <button class="ws-qchip" data-value="+" onclick="setWsQuickBio('er','+')">+</button>
+              <button class="ws-qchip" data-value="-" onclick="setWsQuickBio('er','-')">−</button>
+            </div>
+          </div>
+          <div class="ws-q-biocol">
+            <div class="ws-q-blocklabel">PR</div>
+            <div class="ws-q-row2" id="wsQuickPrChips">
+              <button class="ws-qchip" data-value="+" onclick="setWsQuickBio('pr','+')">+</button>
+              <button class="ws-qchip" data-value="-" onclick="setWsQuickBio('pr','-')">−</button>
+            </div>
+          </div>
+          <div class="ws-q-biocol">
+            <div class="ws-q-blocklabel">HER2</div>
+            <div class="ws-q-row2" id="wsQuickHer2Chips">
+              <button class="ws-qchip" data-value="+" onclick="setWsQuickBio('her2','+')">+</button>
+              <button class="ws-qchip" data-value="-" onclick="setWsQuickBio('her2','-')">−</button>
+            </div>
+          </div>
+          <div class="ws-q-biocol">
+            <div class="ws-q-blocklabel">Grade</div>
+            <div class="ws-q-row3" id="wsQuickGradeChips">
+              <button class="ws-qchip" data-value="1" onclick="setWsQuickGrade('1')">I</button>
+              <button class="ws-qchip" data-value="2" onclick="setWsQuickGrade('2')">II</button>
+              <button class="ws-qchip" data-value="3" onclick="setWsQuickGrade('3')">III</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="ws-section ws-intake-section">
         <h3>初診快填</h3>
         <div class="ws-form">
@@ -3390,7 +3585,6 @@ body.dark .back-btn:hover { background: #334155; }
   <!-- Toggle Bar -->
   <div class="toggle-bar">
     <button onclick="showSettings()" title="設定 / 功能開關">&#9881;&#65039;</button>
-    <button id="previewToggle" onclick="toggleMobilePreview()" title="切換手機預覽">&#128187;</button>
     <button id="darkToggle" onclick="toggleDarkMode()" title="切換深色模式 (Ctrl+D)">&#127769;</button>
   </div>
   <button class="report-btn" onclick="openIssueReport()" title="回報問題 → GitHub Issue">&#128027; 回報問題</button>
@@ -3768,12 +3962,10 @@ function getAppViewMode(){
     } catch(e){}
     return isDesktopDashboardViewport() ? 'dashboard' : 'cards';
 }
-function updateViewModeToggle(){
-    const mode = getAppViewMode();
-    const cardsBtn = document.getElementById('viewModeCardsBtn');
-    const dashBtn = document.getElementById('viewModeDashboardBtn');
-    if(cardsBtn) cardsBtn.classList.toggle('active', mode === 'cards');
-    if(dashBtn) dashBtn.classList.toggle('active', mode === 'dashboard');
+function updateViewModeToggle(){ /* body class drives the slider via CSS */ }
+function toggleViewMode(){
+    const current = getAppViewMode();
+    setAppViewMode(current === 'dashboard' ? 'cards' : 'dashboard');
 }
 function setAppViewMode(mode){
     const next = mode === 'dashboard' ? 'dashboard' : 'cards';
@@ -6310,13 +6502,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(enhanceTouchInputs, 0);
 });
 
-// ── Mobile Preview ──
-function toggleMobilePreview(){
-    const on = document.body.classList.toggle('mobile-preview');
-    const btn = document.getElementById('previewToggle');
-    if(btn) btn.innerHTML = on ? '&#128241;' : '&#128187;';
-}
-
 // ── Dark Mode ──
 function toggleDarkMode(){
     const isDark = document.body.classList.toggle('dark');
@@ -6394,10 +6579,11 @@ function toggleNAC(){
 }
 
 function resetAJCC(){
-    ['ajccT','ajccN','ajccM','ajccPT','ajccPN','ajccPM','ajccGrade','ajccER','ajccPR','ajccHER2','ajccOncotype'].forEach(id=>{
+    ['ajccT','ajccN','ajccM','ajccPT','ajccPN','ajccPM','ajccGrade','ajccER','ajccPR','ajccHER2','ajccKi67','ajccOncotype'].forEach(id=>{
         const e=document.getElementById(id); if(e) e.value='';
     });
-    ['ajccGrade','ajccER','ajccPR','ajccHER2'].forEach(syncAJCCQuick);
+    ['ajccGrade','ajccER','ajccPR','ajccHER2','ajccKi67'].forEach(syncAJCCQuick);
+    document.querySelectorAll('#quickTChips .ajcc-qchip,#quickNChips .ajcc-qchip').forEach(b=>b.classList.remove('active'));
     refreshTouchPickers();
     ['ajccClinicalResult','ajccPathologicResult'].forEach((id,idx)=>{
         const r=document.getElementById(id);
@@ -6406,11 +6592,131 @@ function resetAJCC(){
         r.style.background='';
         r.innerHTML=`<div style="color:var(--text-faint);font-size:.85rem;text-align:center">請選擇<br>${idx===0?'cT、cN、cM':'pT、pN、pM'}</div>`;
     });
-    document.getElementById('ajccBioSection').style.display='none';
+    const inQuick = document.getElementById('ajccStagePanels')?.classList.contains('ajcc-quick-mode');
+    document.getElementById('ajccBioSection').style.display = inQuick ? '' : 'none';
     document.getElementById('ajccCatastrophic').style.display='none';
     document.getElementById('ajccPrognosticResult').innerHTML='';
     document.querySelectorAll('#ajccRefTable tr[data-stage]').forEach(r=>r.classList.remove('ajcc-highlighted'));
 }
+function setAJCCMode(mode){
+    const panels = document.getElementById('ajccStagePanels');
+    if(panels) panels.classList.toggle('ajcc-quick-mode', mode === 'quick');
+    const qTab = document.getElementById('ajccTabQuick');
+    const fTab = document.getElementById('ajccTabFull');
+    if(qTab) qTab.classList.toggle('active', mode === 'quick');
+    if(fTab) fTab.classList.toggle('active', mode === 'full');
+    if(mode === 'quick'){
+        const bio = document.getElementById('ajccBioSection');
+        if(bio) bio.style.display = '';
+        const m = document.getElementById('ajccM');
+        if(m && !m.value) m.value = 'M0';
+    }
+    try{ localStorage.setItem('_ajccMode', mode); }catch(e){}
+}
+function setAJCCQuickT(t){
+    const map = {T1:'T1c', T2:'T2', T3:'T3', T4:'T4'};
+    const sel = document.getElementById('ajccT');
+    if(sel) sel.value = map[t] || t;
+    document.querySelectorAll('#quickTChips .ajcc-qchip').forEach(btn=>{
+        btn.classList.toggle('active', btn.textContent.trim() === t);
+    });
+    const m = document.getElementById('ajccM'); if(m && !m.value) m.value = 'M0';
+    calcAJCC();
+}
+function setAJCCQuickN(n){
+    const map = {N0:'N0', N1:'N1', N2:'N2a', N3:'N3a'};
+    const sel = document.getElementById('ajccN');
+    if(sel) sel.value = map[n] || n;
+    document.querySelectorAll('#quickNChips .ajcc-qchip').forEach(btn=>{
+        btn.classList.toggle('active', btn.textContent.trim() === n);
+    });
+    calcAJCC();
+}
+document.addEventListener('DOMContentLoaded', ()=>{
+    const saved = localStorage.getItem('_ajccMode') || 'quick';
+    setAJCCMode(saved);
+});
+
+/* ── Workspace Quick / Full Mode ── */
+function setWsQuickMode(mode, instant=false){
+    const col = document.getElementById('wsInputCol');
+    if(!col) return;
+    const doSwap = ()=>{
+        col.classList.toggle('ws-quick-mode', mode === 'quick');
+        document.getElementById('wsTabQuick')?.classList.toggle('active', mode === 'quick');
+        document.getElementById('wsTabFull')?.classList.toggle('active', mode === 'full');
+        if(mode === 'quick'){
+            const cM = document.getElementById('ws_cM');
+            if(cM && !cM.value){ cM.value = 'M0'; setPatientField('cM','M0'); }
+            syncWsQuickChips();
+        }
+        try{ localStorage.setItem('_wsMode', mode); }catch(e){}
+    };
+    if(instant){ doSwap(); return; }
+    col.classList.add('ws-flipping-out');
+    setTimeout(()=>{
+        col.classList.remove('ws-flipping-out');
+        doSwap();
+        col.classList.add('ws-flipping-in');
+        setTimeout(()=> col.classList.remove('ws-flipping-in'), 160);
+    }, 155);
+}
+function syncWsQuickChips(){
+    const age = document.getElementById('wsQuickAge');
+    if(age) age.value = document.getElementById('ws_age')?.value || '';
+    const sz = document.getElementById('wsQuickSize');
+    if(sz) sz.value = document.getElementById('ws_size')?.value || '';
+    const grade = document.getElementById('ws_grade')?.value || '';
+    document.querySelectorAll('#wsQuickGradeChips .ws-qchip').forEach(b=>b.classList.toggle('active', b.dataset.value===grade));
+    const er = (document.getElementById('ws_er')?.value||'').trim();
+    document.querySelectorAll('#wsQuickErChips .ws-qchip').forEach(b=>b.classList.toggle('active', b.dataset.value===er));
+    const pr = (document.getElementById('ws_pr')?.value||'').trim();
+    document.querySelectorAll('#wsQuickPrChips .ws-qchip').forEach(b=>b.classList.toggle('active', b.dataset.value===pr));
+    const her2 = document.getElementById('ws_her2')?.value || '';
+    document.querySelectorAll('#wsQuickHer2Chips .ws-qchip').forEach(b=>b.classList.toggle('active', b.dataset.value===her2));
+    const ctRaw = document.getElementById('ws_cT')?.value || '';
+    const ctChipMap = {T1mi:'T1',T1a:'T1',T1b:'T1',T1c:'T1',T2:'T2',T3:'T3',T4:'T4'};
+    const ctChip = ctChipMap[ctRaw] || '';
+    document.querySelectorAll('#wsQuickTChips .ws-qchip').forEach(b=>b.classList.toggle('active', b.textContent.trim()===ctChip));
+    const cnRaw = document.getElementById('ws_cN')?.value || '';
+    const cnChipMap = {N0:'N0','N0(i-)':'N0','N0(i+)':'N0',N1mi:'N1',N1:'N1',N2a:'N2',N2b:'N2',N3a:'N3',N3b:'N3',N3c:'N3'};
+    const cnChip = cnChipMap[cnRaw] || '';
+    document.querySelectorAll('#wsQuickNChips .ws-qchip').forEach(b=>b.classList.toggle('active', b.textContent.trim()===cnChip));
+}
+function setWsQuickT(t){
+    const map = {T1:'T1c',T2:'T2',T3:'T3',T4:'T4'};
+    const sel = document.getElementById('ws_cT');
+    if(sel){ sel.value = map[t]||t; setPatientField('cT', sel.value); }
+    document.querySelectorAll('#wsQuickTChips .ws-qchip').forEach(b=>b.classList.toggle('active', b.textContent.trim()===t));
+}
+function setWsQuickN(n){
+    const map = {N0:'N0',N1:'N1',N2:'N2a',N3:'N3a'};
+    const sel = document.getElementById('ws_cN');
+    if(sel){ sel.value = map[n]||n; setPatientField('cN', sel.value); }
+    document.querySelectorAll('#wsQuickNChips .ws-qchip').forEach(b=>b.classList.toggle('active', b.textContent.trim()===n));
+}
+function setWsQuickBio(field, value){
+    const el = document.getElementById('ws_'+field);
+    if(el){ el.value = value; setPatientField(field, value); }
+    const chipId = {er:'wsQuickErChips',pr:'wsQuickPrChips',her2:'wsQuickHer2Chips'}[field];
+    if(chipId) document.querySelectorAll('#'+chipId+' .ws-qchip').forEach(b=>b.classList.toggle('active', b.dataset.value===value));
+}
+function setWsQuickGrade(g){
+    const sel = document.getElementById('ws_grade');
+    if(sel){ sel.value = g; setPatientField('grade', g); }
+    document.querySelectorAll('#wsQuickGradeChips .ws-qchip').forEach(b=>b.classList.toggle('active', b.dataset.value===g));
+}
+function setWsQuickKi67(level){
+    const val = level === 'low' ? '10' : '20';
+    const inp = document.getElementById('ws_ki67');
+    if(inp){ inp.value = val; setPatientField('ki67', val); }
+    document.querySelectorAll('#wsQuickKi67Chips .ws-qchip').forEach(b=>b.classList.toggle('active', b.dataset.value===level));
+}
+document.addEventListener('DOMContentLoaded', ()=>{
+    const wsSaved = localStorage.getItem('_wsMode') || 'quick';
+    setWsQuickMode(wsSaved, true);
+});
+
 function _ajccNForCalc(n){
     return ['N0(i-)','N0(i+)'].includes(n) ? 'N0' : n;
 }
