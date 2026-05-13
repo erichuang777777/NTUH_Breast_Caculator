@@ -440,48 +440,50 @@ body {
   }
   body.desktop-dashboard-mode #breastPage .content-layout {
     display: flex;
-    flex-direction: column;
-    gap: .45rem;
+    flex-direction: row;
+    gap: 0;
     height: 100%;
     min-height: 0;
   }
   body.desktop-dashboard-mode #breastPage .filter-sidebar {
-    display: block;
+    display: flex;
+    flex-direction: column;
     position: static;
-    padding: .45rem .55rem;
-    border-radius: var(--r-sm);
-    max-height: 118px;
-    overflow: auto;
-    flex: 0 0 auto;
+    width: 185px;
+    flex: 0 0 185px;
+    padding: .5rem .6rem;
+    overflow-y: auto;
+    border-right: 1px solid var(--border);
+    border-radius: 0;
+    max-height: none;
   }
   body.desktop-dashboard-mode #breastPage .sidebar-title {
-    display: none;
+    display: block;
+    font-size: .72rem;
   }
   body.desktop-dashboard-mode #breastPage .search-row {
-    margin-bottom: .42rem;
+    margin-bottom: .5rem;
   }
   body.desktop-dashboard-mode #breastPage .filter-section {
-    display: inline-block;
-    vertical-align: top;
-    margin: 0 .55rem .35rem 0;
+    display: block;
+    margin: 0 0 .5rem 0;
   }
   body.desktop-dashboard-mode #breastPage .filter-section-label {
-    margin-bottom: .25rem;
-    font-size: .76rem;
+    margin-bottom: .3rem;
+    font-size: .72rem;
   }
   body.desktop-dashboard-mode #breastPage .filter-chip {
     padding: .22rem .5rem;
-    font-size: .78rem;
+    font-size: .76rem;
   }
-  body.desktop-dashboard-mode #breastPage .filter-divider,
-  body.desktop-dashboard-mode #breastPage .sidebar-actions {
-    display: none;
-  }
+  body.desktop-dashboard-mode #breastPage .filter-divider { display: block; }
+  body.desktop-dashboard-mode #breastPage .sidebar-actions { display: none; }
   body.desktop-dashboard-mode #breastPage .content-main {
     display: flex;
     flex-direction: column;
     flex: 1 1 auto;
     min-height: 0;
+    overflow: hidden;
   }
   body.desktop-dashboard-mode #breastPage .drug-list,
   body.desktop-dashboard-mode #trialResults {
@@ -1360,12 +1362,15 @@ body.dark .ws-result-title .badge { background: #263244; color: #fbbf24; }
 .issue-buttons button.primary:hover { background: #b91c1c; }
 body.dark .issue-card { background: #1e293b; }
 body.dark .issue-info { background: #1e293b; color: #f87171; border-left-color: #ef4444; }
-/* ── Floating Toggle Buttons ── */
-.float-toggle { position: fixed; right: 1rem; width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.1); z-index: 100; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: .2s; }
-.float-toggle:hover { transform: scale(1.08); }
-.dark-toggle { bottom: 1rem; }
-.settings-toggle { bottom: 4rem; }
+/* ── Toggle Bar ── */
+.toggle-bar { position: fixed; right: 1rem; bottom: 1rem; z-index: 100; display: flex; flex-direction: column; gap: .3rem; background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: .3rem; box-shadow: 0 2px 12px rgba(0,0,0,.12); }
+.toggle-bar button { width: 36px; height: 36px; border-radius: 50%; border: none; background: transparent; cursor: pointer; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; transition: background .15s; font-family: inherit; }
+.toggle-bar button:hover { background: rgba(0,0,0,.07); }
 .beta-badge { position: absolute; top: -3px; right: -3px; background: #f59e0b; color: white; font-size: .58rem; font-weight: 700; padding: 1px 5px; border-radius: 999px; }
+/* ── Mobile Preview Mode ── */
+body.mobile-preview { background: #475569; }
+body.mobile-preview .header,
+body.mobile-preview .container { max-width: 390px; margin-left: auto; margin-right: auto; overflow-x: hidden; }
 /* ── Settings Modal ── */
 .settings-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; align-items: center; justify-content: center; padding: 1rem; }
 .settings-modal.show { display: flex; }
@@ -1469,8 +1474,9 @@ body.dark .settings-info { background: #1e293b; border-left-color: #f59e0b; }
 body.dark .issue-card h2 { color: #f87171; }
 body.dark .issue-buttons button { background: #1e293b; color: #e2e8f0; }
 body.dark .issue-buttons button.primary { background: #dc2626; color: white; border-color: #dc2626; }
-/* Float toggles */
-body.dark .float-toggle { background: #1e293b; border-color: #334155; color: #e2e8f0; }
+/* Toggle bar */
+body.dark .toggle-bar { background: #1e293b; border-color: #334155; }
+body.dark .toggle-bar button { color: #e2e8f0; }
 body.dark .report-btn { background: #1e293b; color: #f87171; border-color: #334155; }
 body.dark .report-btn:hover { background: #263244; }
 /* Inline table cells */
@@ -2092,6 +2098,13 @@ body.dark .back-btn:hover { background: #334155; }
 @media (max-width: 900px) {
   .content-layout { grid-template-columns: 1fr; }
   .filter-sidebar { position: static; }
+}
+@media (max-width: 480px) {
+  .drug-row { flex-direction: column; align-items: flex-start; gap: .2rem; }
+  .drug-row .drug-cost { text-align: left; min-width: unset; }
+  .drug-row .nhi-toggle { align-self: flex-start; }
+  .cond-bar { flex-wrap: wrap; gap: .25rem; }
+  .patient-inputs { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 640px) {
   .container { padding: .55rem .65rem; }
@@ -3372,9 +3385,12 @@ body.dark .back-btn:hover { background: #334155; }
     </div>
   </div><!-- /calcPage -->
 
-  <!-- Floating Toggles -->
-  <button class="float-toggle settings-toggle" onclick="showSettings()" title="設定 / 功能開關">&#9881;&#65039;</button>
-  <button class="float-toggle dark-toggle" id="darkToggle" onclick="toggleDarkMode()" title="切換深色模式 (Ctrl+D)">&#127769;</button>
+  <!-- Toggle Bar -->
+  <div class="toggle-bar">
+    <button onclick="showSettings()" title="設定 / 功能開關">&#9881;&#65039;</button>
+    <button id="previewToggle" onclick="toggleMobilePreview()" title="切換手機預覽">&#128187;</button>
+    <button id="darkToggle" onclick="toggleDarkMode()" title="切換深色模式 (Ctrl+D)">&#127769;</button>
+  </div>
   <button class="report-btn" onclick="openIssueReport()" title="回報問題 → GitHub Issue">&#128027; 回報問題</button>
 
   <!-- Issue Report Modal -->
@@ -6261,6 +6277,13 @@ function copyIssueReport(){
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(enhanceTouchInputs, 0);
 });
+
+// ── Mobile Preview ──
+function toggleMobilePreview(){
+    const on = document.body.classList.toggle('mobile-preview');
+    const btn = document.getElementById('previewToggle');
+    if(btn) btn.innerHTML = on ? '&#128241;' : '&#128187;';
+}
 
 // ── Dark Mode ──
 function toggleDarkMode(){
