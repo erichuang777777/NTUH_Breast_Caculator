@@ -1330,6 +1330,8 @@ body.dark .ws-result-title .badge { background: #263244; color: #fbbf24; }
 .dept-card .module-badge { position: absolute; top: .5rem; right: .55rem; }
 .dept-card { position: relative; }
 .site-footer { margin: 1.25rem 0 0; padding: .85rem 1rem; border-top: 1px solid var(--border); color: var(--text-muted); font-size: .82rem; display:flex; justify-content:space-between; align-items:center; gap:.75rem; flex-wrap:wrap; }
+.site-footer button { border:1px solid var(--border); background:var(--surface); color:var(--text); border-radius:var(--r-sm); padding:.4rem .65rem; font-size:.8rem; cursor:pointer; }
+.site-footer button:hover { background:var(--surface-2); }
 /* ── Issue Report ── */
 .report-btn { position: fixed; bottom: 1rem; left: 1rem; width: auto; height: 38px; border-radius: 19px; padding: 0 .9rem; border: 1px solid var(--border); background: var(--surface); cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.1); z-index: 100; font-size: .82rem; font-weight: 600; color: #b91c1c; display: flex; align-items: center; gap: .35rem; transition: .2s; font-family: inherit; }
 .report-btn:hover { background: #fef2f2; transform: translateY(-1px); }
@@ -2222,7 +2224,7 @@ body.dark .back-btn:hover { background: #334155; }
 
     <div class="inner-tabs">
       <button class="inner-tab active" id="tabDrugs" onclick="switchBreastTab('drugs')">單一藥物查詢</button>
-      <button class="inner-tab" id="tabRegimen" onclick="switchBreastTab('regimen')">常見處方計算</button>
+      <button class="inner-tab" id="tabRegimen" onclick="switchBreastTab('regimen')">常見配方藥物組合計算</button>
     </div>
 
     <div class="tab-content active" id="tabDrugsContent">
@@ -3476,6 +3478,7 @@ body.dark .back-btn:hover { background: #334155; }
 
   <footer class="site-footer">
     <span>本網站由台大癌醫黃祥瑋醫師維護，資料僅供臨床討論與費用估算參考。</span>
+    <button id="offlineDownloadBtn" type="button" onclick="downloadOfflineCopy()">下載離線版 2026-05-15</button>
   </footer>
 </div><!-- /container -->
 
@@ -3506,6 +3509,8 @@ const _STATIC_CONFIG={
     price_badge_text:'藥價公告 115/03/23｜生效 115/04/01',
     price_update_schedule:'每月23日抓取健保署公告 PDF；單一藥物更新僅作補查或院內價追蹤'
 };
+const APP_RELEASE_DATE = '2026-05-15';
+const APP_OFFLINE_FILENAME = `NTUH_Breast_Calculator_offline_${APP_RELEASE_DATE}.html`;
 const DRUG_ALIAS_MAP = {
     abemaciclib:['verzenio'],
     alpelisib:['piqray'],
@@ -3631,6 +3636,33 @@ async function loadSiteConfig(){
     }catch(e){}
 }
 
+async function downloadOfflineCopy(){
+    const sourceUrl = window.location.href.split('#')[0];
+    let html = '';
+    try {
+        const r = await fetch(sourceUrl, {cache:'no-store'});
+        if(!r.ok) throw new Error('download failed');
+        html = await r.text();
+    } catch(e) {
+        const doc = document.documentElement.cloneNode(true);
+        html = '<!DOCTYPE html>\n' + doc.outerHTML;
+    }
+    html = html.replace(
+        /<html([^>]*)>/i,
+        `<html$1 data-offline-release="${APP_RELEASE_DATE}">`
+    );
+    const marker = `<!-- Offline release: ${APP_RELEASE_DATE}. Downloaded copy may become outdated; verify current clinical and price data before use. -->\n`;
+    if(!html.includes('Offline release:')) html = html.replace(/<!DOCTYPE html>\s*/i, match => match + marker);
+    const blob = new Blob([html], {type:'text/html;charset=utf-8'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = APP_OFFLINE_FILENAME;
+    document.body.appendChild(a);
+    a.click();
+    URL.revokeObjectURL(a.href);
+    a.remove();
+}
+
 // ── Init ──
 document.addEventListener('DOMContentLoaded', async ()=>{
     loadSiteConfig();
@@ -3684,7 +3716,7 @@ async function loadLanding(){
             <div style="font-size:2.5rem">&#128138;</div>
             <h2>乳癌藥物查詢</h2>
             <div class="count">${d.breast}</div>
-            <div class="desc">單一藥物查詢 | 常見處方計算 | HER2/ER/PR 篩選 | 健保適應症自動對應</div>
+            <div class="desc">單一藥物查詢 | 常見配方藥物組合計算 | HER2/ER/PR 篩選 | 健保適應症自動對應</div>
         </div>`;
     if(F.inpatient) html += `<div class="dept-card inp" onclick="showInpatient()">
             ${_moduleBadge(false)}
@@ -6982,11 +7014,8 @@ async function showDetail(id){
         }
         h+=`<div class="detail-sec"><h3>腎功能劑量調整</h3>${raHtml}</div>`;
     }
-    // Cost calculator — combo takes priority for HP dual-blockade drugs
-    const combo = getComboForDrug(d.generic_name, d.trade_names);
-    if(combo){
-        h+=buildComboCalc(combo, d.generic_name);
-    } else if(d.nhi_price && dosage){
+    // Single-drug detail only; combination protocols are handled in the regimen tab.
+    if(d.nhi_price && dosage){
         h+=buildCostCalc(d, dosage);
     }
     h+=`<div class="btn-row">
@@ -6994,7 +7023,7 @@ async function showDetail(id){
         <button class="btn btn-outline btn-sm" onclick="closeDetail();openEditDrug(${d.id})">編輯此藥物</button>
     </div>`;
     // Cache dosage info for single-drug calculator
-    if(d.nhi_price && dosage && !combo){
+    if(d.nhi_price && dosage){
         _drugDosageCache[d.id] = {dosage: dosage, price: d.nhi_price, price_unit: d.price_unit};
     }
     document.getElementById('detailBody').innerHTML=h;
@@ -9430,8 +9459,6 @@ const SURG_DEFAULT_ITEMS = [
   { group:'整形式乳房手術', en:'Tissue Expander', zh:'光滑面組織擴張器', code:'20381010', price:14598, note:'用於橋接二階段重建，可先進行後續療程，完成治療再進行完整重建手術' },
   { group:'基因檢測', en:'NGS Hereditary Breast Cancer Gene', zh:'次世代定序遺傳性基因變異檢測', code:'000X0230', price:30000, note:'' },
   { group:'基因檢測', en:'Oncotype Dx / FoundationOne CDx', zh:'安可待乳癌腫瘤基因檢測/全方位癌症基因組織檢測', code:'—', price:170000, note:'約17萬，實際依廠商報價' },
-  { group:'特殊術式–疑陽個案切片', en:'MG-guided needle localization', zh:'乳房攝影導引病灶細針定位', code:'000M2E21', price:4200, note:'' },
-  { group:'特殊術式–疑陽個案切片', en:'MRI-guided needle localization', zh:'磁振造影導引乳房細針定位', code:'000M4011', price:16000, note:'' },
 ];
 let SURG_ITEMS = [];
 const SURG_ITEMS_KEY = '_surgery_items_v1';

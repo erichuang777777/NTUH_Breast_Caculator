@@ -537,7 +537,7 @@ tr.clickable:hover{background:#f8fafc}
 
         <div class="inner-tabs">
             <button class="inner-tab active" id="tabDrugs" onclick="switchBreastTab('drugs')">藥物查詢</button>
-            <button class="inner-tab" id="tabRegimen" onclick="switchBreastTab('regimen')">處方費用計算</button>
+            <button class="inner-tab" id="tabRegimen" onclick="switchBreastTab('regimen')">常見配方藥物組合計算</button>
         </div>
 
         <div class="tab-content active" id="tabDrugsContent">
@@ -1241,11 +1241,8 @@ async function showDetail(id){
         }
         h+=`<div class="detail-sec"><h3>腎功能劑量調整</h3>${raHtml}</div>`;
     }
-    // Cost calculator — combo takes priority for HP dual-blockade drugs
-    const combo = getComboForDrug(d.generic_name, d.trade_names);
-    if(combo){
-        h+=buildComboCalc(combo, d.generic_name);
-    } else if(d.nhi_price && dosage){
+    // Single-drug detail only; combination protocols are handled in the regimen tab.
+    if(d.nhi_price && dosage){
         h+=buildCostCalc(d, dosage);
     }
     const infoUrl = d.drug_image_url ||
@@ -1258,7 +1255,7 @@ async function showDetail(id){
         </a>
     </div>`;
     // Cache dosage info for single-drug calculator
-    if(d.nhi_price && dosage && !combo){
+    if(d.nhi_price && dosage){
         _drugDosageCache[d.id] = {dosage: dosage, price: d.nhi_price, price_unit: d.price_unit};
     }
     document.getElementById('detailBody').innerHTML=h;
