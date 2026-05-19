@@ -1,7 +1,15 @@
-const CACHE_VERSION = 'ntuh-breast-v2026-05-15';
+const CACHE_VERSION = 'ntuh-breast-v2026-05-19';
 const APP_SHELL = [
   '/',
   '/index.html',
+  '/assets/css/app.css',
+  '/assets/css/ajcc-mobile.css',
+  '/assets/js/app-config.js',
+  '/assets/js/legacy-app.js',
+  '/assets/js/modules/ajcc/prognostic-lookup.js',
+  '/assets/js/modules/ajcc/mobile-panel.js',
+  '/assets/js/modules/drug-cards.js',
+  '/data/ajcc9_lookup.js',
   '/offline.html',
   '/manifest.webmanifest',
   '/icons/icon-192.png',
@@ -41,7 +49,7 @@ async function shellFallback(request) {
     if (response.ok) cache.put(request, response.clone());
     return response;
   } catch (err) {
-    const cached = await cache.match(request);
+    const cached = await cache.match(request, { ignoreSearch: true });
     if (cached) return cached;
     if (request.mode === 'navigate') return cache.match('/offline.html');
     throw err;
