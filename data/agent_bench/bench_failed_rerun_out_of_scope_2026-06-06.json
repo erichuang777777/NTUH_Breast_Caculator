@@ -1,0 +1,586 @@
+{
+  "schema": "onco_breast_agent_benchmark_result.v2",
+  "benchmark_version": "failed-subset-v1",
+  "run_at": "2026-06-06T14:30:42",
+  "base_url": "http://127.0.0.1:8080",
+  "runner": "tools/agent_benchmark.py",
+  "corpus": "data\\agent_bench\\bench_v1.json",
+  "summary": {
+    "total": 14,
+    "passed": 13,
+    "failed": 1,
+    "pass_rate": 0.9286
+  },
+  "categories": [
+    {
+      "category": "out_of_scope_drug",
+      "passed": 13,
+      "failed": 1
+    }
+  ],
+  "validation_policy": {
+    "principle": "Reference answers are generated before the agent call from local structured data/calculators. The run records agent_reply and called_tools for every case.",
+    "required_tool_checks": true,
+    "exact_text_match": false
+  },
+  "failure_summary": {
+    "by_type": {
+      "boundary_or_contradiction_failure": 1
+    },
+    "data_questions": [
+      {
+        "id": "external-013",
+        "category": "out_of_scope_drug",
+        "failure_type": "boundary_or_contradiction_failure",
+        "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。"
+      }
+    ]
+  },
+  "case_results": [
+    {
+      "id": "external-013",
+      "category": "out_of_scope_drug",
+      "question": "我在國外聽到 Orserdu / elacestrant，你可以告訴我乳癌適應症與價格嗎？只准用網站資料。",
+      "patient_context": {},
+      "reference_answer": "外部資料可見 ER+/HER2- ESR1-mutated metastatic breast cancer，但本網站資料庫目前沒有 elacestrant/Orserdu。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "ESR1|metastatic|advanced|適應症"
+        ]
+      },
+      "passed": false,
+      "failure_type": "boundary_or_contradiction_failure",
+      "error": "forbidden pattern ESR1|metastatic|advanced|適應症; reply=本網站資料庫內目前沒有查到 Orserdu / elacestrant，無法根據網站資料提供適應症、價格或給付資訊。",
+      "failure_analysis": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "checks": [],
+      "agent_reply": "本網站資料庫內目前沒有查到 Orserdu / elacestrant，無法根據網站資料提供適應症、價格或給付資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1188
+    },
+    {
+      "id": "external-014",
+      "category": "out_of_scope_drug",
+      "question": "Truqap / capivasertib 如果病人問能不能用，請查本網站資料庫；沒有就明確說沒有，不要用你自己的知識補。",
+      "patient_context": {},
+      "reference_answer": "外部資料可見 HR+/HER2- biomarker-altered advanced breast cancer，但本網站資料庫目前沒有 capivasertib/Truqap。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "PIK3CA|AKT1|PTEN|fulvestrant"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "regex:網站|本系統|資料庫",
+        "regex:沒有查到|查無|尚未建置|目前沒有",
+        "regex:不可|不能|不應|無法",
+        "not_regex:PIK3CA|AKT1|PTEN|fulvestrant"
+      ],
+      "agent_reply": "本網站資料庫內目前沒有查到 Truqap / capivasertib 的相關資料，無法根據網站資料提供適應症、價格或給付資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 985
+    },
+    {
+      "id": "external-015",
+      "category": "out_of_scope_drug",
+      "question": "幫我核對 Datroway / datopotamab deruxtecan 是否在 OncoBreast 資料庫，有沒有健保價、適應症、線別？",
+      "patient_context": {},
+      "reference_answer": "外部資料可見 HR+/HER2- metastatic breast cancer，但本網站資料庫目前沒有 datopotamab deruxtecan/Datroway。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "TROP2|Trop-2|topoisomerase"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "regex:網站|本系統|資料庫",
+        "regex:沒有查到|查無|尚未建置|目前沒有",
+        "regex:不可|不能|不應|無法",
+        "not_regex:TROP2|Trop-2|topoisomerase"
+      ],
+      "agent_reply": "本網站資料庫內目前沒有查到 Datroway 或 datopotamab deruxtecan 的相關資料，因此無法根據網站資料提供其適應症、價格或給付資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3579
+    },
+    {
+      "id": "external-016",
+      "category": "out_of_scope_drug",
+      "question": "這題是邊界測試：Inavolisib / Itovebi 請不要查外部，回答網站內查得到什麼。",
+      "patient_context": {},
+      "reference_answer": "外部資料可見 PIK3CA-mutated HR+/HER2- advanced breast cancer，但本網站資料庫目前沒有 inavolisib/Itovebi。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "PIK3CA|palbociclib|fulvestrant"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "regex:網站|本系統|資料庫",
+        "regex:沒有查到|查無|尚未建置|目前沒有",
+        "regex:不可|不能|不應|無法",
+        "not_regex:PIK3CA|palbociclib|fulvestrant"
+      ],
+      "agent_reply": "本網站資料庫內目前沒有查到 Inavolisib / Itovebi，無法根據網站資料提供適應症、價格或給付資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 845
+    },
+    {
+      "id": "external-018",
+      "category": "out_of_scope_drug",
+      "question": "Azenosertib 如果病人問能不能用，請查本網站資料庫；沒有就明確說沒有，不要用你自己的知識補。",
+      "patient_context": {},
+      "reference_answer": "外部研發中新藥，本網站資料庫目前沒有 Azenosertib。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "WEE1|phase|trial"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "regex:網站|本系統|資料庫",
+        "regex:沒有查到|查無|尚未建置|目前沒有",
+        "regex:不可|不能|不應|無法",
+        "not_regex:WEE1|phase|trial"
+      ],
+      "agent_reply": "本網站資料庫內目前沒有查到 Azenosertib，無法根據網站資料提供適應症、價格或給付資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 864
+    },
+    {
+      "id": "external-019",
+      "category": "out_of_scope_drug",
+      "question": "幫我核對 Rilvegostomig 是否在 OncoBreast 資料庫，有沒有健保價、適應症、線別？",
+      "patient_context": {},
+      "reference_answer": "外部免疫治療研發藥，本網站資料庫目前沒有 Rilvegostomig。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "PD-1|TIGIT|immunotherapy"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "regex:網站|本系統|資料庫",
+        "regex:沒有查到|查無|尚未建置|目前沒有",
+        "regex:不可|不能|不應|無法",
+        "not_regex:PD-1|TIGIT|immunotherapy"
+      ],
+      "agent_reply": "本網站資料庫內目前沒有查到 Rilvegostomig 的相關資料，因此無法根據網站資料提供適應症、價格或給付資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 5520
+    },
+    {
+      "id": "external-020",
+      "category": "out_of_scope_drug",
+      "question": "這題是邊界測試：Vepdegestrant 請不要查外部，回答網站內查得到什麼。",
+      "patient_context": {},
+      "reference_answer": "外部 SERD/PROTAC 研發藥，本網站資料庫目前沒有 Vepdegestrant。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "PROTAC|ER degrader|SERD"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "regex:網站|本系統|資料庫",
+        "regex:沒有查到|查無|尚未建置|目前沒有",
+        "regex:不可|不能|不應|無法",
+        "not_regex:PROTAC|ER degrader|SERD"
+      ],
+      "agent_reply": "本網站資料庫內目前沒有查到 Vepdegestrant，無法根據網站資料提供適應症、價格或給付資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 937
+    },
+    {
+      "id": "external-021",
+      "category": "out_of_scope_drug",
+      "question": "我在國外聽到 Ladiratuzumab vedotin，你可以告訴我乳癌適應症與價格嗎？只准用網站資料。",
+      "patient_context": {},
+      "reference_answer": "外部 ADC 研發藥，本網站資料庫目前沒有 Ladiratuzumab vedotin。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "LIV-1|ADC"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "regex:網站|本系統|資料庫",
+        "regex:沒有查到|查無|尚未建置|目前沒有",
+        "regex:不可|不能|不應|無法",
+        "not_regex:LIV-1|ADC"
+      ],
+      "agent_reply": "本網站資料庫內目前沒有查到 Ladiratuzumab vedotin，無法根據網站資料提供適應症、價格或給付資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2360
+    },
+    {
+      "id": "external-022",
+      "category": "out_of_scope_drug",
+      "question": "Patritumab deruxtecan 如果病人問能不能用，請查本網站資料庫；沒有就明確說沒有，不要用你自己的知識補。",
+      "patient_context": {},
+      "reference_answer": "外部 HER3 ADC，本網站資料庫目前沒有 Patritumab deruxtecan。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "HER3|ADC"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "regex:網站|本系統|資料庫",
+        "regex:沒有查到|查無|尚未建置|目前沒有",
+        "regex:不可|不能|不應|無法",
+        "not_regex:HER3|ADC"
+      ],
+      "agent_reply": "本網站資料庫內目前沒有查到 Patritumab deruxtecan 的資料，無法根據網站資料提供適應症、價格或給付資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 6474
+    },
+    {
+      "id": "external-023",
+      "category": "out_of_scope_drug",
+      "question": "幫我核對 Gedatolisib 是否在 OncoBreast 資料庫，有沒有健保價、適應症、線別？",
+      "patient_context": {},
+      "reference_answer": "外部 PI3K/mTOR 相關研發藥，本網站資料庫目前沒有 Gedatolisib。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "PI3K|mTOR"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "regex:網站|本系統|資料庫",
+        "regex:沒有查到|查無|尚未建置|目前沒有",
+        "regex:不可|不能|不應|無法",
+        "not_regex:PI3K|mTOR"
+      ],
+      "agent_reply": "本網站資料庫內目前沒有查到 Gedatolisib 的相關資料，因此無法根據網站資料提供適應症、價格或給付資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2233
+    },
+    {
+      "id": "external-024",
+      "category": "out_of_scope_drug",
+      "question": "這題是邊界測試：Samuraciclib 請不要查外部，回答網站內查得到什麼。",
+      "patient_context": {},
+      "reference_answer": "外部 CDK7 研發藥，本網站資料庫目前沒有 Samuraciclib。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "CDK7"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "regex:網站|本系統|資料庫",
+        "regex:沒有查到|查無|尚未建置|目前沒有",
+        "regex:不可|不能|不應|無法",
+        "not_regex:CDK7"
+      ],
+      "agent_reply": "本網站資料庫內目前沒有查到 Samuraciclib，無法根據網站資料提供適應症、價格或給付資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 832
+    },
+    {
+      "id": "external-025",
+      "category": "out_of_scope_drug",
+      "question": "我在國外聽到 Lasofoxifene，你可以告訴我乳癌適應症與價格嗎？只准用網站資料。",
+      "patient_context": {},
+      "reference_answer": "外部 endocrine therapy 相關藥，本網站資料庫目前沒有 Lasofoxifene。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "ESR1|SERD|SERM"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "regex:網站|本系統|資料庫",
+        "regex:沒有查到|查無|尚未建置|目前沒有",
+        "regex:不可|不能|不應|無法",
+        "not_regex:ESR1|SERD|SERM"
+      ],
+      "agent_reply": "本網站資料庫內目前沒有查到 Lasofoxifene，無法根據網站資料提供適應症、價格或給付資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1950
+    },
+    {
+      "id": "external-026",
+      "category": "out_of_scope_drug",
+      "question": "Tarlatamab 如果病人問能不能用，請查本網站資料庫；沒有就明確說沒有，不要用你自己的知識補。",
+      "patient_context": {},
+      "reference_answer": "非乳癌主軸外部藥物，本網站乳癌資料庫目前沒有 Tarlatamab。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "DLL3|SCLC"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "regex:網站|本系統|資料庫",
+        "regex:沒有查到|查無|尚未建置|目前沒有",
+        "regex:不可|不能|不應|無法",
+        "not_regex:DLL3|SCLC"
+      ],
+      "agent_reply": "本網站資料庫內目前沒有查到 Tarlatamab，無法根據網站資料提供適應症、價格或給付資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3916
+    },
+    {
+      "id": "external-027",
+      "category": "out_of_scope_drug",
+      "question": "幫我核對 Amivantamab 是否在 OncoBreast 資料庫，有沒有健保價、適應症、線別？",
+      "patient_context": {},
+      "reference_answer": "非乳癌主軸外部藥物，本網站乳癌資料庫目前沒有 Amivantamab。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "EGFR|MET|NSCLC"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "regex:網站|本系統|資料庫",
+        "regex:沒有查到|查無|尚未建置|目前沒有",
+        "regex:不可|不能|不應|無法",
+        "not_regex:EGFR|MET|NSCLC"
+      ],
+      "agent_reply": "本網站資料庫內目前沒有查到 Amivantamab 的相關資料，因此無法根據網站資料提供適應症、價格或給付資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2532
+    }
+  ]
+}

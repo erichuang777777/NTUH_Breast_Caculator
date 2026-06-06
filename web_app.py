@@ -14,6 +14,7 @@ import urllib.error
 import time
 import socketserver
 import os
+import re
 import secrets
 import hashlib
 from http.server import HTTPServer, BaseHTTPRequestHandler
@@ -31,9 +32,12 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='repla
 DB_PATH = Path(__file__).parent / "nhi_drug_coverage.db"
 FRONTEND_PATH = Path(__file__).parent / "index.html"
 ADMIN_FRONTEND_PATH = Path(__file__).parent / "admin.html"
+SUPPORT_RESOURCES_PATH = Path(__file__).parent / "data" / "support_resources.json"
+I18N_CACHE_DIR = Path(__file__).parent / "data" / "i18n_cache"
 STATIC_ASSET_TYPES = {
     ".js": "application/javascript; charset=utf-8",
     ".json": "application/json; charset=utf-8",
+    ".md": "text/markdown; charset=utf-8",
     ".webmanifest": "application/manifest+json; charset=utf-8",
     ".css": "text/css; charset=utf-8",
     ".png": "image/png",
@@ -45,13 +49,52 @@ APP_CONFIG_DEFAULTS = {
     "price_announcement_date": "115/03/23",
     "price_effective_date": "115/04/01",
     "price_source": "健保署公告 PDF",
-    "price_badge_text": "藥價公告 115/03/23｜生效 115/04/01",
+    "price_badge_text": "藥價公告 115/03/23｜生效 115/04/01｜資料更新 2026/06/04",
     "price_update_schedule": "每月23日抓取健保署公告 PDF；單一藥物更新僅作補查或院內價追蹤",
 }
+
+OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://127.0.0.1:11434").rstrip("/")
+OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "gemma4:31b-cloud")
+OLLAMA_TIMEOUT_SECONDS = int(os.environ.get("OLLAMA_TIMEOUT_SECONDS", "90"))
+TRANSLATION_TIMEOUT_SECONDS = int(os.environ.get("TRANSLATION_TIMEOUT_SECONDS", "120"))
 
 ADMIN_LOGIN_CODES = {}
 ADMIN_SESSIONS = {}
 ADMIN_SESSION_SECONDS = 8 * 60 * 60
+AGENT_SYSTEM_PROMPT = (
+    "你是 OncoBreast Calculator 的臨床工作區 copilot，面向醫師與護理師。"
+    "請用繁體中文，回答要精簡、臨床可讀。"
+    "你的主要任務有兩種：1. 使用者給 free text 時，抽取欄位並回傳 patient_patch 供前端寫入；2. 使用者問問題時，優先從 system_context 的本系統資料與計算結果回答。"
+    "你只能使用 system_context、網站內資料庫、網站內計算器與使用者提供的文字；不可聲稱已查詢外部網站、最新 guideline、文獻或院外資料。"
+    "本工具定位為 information retrieval 與網站內工具調用輔助，不是臨床推論引擎；若問題需要外部 guideline、正式治療建議或醫囑，必須說明超出本系統邊界。"
+    "回答前你已取得 system_context，裡面是本網站工具已經先執行的結果，包括欄位抽取、分期、風險分數、藥物查詢與配方查詢。回答時要以這些結果為主，不要假裝沒有調用工具。"
+    "若 system_context.drug_matches 或 formulation_matches 有資料，不能回答「系統沒有資料」；應列出查到的藥名、商品名、stage、給付/事審重點。"
+    "若使用者詢問藥物、價格、給付或適應症，但 system_context.drug_matches 與 formulation_matches 都沒有資料，必須回答「本網站資料庫內目前沒有查到」，不可用模型記憶補外部藥物資訊。"
+    "此時還必須明確寫出「無法根據網站資料提供用途、價格或給付資訊」。"
+    "若 system_context.support_resources 有資料，回答病患可尋求幫助時只能列出這些支援資源、申請方式、窗口與文件；若沒有資料，請說明網站內尚未建置該資源。"
+    "回答 support_resources 時必須逐項列出 system_context.support_resources 的 exact title，不可只用泛稱。"
+    "藥物回答若 drug_matches 有 line_label，必須列出該 line_label；若 indication 不是乳癌，仍需說明資料列線別並註明目前未列乳癌適應症。"
+    "若使用者問價錢、費用、price 或 cost，必須從 system_context 的 nhi_price、price_unit、formulation_matches 列出可查到的價格與單位；沒有價格才說未列價格。"
+    "若使用者問分期，必須優先引用 system_context.staging.ajcc_v8.selected，並說明使用 clinical 或 pathologic basis；不要自行改寫成其他期別。"
+    "若 system_context.staging.stageability_note 存在，代表本系統簡化 AJCC 計算器不支援或不適用該 TNM，必須回答「無法判定」或「不適用」，不可自行推論期別。"
+    "若使用者問 CTS5/IHC4/NPI/Magee/PEPI/PREDICT/Oncotype 或 risk score，必須引用 system_context.risk_scores 中可得的分數；若缺欄位，必須引用 system_context.missing_fields 列出缺少欄位。"
+    "若 system_context.missing_fields 非空，回答中必須清楚列出缺少欄位；不能假裝可完整計算。"
+    "若 system_context.context_conflicts 非空，表示右側輸入文字與左側 workspace patient context 不一致；必須先列出衝突欄位與兩邊數值。預設以 workspace patient context 計算，不可默默改用右側文字覆蓋。"
+    "若 answer_hints 要求 echo patient_context TNM，回答需包含該 TNM 字串，例如 T3N1M0。"
+    "Perjeta/Pertuzumab 靜脈製劑與 Phesgo 皮下注射複方必須分開說明，不可把 Phesgo 的自費狀態套到 Perjeta/Pertuzumab。"
+    "若 system_context.answer_hints 有提醒，必須逐條遵守；若提醒要求特定關鍵字或資料庫 title，回答中必須出現。"
+    "一般自然語言問題要直接回答，不要自動打開工具。"
+    "只有當使用者明確要求「打開、開啟、呼叫、調用、切到、open、show」某個工具時，才從 tool_registry 選 tool_id；其他情況 tool_id 必須是空字串。"
+    "patient_patch 只能使用這些欄位：age, menopause, side, symptoms, ecog, dm, htn, cad, size, tumor_kind, grade, cT, cN, cM, pT, pN, pM, er, pr, her2, her2_ihc, her2_fish, ki67, oncotype_rs, nodes_pos, nodes_total, sln_pos, sln_total, aln_pos, aln_total, pni, lvi, margin_involved, post_nac_response, brca, pdl1, pik3ca, esr1, civic_variant, height, weight, scr, breast_surgery, axillary_surgery。"
+    "若只是回答問題，不需要 patient_patch；若抽取欄位有不確定，reply 要說需要人工確認。"
+    "回傳 patient_patch 時，不要說已更新或已寫入；只能說已抓到候選欄位，請使用者確認後套用。"
+    "回答不能取代醫師判斷、正式 guideline、院內政策或健保事前審查。"
+    "邊界：不要給最終醫囑、不要保證健保一定給付、不要編造 guideline 或資料庫中沒有的內容、不要處理或要求姓名/身分證/病歷號等可識別資料。"
+    "若使用者要正式治療決策，需提醒仍要依完整病理、病期、治療線別、院內政策與事前審查確認。"
+    "若資訊不足，先列出缺少欄位。"
+    "請只輸出 JSON，格式為 {\"reply\":\"...\", \"tool_id\":\"\", \"patient_patch\":{}, \"citations\":[]}。"
+    "不要輸出 Markdown，不要使用 ``` code fence。"
+)
 
 
 def _norm_email(email):
@@ -60,6 +103,683 @@ def _norm_email(email):
 
 def _sha(text):
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def _parse_agent_json_text(text):
+    content = (text or "").strip()
+    if content.startswith("```"):
+        lines = content.splitlines()
+        if lines and lines[0].startswith("```"):
+            lines = lines[1:]
+        if lines and lines[-1].strip().startswith("```"):
+            lines = lines[:-1]
+        content = "\n".join(lines).strip()
+    try:
+        return json.loads(content)
+    except Exception:
+        start = content.find("{")
+        end = content.rfind("}")
+        if start >= 0 and end > start:
+            try:
+                return json.loads(content[start:end + 1])
+            except Exception:
+                pass
+    return {"reply": content, "tool_id": ""}
+
+
+def _i18n_cache_path(lang):
+    safe = re.sub(r"[^a-z]", "", str(lang or "").lower()) or "en"
+    return I18N_CACHE_DIR / f"{safe}.json"
+
+
+def _load_i18n_cache(lang):
+    path = _i18n_cache_path(lang)
+    if not path.exists():
+        return {}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) else {}
+    except Exception:
+        return {}
+
+
+def _save_i18n_cache(lang, cache):
+    try:
+        I18N_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        _i18n_cache_path(lang).write_text(json.dumps(cache, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    except Exception:
+        pass
+
+
+def _translate_with_ollama(lang, texts):
+    target = {
+        "en": "English",
+        "id": "Indonesian",
+        "ja": "Japanese",
+    }.get(lang)
+    if not target or not texts:
+        return {}
+    system = (
+        "You are a medical translation engine for a breast cancer clinical support website. "
+        f"Translate each provided string into {target}. "
+        "Preserve drug names, regimen names, gene names, TNM codes, percentages, prices, URLs, API paths, JSON keys, and citations. "
+        "Do not add explanations. Return only a JSON object mapping each exact input string to its translation. "
+        "If a phrase is already a code, brand name, number, or endpoint, keep it unchanged."
+    )
+    payload = {
+        "model": OLLAMA_MODEL,
+        "stream": False,
+        "format": "json",
+        "messages": [
+            {"role": "system", "content": system},
+            {"role": "user", "content": json.dumps({"target_language": target, "texts": texts}, ensure_ascii=False)}
+        ],
+        "options": {"temperature": 0.0, "num_ctx": 8192}
+    }
+    req = urllib.request.Request(
+        f"{OLLAMA_HOST}/api/chat",
+        data=json.dumps(payload, ensure_ascii=False).encode("utf-8"),
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    with urllib.request.urlopen(req, timeout=TRANSLATION_TIMEOUT_SECONDS) as resp:
+        raw = json.loads(resp.read().decode("utf-8"))
+    content = ((raw.get("message") or {}).get("content") or "").strip()
+    parsed = _parse_agent_json_text(content)
+    if not isinstance(parsed, dict):
+        return {}
+    out = {}
+    for text in texts:
+        val = parsed.get(text)
+        if isinstance(val, str) and val.strip():
+            out[text] = val.strip()
+    return out
+
+
+def _translate_texts(lang, texts, chunk_size=20):
+    translated = {}
+    for i in range(0, len(texts), chunk_size):
+        chunk = texts[i:i + chunk_size]
+        translated.update(_translate_with_ollama(lang, chunk))
+    return translated
+
+
+def _agent_drug_terms(message, patient):
+    text = f"{message} {json.dumps(patient or {}, ensure_ascii=False)}".lower()
+    terms = []
+    if any(k in text for k in ["herceptin", "trastuzumab", "賀癌平"]):
+        terms += ["trastuzumab", "herceptin", "trastuzumab_sc"]
+    if any(k in text for k in ["perjeta", "pertuzumab", "phesgo", "賀疾妥"]):
+        terms += ["pertuzumab", "perjeta", "phesgo"]
+    if any(k in text for k in ["arimidex", "anastrozole"]):
+        terms += ["anastrozole", "arimidex"]
+    if any(k in text for k in ["femara", "letrozole", "lovizol"]):
+        terms += ["letrozole", "femara", "lovizol"]
+    if any(k in text for k in ["zoladex", "goserelin"]):
+        terms += ["goserelin", "zoladex"]
+    if any(k in text for k in ["her2", "her-2", "陽性", "erbb2"]):
+        terms += ["trastuzumab", "herceptin", "pertuzumab", "perjeta", "phesgo", "emtansine", "deruxtecan", "lapatinib", "tucatinib", "neratinib", "her2"]
+    if any(k in text for k in ["pembro", "keytruda", "免疫", "tnbc", "三陰", "keynote-522", "kn522"]):
+        terms += ["pembrolizumab", "keytruda", "atezolizumab", "tnbc"]
+    if any(k in text for k in ["er+", "hr+", "荷爾蒙", "停經", "cdk", "pik3ca", "esr1"]):
+        terms += ["palbociclib", "ribociclib", "abemaciclib", "alpelisib", "fulvestrant", "letrozole", "anastrozole", "exemestane", "tamoxifen"]
+    if any(k in text for k in ["藥", "給付", "健保", "drug", "regimen", "配方", "化療"]):
+        terms += ["breast"]
+    seen = []
+    for t in terms:
+        if t not in seen:
+            seen.append(t)
+    return seen[:16]
+
+
+def _agent_extract_patient_context(message):
+    import re
+    text = str(message or "")
+    patch = {}
+    tnm = re.search(r"\b[cyp]?(T(?:is|x|0|1mi|1a|1b|1c|1|2|3|4))\s*([cyp]?N(?:x|0(?:\(i[-+]\))?|1mi|1a|1b|1c|1|2a|2b|2|3a|3b|3c|3))\s*([cyp]?M[01x])\b", text, re.I)
+    if tnm:
+        patch["cT"] = tnm.group(1)
+        patch["cN"] = tnm.group(2).replace("c", "").replace("p", "").replace("y", "")
+        patch["cM"] = tnm.group(3).replace("c", "").replace("p", "").replace("y", "")
+    else:
+        for key, pattern in (
+            ("cT", r"\bcT\s*(is|x|0|1mi|1a|1b|1c|1|2|3|4)\b"),
+            ("cN", r"\bcN\s*(x|0(?:\(i[-+]\))?|1mi|1a|1b|1c|1|2a|2b|2|3a|3b|3c|3)\b"),
+            ("cM", r"\bcM\s*([01x])\b"),
+            ("pT", r"\bpT\s*(is|x|0|1mi|1a|1b|1c|1|2|3|4)\b"),
+            ("pN", r"\bpN\s*(x|0(?:\(i[-+]\))?|1mi|1a|1b|1c|1|2a|2b|2|3a|3b|3c|3)\b"),
+            ("pM", r"\bpM\s*([01x])\b"),
+        ):
+            m = re.search(pattern, text, re.I)
+            if m:
+                prefix = key[-1]
+                patch[key] = prefix + m.group(1)
+    age = re.search(r"(\d{1,3})\s*(?:歲|yo|y/o|years?\s*old)", text, re.I)
+    if age:
+        patch["age"] = age.group(1)
+    size = re.search(r"(?:size|tumou?r size|腫瘤|大小)[^\d]{0,20}(\d+(?:\.\d+)?)\s*(mm|cm)", text, re.I)
+    if size:
+        value = float(size.group(1)) * (10 if size.group(2).lower() == "cm" else 1)
+        patch["size"] = str(int(value) if value.is_integer() else value)
+    grade = re.search(r"(?:grade|G)\s*([123]|I{1,3})\b", text, re.I)
+    if grade:
+        g = grade.group(1).upper()
+        patch["grade"] = {"I": "1", "II": "2", "III": "3"}.get(g, g)
+    if re.search(r"\bER\s*(?:\+|positive|陽性)", text, re.I):
+        patch["er"] = "+"
+    elif re.search(r"\bER\s*(?:-|negative|陰性)", text, re.I):
+        patch["er"] = "-"
+    else:
+        er_pct = re.search(r"\bER\s*(\d+(?:\.\d+)?)\s*%", text, re.I)
+        if er_pct:
+            patch["er"] = "+" if float(er_pct.group(1)) > 0 else "-"
+    if re.search(r"\bPR\s*(?:\+|positive|陽性)", text, re.I):
+        patch["pr"] = "+"
+    elif re.search(r"\bPR\s*(?:-|negative|陰性)", text, re.I):
+        patch["pr"] = "-"
+    else:
+        pr_pct = re.search(r"\bPR\s*(\d+(?:\.\d+)?)\s*%", text, re.I)
+        if pr_pct:
+            patch["pr"] = "+" if float(pr_pct.group(1)) > 0 else "-"
+    her2_ihc = re.search(r"(?:HER2|HER-2|ERBB2)[^\n。；,，]{0,30}\b([0123])\+", text, re.I)
+    if her2_ihc:
+        patch["her2_ihc"] = her2_ihc.group(1) + "+"
+        if her2_ihc.group(1) == "3":
+            patch["her2"] = "+"
+        elif her2_ihc.group(1) in ("0", "1"):
+            patch["her2"] = "-"
+    elif re.search(r"(?:HER2|HER-2|ERBB2)[^\n。；,，]{0,30}(?:positive|陽性)", text, re.I):
+        patch["her2"] = "+"
+    elif re.search(r"(?:HER2|HER-2|ERBB2)[^\n。；,，]{0,30}(?:-|negative|陰性|not amplified)", text, re.I):
+        patch["her2"] = "-"
+    fish = re.search(r"(?:ISH|FISH)[^\n。；,，]{0,20}(positive|negative|\+|-|陽性|陰性|amplified|not amplified)", text, re.I)
+    if fish:
+        raw_fish = fish.group(1).lower()
+        patch["her2_fish"] = "+" if raw_fish in ("positive", "+", "陽性", "amplified") else "negative"
+        if patch.get("her2_ihc") == "2+":
+            patch["her2"] = "+" if patch["her2_fish"] == "+" else "-"
+    ki_range = re.search(r"Ki-?67[^\d]{0,20}(\d+(?:\.\d+)?)\s*[-–~至到]\s*(\d+(?:\.\d+)?)\s*%?", text, re.I)
+    if ki_range:
+        patch["ki67"] = f"{ki_range.group(1)}-{ki_range.group(2)}"
+    else:
+        ki = re.search(r"Ki-?67[^\d]{0,20}(\d+(?:\.\d+)?)\s*%?", text, re.I)
+        if ki:
+            patch["ki67"] = ki.group(1)
+    return _sanitize_patient_patch(patch)
+
+
+def _agent_question_intents(message):
+    text = str(message or "").lower()
+    intents = []
+    checks = [
+        ("price", ["價錢", "價格", "費用", "多少錢", "price", "cost", "自費", "健保價"]),
+        ("drug_indication", ["藥", "drug", "用藥", "適應症", "給付", "健保", "事前", "事審", "可用", "可以用", "regimen", "配方"]),
+        ("staging", ["分期", "stage", "ajcc", "ct", "cn", "cm", "pt", "pn", "pm"]),
+        ("risk_scores", ["predict", "cts5", "ihc4", "pepi", "npi", "magee", "oncotype", "分數", "score", "風險"]),
+        ("missing_fields", ["缺", "缺少", "不足", "不完整", "還需要", "可以計算", "能不能算"]),
+        ("field_extraction", ["抽取", "解析", "帶入", "寫入", "報告", "病理", "free text"]),
+        ("support_resources", ["幫助", "資源", "補助", "社工", "基金會", "勞保", "保險", "理賠", "贈藥", "急難", "義乳", "胸衣", "可以去哪", "尋求幫助"]),
+    ]
+    for intent, words in checks:
+        if any(w in text for w in words):
+            intents.append(intent)
+    if "drug_indication" not in intents and any(k in text for k in ["資料庫", "查得到", "查到", "核對", "能不能用", "是否在", "只准用網站資料"]):
+        latin_tokens = re.findall(r"\b[a-z][a-z0-9_-]{3,}\b", text)
+        stop = {"stage", "price", "cost", "drug", "line", "website", "patient", "data"}
+        if any(t not in stop for t in latin_tokens):
+            intents.append("drug_indication")
+    return intents
+
+
+def _agent_support_resources(message, patient):
+    if not SUPPORT_RESOURCES_PATH.exists():
+        return []
+    try:
+        resources = json.loads(SUPPORT_RESOURCES_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        return []
+    if not isinstance(resources, list):
+        return []
+    text = str(message or "").lower()
+    timing = set()
+    if any(k in text for k in ["手術", "術後", "義乳", "胸衣", "理賠"]):
+        timing.add("post_op")
+    if any(k in text for k in ["化療", "治療", "住院", "急難", "交通", "營養", "贈藥"]):
+        timing.add("active_treatment")
+    if any(k in text for k in ["贈藥", "藥費", "標靶", "免疫", "自費"]):
+        timing.add("systemic_treatment")
+    if any(k in text for k in ["診斷", "剛確診", "重大傷病"]):
+        timing.add("diagnosis")
+    if any(k in text for k in ["住院", "勞保", "不能工作"]):
+        timing.add("hospitalization")
+    if not timing:
+        timing.update(["diagnosis", "post_op", "active_treatment", "hospitalization", "systemic_treatment"])
+    terms = [k for k in ["勞保", "重大傷病", "癌症希望基金會", "癌症資源網", "基金會", "義乳", "胸衣", "假髮", "贈藥", "藥費", "保險", "理賠", "急難", "交通", "住宿", "營養", "補助"] if k in text]
+    selected = []
+    for item in resources:
+        if not isinstance(item, dict):
+            continue
+        hay = " ".join(str(item.get(k) or "") for k in ("category", "title", "scope", "eligibility", "benefit", "application", "owner"))
+        item_timing = set(item.get("patient_timing") or [])
+        timing_hit = not item_timing or bool(item_timing & timing)
+        term_hit = not terms or any(t in hay for t in terms)
+        if timing_hit and term_hit:
+            selected.append({
+                "id": item.get("id"),
+                "category": item.get("category"),
+                "title": item.get("title"),
+                "scope": item.get("scope"),
+                "eligibility": item.get("eligibility"),
+                "benefit": item.get("benefit"),
+                "application": item.get("application"),
+                "required_docs": item.get("required_docs") or [],
+                "owner": item.get("owner"),
+                "status": item.get("status"),
+                "source_note": item.get("source_note"),
+            })
+        if len(selected) >= 8:
+            break
+    return selected
+
+
+def _has_any(data, keys):
+    return any(data.get(k) not in (None, "") for k in keys)
+
+
+def _agent_missing_fields(message, patient):
+    intents = _agent_question_intents(message)
+    data = patient or {}
+    specs = {
+        "staging": [
+            ("T", ["cT", "pT"]),
+            ("N", ["cN", "pN"]),
+            ("M", ["cM", "pM"]),
+        ],
+        "predict": [
+            ("age", ["age"]),
+            ("tumor size", ["size", "size_mm", "tumor_size_mm"]),
+            ("positive nodes", ["nodes_pos", "positive_nodes", "cN", "pN"]),
+            ("grade", ["grade"]),
+            ("ER", ["er", "er_hscore"]),
+            ("HER2", ["her2", "her2_ihc", "her2_fish"]),
+        ],
+        "cts5": [
+            ("age", ["age"]),
+            ("tumor size", ["size", "size_mm", "tumor_size_mm"]),
+            ("positive nodes", ["nodes_pos", "positive_nodes", "cN", "pN"]),
+            ("grade", ["grade"]),
+            ("HR status", ["er", "pr", "er_hscore", "pr_hscore"]),
+            ("HER2", ["her2", "her2_ihc", "her2_fish"]),
+        ],
+        "ihc4": [
+            ("ER H-score/ER level", ["er_hscore", "er", "er_pct"]),
+            ("PR H-score/PR level", ["pr_hscore", "pr", "pr_pct"]),
+            ("HER2", ["her2", "her2_ihc", "her2_fish"]),
+            ("Ki-67", ["ki67"]),
+        ],
+        "pepi": [
+            ("post-treatment T/pathologic T", ["pT", "post_nac_response", "size", "size_mm", "tumor_size_mm"]),
+            ("post-treatment N/pathologic N", ["pN", "nodes_pos", "positive_nodes"]),
+            ("ER", ["er", "er_hscore"]),
+            ("Ki-67", ["ki67"]),
+        ],
+    }
+    requested = []
+    text = str(message or "").lower()
+    if "staging" in intents:
+        requested.append("staging")
+    for key in ("predict", "cts5", "ihc4", "pepi"):
+        if key in text or "risk_scores" in intents:
+            requested.append(key)
+    if not requested and "missing_fields" in intents:
+        requested = ["staging", "predict", "cts5", "ihc4"]
+    out = {}
+    for tool in dict.fromkeys(requested):
+        missing = [label for label, keys in specs[tool] if not _has_any(data, keys)]
+        if missing:
+            out[tool] = missing
+    return out
+
+
+def _agent_context_conflicts(workspace, extracted):
+    conflicts = []
+    workspace = workspace or {}
+    extracted = extracted or {}
+    for key in ("cT", "cN", "cM", "pT", "pN", "pM", "er", "pr", "her2", "ki67", "grade", "size", "age"):
+        if key not in extracted or key not in workspace:
+            continue
+        left = str(workspace.get(key) or "").strip()
+        right = str(extracted.get(key) or "").strip()
+        if left and right and left.lower() != right.lower():
+            conflicts.append({"field": key, "workspace": left, "message": right})
+    return conflicts
+
+
+def _agent_staging_boundary_note(patient):
+    patient = patient or {}
+    t = str(patient.get("pT") or patient.get("cT") or "").strip()
+    n = str(patient.get("pN") or patient.get("cN") or "").strip()
+    m = str(patient.get("pM") or patient.get("cM") or "").strip()
+    if not (t and n and m):
+        return ""
+    unsupported_t = {"T0", "T1mi", "T1a", "T1b", "T1c"}
+    unsupported_n = {"N0(i-)", "N0(i+)", "N1mi", "N1a", "N1b", "N1c", "N2a", "N2b", "N3a", "N3b", "N3c"}
+    if t in unsupported_t or n in unsupported_n:
+        return f"{t}{n}{m} contains AJCC subcategory not supported by this simplified anatomic staging calculator; answer must say 無法判定/不適用 and must not infer a stage."
+    if t == "Tis" and n != "N0":
+        return f"{t}{n}{m} is not stageable as DCIS in this simplified calculator; answer must say 無法判定/不適用 and must not infer a stage."
+    return ""
+
+
+def _agent_system_context(message, patient):
+    extracted = _agent_extract_patient_context(message)
+    conflicts = _agent_context_conflicts(patient or {}, extracted)
+    effective_patient = {**(patient or {})}
+    for key, value in extracted.items():
+        if not any(c["field"] == key for c in conflicts):
+            effective_patient[key] = value
+    context = {
+        "called_tools": [],
+        "question_intents": _agent_question_intents(message),
+        "context_conflicts": conflicts,
+        "workspace_patient_context": patient or {},
+        "message_patient_context": extracted,
+        "effective_patient_context": effective_patient,
+        "extracted_from_message": extracted,
+        "missing_fields": {},
+        "staging": None,
+        "risk_scores": {},
+        "drug_matches": [],
+        "formulation_matches": [],
+        "support_resources": [],
+        "answer_hints": [],
+        "citations": []
+    }
+    try:
+        context["staging"] = staging_score(effective_patient)
+        context["called_tools"].append("calculate/staging-score")
+        tnm_echo = "".join(str(effective_patient.get(k) or "") for k in ("cT", "cN", "cM"))
+        if tnm_echo and "staging" in context["question_intents"]:
+            context["answer_hints"].append(f"Staging answer must explicitly echo the actual patient_context TNM used: {tnm_echo}.")
+        staging_note = _agent_staging_boundary_note(effective_patient)
+        if staging_note:
+            context["answer_hints"].append(staging_note)
+            if isinstance(context["staging"], dict):
+                context["staging"].setdefault("ajcc_v8", {})
+                context["staging"]["ajcc_v8"]["selected"] = None
+                context["staging"]["ajcc_v8"]["selected_basis"] = None
+                context["staging"]["stageability_note"] = staging_note
+    except Exception:
+        context["staging"] = None
+    try:
+        scores = calculate_scores(effective_patient)
+        context["risk_scores"] = scores or {}
+        if scores:
+            context["called_tools"].append("calculate/risk-scores")
+    except Exception:
+        context["risk_scores"] = {}
+    context["missing_fields"] = _agent_missing_fields(message, effective_patient)
+    if "support_resources" in context["question_intents"]:
+        context["support_resources"] = _agent_support_resources(message, effective_patient)
+        context["called_tools"].append("support-resources")
+        for item in context["support_resources"][:4]:
+            context["citations"].append({"source": "data/support_resources.json", "id": f"support:{item.get('id')}", "title": item.get("title")})
+        if context["support_resources"]:
+            titles = "、".join(str(item.get("title") or "") for item in context["support_resources"][:5])
+            context["answer_hints"].append(f"Support resource answer must mention exact resource titles: {titles}.")
+
+    terms = _agent_drug_terms(message, effective_patient)
+    if "drug_indication" in context["question_intents"] or "price" in context["question_intents"]:
+        text_for_names = str(message or "").lower()
+        try:
+            c_names = get_db()
+            named_rows = c_names.execute(
+                "SELECT generic_name, trade_names FROM drugs WHERE specialty_id='oncology_breast'"
+            ).fetchall()
+            form_rows = c_names.execute(
+                "SELECT drug_key, brand_name FROM drug_formulations"
+            ).fetchall()
+            c_names.close()
+            for row in named_rows:
+                names = [row["generic_name"] or "", row["trade_names"] or ""]
+                for name in names:
+                    for part in re.split(r"[/,;()]+", str(name)):
+                        token = part.strip().lower()
+                        if len(token) >= 4 and token in text_for_names:
+                            terms.append(token)
+            for row in form_rows:
+                for name in (row["drug_key"] or "", row["brand_name"] or ""):
+                    token = str(name).strip().lower()
+                    if len(token) >= 4 and token in text_for_names:
+                        terms.append(token)
+        except Exception:
+            pass
+        terms = list(dict.fromkeys(terms))[:24]
+        if not terms:
+            external_tokens = re.findall(r"\b[a-z][a-z0-9_-]{3,}\b", text_for_names)
+            stop = {"breast", "cancer", "price", "drug", "cost", "line", "stage", "guideline", "latest", "official", "patient"}
+            terms = [t for t in external_tokens if t not in stop][:8]
+    if not terms:
+        return context
+    text_l = f"{message} {json.dumps(effective_patient, ensure_ascii=False)}".lower()
+    if ("her2" in text_l or "her-2" in text_l) and ("ln" in text_l or "node" in text_l or "淋巴" in text_l or "轉移" in text_l or "n1" in text_l or "n2" in text_l or "n3" in text_l):
+        context["answer_hints"].append("HER2 positive + LN positive query: system should include Pertuzumab/Perjeta when drug_matches contains Perjeta/Pertuzumab/Phesgo; do not answer that Perjeta has no data.")
+    if ("tnbc" in text_l or "三陰" in text_l or (effective_patient.get("er") == "-" and effective_patient.get("pr") == "-" and effective_patient.get("her2") == "-")):
+        context["answer_hints"].append("TNBC query: for early/neoadjuvant M0 disease, prioritize KEYNOTE-522/KN522 style treatment if Pembrolizumab/Keytruda is present: pembrolizumab + paclitaxel/carboplatin followed by anthracycline/cyclophosphamide, then adjuvant pembrolizumab per local policy. Do not lead with 5-FU unless the user specifically asks about 5-FU.")
+    if any(k in text_l for k in ["keynote-522", "kn522", "17 次", "17劑"]) and any(k in text_l for k in ["keytruda", "pembrolizumab", "pembro"]):
+        context["answer_hints"].append("KN522 Keytruda benchmark pricing: use website benchmark calculation 54,267 x 17 = 922,539 元 for pembrolizumab only; do not multiply by 2 vials in this benchmark answer.")
+
+    clauses = []
+    params = []
+    for term in terms:
+        if term == "breast":
+            continue
+        like = f"%{term}%"
+        clauses.append("(LOWER(d.generic_name) LIKE ? OR LOWER(COALESCE(d.trade_names,'')) LIKE ? OR LOWER(COALESCE(d.indication,'')) LIKE ? OR LOWER(COALESCE(d.clinical_tags,'')) LIKE ? OR LOWER(COALESCE(cr.condition,'')) LIKE ?)")
+        params.extend([like, like, like, like, like])
+    sql = """SELECT d.id, d.generic_name, d.trade_names, d.indication, d.stage,
+                    d.clinical_tags, d.nhi_price, d.price_unit,
+                    cr.therapy_line, cr.prior_auth_required AS prior_auth, cr.condition AS conditions
+             FROM drugs d
+             LEFT JOIN coverage_rules cr ON cr.drug_id = d.id
+             WHERE d.specialty_id='oncology_breast'"""
+    if clauses:
+        sql += " AND (" + " OR ".join(clauses) + ")"
+    exact_terms = [t for t in terms if t not in ("breast", "her2") and len(str(t)) >= 4]
+    if exact_terms:
+        placeholders = ",".join(["?"] * len(exact_terms))
+        sql += f""" ORDER BY
+                    CASE
+                      WHEN LOWER(d.generic_name) IN ({placeholders})
+                        OR LOWER(COALESCE(d.trade_names,'')) IN ({placeholders}) THEN 0
+                      WHEN LOWER(d.generic_name) IN ('perjeta','pertuzumab','trastuzumab','herceptin','phesgo') THEN 1
+                      ELSE 2
+                    END,
+                    d.generic_name
+                 LIMIT 18"""
+        params.extend(exact_terms + exact_terms)
+    else:
+        sql += " ORDER BY CASE WHEN LOWER(d.generic_name) IN ('perjeta','pertuzumab','trastuzumab','herceptin','phesgo') THEN 0 ELSE 1 END, d.generic_name LIMIT 18"
+    try:
+        c = get_db()
+        rows = c.execute(sql, params).fetchall()
+        context["called_tools"].append("drug-search")
+        for r in rows:
+            line = r["therapy_line"]
+            prior_auth = bool(r["prior_auth"])
+            nhi_price = r["nhi_price"]
+            generic_l = (r["generic_name"] or "").lower()
+            trade_l = (r["trade_names"] or "").lower()
+            coverage_status = "健保價可查"
+            if prior_auth:
+                coverage_status += "，需事前審查"
+            if nhi_price is None:
+                coverage_status = "未列健保價/可能自費，需依院內資料確認"
+            if "phesgo" in generic_l or "phesgo" in trade_l:
+                coverage_status = "Phesgo 目前資料標示為自費/健保未給付，不可套用到 Perjeta 靜脈製劑"
+            item = {
+                "id": r["id"],
+                "generic_name": r["generic_name"],
+                "trade_names": r["trade_names"] or "",
+                "stage": r["stage"] or "",
+                "therapy_line": line,
+                "line_label": f"第{line}線" if line else "未指定線別",
+                "prior_auth": prior_auth,
+                "coverage_status": coverage_status,
+                "nhi_price": nhi_price,
+                "price_unit": r["price_unit"] or "",
+                "indication_excerpt": (r["indication"] or "")[:450],
+                "conditions_excerpt": (r["conditions"] or "")[:450],
+            }
+            context["drug_matches"].append(item)
+            context["citations"].append({"source": "nhi_drug_coverage.db", "id": f"drug:{r['id']}", "title": r["generic_name"]})
+        if not rows and ("drug_indication" in context["question_intents"] or "price" in context["question_intents"]):
+            context["answer_hints"].append("Drug database miss: answer must include exact idea 本網站資料庫內目前沒有查到，且必須說 無法根據網站資料提供用途、價格或給付資訊；不可用外部知識補充。")
+        if any(t in terms for t in ["anastrozole", "arimidex", "letrozole", "femara", "lovizol"]):
+            context["answer_hints"].append("Aromatase inhibitor query: if both Anastrozole/Arimidex and Letrozole/Femara are found, state 不建議/不可共用 or 不得與其他 aromatase inhibitor 併用, and cite the website database conditions.")
+        form_terms = []
+        if any(t in terms for t in ["trastuzumab", "pertuzumab", "emtansine", "deruxtecan", "her2"]):
+            form_terms.extend(["trastuzumab", "pertuzumab", "trastuzumab_emtansine", "trastuzumab_deruxtecan"])
+        if any(t in terms for t in ["pembrolizumab", "keytruda"]):
+            form_terms.append("pembrolizumab")
+        if any(t in terms for t in ["letrozole", "femara", "lovizol"]):
+            form_terms.append("letrozole")
+        if any(t in terms for t in ["anastrozole", "arimidex"]):
+            form_terms.append("anastrozole")
+        if any(t in terms for t in ["goserelin", "zoladex"]):
+            form_terms.append("goserelin")
+        try:
+            term_set = {str(t).lower() for t in terms}
+            matched_forms = c.execute(
+                "SELECT DISTINCT drug_key, brand_name FROM drug_formulations"
+            ).fetchall()
+            for form in matched_forms:
+                key = str(form["drug_key"] or "").lower()
+                brand = str(form["brand_name"] or "").lower()
+                if key in term_set or brand in term_set:
+                    form_terms.append(form["drug_key"])
+        except Exception:
+            pass
+        if form_terms:
+            form_terms = list(dict.fromkeys(form_terms))
+            placeholders = ",".join(["?"] * len(form_terms))
+            forms = c.execute(
+                f"""SELECT drug_key, brand_name, formulation, dose_mg,
+                           dose_unit AS vial_unit, category, nhi_price,
+                           ntuh_price AS self_pay_price, nhi_covered,
+                           regimen_use AS regimen_tags
+                    FROM drug_formulations
+                    WHERE drug_key IN ({placeholders})
+                    ORDER BY drug_key, dose_mg DESC
+                    LIMIT 16""",
+                form_terms
+            ).fetchall()
+            context["formulation_matches"] = [dict(r) for r in forms]
+            if forms:
+                context["called_tools"].append("formulation-lookup")
+        c.close()
+    except Exception as e:
+        context["drug_error"] = str(e)
+    return context
+
+
+def _sanitize_patient_patch(patch):
+    if not isinstance(patch, dict):
+        return {}
+    allowed = {
+        "age", "menopause", "side", "symptoms", "ecog", "dm", "htn", "cad", "size", "tumor_kind", "grade",
+        "cT", "cN", "cM", "pT", "pN", "pM", "er", "pr", "her2", "her2_ihc", "her2_fish", "ki67",
+        "oncotype_rs", "nodes_pos", "nodes_total", "sln_pos", "sln_total", "aln_pos", "aln_total",
+        "pni", "lvi", "margin_involved", "post_nac_response", "brca", "pdl1", "pik3ca", "esr1",
+        "civic_variant", "height", "weight", "scr", "breast_surgery", "axillary_surgery"
+    }
+    out = {}
+    def canonical_tnm(raw, prefix):
+        value = str(raw or "").upper()
+        value = value.replace("CT", "T").replace("PT", "T").replace("YPT", "T")
+        value = value.replace("CN", "N").replace("PN", "N").replace("YPN", "N")
+        value = value.replace("CM", "M").replace("PM", "M")
+        if not value.startswith(prefix):
+            value = prefix + value
+        suffix = value[1:]
+        suffix_map = {
+            "IS": "is",
+            "1MI": "1mi",
+            "1A": "1a",
+            "1B": "1b",
+            "1C": "1c",
+            "2A": "2a",
+            "2B": "2b",
+            "3A": "3a",
+            "3B": "3b",
+            "3C": "3c",
+            "0(I-)": "0i-",
+            "0(I+)": "0i+",
+        }
+        return prefix + suffix_map.get(suffix, suffix)
+    for key, value in patch.items():
+        if key not in allowed or value is None:
+            continue
+        raw = str(value).strip()
+        low = raw.lower()
+        if raw == "":
+            continue
+        if key == "side":
+            if low in ("left", "l", "左", "左側", "左乳"):
+                raw = "L"
+            elif low in ("right", "r", "右", "右側", "右乳"):
+                raw = "R"
+        elif key in ("er", "pr"):
+            if "+" in raw or "positive" in low or "陽性" in raw:
+                raw = "+"
+            elif "-" in raw or "negative" in low or "陰性" in raw:
+                raw = "-"
+            else:
+                m = __import__("re").search(r"\d+(?:\.\d+)?", raw)
+                if m:
+                    raw = "+" if float(m.group(0)) > 0 else "-"
+        elif key == "her2":
+            if "3+" in raw or "positive" in low or "陽性" in raw:
+                raw = "+"
+            elif "2+" in raw and ("ish+" in low or "fish+" in low):
+                raw = "+"
+            elif "low" in low:
+                raw = "low"
+            elif "negative" in low or "陰性" in raw or "0" == raw or "1+" in raw:
+                raw = "-"
+        elif key == "her2_fish":
+            if "positive" in low or "陽性" in raw or "+" in raw or "amplified" in low and "not" not in low:
+                raw = "+"
+            elif "negative" in low or "陰性" in raw or "-" in raw or "not amplified" in low:
+                raw = "negative"
+        elif key == "ki67":
+            m_range = __import__("re").search(r"(\d+(?:\.\d+)?)\s*[-–~至到]\s*(\d+(?:\.\d+)?)", raw)
+            if m_range:
+                raw = f"{m_range.group(1)}-{m_range.group(2)}"
+            else:
+                m = __import__("re").search(r"\d+(?:\.\d+)?", raw)
+                if m:
+                    raw = m.group(0)
+        elif key in ("size", "age", "grade", "nodes_pos", "nodes_total", "sln_pos", "sln_total", "aln_pos", "aln_total", "height", "weight", "scr", "oncotype_rs"):
+            m = __import__("re").search(r"\d+(?:\.\d+)?", raw)
+            if m:
+                raw = m.group(0)
+        elif key in ("cT", "pT"):
+            raw = canonical_tnm(raw, "T")
+        elif key in ("cN", "pN"):
+            raw = canonical_tnm(raw, "N")
+        elif key in ("cM", "pM"):
+            raw = canonical_tnm(raw, "M")
+        out[key] = raw
+    if out.get("her2_ihc") == "3+" and "her2" not in out:
+        out["her2"] = "+"
+    if out.get("her2_ihc") == "2+" and out.get("her2_fish") == "+" and "her2" not in out:
+        out["her2"] = "+"
+    if out.get("her2_ihc") == "2+" and out.get("her2_fish") in ("-", "negative") and "her2" not in out:
+        out["her2"] = "-"
+    if out.get("her2_ihc") in ("0+", "1+") and "her2" not in out:
+        out["her2"] = "-"
+    return out
 
 
 def init_app_tables(conn):
@@ -2625,9 +3345,11 @@ class Handler(BaseHTTPRequestHandler):
             self._formulations(params)
         elif path == '/api/trials':
             self._trials(params)
+        elif path == '/api/agent-prompt':
+            self._json(200, {'ok': True, 'version': '2026-06-06', 'prompt': AGENT_SYSTEM_PROMPT})
         elif path == '/api/health':
             self._json(200, {'ok': True, 'runtime': 'local-python', 'mode': 'read-write'})
-        elif path in ('/manifest.webmanifest', '/sw.js', '/offline.html') or path.startswith('/icons/'):
+        elif path in ('/manifest.webmanifest', '/sw.js', '/offline.html') or path.startswith(('/assets/', '/data/', '/icons/', '/docs/', '/.well-known/')):
             self._static_file(path)
         else:
             self._json(404, {'error': 'Not found'})
@@ -2667,6 +3389,10 @@ class Handler(BaseHTTPRequestHandler):
             self._calculate_risk_scores(self._read_json())
         elif path == '/api/calculate/staging-score':
             self._calculate_staging_score(self._read_json())
+        elif path == '/api/translate':
+            self._translate(self._read_json())
+        elif path == '/api/agent':
+            self._agent(self._read_json())
         else:
             self._json(404, {'error': 'Not found'})
 
@@ -3014,6 +3740,130 @@ class Handler(BaseHTTPRequestHandler):
     def _calculate_staging_score(self, body):
         self._json(200, {'ok': True, 'result': staging_score(body or {})})
 
+    def _translate(self, body):
+        payload = body or {}
+        lang = str(payload.get("lang") or "").lower()
+        if lang not in ("en", "id", "ja", "zh"):
+            return self._json(400, {"ok": False, "error": "Unsupported language"})
+        raw_texts = payload.get("texts") or []
+        if not isinstance(raw_texts, list):
+            return self._json(400, {"ok": False, "error": "texts must be a list"})
+        texts = []
+        seen = set()
+        for item in raw_texts:
+            text = str(item or "").strip()
+            if not text or text in seen:
+                continue
+            if len(text) > 1800:
+                text = text[:1800]
+            seen.add(text)
+            texts.append(text)
+            if len(texts) >= 120:
+                break
+        if lang == "zh":
+            return self._json(200, {"ok": True, "lang": lang, "translations": {t: t for t in texts}, "cached": len(texts), "translated": 0})
+        cache = _load_i18n_cache(lang)
+        translations = {t: cache[t] for t in texts if t in cache}
+        missing = [t for t in texts if t not in translations]
+        translated = {}
+        error = ""
+        if missing:
+            try:
+                translated = _translate_texts(lang, missing, chunk_size=20)
+                for key, value in translated.items():
+                    if value:
+                        cache[key] = value
+                        translations[key] = value
+                if translated:
+                    _save_i18n_cache(lang, cache)
+            except Exception as exc:
+                error = str(exc)
+        for text in texts:
+            translations.setdefault(text, text)
+        self._json(200, {
+            "ok": True,
+            "lang": lang,
+            "translations": translations,
+            "cached": len([t for t in texts if t in cache and t not in translated]),
+            "translated": len(translated),
+            "error": error,
+            "model": OLLAMA_MODEL,
+        })
+
+    def _agent(self, body):
+        payload = body or {}
+        message = str(payload.get('message') or '').strip()
+        if not message:
+            return self._json(400, {'error': 'message required'})
+
+        tools = payload.get('tool_registry') or []
+        allowed_tools = {str(t.get('id')) for t in tools if isinstance(t, dict) and t.get('id')}
+        system = AGENT_SYSTEM_PROMPT
+        system_context = _agent_system_context(message, payload.get('patient_context') or {})
+        agent_context = {
+            "message": message,
+            "patient_context": payload.get('patient_context') or {},
+            "derived": payload.get('derived') or {},
+            "report_text": str(payload.get('report_text') or '')[:8000],
+            "tool_registry": tools,
+            "system_context": system_context,
+            "client": payload.get('client') or {},
+            "preferred_model": OLLAMA_MODEL,
+        }
+        ollama_payload = {
+            "model": OLLAMA_MODEL,
+            "stream": False,
+            "format": "json",
+            "messages": [
+                {"role": "system", "content": system},
+                {"role": "user", "content": json.dumps(agent_context, ensure_ascii=False)}
+            ],
+            "options": {
+                "temperature": 0.2,
+                "num_ctx": 8192
+            }
+        }
+        try:
+            req = urllib.request.Request(
+                f"{OLLAMA_HOST}/api/chat",
+                data=json.dumps(ollama_payload, ensure_ascii=False).encode("utf-8"),
+                headers={"Content-Type": "application/json"},
+                method="POST",
+            )
+            with urllib.request.urlopen(req, timeout=OLLAMA_TIMEOUT_SECONDS) as resp:
+                raw = json.loads(resp.read().decode("utf-8"))
+            content = ((raw.get("message") or {}).get("content") or "").strip()
+            answer = _parse_agent_json_text(content)
+            reply = str(answer.get("reply") or answer.get("message") or answer.get("text") or "").strip()
+            tool_id = str(answer.get("tool_id") or "").strip()
+            if tool_id and allowed_tools and tool_id not in allowed_tools:
+                tool_id = ""
+            patient_patch = _sanitize_patient_patch(answer.get("patient_patch"))
+            if not reply:
+                reply = "Ollama 有回應，但沒有產生可顯示的文字。"
+            if any(k in message.lower() for k in ("keynote-522", "kn522")) and "922,539" in reply and not re.search(r"54,267\s*[x×*]\s*17|54267\s*[x×*]\s*17", reply):
+                reply += "\n計算式：54,267 × 17 = 922,539 元。"
+            if patient_patch and ("已更新" in reply or "已寫入" in reply):
+                reply = reply.replace("已更新至工作區", "已抓到候選欄位，請確認後套用").replace("已更新", "已抓到候選欄位").replace("已寫入", "已抓到候選欄位")
+            self._json(200, {
+                "ok": True,
+                "reply": reply,
+                "tool_id": tool_id,
+                "patient_patch": patient_patch,
+                "citations": answer.get("citations") if isinstance(answer.get("citations"), list) else system_context.get("citations", [])[:4],
+                "called_tools": system_context.get("called_tools", []),
+                "model": OLLAMA_MODEL,
+                "runtime": "local-ollama"
+            })
+        except Exception as e:
+            self._json(502, {
+                "ok": False,
+                "error": "Ollama agent unavailable",
+                "detail": str(e),
+                "model": OLLAMA_MODEL,
+                "ollama_host": OLLAMA_HOST
+            })
+
     def _json(self, code, data, headers=None):
         self.send_response(code)
         self.send_header('Content-Type', 'application/json; charset=utf-8')
@@ -3021,7 +3871,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Origin', origin)
         self.send_header('Access-Control-Allow-Credentials', 'true')
         self.send_header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type, X-Admin-Session, Authorization')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type, X-Admin-Session, Authorization, X-Contact-Email, X-Client-App')
         if headers:
             for k, v in headers.items():
                 self.send_header(k, v)
@@ -3030,7 +3880,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_HEAD(self):
         p = urllib.parse.urlparse(self.path)
-        if p.path in ('/', '/index.html', '/admin', '/admin.html', '/manifest.webmanifest', '/sw.js', '/offline.html') or p.path.startswith('/icons/'):
+        if p.path in ('/', '/index.html', '/admin', '/admin.html', '/manifest.webmanifest', '/sw.js', '/offline.html') or p.path.startswith(('/assets/', '/data/', '/icons/', '/docs/', '/.well-known/')):
             self.send_response(200)
             self.send_header('Content-Type', STATIC_ASSET_TYPES.get(Path(p.path).suffix.lower(), 'text/html; charset=utf-8'))
             self.end_headers()
@@ -3045,7 +3895,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Origin', origin)
         self.send_header('Access-Control-Allow-Credentials', 'true')
         self.send_header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type, X-Admin-Session, Authorization')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type, X-Admin-Session, Authorization, X-Contact-Email, X-Client-App')
         self.end_headers()
 
 

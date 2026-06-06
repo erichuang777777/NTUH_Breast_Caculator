@@ -1,0 +1,743 @@
+{
+  "schema": "onco_breast_agent_benchmark_result.v2",
+  "benchmark_version": "failed-subset-v1",
+  "run_at": "2026-06-06T14:28:22",
+  "base_url": "http://127.0.0.1:8080",
+  "runner": "tools/agent_benchmark.py",
+  "corpus": "data\\agent_bench\\bench_v1.json",
+  "summary": {
+    "total": 13,
+    "passed": 12,
+    "failed": 1,
+    "pass_rate": 0.9231
+  },
+  "categories": [
+    {
+      "category": "field_extraction",
+      "passed": 12,
+      "failed": 1
+    }
+  ],
+  "validation_policy": {
+    "principle": "Reference answers are generated before the agent call from local structured data/calculators. The run records agent_reply and called_tools for every case.",
+    "required_tool_checks": true,
+    "exact_text_match": false
+  },
+  "failure_summary": {
+    "by_type": {
+      "field_extraction_failure": 1
+    },
+    "data_questions": [
+      {
+        "id": "extract-282",
+        "category": "field_extraction",
+        "failure_type": "field_extraction_failure",
+        "data_question": "檢查病理文字抽取規則與 patient_patch schema 對應。"
+      }
+    ]
+  },
+  "case_results": [
+    {
+      "id": "extract-275",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT1cN0M0，invasive tumor size 18 mm，grade II，ER 90%, PR 80%, HER2 2+ ISH negative, Ki-67 12%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=41、cT=T1c、cN=N0、cM=M0、er=+、pr=+、her2=-、ki67=12",
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T1c",
+          "cN": "N0",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "12"
+        }
+      },
+      "passed": true,
+      "checks": [
+        "patch:age",
+        "patch:cT",
+        "patch:cN",
+        "patch:cM",
+        "patch:er",
+        "patch:pr",
+        "patch:her2",
+        "patch:ki67"
+      ],
+      "agent_reply": "已為您從文字中抓到以下候選欄位，請確認後套用：\n\n- 年齡：41\n- 分期：cT1cN0M0\n- 腫瘤大小：18 mm\n- 分級：grade II\n- ER：90%\n- PR：80%\n- HER2 IHC：2+\n- HER2 ISH：negative\n- Ki-67：12%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "41",
+        "cT": "T1c",
+        "cN": "N0",
+        "cM": "M0",
+        "size": "18",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "2+",
+        "her2_fish": "negative",
+        "ki67": "12",
+        "her2": "-"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 5930
+    },
+    {
+      "id": "extract-278",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT1cN0M0，invasive tumor size 18 mm，grade II，ER 50%, PR 5%, HER2 1+, Ki67 5-14%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=41、cT=T1c、cN=N0、cM=M0、er=+、pr=+、her2=-、ki67=5-14",
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T1c",
+          "cN": "N0",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "5-14"
+        }
+      },
+      "passed": true,
+      "checks": [
+        "patch:age",
+        "patch:cT",
+        "patch:cN",
+        "patch:cM",
+        "patch:er",
+        "patch:pr",
+        "patch:her2",
+        "patch:ki67"
+      ],
+      "agent_reply": "已抓到候選欄位，請確認後套用：\n- 年齡：41\n- cT：T1c\n- cN：N0\n- cM：M0\n- 腫瘤大小：18 mm\n- 分級：Grade II\n- ER：50%\n- PR：5%\n- HER2 IHC：1+\n- Ki67：5-14%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "41",
+        "cT": "T1c",
+        "cN": "N0",
+        "cM": "M0",
+        "size": "18",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "1+",
+        "ki67": "5-14",
+        "her2": "-"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3422
+    },
+    {
+      "id": "extract-279",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT2N1miM0，invasive tumor size 22 mm，grade II，ER 90%, PR 80%, HER2 2+ ISH negative, Ki-67 12%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=41、cT=T2、cN=N1mi、cM=M0、er=+、pr=+、her2=-、ki67=12",
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T2",
+          "cN": "N1mi",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "12"
+        }
+      },
+      "passed": true,
+      "checks": [
+        "patch:age",
+        "patch:cT",
+        "patch:cN",
+        "patch:cM",
+        "patch:er",
+        "patch:pr",
+        "patch:her2",
+        "patch:ki67"
+      ],
+      "agent_reply": "已抓到候選欄位，請確認後套用：\n- 年齡：41\n- cT：T2\n- cN：N1mi\n- cM：M0\n- 腫瘤大小：22 mm\n- 分級：grade II\n- ER：90%\n- PR：80%\n- HER2 IHC：2+\n- HER2 FISH：negative\n- Ki-67：12%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "41",
+        "cT": "T2",
+        "cN": "N1mi",
+        "cM": "M0",
+        "size": "22",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "2+",
+        "her2_fish": "negative",
+        "ki67": "12",
+        "her2": "-"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 4282
+    },
+    {
+      "id": "extract-282",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT2N1miM0，invasive tumor size 22 mm，grade II，ER 50%, PR 5%, HER2 1+, Ki67 5-14%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=41、cT=T2、cN=N1mi、cM=M0、er=+、pr=+、her2=-、ki67=5-14",
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T2",
+          "cN": "N1mi",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "5-14"
+        }
+      },
+      "passed": false,
+      "failure_type": "field_extraction_failure",
+      "error": "patch er expected +, got None; patch={'age': '41', 'cT': 'T2', 'cN': 'N1mi', 'cM': 'M0', 'size': '22', 'grade': '2', 'her2_ihc': '1+', 'her2': '-', 'ki67': '5-14'}",
+      "failure_analysis": "檢查病理文字抽取規則與 patient_patch schema 對應。",
+      "data_question": "檢查病理文字抽取規則與 patient_patch schema 對應。",
+      "checks": [],
+      "agent_reply": "已抓到候選欄位，請確認後套用：\n- 年齡：41\n- cT：T2\n- cN：N1mi\n- cM：M0\n- 腫瘤大小：22 mm\n- 分級：2\n- HER2 IHC：1+\n- HER2：-\n- Ki67：5-14%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "41",
+        "cT": "T2",
+        "cN": "N1mi",
+        "cM": "M0",
+        "size": "22",
+        "grade": "2",
+        "her2_ihc": "1+",
+        "her2": "-",
+        "ki67": "5-14"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 4085
+    },
+    {
+      "id": "extract-283",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT3N1M0，invasive tumor size 51 mm，grade II，ER 90%, PR 80%, HER2 2+ ISH negative, Ki-67 12%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=41、cT=T3、cN=N1、cM=M0、er=+、pr=+、her2=-、ki67=12",
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T3",
+          "cN": "N1",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "12"
+        }
+      },
+      "passed": true,
+      "checks": [
+        "patch:age",
+        "patch:cT",
+        "patch:cN",
+        "patch:cM",
+        "patch:er",
+        "patch:pr",
+        "patch:her2",
+        "patch:ki67"
+      ],
+      "agent_reply": "已為您抓到以下候選欄位，請確認後套用：\n\n- 年齡：41\n- 分期 (Clinical)：T3N1M0\n- 腫瘤大小：51 mm\n- 分級：Grade II\n- ER：90%\n- PR：80%\n- HER2 IHC：2+\n- HER2 FISH：negative\n- Ki-67：12%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "41",
+        "cT": "T3",
+        "cN": "N1",
+        "cM": "M0",
+        "size": "51",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "2+",
+        "her2_fish": "negative",
+        "ki67": "12",
+        "her2": "-"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 7203
+    },
+    {
+      "id": "extract-286",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT3N1M0，invasive tumor size 51 mm，grade II，ER 50%, PR 5%, HER2 1+, Ki67 5-14%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=41、cT=T3、cN=N1、cM=M0、er=+、pr=+、her2=-、ki67=5-14",
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T3",
+          "cN": "N1",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "5-14"
+        }
+      },
+      "passed": true,
+      "checks": [
+        "patch:age",
+        "patch:cT",
+        "patch:cN",
+        "patch:cM",
+        "patch:er",
+        "patch:pr",
+        "patch:her2",
+        "patch:ki67"
+      ],
+      "agent_reply": "已為您抓到以下候選欄位，請確認後套用：\n\n- 年齡：41\n- 臨床分期：cT3 N1 M0\n- 腫瘤大小：51 mm\n- 分級：Grade II\n- ER：50%\n- PR：5%\n- HER2 IHC：1+\n- Ki67：5-14%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "41",
+        "cT": "T3",
+        "cN": "N1",
+        "cM": "M0",
+        "size": "51",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "1+",
+        "ki67": "5-14",
+        "her2": "-"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3179
+    },
+    {
+      "id": "extract-287",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，pT2N2aM0，invasive tumor size 30 mm，grade II，ER 90%, PR 80%, HER2 2+ ISH negative, Ki-67 12%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=41、pT=T2、pN=N2a、pM=M0、er=+、pr=+、her2=-、ki67=12",
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "pT": "T2",
+          "pN": "N2a",
+          "pM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "12"
+        }
+      },
+      "passed": true,
+      "checks": [
+        "patch:age",
+        "patch:pT",
+        "patch:pN",
+        "patch:pM",
+        "patch:er",
+        "patch:pr",
+        "patch:her2",
+        "patch:ki67"
+      ],
+      "agent_reply": "已為您抓到以下候選欄位，請確認後套用：\n\n- 年齡：41\n- 分期：pT2N2aM0\n- 腫瘤大小：30 mm\n- 分級：grade II\n- ER：90%\n- PR：80%\n- HER2 IHC：2+\n- HER2 FISH：negative\n- Ki-67：12%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "41",
+        "pT": "T2",
+        "pN": "N2a",
+        "pM": "M0",
+        "size": "30",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "2+",
+        "her2_fish": "negative",
+        "ki67": "12",
+        "her2": "-"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3289
+    },
+    {
+      "id": "extract-290",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，pT2N2aM0，invasive tumor size 30 mm，grade II，ER 50%, PR 5%, HER2 1+, Ki67 5-14%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=41、pT=T2、pN=N2a、pM=M0、er=+、pr=+、her2=-、ki67=5-14",
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "pT": "T2",
+          "pN": "N2a",
+          "pM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "5-14"
+        }
+      },
+      "passed": true,
+      "checks": [
+        "patch:age",
+        "patch:pT",
+        "patch:pN",
+        "patch:pM",
+        "patch:er",
+        "patch:pr",
+        "patch:her2",
+        "patch:ki67"
+      ],
+      "agent_reply": "已為您抓到以下候選欄位，請確認後套用：\n\n- 年齡：41\n- 分期 (pTNM)：pT2N2aM0\n- 腫瘤大小：30 mm\n- 分級 (Grade)：II\n- ER：50%\n- PR：5%\n- HER2 IHC：1+\n- Ki67：5-14%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "41",
+        "pT": "T2",
+        "pN": "N2a",
+        "pM": "M0",
+        "size": "30",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "1+",
+        "ki67": "5-14",
+        "her2": "-"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 8204
+    },
+    {
+      "id": "extract-291",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：48歲，cT1cN0M0，invasive tumor size 18 mm，grade II，ER 90%, PR 80%, HER2 2+ ISH negative, Ki-67 12%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=48、cT=T1c、cN=N0、cM=M0、er=+、pr=+、her2=-、ki67=12",
+      "expected": {
+        "expected_patch": {
+          "age": "48",
+          "cT": "T1c",
+          "cN": "N0",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "12"
+        }
+      },
+      "passed": true,
+      "checks": [
+        "patch:age",
+        "patch:cT",
+        "patch:cN",
+        "patch:cM",
+        "patch:er",
+        "patch:pr",
+        "patch:her2",
+        "patch:ki67"
+      ],
+      "agent_reply": "已為您抓到以下候選欄位，請確認後套用：\n\n- 年齡：48\n- cT：T1c\n- cN：N0\n- cM：M0\n- 腫瘤大小：18 mm\n- 分級：Grade II\n- ER：90%\n- PR：80%\n- HER2 IHC：2+\n- HER2 FISH：negative\n- Ki-67：12%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "48",
+        "cT": "T1c",
+        "cN": "N0",
+        "cM": "M0",
+        "size": "18",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "2+",
+        "her2_fish": "negative",
+        "ki67": "12",
+        "her2": "-"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 8339
+    },
+    {
+      "id": "extract-294",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：48歲，cT1cN0M0，invasive tumor size 18 mm，grade II，ER 50%, PR 5%, HER2 1+, Ki67 5-14%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=48、cT=T1c、cN=N0、cM=M0、er=+、pr=+、her2=-、ki67=5-14",
+      "expected": {
+        "expected_patch": {
+          "age": "48",
+          "cT": "T1c",
+          "cN": "N0",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "5-14"
+        }
+      },
+      "passed": true,
+      "checks": [
+        "patch:age",
+        "patch:cT",
+        "patch:cN",
+        "patch:cM",
+        "patch:er",
+        "patch:pr",
+        "patch:her2",
+        "patch:ki67"
+      ],
+      "agent_reply": "已為您抓到以下候選欄位，請確認後套用：\n- 年齡：48\n- cT：T1c\n- cN：N0\n- cM：M0\n- 腫瘤大小：18 mm\n- 分級 (Grade)：2\n- ER：50%\n- PR：5%\n- HER2 IHC：1+\n- Ki67：5-14%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "48",
+        "cT": "T1c",
+        "cN": "N0",
+        "cM": "M0",
+        "size": "18",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "1+",
+        "ki67": "5-14",
+        "her2": "-"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 8738
+    },
+    {
+      "id": "extract-295",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：48歲，cT2N1miM0，invasive tumor size 22 mm，grade II，ER 90%, PR 80%, HER2 2+ ISH negative, Ki-67 12%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=48、cT=T2、cN=N1mi、cM=M0、er=+、pr=+、her2=-、ki67=12",
+      "expected": {
+        "expected_patch": {
+          "age": "48",
+          "cT": "T2",
+          "cN": "N1mi",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "12"
+        }
+      },
+      "passed": true,
+      "checks": [
+        "patch:age",
+        "patch:cT",
+        "patch:cN",
+        "patch:cM",
+        "patch:er",
+        "patch:pr",
+        "patch:her2",
+        "patch:ki67"
+      ],
+      "agent_reply": "已為您從文字中抓到以下候選欄位，請確認後套用：\n- 年齡：48\n- 分期：cT2N1miM0\n- 腫瘤大小：22 mm\n- 分級：Grade II\n- ER：90%\n- PR：80%\n- HER2 IHC：2+\n- HER2 ISH：negative\n- Ki-67：12%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "48",
+        "cT": "T2",
+        "cN": "N1mi",
+        "cM": "M0",
+        "size": "22",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "2+",
+        "her2_fish": "negative",
+        "ki67": "12",
+        "her2": "-"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3568
+    },
+    {
+      "id": "extract-298",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：48歲，cT2N1miM0，invasive tumor size 22 mm，grade II，ER 50%, PR 5%, HER2 1+, Ki67 5-14%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=48、cT=T2、cN=N1mi、cM=M0、er=+、pr=+、her2=-、ki67=5-14",
+      "expected": {
+        "expected_patch": {
+          "age": "48",
+          "cT": "T2",
+          "cN": "N1mi",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "5-14"
+        }
+      },
+      "passed": true,
+      "checks": [
+        "patch:age",
+        "patch:cT",
+        "patch:cN",
+        "patch:cM",
+        "patch:er",
+        "patch:pr",
+        "patch:her2",
+        "patch:ki67"
+      ],
+      "agent_reply": "已為您抓到以下候選欄位，請確認後套用：\n\n- 年齡：48\n- cT：T2\n- cN：N1mi\n- cM：M0\n- 腫瘤大小：22 mm\n- 分級 (Grade)：2\n- ER：50%\n- PR：5%\n- HER2 IHC：1+\n- HER2：- (陰性)\n- Ki67：5-14%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "48",
+        "cT": "T2",
+        "cN": "N1mi",
+        "cM": "M0",
+        "size": "22",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "1+",
+        "her2": "-",
+        "ki67": "5-14"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 6947
+    },
+    {
+      "id": "extract-299",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：48歲，cT3N1M0，invasive tumor size 51 mm，grade II，ER 90%, PR 80%, HER2 2+ ISH negative, Ki-67 12%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=48、cT=T3、cN=N1、cM=M0、er=+、pr=+、her2=-、ki67=12",
+      "expected": {
+        "expected_patch": {
+          "age": "48",
+          "cT": "T3",
+          "cN": "N1",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "12"
+        }
+      },
+      "passed": true,
+      "checks": [
+        "patch:age",
+        "patch:cT",
+        "patch:cN",
+        "patch:cM",
+        "patch:er",
+        "patch:pr",
+        "patch:her2",
+        "patch:ki67"
+      ],
+      "agent_reply": "已為您抓到以下候選欄位，請確認後套用：\n\n- 年齡：48\n- 分期：cT3, cN1, cM0\n- 腫瘤大小：51 mm\n- 分級：Grade 2\n- ER：90%\n- PR：80%\n- HER2 IHC：2+\n- HER2 FISH：negative\n- Ki-67：12%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "48",
+        "cT": "T3",
+        "cN": "N1",
+        "cM": "M0",
+        "size": "51",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "2+",
+        "her2_fish": "negative",
+        "ki67": "12",
+        "her2": "-"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3257
+    }
+  ]
+}

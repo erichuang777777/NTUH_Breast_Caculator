@@ -1,5 +1,7 @@
 # 開發指南 — NTUH Breast Calculator
 
+> 新進維護者請先看 `README.md` 與 `docs/PROJECT_MAP.md`。本文件保留較舊的開發流程與分支/部署習慣，內容若與 `AGENTS.md` 的資料庫維護規則衝突，以 `AGENTS.md` 為準。
+
 > 給開發者與維護者的工作流程文件。每次新功能上線前請複習一次。
 
 ---

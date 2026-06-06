@@ -1,0 +1,194 @@
+{
+  "schema": "onco_disease_module_manifest.v1",
+  "id": "breast",
+  "label": "Breast Cancer",
+  "version": "0.1.0",
+  "status": "transitional",
+  "context_schema": "data/schemas/onco_breast_patient_context_bundle.v1.schema.json",
+  "contract": "docs/MULTI_CANCER_MODULE_CONTRACT.md",
+  "field_groups": [
+    {
+      "id": "core",
+      "label": "Patient core",
+      "fields": ["age", "sex", "height", "weight", "scr", "menopause", "ecog", "dm", "htn", "cad"]
+    },
+    {
+      "id": "breast_location",
+      "label": "Breast location",
+      "fields": ["side", "quadrant"]
+    },
+    {
+      "id": "clinical_staging",
+      "label": "Clinical staging",
+      "fields": ["cT", "cN", "cM", "mets_bone", "mets_liver", "mets_brain", "mets_lung"]
+    },
+    {
+      "id": "pathology_morphology",
+      "label": "Pathology morphology",
+      "source_category": "pathology_morphology",
+      "fields": ["size", "tumor_kind", "grade"]
+    },
+    {
+      "id": "pathology_special_stains",
+      "label": "Pathology special stains / IHC / ISH",
+      "source_category": "pathology_special_stain",
+      "fields": ["er", "pr", "her2", "her2_ihc", "her2_fish", "ki67"]
+    },
+    {
+      "id": "molecular",
+      "label": "Molecular markers",
+      "source_category": "molecular_genomics",
+      "fields": ["oncotype_rs", "brca", "pdl1", "pik3ca", "esr1", "tp53", "civic_variant"]
+    },
+    {
+      "id": "surgery_pathology",
+      "label": "Surgery and pathology",
+      "fields": ["post_nac_prefix", "pT", "pN", "breast_surgery", "axillary_surgery", "reconstruction_surgery", "sln_pos", "sln_total", "aln_pos", "aln_total", "nodes_pos", "nodes_total", "pni", "lvi", "margin_involved", "post_nac_response"]
+    },
+    {
+      "id": "calculator_local_inputs",
+      "label": "Calculator local inputs",
+      "fields": ["rcb_d1", "rcb_d2", "rcb_finv", "rcb_ln", "rcb_dmet", "gail_menarche", "gail_birth", "gail_relatives", "gail_biopsy", "gail_atypia", "gail_race"]
+    }
+  ],
+  "tools": [
+    {
+      "id": "patient_context",
+      "label": "Patient context",
+      "entrypoint": "showWorkspace",
+      "input_fields": ["age", "cT", "cN", "cM", "er", "pr", "her2"],
+      "output_fields": ["patient_context", "derived"],
+      "boundary": "Single cross-sectional snapshot. Import only patient_context; recompute derived fields locally."
+    },
+    {
+      "id": "staging",
+      "label": "AJCC staging",
+      "entrypoint": "showWorkspace",
+      "input_fields": ["cT", "cN", "cM", "pT", "pN", "grade", "er", "pr", "her2"],
+      "output_fields": ["anatomic_stage", "prognostic_stage", "stageability_note"],
+      "boundary": "Use deterministic staging logic. Unsupported TNM combinations must return an applicability note, not a guessed stage."
+    },
+    {
+      "id": "drug_lookup",
+      "label": "Breast drug lookup",
+      "entrypoint": "showBreast",
+      "input_fields": ["er", "pr", "her2", "cT", "cN", "cM", "pdl1", "brca", "pik3ca", "esr1"],
+      "output_fields": ["drug_matches", "missing_fields", "assumptions"],
+      "boundary": "Information retrieval only; do not provide final eligibility or final treatment orders."
+    },
+    {
+      "id": "regimen_dose",
+      "label": "Regimen and dose",
+      "entrypoint": "showInpatient",
+      "input_fields": ["height", "weight", "scr", "er", "pr", "her2", "cN"],
+      "output_fields": ["regimen_summary", "cost_estimate", "dose_assumptions"],
+      "boundary": "Cost and dose estimates must state assumptions. Actual orders require clinician verification."
+    },
+    {
+      "id": "risk_scores",
+      "label": "Risk scores",
+      "entrypoint": "showCalc",
+      "input_fields": ["age", "size", "grade", "nodes_pos", "er", "pr", "her2", "ki67", "oncotype_rs"],
+      "output_fields": ["predict", "ihc4", "cts5", "pepi", "npi", "gail", "rcb"],
+      "boundary": "Calculators must read shared patient context by default and list missing fields explicitly."
+    },
+    {
+      "id": "trials",
+      "label": "Clinical trial search",
+      "entrypoint": "showTrials",
+      "input_fields": ["cT", "cN", "cM", "er", "pr", "her2", "brca", "pdl1"],
+      "output_fields": ["trial_keyword", "trial_matches"],
+      "boundary": "Trial results are matching aids only; availability and eligibility must be checked against trial source."
+    },
+    {
+      "id": "support_resources",
+      "label": "Support resources",
+      "entrypoint": "openDashboardSupportModal",
+      "input_fields": ["treatment_setting", "cM", "phase"],
+      "output_fields": ["support_resources"],
+      "boundary": "Resource cards are pointers. Do not present eligibility as final approval."
+    },
+    {
+      "id": "icd_catastrophic",
+      "label": "ICD and catastrophic illness",
+      "entrypoint": "showICD",
+      "input_fields": ["side", "quadrant", "cT", "cN", "cM"],
+      "output_fields": ["icd10", "ntuh_catastrophic_code"],
+      "boundary": "Local helper only; official coding remains institution-specific."
+    }
+  ],
+  "agent_tools": [
+    {
+      "id": "wsPage",
+      "label": "分期與亞型",
+      "aliases": ["分期", "亞型", "patient context", "workspace", "TNM"],
+      "required_context": ["cT", "cN", "cM"],
+      "boundary": "Use current workspace context unless user explicitly asks to parse new text."
+    },
+    {
+      "id": "breastPage",
+      "label": "乳癌藥物",
+      "aliases": ["藥物", "乳癌藥物", "健保藥物", "給付", "HER2", "TNBC", "ER+"],
+      "required_context": ["er", "pr", "her2", "cT", "cN", "cM"],
+      "boundary": "Use website drug database only; do not hallucinate external drugs."
+    },
+    {
+      "id": "inpatientPage",
+      "label": "常用配方與劑量",
+      "aliases": ["配方", "劑量", "化療", "標靶", "regimen"],
+      "required_context": ["height", "weight"],
+      "boundary": "Estimate only. State dose, cycle, price basis, and missing fields."
+    },
+    {
+      "id": "calcPage",
+      "label": "PREDICT / risk scores",
+      "aliases": ["predict", "v3", "v2", "IHC4", "CTS5", "PEPI", "Oncotype"],
+      "required_context": ["age", "size", "grade", "nodes_pos", "er", "her2"],
+      "boundary": "Use deterministic calculator outputs and list missing fields."
+    },
+    {
+      "id": "supportResources",
+      "label": "照護支持",
+      "aliases": ["照護", "社福", "補助", "贈藥", "保險", "資源"],
+      "required_context": [],
+      "boundary": "List only resources present in site data and include update/source notes where available."
+    },
+    {
+      "id": "benchPage",
+      "label": "Agent Benchmark",
+      "aliases": ["benchmark", "bench", "題庫", "測試題", "答案"],
+      "required_context": [],
+      "boundary": "Benchmark evaluates tool use and site-bound information retrieval, not clinical correctness beyond site data."
+    }
+  ],
+  "normalization_rules": [
+    "ER, PR, HER2, HER2 IHC/ISH, and Ki-67 are pathology special stain/IHC/ISH values, not routine laboratory exam values.",
+    "HER2 IHC 2+ must use ISH/FISH to determine summary HER2 status.",
+    "Preserve Ki-67 operators and ranges such as <5, <14, 5-14, >=20.",
+    "ypT or ypN should set post_nac_prefix=yes while storing clean pT/pN values.",
+    "Axillary surgery is multi-select; keep SLNB,TAD,ALND when all were performed.",
+    "No residual invasive carcinoma with residual DCIS only should map to post_nac_response=DCIS only and pT=Tis when applicable."
+  ],
+  "benchmark_corpus": "data/agent_bench/bench_v1.json",
+  "adversarial_benchmark_corpus": "data/agent_bench/bench_adversarial_2026-06-06.json",
+  "data_sources": [
+    {
+      "id": "nhi_drugs",
+      "label": "NHI drug data export",
+      "url": "data/api/drugs.json",
+      "license_note": "Use as local reference. Official reimbursement decisions require current NHI and institutional verification."
+    },
+    {
+      "id": "support_resources",
+      "label": "Support resources",
+      "url": "data/support_resources.json",
+      "license_note": "Resource eligibility and contact points may change."
+    },
+    {
+      "id": "agent_benchmark",
+      "label": "Agent benchmark corpus",
+      "url": "data/agent_bench/bench_v1.json",
+      "license_note": "Used to test site-bound information retrieval and tool invocation behavior."
+    }
+  ]
+}

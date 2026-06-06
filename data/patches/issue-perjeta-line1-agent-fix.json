@@ -1,0 +1,43 @@
+{
+  "issue": "local-agent-perjeta-line",
+  "title": "Correct Pertuzumab/Perjeta line and indication text",
+  "source": "Local clinical data review 2026-06-05",
+  "operations": [
+    {
+      "type": "coverage_rule_update",
+      "drug_id": 1757,
+      "reason": "Perjeta is used in HER2-positive early perioperative setting and metastatic first-line combination; avoid mislabeling as second-line.",
+      "source": "NHI coverage rule text in local DB",
+      "changes": {
+        "therapy_line": 1
+      }
+    },
+    {
+      "type": "coverage_rule_update",
+      "drug_id": 1758,
+      "reason": "Pertuzumab/Perjeta is used in HER2-positive early perioperative setting and metastatic first-line combination; avoid mislabeling as second-line.",
+      "source": "NHI coverage rule text in local DB",
+      "changes": {
+        "therapy_line": 1
+      }
+    },
+    {
+      "type": "drug_update",
+      "drug_id": 1757,
+      "reason": "Remove conflicting self-pay wording from Perjeta drug indication; Phesgo remains the self-pay SC combination entry.",
+      "source": "Local clinical data review 2026-06-05",
+      "changes": {
+        "indication": "Pertuzumab (Perjeta)：用於 HER2 陽性乳癌，與 trastuzumab 及化療併用。適用情境包括：(1) HER2 陽性早期乳癌術前/術後輔助治療（與 trastuzumab + 化療併用）；(2) HER2 陽性轉移性乳癌第一線治療（與 trastuzumab + docetaxel 併用）。實際給付需依健保規定、治療線別、事前審查與院內政策確認。"
+      }
+    },
+    {
+      "type": "drug_update",
+      "drug_id": 1758,
+      "reason": "Remove conflicting self-pay wording from Pertuzumab drug indication; Phesgo remains the self-pay SC combination entry.",
+      "source": "Local clinical data review 2026-06-05",
+      "changes": {
+        "indication": "Pertuzumab (Perjeta)：用於 HER2 陽性乳癌，與 trastuzumab 及化療併用。適用情境包括：(1) HER2 陽性早期乳癌術前/術後輔助治療（與 trastuzumab + 化療併用）；(2) HER2 陽性轉移性乳癌第一線治療（與 trastuzumab + docetaxel 併用）。實際給付需依健保規定、治療線別、事前審查與院內政策確認。"
+      }
+    }
+  ]
+}

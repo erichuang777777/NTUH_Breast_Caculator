@@ -1,0 +1,104 @@
+{
+  "schema": "onco_breast_agent_skill.v1",
+  "name": "OncoBreast Calculator",
+  "version": "v1.9-dev",
+  "description": "Single-timepoint breast cancer patient context, staging, drug lookup, regimen, risk score, pathology extraction beta, support resources, and API guide for clinician-facing agents.",
+  "documentation": "/docs/AGENT_SKILL.md",
+  "api_base": "/api",
+  "runtime": {
+    "frontend_agent": "calls an agent gateway first, then local rule-based fallback",
+    "local_agent_gateway": "localhost automatically calls /api/agent, proxied by web_app.py to Ollama",
+    "default_local_model": "gemma4:31b-cloud",
+    "external_agent_gateway": "optional; configure frontend to call /api/agent or an authenticated hospital backend",
+    "netlify_api": "read-only"
+  },
+  "system_prompt_ownership": "server-side agent gateway",
+  "starter_prompts": [
+    "HER2 陽性 LN 轉移病人有哪些藥可以用？",
+    "ER+ T2N1 是第幾期？",
+    "我貼上病理報告後可以抽取哪些欄位？"
+  ],
+  "tools": [
+    {
+      "id": "wsPage",
+      "label": "分期與亞型",
+      "aliases": ["分期", "亞型", "patient context", "workspace"]
+    },
+    {
+      "id": "breastPage",
+      "label": "乳癌藥物",
+      "aliases": ["藥物", "乳癌藥物", "健保藥物", "給付"]
+    },
+    {
+      "id": "inpatientPage",
+      "label": "常用配方與劑量",
+      "aliases": ["配方", "劑量", "化療", "標靶", "regimen"]
+    },
+    {
+      "id": "icdPage",
+      "label": "重卡/ICD",
+      "aliases": ["重卡", "icd", "重大傷病"]
+    },
+    {
+      "id": "trialsPage",
+      "label": "臨床試驗",
+      "aliases": ["臨床試驗", "trial", "招募"]
+    },
+    {
+      "id": "calcPage",
+      "label": "PREDICT",
+      "aliases": ["predict", "v3", "v2"]
+    },
+    {
+      "id": "ihc4Page",
+      "label": "IHC4",
+      "aliases": ["ihc4"]
+    },
+    {
+      "id": "cts5Page",
+      "label": "CTS5",
+      "aliases": ["cts5"]
+    },
+    {
+      "id": "pepiPage",
+      "label": "PEPI",
+      "aliases": ["pepi"]
+    },
+    {
+      "id": "supportResources",
+      "label": "照護支持",
+      "aliases": ["照護", "社福", "補助", "贈藥", "保險", "資源"]
+    },
+    {
+      "id": "apiPage",
+      "label": "API Guide",
+      "aliases": ["api", "端點", "endpoint"]
+    }
+  ],
+  "public_endpoints": [
+    { "method": "GET", "path": "/api/health" },
+    { "method": "GET", "path": "/api/config" },
+    { "method": "GET", "path": "/api/stats" },
+    { "method": "GET", "path": "/api/drugs?category=oncology_breast" },
+    { "method": "GET", "path": "/api/drug/:id" },
+    { "method": "GET", "path": "/api/formulations?drug=trastuzumab" },
+    { "method": "POST", "path": "/api/calculate/risk-scores" },
+    { "method": "POST", "path": "/api/calculate/staging-score" }
+  ],
+  "agent_gateway_contract": {
+    "request_fields": ["message", "patient_context", "derived", "report_text", "tool_registry", "client"],
+    "response_fields": ["reply", "tool_id", "patient_patch", "citations", "called_tools"],
+    "tool_id_optional": true,
+    "tool_id_policy": "Return tool_id only when the user explicitly asks to open/call/show a tool. Ordinary clinical questions should be answered directly with an empty tool_id.",
+    "patient_patch_policy": "Return patient_patch for free-text extraction. The frontend requires user confirmation before writing fields."
+  },
+  "internal_tool_call_policy": "The agent gateway should execute internal tools before model response: field extraction, staging calculation, risk score calculation, drug search, and formulation lookup.",
+  "patient_context_bundle_schema": "onco_breast_patient_context_bundle.v1",
+  "guardrails": [
+    "Do not send PHI to public browser or Netlify endpoints.",
+    "Use official guideline and payer sources for final clinical or reimbursement decisions.",
+    "Separate anatomic AJCC stage from prognostic stage.",
+    "Use human confirmation before applying pathology extraction results.",
+    "Use authenticated hospital backend for database lookup, EMR write-back, admin updates, and API secrets."
+  ]
+}

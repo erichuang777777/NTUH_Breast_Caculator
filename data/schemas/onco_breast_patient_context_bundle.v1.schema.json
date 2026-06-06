@@ -1,0 +1,192 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://oncobreast.local/schemas/onco_breast_patient_context_bundle.v1.schema.json",
+  "title": "OncoBreast Patient Context Bundle v1",
+  "type": "object",
+  "required": ["schema", "patient_context"],
+  "properties": {
+    "schema": {
+      "const": "onco_breast_patient_context_bundle.v1"
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "source_app": {
+      "type": "string"
+    },
+    "source_version": {
+      "type": "string"
+    },
+    "patient_id": {
+      "type": "string"
+    },
+    "encounter_id": {
+      "type": "string"
+    },
+    "time_frame": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "type": {
+          "enum": ["single_cross_section", ""]
+        },
+        "anchor_date": {
+          "type": "string"
+        },
+        "clinical_setting": {
+          "type": "string"
+        },
+        "data_cutoff": {
+          "type": "string"
+        }
+      }
+    },
+    "patient_context": {
+      "$ref": "#/$defs/patient_context"
+    },
+    "source_evidence": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/source_evidence_item"
+      }
+    },
+    "derived": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "emptyable_string": {
+      "type": "string"
+    },
+    "yes_empty": {
+      "enum": ["yes", ""]
+    },
+    "plus_minus_empty": {
+      "enum": ["+", "-", ""]
+    },
+    "patient_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mrn": { "type": "string" },
+        "age": { "type": "string" },
+        "sex": { "enum": ["F", "M", ""] },
+        "height": { "type": "string" },
+        "weight": { "type": "string" },
+        "scr": { "type": "string" },
+        "visit_type": { "type": "string" },
+        "initial_visit_date": { "type": "string" },
+        "referral_source": { "type": "string" },
+        "initial_status": { "type": "string" },
+        "predict_mode": { "type": "string" },
+        "side": { "enum": ["L", "R", "B", ""] },
+        "quadrant": { "enum": ["UO", "UI", "LO", "LI", "central", "overlapping", ""] },
+        "T": { "type": "string" },
+        "N": { "type": "string" },
+        "M": { "type": "string" },
+        "cT": { "$ref": "#/$defs/t_stage" },
+        "cN": { "$ref": "#/$defs/n_stage" },
+        "cM": { "$ref": "#/$defs/m_stage" },
+        "pT": { "$ref": "#/$defs/t_stage" },
+        "pN": { "$ref": "#/$defs/n_stage" },
+        "pM": { "$ref": "#/$defs/m_stage" },
+        "post_nac_prefix": { "$ref": "#/$defs/yes_empty" },
+        "mets_bone": { "$ref": "#/$defs/yes_empty" },
+        "mets_liver": { "$ref": "#/$defs/yes_empty" },
+        "mets_brain": { "$ref": "#/$defs/yes_empty" },
+        "mets_lung": { "$ref": "#/$defs/yes_empty" },
+        "size": { "type": "string" },
+        "tumor_kind": { "enum": ["invasive", "dcis", ""] },
+        "nodes_total": { "type": "string" },
+        "nodes_pos": { "type": "string" },
+        "grade": { "enum": ["1", "2", "3", "I", "II", "III", ""] },
+        "er": { "$ref": "#/$defs/plus_minus_empty" },
+        "pr": { "$ref": "#/$defs/plus_minus_empty" },
+        "her2": { "$ref": "#/$defs/plus_minus_empty" },
+        "her2_ihc": { "enum": ["0+", "1+", "2+", "3+", ""] },
+        "her2_fish": { "$ref": "#/$defs/plus_minus_empty" },
+        "ki67": { "type": "string" },
+        "brca": { "type": "string" },
+        "pdl1": { "type": "string" },
+        "tp53": { "type": "string" },
+        "esr1": { "type": "string" },
+        "pik3ca": { "type": "string" },
+        "oncotype_rs": { "type": "string" },
+        "civic_variant": { "type": "string" },
+        "surgery_type": { "type": "string" },
+        "breast_surgery": { "enum": ["BCS", "SM", ""] },
+        "axillary_surgery": {
+          "type": "string",
+          "pattern": "^(|SLNB|TAD|ALND|SLNB,TAD|SLNB,ALND|TAD,ALND|SLNB,TAD,ALND)$"
+        },
+        "reconstruction_surgery": { "type": "string" },
+        "sln_pos": { "type": "string" },
+        "sln_total": { "type": "string" },
+        "aln_pos": { "type": "string" },
+        "aln_total": { "type": "string" },
+        "pni": { "enum": ["present", "absent", ""] },
+        "lvi": { "enum": ["present", "absent", ""] },
+        "margin_involved": { "enum": ["yes", "no", "close", ""] },
+        "post_nac_response": { "enum": ["pCR", "DCIS only", "residual ca", ""] },
+        "menopause": { "enum": ["pre", "post", ""] },
+        "ecog": { "type": "string" },
+        "dm": { "type": "string" },
+        "htn": { "type": "string" },
+        "cad": { "type": "string" },
+        "phase": { "type": "string" },
+        "prior": { "type": "string" },
+        "h_p0": { "type": "string" },
+        "h_p1": { "type": "string" },
+        "h_p2": { "type": "string" },
+        "h_p3": { "type": "string" },
+        "rcb_d1": { "type": "string" },
+        "rcb_d2": { "type": "string" },
+        "rcb_finv": { "type": "string" },
+        "rcb_ln": { "type": "string" },
+        "rcb_dmet": { "type": "string" },
+        "gail_menarche": { "type": "string" },
+        "gail_birth": { "type": "string" },
+        "gail_relatives": { "type": "string" },
+        "gail_biopsy": { "type": "string" },
+        "gail_atypia": { "type": "string" },
+        "gail_race": { "type": "string" },
+        "symptoms": { "type": "string" }
+      }
+    },
+    "t_stage": {
+      "enum": ["Tx", "Tis", "T0", "T1mi", "T1a", "T1b", "T1c", "T1", "T2", "T3", "T4", ""]
+    },
+    "n_stage": {
+      "enum": ["Nx", "N0", "N0(i+)", "N0(i-)", "N1mi", "N1", "N1a", "N1b", "N1c", "N2", "N2a", "N2b", "N3", "N3a", "N3b", "N3c", ""]
+    },
+    "m_stage": {
+      "enum": ["M0", "M1", ""]
+    },
+    "source_evidence_item": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "source_type": {
+          "enum": [
+            "clinical_core",
+            "clinical_staging",
+            "pathology_morphology",
+            "pathology_special_stain",
+            "pathology_ish",
+            "molecular_genomics",
+            "operative_note",
+            "treatment_admin",
+            "pathology_report",
+            ""
+          ]
+        },
+        "source_id": { "type": "string" },
+        "text": { "type": "string" },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "status": { "enum": ["confirmed", "requires_confirmation", "conflicting", ""] }
+      }
+    }
+  }
+}

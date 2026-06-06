@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://oncobreast.local/schemas/onco_disease_module_manifest.v1.schema.json",
+  "title": "Oncology Disease Module Manifest v1",
+  "type": "object",
+  "required": ["schema", "id", "label"],
+  "properties": {
+    "schema": {
+      "const": "onco_disease_module_manifest.v1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_\\-]*$"
+    },
+    "label": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "context_schema": {
+      "type": "string"
+    },
+    "field_groups": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/field_group"
+      }
+    },
+    "tools": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/tool"
+      }
+    },
+    "agent_tools": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/agent_tool"
+      }
+    },
+    "benchmark_corpus": {
+      "type": "string"
+    },
+    "data_sources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/data_source"
+      }
+    }
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "field_group": {
+      "type": "object",
+      "required": ["id", "label", "fields"],
+      "properties": {
+        "id": { "type": "string" },
+        "label": { "type": "string" },
+        "source_category": {
+          "type": "string"
+        },
+        "fields": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "tool": {
+      "type": "object",
+      "required": ["id", "label"],
+      "properties": {
+        "id": { "type": "string" },
+        "label": { "type": "string" },
+        "input_fields": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "output_fields": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "boundary": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "agent_tool": {
+      "type": "object",
+      "required": ["id", "label"],
+      "properties": {
+        "id": { "type": "string" },
+        "label": { "type": "string" },
+        "aliases": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "required_context": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "boundary": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "data_source": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "label": { "type": "string" },
+        "version": { "type": "string" },
+        "url": { "type": "string" },
+        "license_note": { "type": "string" }
+      },
+      "additionalProperties": true
+    }
+  }
+}

@@ -78,16 +78,40 @@ def check_python_calculators():
 def check_netlify_function():
     script = r"""
 const { handler } = require('./netlify/functions/api.js');
-(async () => {
+async function call(method, path, queryStringParameters = {}, body = null) {
   const res = await handler({
-    httpMethod: 'POST',
-    path: '/api/calculate/staging-score',
-    queryStringParameters: {},
-    body: JSON.stringify({age:55,size_mm:20,grade:2,nodes_pos:0,cT:'T2',cN:'N0',cM:'M0',er_hscore:270,pr_hscore:200,her2:'-',ki67:15})
+    httpMethod: method,
+    path,
+    queryStringParameters,
+    body: body ? JSON.stringify(body) : null
   });
-  if (res.statusCode !== 200) throw new Error(res.body);
-  const body = JSON.parse(res.body);
-  if (body.result.ajcc_v8.selected !== 'IIA') throw new Error(res.body);
+  let parsed = {};
+  try { parsed = JSON.parse(res.body || '{}'); } catch (err) {}
+  if (res.statusCode < 200 || res.statusCode >= 300) {
+    throw new Error(`${method} ${path} failed ${res.statusCode}: ${res.body}`);
+  }
+  return parsed;
+}
+(async () => {
+  const sample = {age:55,size_mm:20,grade:2,nodes_pos:0,cT:'T2',cN:'N0',cM:'M0',er_hscore:270,pr_hscore:200,her2:'-',ki67:15};
+  const health = await call('GET', '/api/health');
+  if (!health.ok) throw new Error('health not ok');
+  const config = await call('GET', '/api/config');
+  if (!config.price_badge_text) throw new Error('config missing price_badge_text');
+  const stats = await call('GET', '/api/stats');
+  if (!stats.total || !stats.breast) throw new Error('stats missing counts');
+  const drugs = await call('GET', '/api/drugs', {category:'oncology_breast'});
+  if (!Array.isArray(drugs) || !drugs.length) throw new Error('breast drugs empty');
+  const drug = await call('GET', `/api/drug/${drugs[0].id}`);
+  if (drug.id !== drugs[0].id) throw new Error('drug detail mismatch');
+  const forms = await call('GET', '/api/formulations', {drug:'trastuzumab'});
+  if (!Array.isArray(forms) || !forms.length) throw new Error('trastuzumab formulations empty');
+  const scores = await call('POST', '/api/calculate/risk-scores', {}, sample);
+  for (const key of ['cts5','npi','ihc4','magee']) {
+    if (!scores.scores || !scores.scores[key]) throw new Error(`risk score missing ${key}`);
+  }
+  const staging = await call('POST', '/api/calculate/staging-score', {}, sample);
+  if (staging.result.ajcc_v8.selected !== 'IIA') throw new Error(JSON.stringify(staging));
   console.log('netlify function OK');
 })();
 """

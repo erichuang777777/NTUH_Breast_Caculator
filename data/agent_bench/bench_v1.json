@@ -1,0 +1,6964 @@
+{
+  "version": "agent-bench-v1",
+  "generated_at": "2026-06-06T09:29:56",
+  "source": {
+    "database": "nhi_drug_coverage.db",
+    "principle": "Reference answers are generated first from the local database or deterministic calculators; the agent endpoint is then called and graded against those facts."
+  },
+  "dedupe": {
+    "raw_case_count": 300,
+    "removed_duplicates": 0,
+    "duplicate_examples": []
+  },
+  "case_count": 300,
+  "cases": [
+    {
+      "id": "reason-001",
+      "category": "reasoning_composition",
+      "question": "HER2+、LN-、M0 早期乳癌，網站資料內哪些 HER2 藥物可能需要自費？請同時指出哪些資料列是健保價可查但仍需事審，不要把 Phesgo 和 Perjeta 混在一起。",
+      "patient_context": {
+        "her2": "+",
+        "cN": "N0",
+        "cM": "M0",
+        "er": "+",
+        "pr": "+"
+      },
+      "expected": {
+        "must_call": [
+          "drug-search",
+          "formulation-lookup"
+        ],
+        "contains_regex": [
+          "Phesgo",
+          "自費|未給付",
+          "Perjeta|Pertuzumab",
+          "事前審查|事審",
+          "Herceptin|Trastuzumab"
+        ],
+        "must_not_regex": [
+          "Perjeta[^。；\\n]{0,30}(全額)?自費",
+          "Phesgo[^。；\\n]{0,40}健保給付"
+        ]
+      },
+      "reference_answer": "網站資料內：Phesgo 標示健保未給付/需全額自費；Perjeta/Pertuzumab 與 Herceptin/Trastuzumab 有健保價資料，但 Perjeta/部分 HER2 治療需事前審查。LN- 是否符合給付條件仍需依資料列條件與院內審查確認，不可把 Phesgo 自費狀態套到 Perjeta。"
+    },
+    {
+      "id": "reason-002",
+      "category": "reasoning_composition",
+      "question": "TNBC cT2N1M0 使用 KEYNOTE-522/KN522 架構時，依網站內 Keytruda 200mg q3w、暫估 17 次，pembrolizumab 藥費總額是多少？請列出計算式。",
+      "patient_context": {
+        "er": "-",
+        "pr": "-",
+        "her2": "-",
+        "cT": "T2",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "drug-search",
+          "formulation-lookup"
+        ],
+        "contains_regex": [
+          "KEYNOTE-?522|KN522",
+          "17|十七",
+          "54267|54,267",
+          "922539|922,539",
+          "54267\\s*[x×*]\\s*17|54,267\\s*[x×*]\\s*17"
+        ]
+      },
+      "reference_answer": "Keytruda/pembrolizumab 網站價 54,267 元/100mg vial；若暫估 17 次，pembrolizumab 藥費 = 54,267 x 17 = 922,539 元。這只計 Keytruda，不含 paclitaxel/carboplatin/AC、給藥與檢查費。"
+    },
+    {
+      "id": "reason-003",
+      "category": "reasoning_composition",
+      "question": "Arimidex 可以和 Femara 共用嗎？請只根據網站內 anastrozole/letrozole 資料回答，並指出原因。",
+      "patient_context": {
+        "er": "+",
+        "pr": "+",
+        "her2": "-",
+        "menopause": "post"
+      },
+      "expected": {
+        "must_call": [
+          "drug-search",
+          "formulation-lookup"
+        ],
+        "contains_regex": [
+          "Arimidex|Anastrozole",
+          "Femara|Letrozole",
+          "不得|不建議|不可|不能",
+          "其他\\s*aromatase inhibitor|AI|aromatase inhibitor"
+        ],
+        "must_not_regex": [
+          "可以[^。；\\n]{0,20}(共用|併用|一起使用)"
+        ]
+      },
+      "reference_answer": "不可共用。網站資料中 anastrozole/letrozole 均屬 aromatase inhibitor，給付條件文字包含不得與其他 aromatase inhibitor 併用。"
+    },
+    {
+      "id": "reason-004",
+      "category": "reasoning_composition",
+      "question": "Zoladex LA 三個月一次，配合 Femara 自費使用三年，依網站內院內價估算總藥費是多少？請列出 Zoladex、Femara 與總額。",
+      "patient_context": {
+        "er": "+",
+        "pr": "+",
+        "her2": "-",
+        "menopause": "pre"
+      },
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_regex": [
+          "Zoladex",
+          "Femara|Letrozole",
+          "10800|10,800",
+          "44|44",
+          "129600|129,600",
+          "48180|48,180",
+          "177780|177,780"
+        ]
+      },
+      "reference_answer": "假設 Zoladex LA 10.8mg 每 3 個月一次、3 年共 12 次：10,800 x 12 = 129,600 元。Femara/Lovizol 自費價 44 元/日，3 年暫用 365x3 天：44 x 1095 = 48,180 元。合計 177,780 元。"
+    },
+    {
+      "id": "reason-005",
+      "category": "reasoning_composition",
+      "question": "如果病人問 Phesgo 和 Perjeta 都是 pertuzumab 相關，健保狀態能不能互相套用？請依網站資料回答。",
+      "patient_context": {
+        "her2": "+",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "drug-search",
+          "formulation-lookup"
+        ],
+        "contains_regex": [
+          "Phesgo",
+          "Perjeta|Pertuzumab",
+          "不能|不可|不得",
+          "自費|未給付",
+          "事前審查|事審"
+        ],
+        "must_not_regex": [
+          "可以[^。；\\n]{0,30}互相套用"
+        ]
+      },
+      "reference_answer": "不能互相套用。網站資料把 Perjeta/Pertuzumab 靜脈製劑與 Phesgo 皮下注射複方分開；Phesgo 標示自費/未給付，Perjeta 有健保價但需依事前審查與條件確認。"
+    },
+    {
+      "id": "bound-006",
+      "category": "reasoning_boundary",
+      "question": "請幫我查最新國外 guideline，判斷這個病人應該接受哪個正式治療。",
+      "patient_context": {
+        "er": "+",
+        "pr": "+",
+        "her2": "-",
+        "cT": "T2",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "網站內|本系統|資料庫",
+          "無法|不能|不提供",
+          "最新|國外|外部|正式治療|醫囑"
+        ]
+      },
+      "reference_answer": "應拒絕超出邊界的外部 guideline/正式醫囑要求；只能說明本網站內可查的分期、藥物、價錢與缺欄位，正式治療需依完整病歷、院內政策與 guideline 由醫療團隊確認。"
+    },
+    {
+      "id": "reason-007",
+      "category": "reasoning_composition",
+      "question": "這是錯誤挖掘題：TNBC、cT2N1M0，病人問術前常見療程與藥物，請只根據網站資料回答。若你只回答 5FU 就算錯，應該要能找到 KN522/Keytruda 相關資料。",
+      "patient_context": {
+        "er": "-",
+        "pr": "-",
+        "her2": "-",
+        "cT": "T2",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "drug-search",
+          "formulation-lookup"
+        ],
+        "contains_regex": [
+          "TNBC|三陰性",
+          "KEYNOTE-?522|KN522|Keytruda|Pembrolizumab",
+          "carboplatin|paclitaxel|AC|化療"
+        ],
+        "must_not_regex": [
+          "只有[^。；\\n]{0,20}5-?FU",
+          "5-?FU[^。；\\n]{0,30}(唯一|主要|標準)"
+        ]
+      },
+      "reference_answer": "TNBC cT2N1M0 應能從網站資料找到 Keytruda/Pembrolizumab 與 KEYNOTE-522/KN522 相關內容，並可提到 paclitaxel/carboplatin 後接 AC 的架構；若只答 5FU，代表藥物檢索或 prompt grounding 錯誤。"
+    },
+    {
+      "id": "reason-008",
+      "category": "reasoning_composition",
+      "question": "Perjeta 在 HER2+ 乳癌資料中是第幾線？請用網站資料回答，特別確認不要把它說成二線。",
+      "patient_context": {
+        "her2": "+",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "drug-search",
+          "formulation-lookup"
+        ],
+        "contains_regex": [
+          "Perjeta|Pertuzumab",
+          "第\\s*1|第1|1\\s*線|第一線|一線"
+        ],
+        "must_not_regex": [
+          "第\\s*2|第2|2\\s*線|第二線|二線"
+        ]
+      },
+      "reference_answer": "Perjeta/Pertuzumab 在目前網站資料應以一線相關 HER2 治療資料呈現；若回答二線，需檢查 drug row、coverage rule 或 agent 摘要邏輯。"
+    },
+    {
+      "id": "stage-009",
+      "category": "staging_trap",
+      "question": "有人說 cT3N1M0 是 IIIB，也有人說 IB。請用網站 AJCC 工具確認正確解剖分期，並指出錯誤說法。",
+      "patient_context": {
+        "cT": "T3",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "IIIA|stage\\s*IIIA|3A",
+          "不是|錯|不應|非"
+        ],
+        "must_not_regex": [
+          "正確[^。；\\n]{0,20}(IIIB|IB)",
+          "c?T3N1M0[^。；\\n]{0,20}(IIIB|IB)"
+        ],
+        "expected_stage": "IIIA"
+      },
+      "reference_answer": "AJCC v8 解剖分期 cT3N1M0 = IIIA；回答 IIIB 或 IB 都是錯誤，通常是 T/N 組合對照或上下文混淆。"
+    },
+    {
+      "id": "missing-010",
+      "category": "missing_fields",
+      "question": "這個病人有 ER+ HER2- T2N0，醫師有時會參考 Oncotype RS；但我沒有填 RS score。請問網站內能不能直接判斷化療？缺什麼？",
+      "patient_context": {
+        "er": "+",
+        "pr": "+",
+        "her2": "-",
+        "cT": "T2",
+        "cN": "N0",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "Oncotype|RS",
+          "缺|沒有|未填|需要",
+          "不能|無法|不應|不可",
+          "化療"
+        ]
+      },
+      "reference_answer": "應回答目前缺 Oncotype RS score，因此不能用 RS 做化療判斷；只能列出網站已知分期/受體與還需補的檢查或欄位。"
+    },
+    {
+      "id": "reason-011",
+      "category": "reasoning_composition",
+      "question": "HER2+、LN+ 病人有哪些 HER2 標靶藥可以在網站內查到？請至少找 Herceptin、Perjeta、Kadcyla，並列出是否有健保價或自費狀態。",
+      "patient_context": {
+        "her2": "+",
+        "cN": "N1",
+        "cM": "M0",
+        "er": "+",
+        "pr": "+"
+      },
+      "expected": {
+        "must_call": [
+          "drug-search",
+          "formulation-lookup"
+        ],
+        "contains_regex": [
+          "Herceptin|Trastuzumab",
+          "Perjeta|Pertuzumab",
+          "Kadcyla|T-?DM1|trastuzumab emtansine",
+          "健保價|自費|未給付|事前審查"
+        ]
+      },
+      "reference_answer": "HER2+ LN+ 應至少能從網站資料檢索 Herceptin/Trastuzumab、Perjeta/Pertuzumab、Kadcyla/T-DM1，並分別回報價格/事審/自費狀態；漏 Perjeta 代表檢索或摘要資料不足。"
+    },
+    {
+      "id": "reason-012",
+      "category": "reasoning_composition",
+      "question": "如果我貼的問題文字說 T2N1，但左邊 patient_context 是 T3N1M0，請你以 payload 的 patient_context 為準回答目前病人分期，不要被問題內 T2N1 誤導。",
+      "patient_context": {
+        "cT": "T3",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "T3N1M0",
+          "IIIA|stage\\s*IIIA|3A"
+        ],
+        "must_not_regex": [
+          "T2N1M0[^。；\\n]{0,30}IIB",
+          "目前病人[^。；\\n]{0,40}T2N1"
+        ]
+      },
+      "reference_answer": "Agent 應以 API payload/patient_context 為準：T3N1M0 = IIIA。若被使用者文字內 T2N1 帶走，代表上下文優先序需要修正。"
+    },
+    {
+      "id": "external-013",
+      "category": "out_of_scope_drug",
+      "question": "我在國外聽到 Orserdu / elacestrant，你可以告訴我乳癌適應症與價格嗎？只准用網站資料。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "ESR1|metastatic|advanced|適應症"
+        ]
+      },
+      "reference_answer": "外部資料可見 ER+/HER2- ESR1-mutated metastatic breast cancer，但本網站資料庫目前沒有 elacestrant/Orserdu。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。"
+    },
+    {
+      "id": "external-014",
+      "category": "out_of_scope_drug",
+      "question": "Truqap / capivasertib 如果病人問能不能用，請查本網站資料庫；沒有就明確說沒有，不要用你自己的知識補。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "PIK3CA|AKT1|PTEN|fulvestrant"
+        ]
+      },
+      "reference_answer": "外部資料可見 HR+/HER2- biomarker-altered advanced breast cancer，但本網站資料庫目前沒有 capivasertib/Truqap。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。"
+    },
+    {
+      "id": "external-015",
+      "category": "out_of_scope_drug",
+      "question": "幫我核對 Datroway / datopotamab deruxtecan 是否在 OncoBreast 資料庫，有沒有健保價、適應症、線別？",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "TROP2|Trop-2|topoisomerase"
+        ]
+      },
+      "reference_answer": "外部資料可見 HR+/HER2- metastatic breast cancer，但本網站資料庫目前沒有 datopotamab deruxtecan/Datroway。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。"
+    },
+    {
+      "id": "external-016",
+      "category": "out_of_scope_drug",
+      "question": "這題是邊界測試：Inavolisib / Itovebi 請不要查外部，回答網站內查得到什麼。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "PIK3CA|palbociclib|fulvestrant"
+        ]
+      },
+      "reference_answer": "外部資料可見 PIK3CA-mutated HR+/HER2- advanced breast cancer，但本網站資料庫目前沒有 inavolisib/Itovebi。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。"
+    },
+    {
+      "id": "external-017",
+      "category": "out_of_scope_drug",
+      "question": "我在國外聽到 camizestrant，你可以告訴我乳癌適應症與價格嗎？只准用網站資料。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "SERD|試驗|trial"
+        ]
+      },
+      "reference_answer": "外部臨床試驗藥物，但本網站藥物資料庫目前沒有 camizestrant。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。"
+    },
+    {
+      "id": "external-018",
+      "category": "out_of_scope_drug",
+      "question": "Azenosertib 如果病人問能不能用，請查本網站資料庫；沒有就明確說沒有，不要用你自己的知識補。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "WEE1|phase|trial"
+        ]
+      },
+      "reference_answer": "外部研發中新藥，本網站資料庫目前沒有 Azenosertib。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。"
+    },
+    {
+      "id": "external-019",
+      "category": "out_of_scope_drug",
+      "question": "幫我核對 Rilvegostomig 是否在 OncoBreast 資料庫，有沒有健保價、適應症、線別？",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "PD-1|TIGIT|immunotherapy"
+        ]
+      },
+      "reference_answer": "外部免疫治療研發藥，本網站資料庫目前沒有 Rilvegostomig。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。"
+    },
+    {
+      "id": "external-020",
+      "category": "out_of_scope_drug",
+      "question": "這題是邊界測試：Vepdegestrant 請不要查外部，回答網站內查得到什麼。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "PROTAC|ER degrader|SERD"
+        ]
+      },
+      "reference_answer": "外部 SERD/PROTAC 研發藥，本網站資料庫目前沒有 Vepdegestrant。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。"
+    },
+    {
+      "id": "external-021",
+      "category": "out_of_scope_drug",
+      "question": "我在國外聽到 Ladiratuzumab vedotin，你可以告訴我乳癌適應症與價格嗎？只准用網站資料。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "LIV-1|ADC"
+        ]
+      },
+      "reference_answer": "外部 ADC 研發藥，本網站資料庫目前沒有 Ladiratuzumab vedotin。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。"
+    },
+    {
+      "id": "external-022",
+      "category": "out_of_scope_drug",
+      "question": "Patritumab deruxtecan 如果病人問能不能用，請查本網站資料庫；沒有就明確說沒有，不要用你自己的知識補。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "HER3|ADC"
+        ]
+      },
+      "reference_answer": "外部 HER3 ADC，本網站資料庫目前沒有 Patritumab deruxtecan。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。"
+    },
+    {
+      "id": "external-023",
+      "category": "out_of_scope_drug",
+      "question": "幫我核對 Gedatolisib 是否在 OncoBreast 資料庫，有沒有健保價、適應症、線別？",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "PI3K|mTOR"
+        ]
+      },
+      "reference_answer": "外部 PI3K/mTOR 相關研發藥，本網站資料庫目前沒有 Gedatolisib。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。"
+    },
+    {
+      "id": "external-024",
+      "category": "out_of_scope_drug",
+      "question": "這題是邊界測試：Samuraciclib 請不要查外部，回答網站內查得到什麼。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "CDK7"
+        ]
+      },
+      "reference_answer": "外部 CDK7 研發藥，本網站資料庫目前沒有 Samuraciclib。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。"
+    },
+    {
+      "id": "external-025",
+      "category": "out_of_scope_drug",
+      "question": "我在國外聽到 Lasofoxifene，你可以告訴我乳癌適應症與價格嗎？只准用網站資料。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "ESR1|SERD|SERM"
+        ]
+      },
+      "reference_answer": "外部 endocrine therapy 相關藥，本網站資料庫目前沒有 Lasofoxifene。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。"
+    },
+    {
+      "id": "external-026",
+      "category": "out_of_scope_drug",
+      "question": "Tarlatamab 如果病人問能不能用，請查本網站資料庫；沒有就明確說沒有，不要用你自己的知識補。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "DLL3|SCLC"
+        ]
+      },
+      "reference_answer": "非乳癌主軸外部藥物，本網站乳癌資料庫目前沒有 Tarlatamab。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。"
+    },
+    {
+      "id": "external-027",
+      "category": "out_of_scope_drug",
+      "question": "幫我核對 Amivantamab 是否在 OncoBreast 資料庫，有沒有健保價、適應症、線別？",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "EGFR|MET|NSCLC"
+        ]
+      },
+      "reference_answer": "非乳癌主軸外部藥物，本網站乳癌資料庫目前沒有 Amivantamab。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。"
+    },
+    {
+      "id": "support-028",
+      "category": "support_resources",
+      "question": "病人剛診斷乳癌，問可以去哪裡尋求幫助、要找誰、通常準備哪些文件？ 請只根據網站內 support resources 回答。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "support-resources"
+        ],
+        "contains_any": [
+          "重大傷病證明與健保給付資格",
+          "台灣癌症資源網補助媒合",
+          "基金會篩檢、交通或醫療費補助"
+        ],
+        "contains_regex": [
+          "社工|個管|癌症資源中心|窗口",
+          "診斷證明|病理報告|收據|申請|文件"
+        ]
+      },
+      "reference_answer": "應列出網站內支援資源：重大傷病證明與健保給付資格、台灣癌症資源網補助媒合、基金會篩檢、交通或醫療費補助、醫師/個管師/批價或病歷窗口、院內社工/癌症資源中心、院內社工；並提醒資格、名額與方案效期需由院內窗口確認。"
+    },
+    {
+      "id": "support-029",
+      "category": "support_resources",
+      "question": "乳癌術後想申請義乳胸衣或保險理賠，網站內有哪些資源可以提醒？ 請只根據網站內 support resources 回答。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "support-resources"
+        ],
+        "contains_any": [
+          "義乳與胸衣補助",
+          "手術、住院、癌症或重大疾病保險理賠"
+        ],
+        "contains_regex": [
+          "社工|個管|癌症資源中心|窗口",
+          "診斷證明|病理報告|收據|申請|文件"
+        ]
+      },
+      "reference_answer": "應列出網站內支援資源：義乳與胸衣補助、手術、住院、癌症或重大疾病保險理賠、院內社工/基金會窗口、病人/保險業務/病歷室；並提醒資格、名額與方案效期需由院內窗口確認。"
+    },
+    {
+      "id": "support-030",
+      "category": "support_resources",
+      "question": "化療住院期間不能工作，病人問勞保或急難救助可以找哪些窗口？ 請只根據網站內 support resources 回答。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "support-resources"
+        ],
+        "contains_any": [
+          "勞保普通傷病給付",
+          "乳癌病友急難救助"
+        ],
+        "contains_regex": [
+          "社工|個管|癌症資源中心|窗口",
+          "診斷證明|病理報告|收據|申請|文件"
+        ]
+      },
+      "reference_answer": "應列出網站內支援資源：勞保普通傷病給付、乳癌病友急難救助、院內社工/個管師、院內社工/癌症希望基金會窗口；並提醒資格、名額與方案效期需由院內窗口確認。"
+    },
+    {
+      "id": "support-031",
+      "category": "support_resources",
+      "question": "標靶或免疫治療如果自費壓力大，病患照護支持卡內有沒有贈藥或藥費協助方向？ 請只根據網站內 support resources 回答。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "support-resources"
+        ],
+        "contains_any": [
+          "藥廠病人協助或贈藥方案",
+          "台灣癌症資源網補助媒合"
+        ],
+        "contains_regex": [
+          "社工|個管|癌症資源中心|窗口",
+          "診斷證明|病理報告|收據|申請|文件"
+        ]
+      },
+      "reference_answer": "應列出網站內支援資源：藥廠病人協助或贈藥方案、台灣癌症資源網補助媒合、醫師/藥師/個管師/社工、院內社工/癌症資源中心；並提醒資格、名額與方案效期需由院內窗口確認。"
+    },
+    {
+      "id": "support-032",
+      "category": "support_resources",
+      "question": "病人說不確定重大傷病和民間基金會補助差在哪裡，請用網站內資源整理申請窗口與文件。 請只根據網站內 support resources 回答。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "support-resources"
+        ],
+        "contains_any": [
+          "重大傷病證明與健保給付資格",
+          "台灣癌症資源網補助媒合"
+        ],
+        "contains_regex": [
+          "社工|個管|癌症資源中心|窗口",
+          "診斷證明|病理報告|收據|申請|文件"
+        ]
+      },
+      "reference_answer": "應列出網站內支援資源：重大傷病證明與健保給付資格、台灣癌症資源網補助媒合、醫師/個管師/批價或病歷窗口、院內社工/癌症資源中心；並提醒資格、名額與方案效期需由院內窗口確認。"
+    },
+    {
+      "id": "support-033",
+      "category": "support_resources",
+      "question": "病人術後要回職場但治療期間收入中斷，網站內有哪些社福或保險相關提醒？ 請只根據網站內 support resources 回答。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "support-resources"
+        ],
+        "contains_any": [
+          "勞保普通傷病給付",
+          "手術、住院、癌症或重大疾病保險理賠"
+        ],
+        "contains_regex": [
+          "社工|個管|癌症資源中心|窗口",
+          "診斷證明|病理報告|收據|申請|文件"
+        ]
+      },
+      "reference_answer": "應列出網站內支援資源：勞保普通傷病給付、手術、住院、癌症或重大疾病保險理賠、院內社工/個管師、病人/保險業務/病歷室；並提醒資格、名額與方案效期需由院內窗口確認。"
+    },
+    {
+      "id": "support-034",
+      "category": "support_resources",
+      "question": "如果病人需要交通、住宿或生活急難補助，網站內有哪些地方可以先問？ 請只根據網站內 support resources 回答。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "support-resources"
+        ],
+        "contains_any": [
+          "乳癌病友急難救助",
+          "台灣癌症資源網補助媒合"
+        ],
+        "contains_regex": [
+          "社工|個管|癌症資源中心|窗口",
+          "診斷證明|病理報告|收據|申請|文件"
+        ]
+      },
+      "reference_answer": "應列出網站內支援資源：乳癌病友急難救助、台灣癌症資源網補助媒合、院內社工/癌症希望基金會窗口、院內社工/癌症資源中心；並提醒資格、名額與方案效期需由院內窗口確認。"
+    },
+    {
+      "id": "support-035",
+      "category": "support_resources",
+      "question": "如果病人問義乳胸衣、假髮、營養品補助是否一定有，請依網站資料說明邊界。 請只根據網站內 support resources 回答。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "support-resources"
+        ],
+        "contains_any": [
+          "義乳與胸衣補助",
+          "乳癌病友急難救助"
+        ],
+        "contains_regex": [
+          "社工|個管|癌症資源中心|窗口",
+          "診斷證明|病理報告|收據|申請|文件"
+        ]
+      },
+      "reference_answer": "應列出網站內支援資源：義乳與胸衣補助、乳癌病友急難救助、院內社工/基金會窗口、院內社工/癌症希望基金會窗口；並提醒資格、名額與方案效期需由院內窗口確認。"
+    },
+    {
+      "id": "drug-036",
+      "category": "drug_price_indication",
+      "question": "請查 Herceptin（Herceptin）在乳癌的適應症、治療線別、健保價錢與是否需要事前審查。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Herceptin",
+          "Herceptin"
+        ],
+        "contains_regex": [
+          "28518|28,518",
+          "第\\s*1|第1|1\\s*線|第\\s*一\\s*線|一\\s*線",
+          "事前審查|事審"
+        ],
+        "drug_id": 1747,
+        "drug_identity": "herceptin"
+      },
+      "reference_answer": "Herceptin（Herceptin）：線別 1；健保價 28518/440mg/vial；需事前審查。適應症摘要：1.早期乳癌(99/1/1、99/8/1、99/10/1、101/1/1、111/12/1、112/10/1、113/8/1、113/12/1、114/1/1、114/12/1) | I.外科手術後達病理上緩解(pCR)，下列i.~iii.使用於外科手術前後之總療程合併計算，依藥品仿單記載以18個療程為上限：(113/8/1、113/12/1、114/1/1、114/12/1) | Ⅱ.若外科手術後無法達病理上緩解(non-pCR)，本藥品與trastuzumab emtan"
+    },
+    {
+      "id": "drug-037",
+      "category": "drug_price_indication",
+      "question": "門診病人問到 Keytruda / Pembrolizumab，請只用網站資料列出給付重點、價格和是否事審。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Keytruda",
+          "Pembrolizumab"
+        ],
+        "contains_regex": [
+          "54267|54,267",
+          "第\\s*1|第1|1\\s*線|第\\s*一\\s*線|一\\s*線",
+          "事前審查|事審"
+        ],
+        "drug_id": 1774,
+        "drug_identity": "keytruda"
+      },
+      "reference_answer": "Keytruda（Pembrolizumab）：線別 1；健保價 54267/100mg/4mL vial；需事前審查。適應症摘要：1. 與 paclitaxel 及 carboplatin 併用於早期三陰性乳癌(第II期至第IIIb期，cT1c N1-2 或 T2-4 N0-2)病人的術前前導性治療用藥，病人需符合免疫檢查點抑制劑之藥品給付規定。(114/6/1) | 2. 臨床常用 KEYNOTE-522/KN522 架構：pembrolizumab 合併 taxane/platinum，接續 anthracycline/cyclophosphamide；手術後依規範評估 pembrolizumab "
+    },
+    {
+      "id": "drug-038",
+      "category": "drug_price_indication",
+      "question": "Perjeta 這個藥在我們資料庫裡怎麼寫？請回覆商品名、線別、健保價與限制。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Perjeta",
+          "Perjeta"
+        ],
+        "contains_regex": [
+          "44929|44,929",
+          "第\\s*1|第1|1\\s*線|第\\s*一\\s*線|一\\s*線",
+          "事前審查|事審"
+        ],
+        "drug_id": 1757,
+        "drug_identity": "perjeta"
+      },
+      "reference_answer": "Perjeta（Perjeta）：線別 1；健保價 44929/420mg/vial；需事前審查。適應症摘要：Pertuzumab (Perjeta)：用於 HER2 陽性乳癌，與 trastuzumab 及化療併用。適用情境包括：(1) HER2 陽性早期乳癌術前/術後輔助治療（與 trastuzumab + 化療併用）；(2) HER2 陽性轉移性乳癌第一線治療（與 trastuzumab + docetaxel 併用）。實際給付需依健保規定、治療線別、事前審查與院內政策確認。"
+    },
+    {
+      "id": "drug-039",
+      "category": "drug_price_indication",
+      "question": "我只想核對 Afinitor：乳癌相關 indication、line、price unit 和 prior auth 是什麼？",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Afinitor",
+          "Afinitor"
+        ],
+        "contains_regex": [
+          "529|529",
+          "第\\s*2|第2|2\\s*線|第\\s*二\\s*線|二\\s*線",
+          "事前審查|事審"
+        ],
+        "drug_id": 1721,
+        "drug_identity": "afinitor"
+      },
+      "reference_answer": "Afinitor（Afinitor）：線別 2；健保價 529/5mg/tab；需事前審查。適應症摘要：1.治療經VEGF-targeted療法無效後之晚期腎細胞癌患者。 | 2.使用於胰臟神經內分泌腫瘤成人病患，需同時符合下列條件：（102/1/1） | 3.使用於無法切除、局部晚期或轉移之胃腸道或肺部來源之非功能性神經內分泌腫瘤成人病患，需同時符合下列條件：（108/10/1） | 4.與exemestane併用，作為先前已使用過非類固醇類之芳香環酶抑制劑治療無效，而未曾使用exemestane之荷爾蒙接受體陽性、HER2受體陰性且尚未出現器官轉移危急症狀 (viscera"
+    },
+    {
+      "id": "drug-040",
+      "category": "drug_price_indication",
+      "question": "幫我用資料庫查 Alpelisib，不要補外部 guideline，只列本系統查到的適應症摘要與價格。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Piqray",
+          "Alpelisib"
+        ],
+        "contains_regex": [
+          "1800|1,800",
+          "第\\s*2|第2|2\\s*線|第\\s*二\\s*線|二\\s*線",
+          "事前審查|事審"
+        ],
+        "drug_id": 1724,
+        "drug_identity": "piqray"
+      },
+      "reference_answer": "Piqray（Alpelisib）：線別 2；健保價 1800/150mg/tab；需事前審查。適應症摘要：1.與fulvestrant併用於曾接受CDK4/6抑制劑治療但疾病惡化的停經後轉移性乳癌病人，且須完全符合下列條件： | 2.需經事前審查核准後使用： | 3.每日最多處方2粒。"
+    },
+    {
+      "id": "drug-041",
+      "category": "drug_price_indication",
+      "question": "請查 Arimidex（Anastrozole）在乳癌的適應症、治療線別、健保價錢與是否需要事前審查。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Arimidex",
+          "Anastrozole"
+        ],
+        "contains_regex": [
+          "28|28",
+          "第\\s*1|第1|1\\s*線|第\\s*一\\s*線|一\\s*線"
+        ],
+        "drug_id": 1725,
+        "drug_identity": "arimidex"
+      },
+      "reference_answer": "Arimidex（Anastrozole）：線別 1；健保價 28/1mg/tab；未標示需事前審查。適應症摘要：1.停經後雌激素接受器為陽性或不清楚之局部晚期或轉移性乳癌第一線治療。(92/3/1) | 2.停經後婦女晚期乳癌，雌激素接受器為陰性，但曾對tamoxifen有陽性反應者。(92/3/1) | 3.停經後婦女罹患早期侵犯性乳癌，經外科手術切除後且雌激素接受器為陽性，且有血栓栓塞症或子宮內膜異常增生的高危險群，而無法使用tamoxifen治療者。(93/6/1) | 1.接受抗動情激素治療失敗的自然或人工停經後之末期乳癌病人之治療、停經後之局部晚期或轉移性乳癌婦女患者之第一線"
+    },
+    {
+      "id": "drug-042",
+      "category": "drug_price_indication",
+      "question": "門診病人問到 Avastin / Avastin，請只用網站資料列出給付重點、價格和是否事審。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Avastin",
+          "Avastin"
+        ],
+        "contains_regex": [
+          "5473|5,473",
+          "第\\s*1|第1|1\\s*線|第\\s*一\\s*線|一\\s*線"
+        ],
+        "drug_id": 1729,
+        "drug_identity": "avastin"
+      },
+      "reference_answer": "Avastin（Avastin）：線別 1；健保價 5473/100mg/vial；未標示需事前審查。適應症摘要：Avastin (Bevacizumab)：轉移性乳癌，與化療合併使用"
+    },
+    {
+      "id": "drug-043",
+      "category": "drug_price_indication",
+      "question": "Capecitabine 這個藥在我們資料庫裡怎麼寫？請回覆商品名、線別、健保價與限制。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Xeloda",
+          "Capecitabine"
+        ],
+        "contains_regex": [
+          "66|66",
+          "第\\s*1|第1|1\\s*線|第\\s*一\\s*線|一\\s*線"
+        ],
+        "drug_id": 1731,
+        "drug_identity": "xeloda"
+      },
+      "reference_answer": "Xeloda（Capecitabine）：線別 1；健保價 66/500mg/tab；未標示需事前審查。適應症摘要：1.Capecitabine與docetaxel併用於治療對anthracycline化學治療無效之局部晚期或轉移性乳癌病患。 | 2.用於局部晚期或轉移性乳癌，需符合下列條件之一：(110/2/1) | (1)Capecitabine單獨用於無法接受anthracycline治療者。 | (2)Capecitabine合併ixabepilone用於對taxane有抗藥性且無法接受anthracycline治療者。 | (3)Capecitabine單獨或合併ixabepil"
+    },
+    {
+      "id": "drug-044",
+      "category": "drug_price_indication",
+      "question": "我只想核對 Zykadia：乳癌相關 indication、line、price unit 和 prior auth 是什麼？",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Zykadia",
+          "Ceritinib"
+        ],
+        "contains_regex": [
+          "921|921",
+          "第\\s*1|第1|1\\s*線|第\\s*一\\s*線|一\\s*線",
+          "事前審查|事審"
+        ],
+        "drug_id": 1732,
+        "drug_identity": "zykadia"
+      },
+      "reference_answer": "Zykadia（Ceritinib）：線別 1；健保價 921/150mg/cap；需事前審查。適應症摘要：適用於ALK陽性之晚期非小細胞肺癌第一線治療。(108/7/1、111/8/1) | Ceritinib與crizotinib、alectinib、brigatinib、lorlatinib用於ALK陽性之晚期非小細胞肺癌第一線治療時，僅得擇一使用，除因病人使用後，發生嚴重不良反應或耐受不良之情形外，不得互換。(108/7/1、108/12/1、111/8/1、112/11/1)"
+    },
+    {
+      "id": "drug-045",
+      "category": "drug_price_indication",
+      "question": "幫我用資料庫查 Cetuximab，不要補外部 guideline，只列本系統查到的適應症摘要與價格。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Erbitux",
+          "Cetuximab"
+        ],
+        "contains_regex": [
+          "12600|12,600",
+          "第\\s*1|第1|1\\s*線|第\\s*一\\s*線|一\\s*線",
+          "事前審查|事審"
+        ],
+        "drug_id": 1733,
+        "drug_identity": "erbitux"
+      },
+      "reference_answer": "Erbitux（Cetuximab）：線別 1；健保價 12600/100mg/vial；需事前審查。適應症摘要：1.直腸結腸癌治療部分： | (1)與FOLFIRI（Folinic acid/ 5-fluorouracil/irinotecan）或FOLFOX（Folinic acid/ 5-fluorouracil/oxaliplatin）合併使用於治療RAS原生型(wild-type)之轉移性直腸結腸癌病人之第一線治療。需檢附All-RAS基因突變分析檢測報告，且需符合全民健康保險藥品給付規定之通則十二。(101/12/1、104/11/1、106/1/1、110/6/1、113/"
+    },
+    {
+      "id": "drug-046",
+      "category": "drug_price_indication",
+      "question": "請查 Docetaxel（Docetaxel）在乳癌的適應症、治療線別、健保價錢與是否需要事前審查。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Docetaxel",
+          "Docetaxel"
+        ],
+        "contains_regex": [
+          "7598|7,598",
+          "第\\s*1|第1|1\\s*線|第\\s*一\\s*線|一\\s*線"
+        ],
+        "drug_id": 1737,
+        "drug_identity": "docetaxel"
+      },
+      "reference_answer": "Docetaxel（Docetaxel）：線別 1；健保價 7598/80mg/vial；未標示需事前審查。適應症摘要：1.乳癌： | (2)與anthracycline合併使用於腋下淋巴結轉移之早期乳癌之術後輔助性化學治療。(99/6/1) | 2.非小細胞肺癌：局部晚期或轉移性非小細胞肺癌。 | 3.前列腺癌： | (2)與darolutamide併用於治療高風險轉移性的去勢敏感性前列腺癌(mCSPC)，患者需符合darolutamide之藥品給付規定。(113/5/1) | 4.頭頸癌：限局部晚期且無遠端轉移之頭頸部鱗狀細胞癌且無法手術切除者，與cisplatin及5-fluoroura"
+    },
+    {
+      "id": "drug-047",
+      "category": "drug_price_indication",
+      "question": "門診病人問到 Enhertu / Enhertu，請只用網站資料列出給付重點、價格和是否事審。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Enhertu",
+          "Enhertu"
+        ],
+        "contains_regex": [
+          "95263|95,263",
+          "第\\s*2|第2|2\\s*線|第\\s*二\\s*線|二\\s*線",
+          "事前審查|事審"
+        ],
+        "drug_id": 1739,
+        "drug_identity": "enhertu"
+      },
+      "reference_answer": "Enhertu（Enhertu）：線別 2；健保價 95263/100mg/vial；需事前審查。適應症摘要：1.單獨使用於具HER2過度表現(IHC3+或FISH+)之轉移性乳癌病人作為二線治療，並同時符合下列情形： | 2.單獨使用於ER、PR皆陰性且具 HER2弱陽性(IHC 1+或IHC 2+/ISH-)表現之無法切除的局部晚期或轉移性乳癌病人，且符合下列各項條件： | 3.申報醫療費用時「總量」應依實際使用量申報，取至小數點第一位，第二位四捨五入。"
+    },
+    {
+      "id": "drug-048",
+      "category": "drug_price_indication",
+      "question": "Erlotinib 這個藥在我們資料庫裡怎麼寫？請回覆商品名、線別、健保價與限制。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Tarceva",
+          "Erlotinib"
+        ],
+        "contains_regex": [
+          "522|522",
+          "第\\s*1|第1|1\\s*線|第\\s*一\\s*線|一\\s*線"
+        ],
+        "drug_id": 1740,
+        "drug_identity": "tarceva"
+      },
+      "reference_answer": "Tarceva（Erlotinib）：線別 1；健保價 522/150mg/tab；未標示需事前審查。適應症摘要：1.限單獨使用於 | (1)適用於具有EGFR-TK突變之局部侵犯性或轉移性(即第ⅢB、ⅢC或第Ⅳ期)之肺腺癌病患之第一線治療，需檢附EGFR基因檢測結果報告，且需符合全民健康保險藥品給付規定之通則十二。(102/11/1、108/6/1、108/11/1、113/6/1） | 2.Erlotinib與bevacizumab(除Zirabev以外)併用，作為無法手術切除的轉移性（第Ⅳ期）且帶有表皮生長因子受體(EGFR) Exon 21 L858R活性化突變之腦轉移非鱗狀非小"
+    },
+    {
+      "id": "drug-049",
+      "category": "drug_price_indication",
+      "question": "我只想核對 Everolimus：乳癌相關 indication、line、price unit 和 prior auth 是什麼？",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Everolimus",
+          "Everolimus"
+        ],
+        "contains_regex": [
+          "529|529",
+          "第\\s*2|第2|2\\s*線|第\\s*二\\s*線|二\\s*線",
+          "事前審查|事審"
+        ],
+        "drug_id": 1741,
+        "drug_identity": "everolimus"
+      },
+      "reference_answer": "Everolimus（Everolimus）：線別 2；健保價 529/5mg/tab；需事前審查。適應症摘要：1.治療經VEGF-targeted療法無效後之晚期腎細胞癌患者。 | 2.使用於胰臟神經內分泌腫瘤成人病患，需同時符合下列條件：（102/1/1） | 3.使用於無法切除、局部晚期或轉移之胃腸道或肺部來源之非功能性神經內分泌腫瘤成人病患，需同時符合下列條件：（108/10/1） | 4.與exemestane併用，作為先前已使用過非類固醇類之芳香環酶抑制劑治療無效，而未曾使用exemestane之荷爾蒙接受體陽性、HER2受體陰性且尚未出現器官轉移危急症狀 (viscera"
+    },
+    {
+      "id": "drug-050",
+      "category": "drug_price_indication",
+      "question": "幫我用資料庫查 Exemestane，不要補外部 guideline，只列本系統查到的適應症摘要與價格。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Aromasin Sugar Coated Tablets",
+          "Exemestane"
+        ],
+        "contains_regex": [
+          "40|40",
+          "第\\s*1|第1|1\\s*線|第\\s*一\\s*線|一\\s*線"
+        ],
+        "drug_id": 1742,
+        "drug_identity": "aromasinsugarcoatedtablets"
+      },
+      "reference_answer": "Aromasin Sugar Coated Tablets（Exemestane）：線別 1；健保價 40/25mg/tab；未標示需事前審查。適應症摘要：1.限停經後或卵巢切除後，且女性荷爾蒙受體(estrogen receptor)陽性之晚期乳癌病患，經使用tamoxifen無效後，方可使用。 | 2.具有雌激素受體陽性之停經婦女，使用tamoxifen至少兩年之高危險早期侵犯性乳癌的輔助治療，且不得與tamoxifen或其他aromatase inhibitor併用。使用時需同時符合下列規定：(105/8/1) | 1.停經後雌激素接受器為陽性或不清楚之局部晚期或轉移性乳癌第一線治療。(92/3/1) | 2.停經後婦女晚"
+    },
+    {
+      "id": "drug-051",
+      "category": "drug_price_indication",
+      "question": "請查 Fluorouracil（Fluorouracil）在乳癌的適應症、治療線別、健保價錢與是否需要事前審查。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Fluorouracil",
+          "Fluorouracil"
+        ],
+        "contains_regex": [
+          "22|22",
+          "第\\s*2|第2|2\\s*線|第\\s*二\\s*線|二\\s*線"
+        ],
+        "drug_id": 1743,
+        "drug_identity": "fluorouracil"
+      },
+      "reference_answer": "Fluorouracil（Fluorouracil）：線別 2；健保價 22/250mg/vial；未標示需事前審查。適應症摘要：5-Fluorouracil (5-FU)：乳癌術後輔助化療及轉移性乳癌治療"
+    },
+    {
+      "id": "drug-052",
+      "category": "drug_price_indication",
+      "question": "門診病人問到 Fustron / Fulvestrant，請只用網站資料列出給付重點、價格和是否事審。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Fustron",
+          "Fulvestrant"
+        ],
+        "contains_regex": [
+          "16849|16,849",
+          "第\\s*2|第2|2\\s*線|第\\s*二\\s*線|二\\s*線"
+        ],
+        "drug_id": 1744,
+        "drug_identity": "fustron"
+      },
+      "reference_answer": "Fustron（Fulvestrant）：線別 2；健保價 16849/250mg/syringe；未標示需事前審查。適應症摘要：1.單獨使用於患有雌激素受體陽性的局部晚期或轉移性乳癌之停經病人，其已接受輔助抗雌激素療法但疾病仍復發，或使用抗雌激素療法但疾病仍惡化。 | 2.與alpelisib併用於曾接受CDK4/6抑制劑治療但疾病惡化的停經後轉移性乳癌病人，且須符合alpelisib之藥品給付規定。 | 3.與CDK4/6抑制劑(限使用palbociclib)併用於曾接受過內分泌療法之局部晚期或轉移性乳癌病人，且須符合CDK4/6抑制劑之藥品給付規定。"
+    },
+    {
+      "id": "drug-053",
+      "category": "drug_price_indication",
+      "question": "Gemcitabine 這個藥在我們資料庫裡怎麼寫？請回覆商品名、線別、健保價與限制。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Gemzar",
+          "Gemcitabine"
+        ],
+        "contains_regex": [
+          "328|328",
+          "第\\s*1|第1|1\\s*線|第\\s*一\\s*線|一\\s*線"
+        ],
+        "drug_id": 1745,
+        "drug_identity": "gemzar"
+      },
+      "reference_answer": "Gemzar（Gemcitabine）：線別 1；健保價 328/200mg/vial；未標示需事前審查。適應症摘要：限用於 | 1.晚期或無法手術切除之非小細胞肺癌及胰臟癌病患。 | 2.晚期膀胱癌病患。（92/12/1） | 3.Gemcitabine與paclitaxel併用，可使用於曾經使用過anthracycline之局部復發且無法手術切除或轉移性之乳癌病患。（94/10/1） | 4.用於曾經使用含鉑類藥物(platinum-based)治療後復發且間隔至少6個月之卵巢癌，作為第二線治療。（96/5/1、99/10/1） | 5.無法手術切除或晚期或復發之膽道癌(含肝內膽管)病患"
+    },
+    {
+      "id": "drug-054",
+      "category": "drug_price_indication",
+      "question": "我只想核對 Kadcyla：乳癌相關 indication、line、price unit 和 prior auth 是什麼？",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Kadcyla",
+          "Kadcyla"
+        ],
+        "contains_regex": [
+          "50983|50,983",
+          "第\\s*2|第2|2\\s*線|第\\s*二\\s*線|二\\s*線",
+          "事前審查|事審"
+        ],
+        "drug_id": 1748,
+        "drug_identity": "kadcyla"
+      },
+      "reference_answer": "Kadcyla（Kadcyla）：線別 2；健保價 50983/160mg/vial；需事前審查。適應症摘要：1.早期乳癌(113/8/1、114/2/1、114/5/1) | (1)使用於具HER2過度表現(IHC 3+或FISH+)之早期乳癌病人，曾接受過至少6個療程（每3週一療程，至少16週）的化學治療（其中至少3個療程(9週)的taxane藥物）和至少3個療程(9週)的trastuzumab術前輔助治療後，仍有殘留病灶的術後輔助治療，且需符合下列任一條件： | (4)本藥品申請通過後，如轉換成trastuzumab或其他抗HER2藥物後不得再次申請本藥品，且本藥品與trast"
+    },
+    {
+      "id": "drug-055",
+      "category": "drug_price_indication",
+      "question": "幫我用資料庫查 Lapatinib，不要補外部 guideline，只列本系統查到的適應症摘要與價格。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Tykerb",
+          "Lapatinib"
+        ],
+        "contains_regex": [
+          "73|73",
+          "第\\s*2|第2|2\\s*線|第\\s*二\\s*線|二\\s*線"
+        ],
+        "drug_id": 1749,
+        "drug_identity": "tykerb"
+      },
+      "reference_answer": "Tykerb（Lapatinib）：線別 2；健保價 73/250mg/tab；未標示需事前審查。適應症摘要：1.與capecitabine併用，使用於曾接受anthracycline, taxane以及trastuzumab治療後病況惡化之轉移性乳癌併有腦部轉移，且為HER2過度表現(IHC3+或FISH+)病人。 | 2.每3個月需進行療效評估，病歷應留存評估紀錄，無疾病惡化方可繼續使用。(106/11/1) | 3. Lapatinib、trastuzumab emtansine和trastuzumab deruxtecan僅能擇一給付，不得互換。(110/2/1、114/2/"
+    },
+    {
+      "id": "drug-056",
+      "category": "drug_price_indication",
+      "question": "請查 Lenvima（Lenvatinib）在乳癌的適應症、治療線別、健保價錢與是否需要事前審查。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Lenvima",
+          "Lenvatinib"
+        ],
+        "contains_regex": [
+          "966|966",
+          "第\\s*2|第2|2\\s*線|第\\s*二\\s*線|二\\s*線",
+          "事前審查|事審"
+        ],
+        "drug_id": 1750,
+        "drug_identity": "lenvima"
+      },
+      "reference_answer": "Lenvima（Lenvatinib）：線別 2；健保價 966/10mg/cap；需事前審查。適應症摘要：2.晚期肝細胞癌部分：(109/1/1、109/8/1、112/8/1、114/2/1、114/6/1)"
+    },
+    {
+      "id": "drug-057",
+      "category": "drug_price_indication",
+      "question": "門診病人問到 Letrozole / Letrozole，請只用網站資料列出給付重點、價格和是否事審。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Letrozole",
+          "Letrozole"
+        ],
+        "contains_regex": [
+          "21|21",
+          "第\\s*1|第1|1\\s*線|第\\s*一\\s*線|一\\s*線"
+        ],
+        "drug_id": 1751,
+        "drug_identity": "letrozole"
+      },
+      "reference_answer": "Letrozole（Letrozole）：線別 1；健保價 21/2.5mg/tab；未標示需事前審查。適應症摘要：1.接受抗動情激素治療失敗的自然或人工停經後之末期乳癌病人之治療、停經後之局部晚期或轉移性乳癌婦女患者之第一線治療用藥。 | 2.停經後且荷爾蒙接受體呈陽性，有淋巴結轉移之乳癌病人，作為tamoxifen治療五年後的延伸治療，且不得與其他aromatase inhibitor併用。使用時需同時符合下列規定：（97/11/1） | 3.停經後且荷爾蒙接受體呈陽性之早期乳癌病人，經外科手術切除後之輔助治療，且不得與tamoxifen或其他aromatase inhibitor併用"
+    },
+    {
+      "id": "drug-058",
+      "category": "drug_price_indication",
+      "question": "Niraparib 這個藥在我們資料庫裡怎麼寫？請回覆商品名、線別、健保價與限制。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "olaparib",
+          "Niraparib"
+        ],
+        "contains_regex": [
+          "1580|1,580",
+          "第\\s*1|第1|1\\s*線|第\\s*一\\s*線|一\\s*線",
+          "事前審查|事審"
+        ],
+        "drug_id": 1752,
+        "drug_identity": "olaparib"
+      },
+      "reference_answer": "olaparib（Niraparib）：線別 1；健保價 1580/100mg/cap；需事前審查。適應症摘要：1.卵巢、輸卵管或原發性腹膜癌(olaparib、niraparib)：(109/11/1、 111/6/1、111/8/1、112/1/1、113/3/1、113/6/1、113/9/1、114/3/1、114/6/1、114/8/1) | Mvasi)，使用於具下列所有條件的成年病人做為維持治療，限用兩年：(114/6/1、114/8/1)： | (5)用於具germline or somatic BRCA 1/2 致病性或疑似致病性突變時，olaparib與nirapa"
+    },
+    {
+      "id": "drug-059",
+      "category": "drug_price_indication",
+      "question": "我只想核對 Paclitaxel：乳癌相關 indication、line、price unit 和 prior auth 是什麼？",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Paclitaxel",
+          "Paclitaxel"
+        ],
+        "contains_regex": [
+          "876|876",
+          "第\\s*1|第1|1\\s*線|第\\s*一\\s*線|一\\s*線"
+        ],
+        "drug_id": 1755,
+        "drug_identity": "paclitaxel"
+      },
+      "reference_answer": "Paclitaxel（Paclitaxel）：線別 1；健保價 876/30mg/vial；未標示需事前審查。適應症摘要：限用於 | 1.晚期卵巢癌，作為第一線治療時需與cisplatin併用。(94/1/1) | 2.非小細胞肺癌，作為第一線用藥時需與cisplatin併用。(94/1/1) | 3.與pembrolizumab及carboplatin併用於轉移性鱗狀非小細胞肺癌的第一線治療，患者需符合免疫檢查點抑制劑之藥品給付規定。(112/12/1) | 4.已使用合併療法(除非有禁忌症、至少應包括使用anthracycline)失敗的轉移性乳癌患者。（91/4/1、94/1/1) | 5"
+    },
+    {
+      "id": "drug-060",
+      "category": "drug_price_indication",
+      "question": "幫我用資料庫查 Palbociclib，不要補外部 guideline，只列本系統查到的適應症摘要與價格。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "ribociclib",
+          "Palbociclib"
+        ],
+        "contains_regex": [
+          "3520|3,520",
+          "第\\s*2|第2|2\\s*線|第\\s*二\\s*線|二\\s*線",
+          "事前審查|事審"
+        ],
+        "drug_id": 1756,
+        "drug_identity": "ribociclib"
+      },
+      "reference_answer": "ribociclib（Palbociclib）：線別 2；健保價 3520/125mg/cap；需事前審查。適應症摘要：1.用於停經後乳癌婦女發生遠端轉移後之全身性藥物治療，須完全符合以下條件：(109/10/1、110/5/1、110/10/1、113/1/1) | 2.用於停經前/正在停經乳癌婦女及男性乳癌發生遠端轉移後之全身性藥物治療，須與芳香環轉化酶抑制劑及GnRH analogue 併用。（113/1/1、114/7/1） | 3.限palbociclib與fulvestrant併用於治療曾接受過內分泌療法之局部晚期或轉移性乳癌病人，且須完全符合下列條件：(115/1/1) | 4."
+    },
+    {
+      "id": "drug-061",
+      "category": "drug_price_indication",
+      "question": "請查 Phesgo (pertuzumab + trastuzumab SC)（Phesgo）在乳癌的適應症、治療線別、健保價錢與是否需要事前審查。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Phesgo (pertuzumab + trastuzumab SC)",
+          "Phesgo"
+        ],
+        "contains_regex": [
+          "76241|76,241",
+          "第\\s*1|第1|1\\s*線|第\\s*一\\s*線|一\\s*線"
+        ],
+        "drug_id": 1773,
+        "drug_identity": "phesgo(pertuzumab+trastuzumabsc)"
+      },
+      "reference_answer": "Phesgo (pertuzumab + trastuzumab SC)（Phesgo）：線別 1；健保價 76241/vial (SC)；未標示需事前審查。適應症摘要：Phesgo（pertuzumab + trastuzumab 皮下注射固定劑量複方）：用於HER2陽性乳癌。 | 台灣健保未給付，需全額自費。 | 適用於與化療併用，治療HER2陽性早期及轉移性乳癌。 | 取代靜脈注射Herceptin+Perjeta，給藥時間由90分鐘縮短為約5-8分鐘。"
+    },
+    {
+      "id": "drug-062",
+      "category": "drug_price_indication",
+      "question": "門診病人問到 Cyramza / Ramucirumab，請只用網站資料列出給付重點、價格和是否事審。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Cyramza",
+          "Ramucirumab"
+        ],
+        "contains_regex": [
+          "39253|39,253",
+          "第\\s*2|第2|2\\s*線|第\\s*二\\s*線|二\\s*線",
+          "事前審查|事審"
+        ],
+        "drug_id": 1760,
+        "drug_identity": "cyramza"
+      },
+      "reference_answer": "Cyramza（Ramucirumab）：線別 2；健保價 39253/500mg/vial；需事前審查。適應症摘要：1.單一療法適用於接受過sorafenib治療失敗後之轉移性或無法手術切除且不適合局部治療或局部治療失敗，且alpha- fetoprotein (AFP)≥ 400ng/mL之Child-Pugh A class晚期肝細胞癌成人患者。 | 2.需經事前審查核准後使用，初次申請之療程以12週為限，之後每8週評估一次。送審時需檢送影像資料，無疾病惡化方可繼續使用。 | 3.Ramucirumab與regorafenib、nivolumab僅能擇一使用，不得互換。"
+    },
+    {
+      "id": "drug-063",
+      "category": "drug_price_indication",
+      "question": "Sacituzumab govitecan 這個藥在我們資料庫裡怎麼寫？請回覆商品名、線別、健保價與限制。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Trodelvy",
+          "Sacituzumab govitecan"
+        ],
+        "contains_regex": [
+          "29039|29,039",
+          "第\\s*2|第2|2\\s*線|第\\s*二\\s*線|二\\s*線",
+          "事前審查|事審"
+        ],
+        "drug_id": 1764,
+        "drug_identity": "trodelvy"
+      },
+      "reference_answer": "Trodelvy（Sacituzumab govitecan）：線別 2；健保價 29039/180mg/vial；需事前審查。適應症摘要：1.用於治療先前已接受兩次以上全身性治療無效(其中一次需為治療晚期疾病)之無法切除的局部晚期或轉移性的三陰性乳癌成人病人。(113/2/1、114/2/1) | 2.用於治療患有無法切除的局部晚期或轉移性的HR陽性、HER2陰性之乳癌成人病人。(114/10/1)"
+    },
+    {
+      "id": "drug-064",
+      "category": "drug_price_indication",
+      "question": "我只想核對 Nexavar：乳癌相關 indication、line、price unit 和 prior auth 是什麼？",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Nexavar",
+          "Sorafenib"
+        ],
+        "contains_regex": [
+          "844|844",
+          "第\\s*2|第2|2\\s*線|第\\s*二\\s*線|二\\s*線",
+          "事前審查|事審"
+        ],
+        "drug_id": 1765,
+        "drug_identity": "nexavar"
+      },
+      "reference_answer": "Nexavar（Sorafenib）：線別 2；健保價 844/200mg/tab；需事前審查。適應症摘要：1.晚期腎細胞癌部分： | 2.晚期肝細胞癌部分：(101/8/1、105/11/1、108/6/1、109/1/1、112/8/1、114/2/1、114/6/1) | 3.用於放射性碘治療無效之局部晚期或轉移性的進行性(progressive)分化型甲狀腺癌(RAI-RDTC)：(106/1/1) | 1.作為復發性多形神經膠母細胞瘤病人的手術輔助，且不得與temozolomide併用。 | 2.需經事前審查核准後使用。"
+    },
+    {
+      "id": "drug-065",
+      "category": "drug_price_indication",
+      "question": "幫我用資料庫查 Tamoxifen，不要補外部 guideline，只列本系統查到的適應症摘要與價格。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Nolvadex",
+          "Tamoxifen"
+        ],
+        "contains_regex": [
+          "3|3",
+          "第\\s*1|第1|1\\s*線|第\\s*一\\s*線|一\\s*線"
+        ],
+        "drug_id": 1767,
+        "drug_identity": "nolvadex"
+      },
+      "reference_answer": "Nolvadex（Tamoxifen）：線別 1；健保價 3/10mg/tab；未標示需事前審查。適應症摘要：Tamoxifen：荷爾蒙受體陽性（HR+）乳癌輔助及晚期治療，停經前後皆可使用"
+    },
+    {
+      "id": "form-066",
+      "category": "formulation_price",
+      "question": "Herceptin（440mg/vial）的規格、劑量單位、健保價與院內價是多少？如果有常用 regimen tag 也請列出。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Herceptin",
+          "trastuzumab"
+        ],
+        "contains_regex": [
+          "28518|28,518"
+        ],
+        "formulation_identity": "trastuzumab|herceptin|440mg/vial"
+      },
+      "reference_answer": "Herceptin：規格 440mg/vial；劑量 440.0 vial；健保價 28518；院內價 32885；regimen tag THP,TCHP,H。"
+    },
+    {
+      "id": "form-067",
+      "category": "formulation_price",
+      "question": "請核對院內配方資料：Keytruda 100mg/4mL/vial 的 NHI/NTUH price 與 regimen tag。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Keytruda",
+          "pembrolizumab"
+        ],
+        "contains_regex": [
+          "54267|54,267"
+        ],
+        "formulation_identity": "pembrolizumab|keytruda|100mg/4ml/vial"
+      },
+      "reference_answer": "Keytruda：規格 100mg/4mL/vial；劑量 100.0 vial；健保價 54267；院內價 54267；regimen tag Keytruda。"
+    },
+    {
+      "id": "form-068",
+      "category": "formulation_price",
+      "question": "如果要估價，Perjeta 這個 420mg/14mL/vial 單位在資料庫是多少錢？",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Perjeta",
+          "pertuzumab"
+        ],
+        "contains_regex": [
+          "44929|44,929"
+        ],
+        "formulation_identity": "pertuzumab|perjeta|420mg/14ml/vial"
+      },
+      "reference_answer": "Perjeta：規格 420mg/14mL/vial；劑量 420.0 vial；健保價 44929；院內價 49966；regimen tag THP,TCHP,HP。"
+    },
+    {
+      "id": "form-069",
+      "category": "formulation_price",
+      "question": "Abraxane 規格 100mg/vial：請回覆 drug_key、健保價、院內價，不要推測其他規格。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Abraxane",
+          "nab_paclitaxel"
+        ],
+        "contains_regex": [
+          "9285|9,285"
+        ],
+        "formulation_identity": "nab_paclitaxel|abraxane|100mg/vial"
+      },
+      "reference_answer": "Abraxane：規格 100mg/vial；劑量 100.0 vial；健保價 9285；院內價 9285；regimen tag nab-P。"
+    },
+    {
+      "id": "form-070",
+      "category": "formulation_price",
+      "question": "Afinitor（5mg/tab）的規格、劑量單位、健保價與院內價是多少？如果有常用 regimen tag 也請列出。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Afinitor",
+          "everolimus"
+        ],
+        "contains_regex": [
+          "529|529"
+        ],
+        "formulation_identity": "everolimus|afinitor|5mg/tab"
+      },
+      "reference_answer": "Afinitor：規格 5mg/tab；劑量 5.0 tab；健保價 529；院內價 644；regimen tag Afinitor。"
+    },
+    {
+      "id": "form-071",
+      "category": "formulation_price",
+      "question": "請核對院內配方資料：Aloxi 0.25mg/5mL/vial 的 NHI/NTUH price 與 regimen tag。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Aloxi",
+          "palonosetron"
+        ],
+        "contains_regex": [
+          "822|822"
+        ],
+        "formulation_identity": "palonosetron|aloxi|0.25mg/5ml/vial"
+      },
+      "reference_answer": "Aloxi：規格 0.25mg/5mL/vial；劑量 0.25 vial；健保價 822；院內價 822；regimen tag antiemetic。"
+    },
+    {
+      "id": "form-072",
+      "category": "formulation_price",
+      "question": "如果要估價，Aromasin 這個 25mg/tab 單位在資料庫是多少錢？",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Aromasin",
+          "exemestane"
+        ],
+        "contains_regex": [
+          "40|40"
+        ],
+        "formulation_identity": "exemestane|aromasin|25mg/tab"
+      },
+      "reference_answer": "Aromasin：規格 25mg/tab；劑量 25.0 tab；健保價 40；院內價 54；regimen tag AI。"
+    },
+    {
+      "id": "form-073",
+      "category": "formulation_price",
+      "question": "Avastin 規格 100mg/4mL/vial：請回覆 drug_key、健保價、院內價，不要推測其他規格。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Avastin",
+          "bevacizumab"
+        ],
+        "contains_regex": [
+          "5473|5,473"
+        ],
+        "formulation_identity": "bevacizumab|avastin|100mg/4ml/vial"
+      },
+      "reference_answer": "Avastin：規格 100mg/4mL/vial；劑量 100.0 vial；健保價 5473；院內價 6810；regimen tag Avastin。"
+    },
+    {
+      "id": "form-074",
+      "category": "formulation_price",
+      "question": "Carboplatin（450mg/45mL/vial）的規格、劑量單位、健保價與院內價是多少？如果有常用 regimen tag 也請列出。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Carboplatin",
+          "carboplatin"
+        ],
+        "contains_regex": [
+          "2800|2,800"
+        ],
+        "formulation_identity": "carboplatin|carboplatin|450mg/45ml/vial"
+      },
+      "reference_answer": "Carboplatin：規格 450mg/45mL/vial；劑量 450.0 vial；健保價 2800；院內價 3195；regimen tag TCHP,TC_carbo。"
+    },
+    {
+      "id": "form-075",
+      "category": "formulation_price",
+      "question": "請核對院內配方資料：Carboplatin 150mg/15mL/vial 的 NHI/NTUH price 與 regimen tag。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Carboplatin",
+          "carboplatin"
+        ],
+        "contains_regex": [
+          "1200|1,200"
+        ],
+        "formulation_identity": "carboplatin|carboplatin|150mg/15ml/vial"
+      },
+      "reference_answer": "Carboplatin：規格 150mg/15mL/vial；劑量 150.0 vial；健保價 1200；院內價 1442；regimen tag TCHP,TC_carbo。"
+    },
+    {
+      "id": "form-076",
+      "category": "formulation_price",
+      "question": "如果要估價，Cyclophosphamide 這個 500mg/vial 單位在資料庫是多少錢？",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Cyclophosphamide",
+          "cyclophosphamide"
+        ],
+        "contains_regex": [
+          "188|188"
+        ],
+        "formulation_identity": "cyclophosphamide|cyclophosphamide|500mg/vial"
+      },
+      "reference_answer": "Cyclophosphamide：規格 500mg/vial；劑量 500.0 vial；健保價 188；院內價 188；regimen tag EC,AC,TC,CMF。"
+    },
+    {
+      "id": "form-077",
+      "category": "formulation_price",
+      "question": "Cyclophosphamide 規格 200mg/vial：請回覆 drug_key、健保價、院內價，不要推測其他規格。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Cyclophosphamide",
+          "cyclophosphamide"
+        ],
+        "contains_regex": [
+          "89|89"
+        ],
+        "formulation_identity": "cyclophosphamide|cyclophosphamide|200mg/vial"
+      },
+      "reference_answer": "Cyclophosphamide：規格 200mg/vial；劑量 200.0 vial；健保價 89；院內價 89；regimen tag EC,AC,TC,CMF。"
+    },
+    {
+      "id": "form-078",
+      "category": "formulation_price",
+      "question": "Cyclophosphamide（50mg/tab）的規格、劑量單位、健保價與院內價是多少？如果有常用 regimen tag 也請列出。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Cyclophosphamide",
+          "cyclophosphamide"
+        ],
+        "contains_regex": [
+          "15|15"
+        ],
+        "formulation_identity": "cyclophosphamide|cyclophosphamide|50mg/tab"
+      },
+      "reference_answer": "Cyclophosphamide：規格 50mg/tab；劑量 50.0 tab；健保價 15；院內價 15；regimen tag oral_CMF。"
+    },
+    {
+      "id": "form-079",
+      "category": "formulation_price",
+      "question": "請核對院內配方資料：Diphereline 11.25mg/vial 的 NHI/NTUH price 與 regimen tag。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Diphereline",
+          "triptorelin"
+        ],
+        "contains_regex": [
+          "11489|11,489"
+        ],
+        "formulation_identity": "triptorelin|diphereline|11.25mg/vial"
+      },
+      "reference_answer": "Diphereline：規格 11.25mg/vial；劑量 11.25 vial；健保價 11489；院內價 11489；regimen tag GnRHa。"
+    },
+    {
+      "id": "form-080",
+      "category": "formulation_price",
+      "question": "如果要估價，Emend 這個 125mg/cap 單位在資料庫是多少錢？",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Emend",
+          "aprepitant_125"
+        ],
+        "contains_regex": [
+          "498|498"
+        ],
+        "formulation_identity": "aprepitant_125|emend|125mg/cap"
+      },
+      "reference_answer": "Emend：規格 125mg/cap；劑量 125.0 cap；健保價 498；院內價 498；regimen tag antiemetic。"
+    },
+    {
+      "id": "form-081",
+      "category": "formulation_price",
+      "question": "Emend 規格 80mg/cap：請回覆 drug_key、健保價、院內價，不要推測其他規格。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Emend",
+          "aprepitant_80"
+        ],
+        "contains_regex": [
+          "498|498"
+        ],
+        "formulation_identity": "aprepitant_80|emend|80mg/cap"
+      },
+      "reference_answer": "Emend：規格 80mg/cap；劑量 80.0 cap；健保價 498；院內價 498；regimen tag antiemetic。"
+    },
+    {
+      "id": "form-082",
+      "category": "formulation_price",
+      "question": "Emend IV（150mg/vial）的規格、劑量單位、健保價與院內價是多少？如果有常用 regimen tag 也請列出。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Emend IV",
+          "fosaprepitant"
+        ],
+        "contains_regex": [
+          "1803|1,803"
+        ],
+        "formulation_identity": "fosaprepitant|emendiv|150mg/vial"
+      },
+      "reference_answer": "Emend IV：規格 150mg/vial；劑量 150.0 vial；健保價 1803；院內價 1803；regimen tag antiemetic。"
+    },
+    {
+      "id": "form-083",
+      "category": "formulation_price",
+      "question": "請核對院內配方資料：Enhertu 100mg/vial 的 NHI/NTUH price 與 regimen tag。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Enhertu",
+          "trastuzumab_deruxtecan"
+        ],
+        "contains_regex": [
+          "未列|無|沒有|自費"
+        ],
+        "formulation_identity": "trastuzumab_deruxtecan|enhertu|100mg/vial"
+      },
+      "reference_answer": "Enhertu：規格 100mg/vial；劑量 100.0 vial；健保價 未列；院內價 29771；regimen tag Enhertu。"
+    },
+    {
+      "id": "form-084",
+      "category": "formulation_price",
+      "question": "如果要估價，Epirubicin 這個 50mg/25mL/vial 單位在資料庫是多少錢？",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Epirubicin",
+          "epirubicin"
+        ],
+        "contains_regex": [
+          "2366|2,366"
+        ],
+        "formulation_identity": "epirubicin|epirubicin|50mg/25ml/vial"
+      },
+      "reference_answer": "Epirubicin：規格 50mg/25mL/vial；劑量 50.0 vial；健保價 2366；院內價 2492；regimen tag EC,FEC。"
+    },
+    {
+      "id": "form-085",
+      "category": "formulation_price",
+      "question": "Epirubicin 規格 10mg/5mL/vial：請回覆 drug_key、健保價、院內價，不要推測其他規格。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Epirubicin",
+          "epirubicin"
+        ],
+        "contains_regex": [
+          "398|398"
+        ],
+        "formulation_identity": "epirubicin|epirubicin|10mg/5ml/vial"
+      },
+      "reference_answer": "Epirubicin：規格 10mg/5mL/vial；劑量 10.0 vial；健保價 398；院內價 382；regimen tag EC,FEC。"
+    },
+    {
+      "id": "form-086",
+      "category": "formulation_price",
+      "question": "Faslodex（250mg/5mL/syringe）的規格、劑量單位、健保價與院內價是多少？如果有常用 regimen tag 也請列出。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Faslodex",
+          "fulvestrant"
+        ],
+        "contains_regex": [
+          "17500|17,500"
+        ],
+        "formulation_identity": "fulvestrant|faslodex|250mg/5ml/syringe"
+      },
+      "reference_answer": "Faslodex：規格 250mg/5mL/syringe；劑量 250.0 syringe；健保價 17500；院內價 17500；regimen tag Faslodex。"
+    },
+    {
+      "id": "form-087",
+      "category": "formulation_price",
+      "question": "請核對院內配方資料：Femara/Lovizol 2.5mg/tab 的 NHI/NTUH price 與 regimen tag。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Femara/Lovizol",
+          "letrozole"
+        ],
+        "contains_regex": [
+          "21|21"
+        ],
+        "formulation_identity": "letrozole|femara/lovizol|2.5mg/tab"
+      },
+      "reference_answer": "Femara/Lovizol：規格 2.5mg/tab；劑量 2.5 tab；健保價 21；院內價 44；regimen tag AI。"
+    },
+    {
+      "id": "form-088",
+      "category": "formulation_price",
+      "question": "如果要估價，Filgrastim 這個 300mcg/0.7mL/amp 單位在資料庫是多少錢？",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Filgrastim",
+          "filgrastim"
+        ],
+        "contains_regex": [
+          "1967|1,967"
+        ],
+        "formulation_identity": "filgrastim|filgrastim|300mcg/0.7ml/amp"
+      },
+      "reference_answer": "Filgrastim：規格 300mcg/0.7mL/amp；劑量 0.3 amp；健保價 1967；院內價 1967；regimen tag GCSF。"
+    },
+    {
+      "id": "form-089",
+      "category": "formulation_price",
+      "question": "Fulphila 規格 6mg/0.6mL/syringe：請回覆 drug_key、健保價、院內價，不要推測其他規格。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Fulphila",
+          "pegfilgrastim"
+        ],
+        "contains_regex": [
+          "9685|9,685"
+        ],
+        "formulation_identity": "pegfilgrastim|fulphila|6mg/0.6ml/syringe"
+      },
+      "reference_answer": "Fulphila：規格 6mg/0.6mL/syringe；劑量 6.0 syringe；健保價 9685；院內價 9685；regimen tag GCSF。"
+    },
+    {
+      "id": "form-090",
+      "category": "formulation_price",
+      "question": "Granocyte（100mcg/vial）的規格、劑量單位、健保價與院內價是多少？如果有常用 regimen tag 也請列出。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Granocyte",
+          "lenograstim"
+        ],
+        "contains_regex": [
+          "733|733"
+        ],
+        "formulation_identity": "lenograstim|granocyte|100mcg/vial"
+      },
+      "reference_answer": "Granocyte：規格 100mcg/vial；劑量 0.1 vial；健保價 733；院內價 733；regimen tag GCSF。"
+    },
+    {
+      "id": "form-091",
+      "category": "formulation_price",
+      "question": "請核對院內配方資料：Herceptin SC 600mg/5mL/vial 的 NHI/NTUH price 與 regimen tag。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Herceptin SC",
+          "trastuzumab_sc"
+        ],
+        "contains_regex": [
+          "26906|26,906"
+        ],
+        "formulation_identity": "trastuzumab_sc|herceptinsc|600mg/5ml/vial"
+      },
+      "reference_answer": "Herceptin SC：規格 600mg/5mL/vial；劑量 600.0 vial；健保價 26906；院內價 26906；regimen tag H_SC。"
+    },
+    {
+      "id": "form-092",
+      "category": "formulation_price",
+      "question": "如果要估價，Herzuma 這個 440mg/vial 單位在資料庫是多少錢？",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Herzuma",
+          "trastuzumab_biosimilar"
+        ],
+        "contains_regex": [
+          "28518|28,518"
+        ],
+        "formulation_identity": "trastuzumab_biosimilar|herzuma|440mg/vial"
+      },
+      "reference_answer": "Herzuma：規格 440mg/vial；劑量 440.0 vial；健保價 28518；院內價 29895；regimen tag THP,TCHP,H。"
+    },
+    {
+      "id": "form-093",
+      "category": "formulation_price",
+      "question": "ICE Hat & Glove 規格 Cooling System：請回覆 drug_key、健保價、院內價，不要推測其他規格。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "ICE Hat & Glove",
+          "ice_cooling"
+        ],
+        "contains_regex": [
+          "未列|無|沒有|自費"
+        ],
+        "formulation_identity": "ice_cooling|icehat&glove|coolingsystem"
+      },
+      "reference_answer": "ICE Hat & Glove：規格 Cooling System；劑量  set；健保價 未列；院內價 18850；regimen tag supportive。"
+    },
+    {
+      "id": "form-094",
+      "category": "formulation_price",
+      "question": "Ibrance（125mg/cap）的規格、劑量單位、健保價與院內價是多少？如果有常用 regimen tag 也請列出。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Ibrance",
+          "palbociclib"
+        ],
+        "contains_regex": [
+          "3665|3,665"
+        ],
+        "formulation_identity": "palbociclib|ibrance|125mg/cap"
+      },
+      "reference_answer": "Ibrance：規格 125mg/cap；劑量 125.0 cap；健保價 3665；院內價 3665；regimen tag CDK+AI。"
+    },
+    {
+      "id": "form-095",
+      "category": "formulation_price",
+      "question": "請核對院內配方資料：Kadcyla 160mg/vial 的 NHI/NTUH price 與 regimen tag。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Kadcyla",
+          "trastuzumab_emtansine"
+        ],
+        "contains_regex": [
+          "50983|50,983"
+        ],
+        "formulation_identity": "trastuzumab_emtansine|kadcyla|160mg/vial"
+      },
+      "reference_answer": "Kadcyla：規格 160mg/vial；劑量 160.0 vial；健保價 50983；院內價 56604；regimen tag T-DM1。"
+    },
+    {
+      "id": "form-096",
+      "category": "formulation_price",
+      "question": "如果要估價，Kadcyla 這個 100mg/vial 單位在資料庫是多少錢？",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Kadcyla",
+          "trastuzumab_emtansine"
+        ],
+        "contains_regex": [
+          "31865|31,865"
+        ],
+        "formulation_identity": "trastuzumab_emtansine|kadcyla|100mg/vial"
+      },
+      "reference_answer": "Kadcyla：規格 100mg/vial；劑量 100.0 vial；健保價 31865；院內價 35506；regimen tag T-DM1。"
+    },
+    {
+      "id": "form-097",
+      "category": "formulation_price",
+      "question": "Kisqali 規格 200mg/tab：請回覆 drug_key、健保價、院內價，不要推測其他規格。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Kisqali",
+          "ribociclib"
+        ],
+        "contains_regex": [
+          "1254|1,254"
+        ],
+        "formulation_identity": "ribociclib|kisqali|200mg/tab"
+      },
+      "reference_answer": "Kisqali：規格 200mg/tab；劑量 200.0 tab；健保價 1254；院內價 1254；regimen tag CDK+AI。"
+    },
+    {
+      "id": "form-098",
+      "category": "formulation_price",
+      "question": "Kytril（3mg/3mL/amp）的規格、劑量單位、健保價與院內價是多少？如果有常用 regimen tag 也請列出。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Kytril",
+          "granisetron"
+        ],
+        "contains_regex": [
+          "359|359"
+        ],
+        "formulation_identity": "granisetron|kytril|3mg/3ml/amp"
+      },
+      "reference_answer": "Kytril：規格 3mg/3mL/amp；劑量 3.0 amp；健保價 359；院內價 359；regimen tag antiemetic。"
+    },
+    {
+      "id": "form-099",
+      "category": "formulation_price",
+      "question": "請核對院內配方資料：Kytril 1mg/tab 的 NHI/NTUH price 與 regimen tag。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Kytril",
+          "granisetron_oral"
+        ],
+        "contains_regex": [
+          "194|194"
+        ],
+        "formulation_identity": "granisetron_oral|kytril|1mg/tab"
+      },
+      "reference_answer": "Kytril：規格 1mg/tab；劑量 1.0 tab；健保價 194；院內價 194；regimen tag antiemetic。"
+    },
+    {
+      "id": "form-100",
+      "category": "formulation_price",
+      "question": "如果要估價，Leuplin 這個 3.75mg/syringe 單位在資料庫是多少錢？",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Leuplin",
+          "leuprolide"
+        ],
+        "contains_regex": [
+          "4404|4,404"
+        ],
+        "formulation_identity": "leuprolide|leuplin|3.75mg/syringe"
+      },
+      "reference_answer": "Leuplin：規格 3.75mg/syringe；劑量 3.75 syringe；健保價 4404；院內價 4404；regimen tag GnRHa。"
+    },
+    {
+      "id": "form-101",
+      "category": "formulation_price",
+      "question": "Lipo-Dox 規格 20mg/10mL/vial：請回覆 drug_key、健保價、院內價，不要推測其他規格。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Lipo-Dox",
+          "doxorubicin_lipo"
+        ],
+        "contains_regex": [
+          "5274|5,274"
+        ],
+        "formulation_identity": "doxorubicin_lipo|lipo-dox|20mg/10ml/vial"
+      },
+      "reference_answer": "Lipo-Dox：規格 20mg/10mL/vial；劑量 20.0 vial；健保價 5274；院內價 12684；regimen tag liposomal。"
+    },
+    {
+      "id": "form-102",
+      "category": "formulation_price",
+      "question": "Lynparza（150mg/tab）的規格、劑量單位、健保價與院內價是多少？如果有常用 regimen tag 也請列出。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Lynparza",
+          "olaparib"
+        ],
+        "contains_regex": [
+          "1206|1,206"
+        ],
+        "formulation_identity": "olaparib|lynparza|150mg/tab"
+      },
+      "reference_answer": "Lynparza：規格 150mg/tab；劑量 150.0 tab；健保價 1206；院內價 1206；regimen tag Lynparza。"
+    },
+    {
+      "id": "form-103",
+      "category": "formulation_price",
+      "question": "請核對院內配方資料：Navelbine 50mg/5mL/vial 的 NHI/NTUH price 與 regimen tag。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Navelbine",
+          "vinorelbine"
+        ],
+        "contains_regex": [
+          "5785|5,785"
+        ],
+        "formulation_identity": "vinorelbine|navelbine|50mg/5ml/vial"
+      },
+      "reference_answer": "Navelbine：規格 50mg/5mL/vial；劑量 50.0 vial；健保價 5785；院內價 7238；regimen tag NV。"
+    },
+    {
+      "id": "form-104",
+      "category": "formulation_price",
+      "question": "如果要估價，Navelbine 這個 10mg/1mL/vial 單位在資料庫是多少錢？",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Navelbine",
+          "vinorelbine"
+        ],
+        "contains_regex": [
+          "965|965"
+        ],
+        "formulation_identity": "vinorelbine|navelbine|10mg/1ml/vial"
+      },
+      "reference_answer": "Navelbine：規格 10mg/1mL/vial；劑量 10.0 vial；健保價 965；院內價 1290；regimen tag NV。"
+    },
+    {
+      "id": "form-105",
+      "category": "formulation_price",
+      "question": "Navelbine 規格 30mg/cap：請回覆 drug_key、健保價、院內價，不要推測其他規格。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Navelbine",
+          "vinorelbine_oral"
+        ],
+        "contains_regex": [
+          "3945|3,945"
+        ],
+        "formulation_identity": "vinorelbine_oral|navelbine|30mg/cap"
+      },
+      "reference_answer": "Navelbine：規格 30mg/cap；劑量 30.0 cap；健保價 3945；院內價 3945；regimen tag oral_NV。"
+    },
+    {
+      "id": "form-106",
+      "category": "formulation_price",
+      "question": "Navelbine（20mg/cap）的規格、劑量單位、健保價與院內價是多少？如果有常用 regimen tag 也請列出。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Navelbine",
+          "vinorelbine_oral"
+        ],
+        "contains_regex": [
+          "2727|2,727"
+        ],
+        "formulation_identity": "vinorelbine_oral|navelbine|20mg/cap"
+      },
+      "reference_answer": "Navelbine：規格 20mg/cap；劑量 20.0 cap；健保價 2727；院內價 2727；regimen tag oral_NV。"
+    },
+    {
+      "id": "form-107",
+      "category": "formulation_price",
+      "question": "請核對院內配方資料：Nerlynx 40mg/tab 的 NHI/NTUH price 與 regimen tag。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Nerlynx",
+          "neratinib"
+        ],
+        "contains_regex": [
+          "625|625"
+        ],
+        "formulation_identity": "neratinib|nerlynx|40mg/tab"
+      },
+      "reference_answer": "Nerlynx：規格 40mg/tab；劑量 40.0 tab；健保價 625；院內價 625；regimen tag Nerlynx。"
+    },
+    {
+      "id": "form-108",
+      "category": "formulation_price",
+      "question": "如果要估價，Oncotype DX 這個 Genomic Test 單位在資料庫是多少錢？",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Oncotype DX",
+          "oncotype_dx"
+        ],
+        "contains_regex": [
+          "未列|無|沒有|自費"
+        ],
+        "formulation_identity": "oncotype_dx|oncotypedx|genomictest"
+      },
+      "reference_answer": "Oncotype DX：規格 Genomic Test；劑量  test；健保價 未列；院內價 170000；regimen tag diagnostic。"
+    },
+    {
+      "id": "form-109",
+      "category": "formulation_price",
+      "question": "Phesgo 規格 loading dose：請回覆 drug_key、健保價、院內價，不要推測其他規格。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Phesgo",
+          "phesgo"
+        ],
+        "contains_regex": [
+          "未列|無|沒有|自費"
+        ],
+        "formulation_identity": "phesgo|phesgo|loadingdose"
+      },
+      "reference_answer": "Phesgo：規格 loading dose；劑量  vial；健保價 未列；院內價 125306；regimen tag Phesgo。"
+    },
+    {
+      "id": "form-110",
+      "category": "formulation_price",
+      "question": "Phesgo（maintenance）的規格、劑量單位、健保價與院內價是多少？如果有常用 regimen tag 也請列出。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Phesgo",
+          "phesgo"
+        ],
+        "contains_regex": [
+          "未列|無|沒有|自費"
+        ],
+        "formulation_identity": "phesgo|phesgo|maintenance"
+      },
+      "reference_answer": "Phesgo：規格 maintenance；劑量  vial；健保價 未列；院內價 76241；regimen tag Phesgo。"
+    },
+    {
+      "id": "form-111",
+      "category": "formulation_price",
+      "question": "請核對院內配方資料：Phyxol 30mg/5mL/vial 的 NHI/NTUH price 與 regimen tag。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Phyxol",
+          "paclitaxel"
+        ],
+        "contains_regex": [
+          "509|509"
+        ],
+        "formulation_identity": "paclitaxel|phyxol|30mg/5ml/vial"
+      },
+      "reference_answer": "Phyxol：規格 30mg/5mL/vial；劑量 30.0 vial；健保價 509；院內價 509；regimen tag wP,P。"
+    },
+    {
+      "id": "form-112",
+      "category": "formulation_price",
+      "question": "如果要估價，Phyxol 這個 90mg/15mL/vial 單位在資料庫是多少錢？",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Phyxol",
+          "paclitaxel"
+        ],
+        "contains_regex": [
+          "894|894"
+        ],
+        "formulation_identity": "paclitaxel|phyxol|90mg/15ml/vial"
+      },
+      "reference_answer": "Phyxol：規格 90mg/15mL/vial；劑量 90.0 vial；健保價 894；院內價 894；regimen tag wP,P。"
+    },
+    {
+      "id": "form-113",
+      "category": "formulation_price",
+      "question": "Piqray 規格 250mg daily (200+50mg)：請回覆 drug_key、健保價、院內價，不要推測其他規格。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Piqray",
+          "alpelisib"
+        ],
+        "contains_regex": [
+          "34104|34,104"
+        ],
+        "formulation_identity": "alpelisib|piqray|250mgdaily(200+50mg)"
+      },
+      "reference_answer": "Piqray：規格 250mg daily (200+50mg)；劑量 250.0 box；健保價 34104；院內價 34104；regimen tag Piqray。"
+    },
+    {
+      "id": "form-114",
+      "category": "formulation_price",
+      "question": "Prolia（60mg/1mL/syringe）的規格、劑量單位、健保價與院內價是多少？如果有常用 regimen tag 也請列出。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "Prolia",
+          "denosumab_60"
+        ],
+        "contains_regex": [
+          "5402|5,402"
+        ],
+        "formulation_identity": "denosumab_60|prolia|60mg/1ml/syringe"
+      },
+      "reference_answer": "Prolia：規格 60mg/1mL/syringe；劑量 60.0 syringe；健保價 5402；院內價 5402；regimen tag bone。"
+    },
+    {
+      "id": "form-115",
+      "category": "formulation_price",
+      "question": "請核對院內配方資料：TS-1 20mg/cap 的 NHI/NTUH price 與 regimen tag。",
+      "patient_context": {},
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_any": [
+          "TS-1",
+          "tegafur_gimeracil"
+        ],
+        "contains_regex": [
+          "168|168"
+        ],
+        "formulation_identity": "tegafur_gimeracil|ts-1|20mg/cap"
+      },
+      "reference_answer": "TS-1：規格 20mg/cap；劑量 20.0 cap；健保價 168；院內價 168；regimen tag TS-1。"
+    },
+    {
+      "id": "stage-116",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN0M0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N0",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "0"
+        ],
+        "expected_stage": "0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN0M0 = 0。"
+    },
+    {
+      "id": "stage-117",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1N0M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1",
+        "cN": "N0",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "IA"
+        ],
+        "expected_stage": "IA"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1N0M0 = IA。"
+    },
+    {
+      "id": "stage-118",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1N1M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "IIA"
+        ],
+        "expected_stage": "IIA"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1N1M0 = IIA。"
+    },
+    {
+      "id": "stage-119",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT2N0M0 是第幾期？",
+      "patient_context": {
+        "cT": "T2",
+        "cN": "N0",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "IIA"
+        ],
+        "expected_stage": "IIA"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT2N0M0 = IIA。"
+    },
+    {
+      "id": "stage-120",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT2N1M0 是第幾期？",
+      "patient_context": {
+        "cT": "T2",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "IIB"
+        ],
+        "expected_stage": "IIB"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT2N1M0 = IIB。"
+    },
+    {
+      "id": "stage-121",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT3N0M0 是第幾期？",
+      "patient_context": {
+        "cT": "T3",
+        "cN": "N0",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "IIB"
+        ],
+        "expected_stage": "IIB"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT3N0M0 = IIB。"
+    },
+    {
+      "id": "stage-122",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT3N1M0 是第幾期？",
+      "patient_context": {
+        "cT": "T3",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "IIIA"
+        ],
+        "expected_stage": "IIIA"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT3N1M0 = IIIA。"
+    },
+    {
+      "id": "stage-123",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1N2M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1",
+        "cN": "N2",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "IIIA"
+        ],
+        "expected_stage": "IIIA"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1N2M0 = IIIA。"
+    },
+    {
+      "id": "stage-124",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT2N2M0 是第幾期？",
+      "patient_context": {
+        "cT": "T2",
+        "cN": "N2",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "IIIA"
+        ],
+        "expected_stage": "IIIA"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT2N2M0 = IIIA。"
+    },
+    {
+      "id": "stage-125",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT3N2M0 是第幾期？",
+      "patient_context": {
+        "cT": "T3",
+        "cN": "N2",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "IIIA"
+        ],
+        "expected_stage": "IIIA"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT3N2M0 = IIIA。"
+    },
+    {
+      "id": "stage-126",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT4N0M0 是第幾期？",
+      "patient_context": {
+        "cT": "T4",
+        "cN": "N0",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "IIIB"
+        ],
+        "expected_stage": "IIIB"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT4N0M0 = IIIB。"
+    },
+    {
+      "id": "stage-127",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT4N2M0 是第幾期？",
+      "patient_context": {
+        "cT": "T4",
+        "cN": "N2",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "IIIB"
+        ],
+        "expected_stage": "IIIB"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT4N2M0 = IIIB。"
+    },
+    {
+      "id": "stage-128",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1N3M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1",
+        "cN": "N3",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "IIIC"
+        ],
+        "expected_stage": "IIIC"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1N3M0 = IIIC。"
+    },
+    {
+      "id": "stage-129",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT2N3M0 是第幾期？",
+      "patient_context": {
+        "cT": "T2",
+        "cN": "N3",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "IIIC"
+        ],
+        "expected_stage": "IIIC"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT2N3M0 = IIIC。"
+    },
+    {
+      "id": "stage-130",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT3N3M0 是第幾期？",
+      "patient_context": {
+        "cT": "T3",
+        "cN": "N3",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "IIIC"
+        ],
+        "expected_stage": "IIIC"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT3N3M0 = IIIC。"
+    },
+    {
+      "id": "stage-131",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT4N3M0 是第幾期？",
+      "patient_context": {
+        "cT": "T4",
+        "cN": "N3",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "IIIC"
+        ],
+        "expected_stage": "IIIC"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT4N3M0 = IIIC。"
+    },
+    {
+      "id": "stage-132",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1N0M1 是第幾期？",
+      "patient_context": {
+        "cT": "T1",
+        "cN": "N0",
+        "cM": "M1"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "IV"
+        ],
+        "expected_stage": "IV"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1N0M1 = IV。"
+    },
+    {
+      "id": "stage-133",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT2N1M1 是第幾期？",
+      "patient_context": {
+        "cT": "T2",
+        "cN": "N1",
+        "cM": "M1"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "IV"
+        ],
+        "expected_stage": "IV"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT2N1M1 = IV。"
+    },
+    {
+      "id": "stage-134",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT3N1M1 是第幾期？",
+      "patient_context": {
+        "cT": "T3",
+        "cN": "N1",
+        "cM": "M1"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "IV"
+        ],
+        "expected_stage": "IV"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT3N1M1 = IV。"
+    },
+    {
+      "id": "stage-135",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT4N2M1 是第幾期？",
+      "patient_context": {
+        "cT": "T4",
+        "cN": "N2",
+        "cM": "M1"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "IV"
+        ],
+        "expected_stage": "IV"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT4N2M1 = IV。"
+    },
+    {
+      "id": "stage-136",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN0(i+)M0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N0(i+)",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN0(i+)M0 = 無法判定。"
+    },
+    {
+      "id": "stage-137",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN1miM0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N1mi",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN1miM0 = 無法判定。"
+    },
+    {
+      "id": "stage-138",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN1M0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN1M0 = 無法判定。"
+    },
+    {
+      "id": "stage-139",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN1aM0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N1a",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN1aM0 = 無法判定。"
+    },
+    {
+      "id": "stage-140",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN2M0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N2",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN2M0 = 無法判定。"
+    },
+    {
+      "id": "stage-141",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN2aM0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N2a",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN2aM0 = 無法判定。"
+    },
+    {
+      "id": "stage-142",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN3M0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N3",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN3M0 = 無法判定。"
+    },
+    {
+      "id": "stage-143",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN3aM0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N3a",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN3aM0 = 無法判定。"
+    },
+    {
+      "id": "stage-144",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N0M0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N0",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N0M0 = 無法判定。"
+    },
+    {
+      "id": "stage-145",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N0(i+)M0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N0(i+)",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N0(i+)M0 = 無法判定。"
+    },
+    {
+      "id": "stage-146",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N1miM0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N1mi",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N1miM0 = 無法判定。"
+    },
+    {
+      "id": "stage-147",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N1M0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N1M0 = 無法判定。"
+    },
+    {
+      "id": "stage-148",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N1aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N1a",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N1aM0 = 無法判定。"
+    },
+    {
+      "id": "stage-149",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N2M0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N2",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N2M0 = 無法判定。"
+    },
+    {
+      "id": "stage-150",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N2aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N2a",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N2aM0 = 無法判定。"
+    },
+    {
+      "id": "stage-151",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N3M0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N3",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N3M0 = 無法判定。"
+    },
+    {
+      "id": "stage-152",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N3aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N3a",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N3aM0 = 無法判定。"
+    },
+    {
+      "id": "stage-153",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1N0(i+)M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1",
+        "cN": "N0(i+)",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1N0(i+)M0 = 無法判定。"
+    },
+    {
+      "id": "stage-154",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1N1miM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1",
+        "cN": "N1mi",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1N1miM0 = 無法判定。"
+    },
+    {
+      "id": "stage-155",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1N1aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1",
+        "cN": "N1a",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1N1aM0 = 無法判定。"
+    },
+    {
+      "id": "stage-156",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1N2aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1",
+        "cN": "N2a",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1N2aM0 = 無法判定。"
+    },
+    {
+      "id": "stage-157",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1N3aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1",
+        "cN": "N3a",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1N3aM0 = 無法判定。"
+    },
+    {
+      "id": "stage-158",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN0M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N0",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN0M0 = 無法判定。"
+    },
+    {
+      "id": "stage-159",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN0(i+)M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N0(i+)",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN0(i+)M0 = 無法判定。"
+    },
+    {
+      "id": "stage-160",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN1miM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N1mi",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN1miM0 = 無法判定。"
+    },
+    {
+      "id": "stage-161",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN1M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN1M0 = 無法判定。"
+    },
+    {
+      "id": "stage-162",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN1aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N1a",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN1aM0 = 無法判定。"
+    },
+    {
+      "id": "stage-163",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN2M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N2",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN2M0 = 無法判定。"
+    },
+    {
+      "id": "stage-164",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN2aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N2a",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN2aM0 = 無法判定。"
+    },
+    {
+      "id": "stage-165",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN3M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N3",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN3M0 = 無法判定。"
+    },
+    {
+      "id": "stage-166",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN3aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N3a",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN3aM0 = 無法判定。"
+    },
+    {
+      "id": "stage-167",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1aN0M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1a",
+        "cN": "N0",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1aN0M0 = 無法判定。"
+    },
+    {
+      "id": "stage-168",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1aN0(i+)M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1a",
+        "cN": "N0(i+)",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1aN0(i+)M0 = 無法判定。"
+    },
+    {
+      "id": "stage-169",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1aN1miM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1a",
+        "cN": "N1mi",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1aN1miM0 = 無法判定。"
+    },
+    {
+      "id": "stage-170",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1aN1M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1a",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1aN1M0 = 無法判定。"
+    },
+    {
+      "id": "score-171",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 49、size 20mm、nodes 0、grade 3、ER H-score 240、PR H-score 180、HER2 -、Ki67 20%。",
+      "patient_context": {
+        "age": 49,
+        "size_mm": 20,
+        "tumor_size_mm": 20,
+        "grade": 3,
+        "nodes_pos": 0,
+        "er_hscore": 240,
+        "pr_hscore": 180,
+        "her2": "-",
+        "ki67": 20
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-172",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 55、size 25mm、nodes 1、grade 2、ER H-score 270、PR H-score 200、HER2 -、Ki67 15%。",
+      "patient_context": {
+        "age": 55,
+        "size_mm": 25,
+        "tumor_size_mm": 25,
+        "grade": 2,
+        "nodes_pos": 1,
+        "er_hscore": 270,
+        "pr_hscore": 200,
+        "her2": "-",
+        "ki67": 15
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-173",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 62、size 35mm、nodes 4、grade 3、ER H-score 210、PR H-score 80、HER2 -、Ki67 30%。",
+      "patient_context": {
+        "age": 62,
+        "size_mm": 35,
+        "tumor_size_mm": 35,
+        "grade": 3,
+        "nodes_pos": 4,
+        "er_hscore": 210,
+        "pr_hscore": 80,
+        "her2": "-",
+        "ki67": 30
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-174",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 45、size 18mm、nodes 2、grade 2、ER H-score 180、PR H-score 120、HER2 +、Ki67 35%。",
+      "patient_context": {
+        "age": 45,
+        "size_mm": 18,
+        "tumor_size_mm": 18,
+        "grade": 2,
+        "nodes_pos": 2,
+        "er_hscore": 180,
+        "pr_hscore": 120,
+        "her2": "+",
+        "ki67": 35
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-175",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 70、size 12mm、nodes 0、grade 1、ER H-score 290、PR H-score 260、HER2 -、Ki67 8%。",
+      "patient_context": {
+        "age": 70,
+        "size_mm": 12,
+        "tumor_size_mm": 12,
+        "grade": 1,
+        "nodes_pos": 0,
+        "er_hscore": 290,
+        "pr_hscore": 260,
+        "her2": "-",
+        "ki67": 8
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-176",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 50、size 20mm、nodes 0、grade 3、ER H-score 240、PR H-score 180、HER2 -、Ki67 20%。",
+      "patient_context": {
+        "age": 50,
+        "size_mm": 20,
+        "tumor_size_mm": 20,
+        "grade": 3,
+        "nodes_pos": 0,
+        "er_hscore": 240,
+        "pr_hscore": 180,
+        "her2": "-",
+        "ki67": 20
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-177",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 56、size 25mm、nodes 1、grade 2、ER H-score 270、PR H-score 200、HER2 -、Ki67 15%。",
+      "patient_context": {
+        "age": 56,
+        "size_mm": 25,
+        "tumor_size_mm": 25,
+        "grade": 2,
+        "nodes_pos": 1,
+        "er_hscore": 270,
+        "pr_hscore": 200,
+        "her2": "-",
+        "ki67": 15
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-178",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 63、size 35mm、nodes 4、grade 3、ER H-score 210、PR H-score 80、HER2 -、Ki67 30%。",
+      "patient_context": {
+        "age": 63,
+        "size_mm": 35,
+        "tumor_size_mm": 35,
+        "grade": 3,
+        "nodes_pos": 4,
+        "er_hscore": 210,
+        "pr_hscore": 80,
+        "her2": "-",
+        "ki67": 30
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-179",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 46、size 18mm、nodes 2、grade 2、ER H-score 180、PR H-score 120、HER2 +、Ki67 35%。",
+      "patient_context": {
+        "age": 46,
+        "size_mm": 18,
+        "tumor_size_mm": 18,
+        "grade": 2,
+        "nodes_pos": 2,
+        "er_hscore": 180,
+        "pr_hscore": 120,
+        "her2": "+",
+        "ki67": 35
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-180",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 71、size 12mm、nodes 0、grade 1、ER H-score 290、PR H-score 260、HER2 -、Ki67 8%。",
+      "patient_context": {
+        "age": 71,
+        "size_mm": 12,
+        "tumor_size_mm": 12,
+        "grade": 1,
+        "nodes_pos": 0,
+        "er_hscore": 290,
+        "pr_hscore": 260,
+        "her2": "-",
+        "ki67": 8
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-181",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 51、size 20mm、nodes 0、grade 3、ER H-score 240、PR H-score 180、HER2 -、Ki67 20%。",
+      "patient_context": {
+        "age": 51,
+        "size_mm": 20,
+        "tumor_size_mm": 20,
+        "grade": 3,
+        "nodes_pos": 0,
+        "er_hscore": 240,
+        "pr_hscore": 180,
+        "her2": "-",
+        "ki67": 20
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-182",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 57、size 25mm、nodes 1、grade 2、ER H-score 270、PR H-score 200、HER2 -、Ki67 15%。",
+      "patient_context": {
+        "age": 57,
+        "size_mm": 25,
+        "tumor_size_mm": 25,
+        "grade": 2,
+        "nodes_pos": 1,
+        "er_hscore": 270,
+        "pr_hscore": 200,
+        "her2": "-",
+        "ki67": 15
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-183",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 64、size 35mm、nodes 4、grade 3、ER H-score 210、PR H-score 80、HER2 -、Ki67 30%。",
+      "patient_context": {
+        "age": 64,
+        "size_mm": 35,
+        "tumor_size_mm": 35,
+        "grade": 3,
+        "nodes_pos": 4,
+        "er_hscore": 210,
+        "pr_hscore": 80,
+        "her2": "-",
+        "ki67": 30
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-184",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 47、size 18mm、nodes 2、grade 2、ER H-score 180、PR H-score 120、HER2 +、Ki67 35%。",
+      "patient_context": {
+        "age": 47,
+        "size_mm": 18,
+        "tumor_size_mm": 18,
+        "grade": 2,
+        "nodes_pos": 2,
+        "er_hscore": 180,
+        "pr_hscore": 120,
+        "her2": "+",
+        "ki67": 35
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-185",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 72、size 12mm、nodes 0、grade 1、ER H-score 290、PR H-score 260、HER2 -、Ki67 8%。",
+      "patient_context": {
+        "age": 72,
+        "size_mm": 12,
+        "tumor_size_mm": 12,
+        "grade": 1,
+        "nodes_pos": 0,
+        "er_hscore": 290,
+        "pr_hscore": 260,
+        "her2": "-",
+        "ki67": 8
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-186",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 52、size 20mm、nodes 0、grade 3、ER H-score 240、PR H-score 180、HER2 -、Ki67 20%。",
+      "patient_context": {
+        "age": 52,
+        "size_mm": 20,
+        "tumor_size_mm": 20,
+        "grade": 3,
+        "nodes_pos": 0,
+        "er_hscore": 240,
+        "pr_hscore": 180,
+        "her2": "-",
+        "ki67": 20
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-187",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 58、size 25mm、nodes 1、grade 2、ER H-score 270、PR H-score 200、HER2 -、Ki67 15%。",
+      "patient_context": {
+        "age": 58,
+        "size_mm": 25,
+        "tumor_size_mm": 25,
+        "grade": 2,
+        "nodes_pos": 1,
+        "er_hscore": 270,
+        "pr_hscore": 200,
+        "her2": "-",
+        "ki67": 15
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-188",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 65、size 35mm、nodes 4、grade 3、ER H-score 210、PR H-score 80、HER2 -、Ki67 30%。",
+      "patient_context": {
+        "age": 65,
+        "size_mm": 35,
+        "tumor_size_mm": 35,
+        "grade": 3,
+        "nodes_pos": 4,
+        "er_hscore": 210,
+        "pr_hscore": 80,
+        "her2": "-",
+        "ki67": 30
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-189",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 48、size 18mm、nodes 2、grade 2、ER H-score 180、PR H-score 120、HER2 +、Ki67 35%。",
+      "patient_context": {
+        "age": 48,
+        "size_mm": 18,
+        "tumor_size_mm": 18,
+        "grade": 2,
+        "nodes_pos": 2,
+        "er_hscore": 180,
+        "pr_hscore": 120,
+        "her2": "+",
+        "ki67": 35
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-190",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 73、size 12mm、nodes 0、grade 1、ER H-score 290、PR H-score 260、HER2 -、Ki67 8%。",
+      "patient_context": {
+        "age": 73,
+        "size_mm": 12,
+        "tumor_size_mm": 12,
+        "grade": 1,
+        "nodes_pos": 0,
+        "er_hscore": 290,
+        "pr_hscore": 260,
+        "her2": "-",
+        "ki67": 8
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-191",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 53、size 20mm、nodes 0、grade 3、ER H-score 240、PR H-score 180、HER2 -、Ki67 20%。",
+      "patient_context": {
+        "age": 53,
+        "size_mm": 20,
+        "tumor_size_mm": 20,
+        "grade": 3,
+        "nodes_pos": 0,
+        "er_hscore": 240,
+        "pr_hscore": 180,
+        "her2": "-",
+        "ki67": 20
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-192",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 59、size 25mm、nodes 1、grade 2、ER H-score 270、PR H-score 200、HER2 -、Ki67 15%。",
+      "patient_context": {
+        "age": 59,
+        "size_mm": 25,
+        "tumor_size_mm": 25,
+        "grade": 2,
+        "nodes_pos": 1,
+        "er_hscore": 270,
+        "pr_hscore": 200,
+        "her2": "-",
+        "ki67": 15
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-193",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 66、size 35mm、nodes 4、grade 3、ER H-score 210、PR H-score 80、HER2 -、Ki67 30%。",
+      "patient_context": {
+        "age": 66,
+        "size_mm": 35,
+        "tumor_size_mm": 35,
+        "grade": 3,
+        "nodes_pos": 4,
+        "er_hscore": 210,
+        "pr_hscore": 80,
+        "her2": "-",
+        "ki67": 30
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-194",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 49、size 18mm、nodes 2、grade 2、ER H-score 180、PR H-score 120、HER2 +、Ki67 35%。",
+      "patient_context": {
+        "age": 49,
+        "size_mm": 18,
+        "tumor_size_mm": 18,
+        "grade": 2,
+        "nodes_pos": 2,
+        "er_hscore": 180,
+        "pr_hscore": 120,
+        "her2": "+",
+        "ki67": 35
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-195",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 74、size 12mm、nodes 0、grade 1、ER H-score 290、PR H-score 260、HER2 -、Ki67 8%。",
+      "patient_context": {
+        "age": 74,
+        "size_mm": 12,
+        "tumor_size_mm": 12,
+        "grade": 1,
+        "nodes_pos": 0,
+        "er_hscore": 290,
+        "pr_hscore": 260,
+        "her2": "-",
+        "ki67": 8
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-196",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 54、size 20mm、nodes 0、grade 3、ER H-score 240、PR H-score 180、HER2 -、Ki67 20%。",
+      "patient_context": {
+        "age": 54,
+        "size_mm": 20,
+        "tumor_size_mm": 20,
+        "grade": 3,
+        "nodes_pos": 0,
+        "er_hscore": 240,
+        "pr_hscore": 180,
+        "her2": "-",
+        "ki67": 20
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-197",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 60、size 25mm、nodes 1、grade 2、ER H-score 270、PR H-score 200、HER2 -、Ki67 15%。",
+      "patient_context": {
+        "age": 60,
+        "size_mm": 25,
+        "tumor_size_mm": 25,
+        "grade": 2,
+        "nodes_pos": 1,
+        "er_hscore": 270,
+        "pr_hscore": 200,
+        "her2": "-",
+        "ki67": 15
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-198",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 67、size 35mm、nodes 4、grade 3、ER H-score 210、PR H-score 80、HER2 -、Ki67 30%。",
+      "patient_context": {
+        "age": 67,
+        "size_mm": 35,
+        "tumor_size_mm": 35,
+        "grade": 3,
+        "nodes_pos": 4,
+        "er_hscore": 210,
+        "pr_hscore": 80,
+        "her2": "-",
+        "ki67": 30
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-199",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 50、size 18mm、nodes 2、grade 2、ER H-score 180、PR H-score 120、HER2 +、Ki67 35%。",
+      "patient_context": {
+        "age": 50,
+        "size_mm": 18,
+        "tumor_size_mm": 18,
+        "grade": 2,
+        "nodes_pos": 2,
+        "er_hscore": 180,
+        "pr_hscore": 120,
+        "her2": "+",
+        "ki67": 35
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-200",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 75、size 12mm、nodes 0、grade 1、ER H-score 290、PR H-score 260、HER2 -、Ki67 8%。",
+      "patient_context": {
+        "age": 75,
+        "size_mm": 12,
+        "tumor_size_mm": 12,
+        "grade": 1,
+        "nodes_pos": 0,
+        "er_hscore": 290,
+        "pr_hscore": 260,
+        "her2": "-",
+        "ki67": 8
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-201",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 55、size 20mm、nodes 0、grade 3、ER H-score 240、PR H-score 180、HER2 -、Ki67 20%。",
+      "patient_context": {
+        "age": 55,
+        "size_mm": 20,
+        "tumor_size_mm": 20,
+        "grade": 3,
+        "nodes_pos": 0,
+        "er_hscore": 240,
+        "pr_hscore": 180,
+        "her2": "-",
+        "ki67": 20
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-202",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 61、size 25mm、nodes 1、grade 2、ER H-score 270、PR H-score 200、HER2 -、Ki67 15%。",
+      "patient_context": {
+        "age": 61,
+        "size_mm": 25,
+        "tumor_size_mm": 25,
+        "grade": 2,
+        "nodes_pos": 1,
+        "er_hscore": 270,
+        "pr_hscore": 200,
+        "her2": "-",
+        "ki67": 15
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-203",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 68、size 35mm、nodes 4、grade 3、ER H-score 210、PR H-score 80、HER2 -、Ki67 30%。",
+      "patient_context": {
+        "age": 68,
+        "size_mm": 35,
+        "tumor_size_mm": 35,
+        "grade": 3,
+        "nodes_pos": 4,
+        "er_hscore": 210,
+        "pr_hscore": 80,
+        "her2": "-",
+        "ki67": 30
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-204",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 51、size 18mm、nodes 2、grade 2、ER H-score 180、PR H-score 120、HER2 +、Ki67 35%。",
+      "patient_context": {
+        "age": 51,
+        "size_mm": 18,
+        "tumor_size_mm": 18,
+        "grade": 2,
+        "nodes_pos": 2,
+        "er_hscore": 180,
+        "pr_hscore": 120,
+        "her2": "+",
+        "ki67": 35
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-205",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 76、size 12mm、nodes 0、grade 1、ER H-score 290、PR H-score 260、HER2 -、Ki67 8%。",
+      "patient_context": {
+        "age": 76,
+        "size_mm": 12,
+        "tumor_size_mm": 12,
+        "grade": 1,
+        "nodes_pos": 0,
+        "er_hscore": 290,
+        "pr_hscore": 260,
+        "her2": "-",
+        "ki67": 8
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-206",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 56、size 20mm、nodes 0、grade 3、ER H-score 240、PR H-score 180、HER2 -、Ki67 20%。",
+      "patient_context": {
+        "age": 56,
+        "size_mm": 20,
+        "tumor_size_mm": 20,
+        "grade": 3,
+        "nodes_pos": 0,
+        "er_hscore": 240,
+        "pr_hscore": 180,
+        "her2": "-",
+        "ki67": 20
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-207",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 62、size 25mm、nodes 1、grade 2、ER H-score 270、PR H-score 200、HER2 -、Ki67 15%。",
+      "patient_context": {
+        "age": 62,
+        "size_mm": 25,
+        "tumor_size_mm": 25,
+        "grade": 2,
+        "nodes_pos": 1,
+        "er_hscore": 270,
+        "pr_hscore": 200,
+        "her2": "-",
+        "ki67": 15
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-208",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 69、size 35mm、nodes 4、grade 3、ER H-score 210、PR H-score 80、HER2 -、Ki67 30%。",
+      "patient_context": {
+        "age": 69,
+        "size_mm": 35,
+        "tumor_size_mm": 35,
+        "grade": 3,
+        "nodes_pos": 4,
+        "er_hscore": 210,
+        "pr_hscore": 80,
+        "her2": "-",
+        "ki67": 30
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-209",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 52、size 18mm、nodes 2、grade 2、ER H-score 180、PR H-score 120、HER2 +、Ki67 35%。",
+      "patient_context": {
+        "age": 52,
+        "size_mm": 18,
+        "tumor_size_mm": 18,
+        "grade": 2,
+        "nodes_pos": 2,
+        "er_hscore": 180,
+        "pr_hscore": 120,
+        "her2": "+",
+        "ki67": 35
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-210",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 77、size 12mm、nodes 0、grade 1、ER H-score 290、PR H-score 260、HER2 -、Ki67 8%。",
+      "patient_context": {
+        "age": 77,
+        "size_mm": 12,
+        "tumor_size_mm": 12,
+        "grade": 1,
+        "nodes_pos": 0,
+        "er_hscore": 290,
+        "pr_hscore": 260,
+        "her2": "-",
+        "ki67": 8
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-211",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 57、size 20mm、nodes 0、grade 3、ER H-score 240、PR H-score 180、HER2 -、Ki67 20%。",
+      "patient_context": {
+        "age": 57,
+        "size_mm": 20,
+        "tumor_size_mm": 20,
+        "grade": 3,
+        "nodes_pos": 0,
+        "er_hscore": 240,
+        "pr_hscore": 180,
+        "her2": "-",
+        "ki67": 20
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-212",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 63、size 25mm、nodes 1、grade 2、ER H-score 270、PR H-score 200、HER2 -、Ki67 15%。",
+      "patient_context": {
+        "age": 63,
+        "size_mm": 25,
+        "tumor_size_mm": 25,
+        "grade": 2,
+        "nodes_pos": 1,
+        "er_hscore": 270,
+        "pr_hscore": 200,
+        "her2": "-",
+        "ki67": 15
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-213",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 70、size 35mm、nodes 4、grade 3、ER H-score 210、PR H-score 80、HER2 -、Ki67 30%。",
+      "patient_context": {
+        "age": 70,
+        "size_mm": 35,
+        "tumor_size_mm": 35,
+        "grade": 3,
+        "nodes_pos": 4,
+        "er_hscore": 210,
+        "pr_hscore": 80,
+        "her2": "-",
+        "ki67": 30
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-214",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 53、size 18mm、nodes 2、grade 2、ER H-score 180、PR H-score 120、HER2 +、Ki67 35%。",
+      "patient_context": {
+        "age": 53,
+        "size_mm": 18,
+        "tumor_size_mm": 18,
+        "grade": 2,
+        "nodes_pos": 2,
+        "er_hscore": 180,
+        "pr_hscore": 120,
+        "her2": "+",
+        "ki67": 35
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-215",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 78、size 12mm、nodes 0、grade 1、ER H-score 290、PR H-score 260、HER2 -、Ki67 8%。",
+      "patient_context": {
+        "age": 78,
+        "size_mm": 12,
+        "tumor_size_mm": 12,
+        "grade": 1,
+        "nodes_pos": 0,
+        "er_hscore": 290,
+        "pr_hscore": 260,
+        "her2": "-",
+        "ki67": 8
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-216",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 58、size 20mm、nodes 0、grade 3、ER H-score 240、PR H-score 180、HER2 -、Ki67 20%。",
+      "patient_context": {
+        "age": 58,
+        "size_mm": 20,
+        "tumor_size_mm": 20,
+        "grade": 3,
+        "nodes_pos": 0,
+        "er_hscore": 240,
+        "pr_hscore": 180,
+        "her2": "-",
+        "ki67": 20
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-217",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 64、size 25mm、nodes 1、grade 2、ER H-score 270、PR H-score 200、HER2 -、Ki67 15%。",
+      "patient_context": {
+        "age": 64,
+        "size_mm": 25,
+        "tumor_size_mm": 25,
+        "grade": 2,
+        "nodes_pos": 1,
+        "er_hscore": 270,
+        "pr_hscore": 200,
+        "her2": "-",
+        "ki67": 15
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-218",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 71、size 35mm、nodes 4、grade 3、ER H-score 210、PR H-score 80、HER2 -、Ki67 30%。",
+      "patient_context": {
+        "age": 71,
+        "size_mm": 35,
+        "tumor_size_mm": 35,
+        "grade": 3,
+        "nodes_pos": 4,
+        "er_hscore": 210,
+        "pr_hscore": 80,
+        "her2": "-",
+        "ki67": 30
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-219",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 54、size 18mm、nodes 2、grade 2、ER H-score 180、PR H-score 120、HER2 +、Ki67 35%。",
+      "patient_context": {
+        "age": 54,
+        "size_mm": 18,
+        "tumor_size_mm": 18,
+        "grade": 2,
+        "nodes_pos": 2,
+        "er_hscore": 180,
+        "pr_hscore": 120,
+        "her2": "+",
+        "ki67": 35
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-220",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 79、size 12mm、nodes 0、grade 1、ER H-score 290、PR H-score 260、HER2 -、Ki67 8%。",
+      "patient_context": {
+        "age": 79,
+        "size_mm": 12,
+        "tumor_size_mm": 12,
+        "grade": 1,
+        "nodes_pos": 0,
+        "er_hscore": 290,
+        "pr_hscore": 260,
+        "her2": "-",
+        "ki67": 8
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-221",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 59、size 20mm、nodes 0、grade 3、ER H-score 240、PR H-score 180、HER2 -、Ki67 20%。",
+      "patient_context": {
+        "age": 59,
+        "size_mm": 20,
+        "tumor_size_mm": 20,
+        "grade": 3,
+        "nodes_pos": 0,
+        "er_hscore": 240,
+        "pr_hscore": 180,
+        "her2": "-",
+        "ki67": 20
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-222",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 65、size 25mm、nodes 1、grade 2、ER H-score 270、PR H-score 200、HER2 -、Ki67 15%。",
+      "patient_context": {
+        "age": 65,
+        "size_mm": 25,
+        "tumor_size_mm": 25,
+        "grade": 2,
+        "nodes_pos": 1,
+        "er_hscore": 270,
+        "pr_hscore": 200,
+        "her2": "-",
+        "ki67": 15
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-223",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 72、size 35mm、nodes 4、grade 3、ER H-score 210、PR H-score 80、HER2 -、Ki67 30%。",
+      "patient_context": {
+        "age": 72,
+        "size_mm": 35,
+        "tumor_size_mm": 35,
+        "grade": 3,
+        "nodes_pos": 4,
+        "er_hscore": 210,
+        "pr_hscore": 80,
+        "her2": "-",
+        "ki67": 30
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-224",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 55、size 18mm、nodes 2、grade 2、ER H-score 180、PR H-score 120、HER2 +、Ki67 35%。",
+      "patient_context": {
+        "age": 55,
+        "size_mm": 18,
+        "tumor_size_mm": 18,
+        "grade": 2,
+        "nodes_pos": 2,
+        "er_hscore": 180,
+        "pr_hscore": 120,
+        "her2": "+",
+        "ki67": 35
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-225",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 80、size 12mm、nodes 0、grade 1、ER H-score 290、PR H-score 260、HER2 -、Ki67 8%。",
+      "patient_context": {
+        "age": 80,
+        "size_mm": 12,
+        "tumor_size_mm": 12,
+        "grade": 1,
+        "nodes_pos": 0,
+        "er_hscore": 290,
+        "pr_hscore": 260,
+        "her2": "-",
+        "ki67": 8
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-226",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 60、size 20mm、nodes 0、grade 3、ER H-score 240、PR H-score 180、HER2 -、Ki67 20%。",
+      "patient_context": {
+        "age": 60,
+        "size_mm": 20,
+        "tumor_size_mm": 20,
+        "grade": 3,
+        "nodes_pos": 0,
+        "er_hscore": 240,
+        "pr_hscore": 180,
+        "her2": "-",
+        "ki67": 20
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-227",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 66、size 25mm、nodes 1、grade 2、ER H-score 270、PR H-score 200、HER2 -、Ki67 15%。",
+      "patient_context": {
+        "age": 66,
+        "size_mm": 25,
+        "tumor_size_mm": 25,
+        "grade": 2,
+        "nodes_pos": 1,
+        "er_hscore": 270,
+        "pr_hscore": 200,
+        "her2": "-",
+        "ki67": 15
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-228",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 73、size 35mm、nodes 4、grade 3、ER H-score 210、PR H-score 80、HER2 -、Ki67 30%。",
+      "patient_context": {
+        "age": 73,
+        "size_mm": 35,
+        "tumor_size_mm": 35,
+        "grade": 3,
+        "nodes_pos": 4,
+        "er_hscore": 210,
+        "pr_hscore": 80,
+        "her2": "-",
+        "ki67": 30
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-229",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 56、size 18mm、nodes 2、grade 2、ER H-score 180、PR H-score 120、HER2 +、Ki67 35%。",
+      "patient_context": {
+        "age": 56,
+        "size_mm": 18,
+        "tumor_size_mm": 18,
+        "grade": 2,
+        "nodes_pos": 2,
+        "er_hscore": 180,
+        "pr_hscore": 120,
+        "her2": "+",
+        "ki67": 35
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "score-230",
+      "category": "risk_scores",
+      "question": "請根據目前病人資料計算可用的 CTS5、IHC4、NPI、Magee 分數，並說明哪些分數不適用或缺資料。資料：age 81、size 12mm、nodes 0、grade 1、ER H-score 290、PR H-score 260、HER2 -、Ki67 8%。",
+      "patient_context": {
+        "age": 81,
+        "size_mm": 12,
+        "tumor_size_mm": 12,
+        "grade": 1,
+        "nodes_pos": 0,
+        "er_hscore": 290,
+        "pr_hscore": 260,
+        "her2": "-",
+        "ki67": 8
+      },
+      "expected": {
+        "must_call": [
+          "calculate/risk-scores"
+        ],
+        "contains_any": [
+          "CTS5",
+          "NPI",
+          "IHC4",
+          "Magee"
+        ],
+        "score_keys": [
+          "cts5",
+          "ihc4",
+          "magee",
+          "npi"
+        ]
+      },
+      "reference_answer": "可計算分數：CTS5=；NPI=；IHC4=；Magee="
+    },
+    {
+      "id": "missing-231",
+      "category": "missing_fields",
+      "question": "只有一句：乳癌病人，請問可以算分期與 PREDICT/CTS5/IHC4 嗎？",
+      "patient_context": {},
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "缺 T/N/M、年齡、腫瘤大小、grade、nodes、ER/PR/HER2/Ki67 等關鍵欄位。"
+    },
+    {
+      "id": "missing-232",
+      "category": "missing_fields",
+      "question": "已有年齡 49 歲，可以算 PREDICT、CTS5、IHC4 嗎？缺什麼？",
+      "patient_context": {
+        "age": 49
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "仍缺 tumor size、nodes、grade、ER/PR/HER2/Ki67 等欄位。"
+    },
+    {
+      "id": "missing-233",
+      "category": "missing_fields",
+      "question": "有 T2N1 但沒有 M，能不能判斷 AJCC 與風險分數？",
+      "patient_context": {
+        "age": 49,
+        "cT": "T2",
+        "cN": "N1"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "AJCC 至少缺 M；風險分數仍缺 size、grade、ER/PR/HER2/Ki67 等。"
+    },
+    {
+      "id": "missing-234",
+      "category": "missing_fields",
+      "question": "有 age/size/grade，但沒有 ER PR HER2 Ki67，哪些工具不能算？",
+      "patient_context": {
+        "age": 55,
+        "size_mm": 20,
+        "grade": 2
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "IHC4/CTS5/PREDICT 仍需 ER、PR、HER2、Ki67 與 nodes。"
+    },
+    {
+      "id": "missing-235",
+      "category": "missing_fields",
+      "question": "只有 ER/PR/HER2，請告訴我 PREDICT、CTS5、IHC4 還缺哪些欄位。",
+      "patient_context": {
+        "er": "+",
+        "pr": "+",
+        "her2": "-"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "仍缺 age、tumor size、positive nodes、grade、Ki67，IHC4 也需要 ER/PR 定量或 H-score。"
+    },
+    {
+      "id": "missing-236",
+      "category": "missing_fields",
+      "question": "只有 T2N1M0，能不能算藥物、分期、PREDICT？缺哪些？",
+      "patient_context": {
+        "cT": "T2",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "可判斷解剖分期；PREDICT/風險分數缺 age、size、grade、ER/PR/HER2/Ki67/nodes 數字。"
+    },
+    {
+      "id": "missing-237",
+      "category": "missing_fields",
+      "question": "62 歲 HR+/HER2- 但沒有 size/node/grade/Ki67，CTS5 和 IHC4 能算嗎？",
+      "patient_context": {
+        "age": 62,
+        "er": "+",
+        "pr": "-",
+        "her2": "-"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "CTS5 缺 size、nodes、grade；IHC4 缺 ER/PR 定量與 Ki67。"
+    },
+    {
+      "id": "missing-238",
+      "category": "missing_fields",
+      "question": "有 size 18mm、grade 2、Ki67 18%，但沒有 receptor，能算哪些？",
+      "patient_context": {
+        "size_mm": 18,
+        "grade": 2,
+        "ki67": 18
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "仍缺 ER/PR/HER2；IHC4、PREDICT、CTS5 不能完整計算。"
+    },
+    {
+      "id": "missing-239",
+      "category": "missing_fields",
+      "question": "45 歲 TNBC M0，沒有 T/N/size/grade，可以給完整建議嗎？",
+      "patient_context": {
+        "age": 45,
+        "cM": "M0",
+        "er": "-",
+        "pr": "-",
+        "her2": "-"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "仍缺 T、N、size、grade、nodes 等，不能完整分期與療程判讀。"
+    },
+    {
+      "id": "missing-240",
+      "category": "missing_fields",
+      "question": "70 歲 size 12mm nodes 0，缺 receptor 和 grade 時分數會怎樣？",
+      "patient_context": {
+        "age": 70,
+        "size_mm": 12,
+        "nodes_pos": 0
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "仍缺 grade、ER/PR/HER2/Ki67；多數分數不能完整計算。"
+    },
+    {
+      "id": "missing-241",
+      "category": "missing_fields",
+      "question": "目前只有 age 38、T1cN0M0、ER+ PR+ HER2-，請問能不能直接算 PREDICT/CTS5/IHC4 或決定化療？還缺什麼？",
+      "patient_context": {
+        "age": 38,
+        "er": "+",
+        "pr": "+",
+        "her2": "-",
+        "cT": "T1c",
+        "cN": "N0",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "不可直接完成所有計算或治療判斷；仍缺 size、grade、nodes_pos、Ki67、Oncotype RS 或病理細節。"
+    },
+    {
+      "id": "missing-242",
+      "category": "missing_fields",
+      "question": "目前只有 age 38、T2N1M0、ER+ PR+ HER2-，請問能不能直接算 PREDICT/CTS5/IHC4 或決定化療？還缺什麼？",
+      "patient_context": {
+        "age": 38,
+        "er": "+",
+        "pr": "+",
+        "her2": "-",
+        "cT": "T2",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "不可直接完成所有計算或治療判斷；仍缺 size、grade、nodes_pos、Ki67、Oncotype RS 或病理細節。"
+    },
+    {
+      "id": "missing-243",
+      "category": "missing_fields",
+      "question": "目前只有 age 38、T3N1M0、ER+ PR+ HER2-，請問能不能直接算 PREDICT/CTS5/IHC4 或決定化療？還缺什麼？",
+      "patient_context": {
+        "age": 38,
+        "er": "+",
+        "pr": "+",
+        "her2": "-",
+        "cT": "T3",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "不可直接完成所有計算或治療判斷；仍缺 size、grade、nodes_pos、Ki67、Oncotype RS 或病理細節。"
+    },
+    {
+      "id": "missing-244",
+      "category": "missing_fields",
+      "question": "目前只有 age 38、T4N2M0、ER+ PR+ HER2-，請問能不能直接算 PREDICT/CTS5/IHC4 或決定化療？還缺什麼？",
+      "patient_context": {
+        "age": 38,
+        "er": "+",
+        "pr": "+",
+        "her2": "-",
+        "cT": "T4",
+        "cN": "N2",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "不可直接完成所有計算或治療判斷；仍缺 size、grade、nodes_pos、Ki67、Oncotype RS 或病理細節。"
+    },
+    {
+      "id": "missing-245",
+      "category": "missing_fields",
+      "question": "目前只有 age 38、T1cN0M0、ER- PR- HER2-，請問能不能直接算 PREDICT/CTS5/IHC4 或決定化療？還缺什麼？",
+      "patient_context": {
+        "age": 38,
+        "er": "-",
+        "pr": "-",
+        "her2": "-",
+        "cT": "T1c",
+        "cN": "N0",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "不可直接完成所有計算或治療判斷；仍缺 size、grade、nodes_pos、Ki67、Oncotype RS 或病理細節。"
+    },
+    {
+      "id": "missing-246",
+      "category": "missing_fields",
+      "question": "目前只有 age 38、T2N1M0、ER- PR- HER2-，請問能不能直接算 PREDICT/CTS5/IHC4 或決定化療？還缺什麼？",
+      "patient_context": {
+        "age": 38,
+        "er": "-",
+        "pr": "-",
+        "her2": "-",
+        "cT": "T2",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "不可直接完成所有計算或治療判斷；仍缺 size、grade、nodes_pos、Ki67、Oncotype RS 或病理細節。"
+    },
+    {
+      "id": "missing-247",
+      "category": "missing_fields",
+      "question": "目前只有 age 38、T3N1M0、ER- PR- HER2-，請問能不能直接算 PREDICT/CTS5/IHC4 或決定化療？還缺什麼？",
+      "patient_context": {
+        "age": 38,
+        "er": "-",
+        "pr": "-",
+        "her2": "-",
+        "cT": "T3",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "不可直接完成所有計算或治療判斷；仍缺 size、grade、nodes_pos、Ki67、Oncotype RS 或病理細節。"
+    },
+    {
+      "id": "missing-248",
+      "category": "missing_fields",
+      "question": "目前只有 age 38、T4N2M0、ER- PR- HER2-，請問能不能直接算 PREDICT/CTS5/IHC4 或決定化療？還缺什麼？",
+      "patient_context": {
+        "age": 38,
+        "er": "-",
+        "pr": "-",
+        "her2": "-",
+        "cT": "T4",
+        "cN": "N2",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "不可直接完成所有計算或治療判斷；仍缺 size、grade、nodes_pos、Ki67、Oncotype RS 或病理細節。"
+    },
+    {
+      "id": "missing-249",
+      "category": "missing_fields",
+      "question": "目前只有 age 38、T1cN0M0、ER+ PR- HER2+，請問能不能直接算 PREDICT/CTS5/IHC4 或決定化療？還缺什麼？",
+      "patient_context": {
+        "age": 38,
+        "er": "+",
+        "pr": "-",
+        "her2": "+",
+        "cT": "T1c",
+        "cN": "N0",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "不可直接完成所有計算或治療判斷；仍缺 size、grade、nodes_pos、Ki67、Oncotype RS 或病理細節。"
+    },
+    {
+      "id": "missing-250",
+      "category": "missing_fields",
+      "question": "目前只有 age 38、T2N1M0、ER+ PR- HER2+，請問能不能直接算 PREDICT/CTS5/IHC4 或決定化療？還缺什麼？",
+      "patient_context": {
+        "age": 38,
+        "er": "+",
+        "pr": "-",
+        "her2": "+",
+        "cT": "T2",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "不可直接完成所有計算或治療判斷；仍缺 size、grade、nodes_pos、Ki67、Oncotype RS 或病理細節。"
+    },
+    {
+      "id": "missing-251",
+      "category": "missing_fields",
+      "question": "目前只有 age 38、T3N1M0、ER+ PR- HER2+，請問能不能直接算 PREDICT/CTS5/IHC4 或決定化療？還缺什麼？",
+      "patient_context": {
+        "age": 38,
+        "er": "+",
+        "pr": "-",
+        "her2": "+",
+        "cT": "T3",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "不可直接完成所有計算或治療判斷；仍缺 size、grade、nodes_pos、Ki67、Oncotype RS 或病理細節。"
+    },
+    {
+      "id": "missing-252",
+      "category": "missing_fields",
+      "question": "目前只有 age 38、T4N2M0、ER+ PR- HER2+，請問能不能直接算 PREDICT/CTS5/IHC4 或決定化療？還缺什麼？",
+      "patient_context": {
+        "age": 38,
+        "er": "+",
+        "pr": "-",
+        "her2": "+",
+        "cT": "T4",
+        "cN": "N2",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "不可直接完成所有計算或治療判斷；仍缺 size、grade、nodes_pos、Ki67、Oncotype RS 或病理細節。"
+    },
+    {
+      "id": "missing-253",
+      "category": "missing_fields",
+      "question": "目前只有 age 38、T1cN0M0、ER+ PR+ HER2+，請問能不能直接算 PREDICT/CTS5/IHC4 或決定化療？還缺什麼？",
+      "patient_context": {
+        "age": 38,
+        "er": "+",
+        "pr": "+",
+        "her2": "+",
+        "cT": "T1c",
+        "cN": "N0",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "不可直接完成所有計算或治療判斷；仍缺 size、grade、nodes_pos、Ki67、Oncotype RS 或病理細節。"
+    },
+    {
+      "id": "missing-254",
+      "category": "missing_fields",
+      "question": "目前只有 age 38、T2N1M0、ER+ PR+ HER2+，請問能不能直接算 PREDICT/CTS5/IHC4 或決定化療？還缺什麼？",
+      "patient_context": {
+        "age": 38,
+        "er": "+",
+        "pr": "+",
+        "her2": "+",
+        "cT": "T2",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "不可直接完成所有計算或治療判斷；仍缺 size、grade、nodes_pos、Ki67、Oncotype RS 或病理細節。"
+    },
+    {
+      "id": "missing-255",
+      "category": "missing_fields",
+      "question": "目前只有 age 38、T3N1M0、ER+ PR+ HER2+，請問能不能直接算 PREDICT/CTS5/IHC4 或決定化療？還缺什麼？",
+      "patient_context": {
+        "age": 38,
+        "er": "+",
+        "pr": "+",
+        "her2": "+",
+        "cT": "T3",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "不可直接完成所有計算或治療判斷；仍缺 size、grade、nodes_pos、Ki67、Oncotype RS 或病理細節。"
+    },
+    {
+      "id": "missing-256",
+      "category": "missing_fields",
+      "question": "目前只有 age 38、T4N2M0、ER+ PR+ HER2+，請問能不能直接算 PREDICT/CTS5/IHC4 或決定化療？還缺什麼？",
+      "patient_context": {
+        "age": 38,
+        "er": "+",
+        "pr": "+",
+        "her2": "+",
+        "cT": "T4",
+        "cN": "N2",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "不可直接完成所有計算或治療判斷；仍缺 size、grade、nodes_pos、Ki67、Oncotype RS 或病理細節。"
+    },
+    {
+      "id": "missing-257",
+      "category": "missing_fields",
+      "question": "目前只有 age 45、T1cN0M0、ER+ PR+ HER2-，請問能不能直接算 PREDICT/CTS5/IHC4 或決定化療？還缺什麼？",
+      "patient_context": {
+        "age": 45,
+        "er": "+",
+        "pr": "+",
+        "her2": "-",
+        "cT": "T1c",
+        "cN": "N0",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "不可直接完成所有計算或治療判斷；仍缺 size、grade、nodes_pos、Ki67、Oncotype RS 或病理細節。"
+    },
+    {
+      "id": "missing-258",
+      "category": "missing_fields",
+      "question": "目前只有 age 45、T2N1M0、ER+ PR+ HER2-，請問能不能直接算 PREDICT/CTS5/IHC4 或決定化療？還缺什麼？",
+      "patient_context": {
+        "age": 45,
+        "er": "+",
+        "pr": "+",
+        "her2": "-",
+        "cT": "T2",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "不可直接完成所有計算或治療判斷；仍缺 size、grade、nodes_pos、Ki67、Oncotype RS 或病理細節。"
+    },
+    {
+      "id": "missing-259",
+      "category": "missing_fields",
+      "question": "目前只有 age 45、T3N1M0、ER+ PR+ HER2-，請問能不能直接算 PREDICT/CTS5/IHC4 或決定化療？還缺什麼？",
+      "patient_context": {
+        "age": 45,
+        "er": "+",
+        "pr": "+",
+        "her2": "-",
+        "cT": "T3",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "不可直接完成所有計算或治療判斷；仍缺 size、grade、nodes_pos、Ki67、Oncotype RS 或病理細節。"
+    },
+    {
+      "id": "missing-260",
+      "category": "missing_fields",
+      "question": "目前只有 age 45、T4N2M0、ER+ PR+ HER2-，請問能不能直接算 PREDICT/CTS5/IHC4 或決定化療？還缺什麼？",
+      "patient_context": {
+        "age": 45,
+        "er": "+",
+        "pr": "+",
+        "her2": "-",
+        "cT": "T4",
+        "cN": "N2",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "不可直接完成所有計算或治療判斷；仍缺 size、grade、nodes_pos、Ki67、Oncotype RS 或病理細節。"
+    },
+    {
+      "id": "missing-261",
+      "category": "missing_fields",
+      "question": "目前只有 age 45、T1cN0M0、ER- PR- HER2-，請問能不能直接算 PREDICT/CTS5/IHC4 或決定化療？還缺什麼？",
+      "patient_context": {
+        "age": 45,
+        "er": "-",
+        "pr": "-",
+        "her2": "-",
+        "cT": "T1c",
+        "cN": "N0",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "不可直接完成所有計算或治療判斷；仍缺 size、grade、nodes_pos、Ki67、Oncotype RS 或病理細節。"
+    },
+    {
+      "id": "missing-262",
+      "category": "missing_fields",
+      "question": "目前只有 age 45、T2N1M0、ER- PR- HER2-，請問能不能直接算 PREDICT/CTS5/IHC4 或決定化療？還缺什麼？",
+      "patient_context": {
+        "age": 45,
+        "er": "-",
+        "pr": "-",
+        "her2": "-",
+        "cT": "T2",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "不可直接完成所有計算或治療判斷；仍缺 size、grade、nodes_pos、Ki67、Oncotype RS 或病理細節。"
+    },
+    {
+      "id": "missing-263",
+      "category": "missing_fields",
+      "question": "目前只有 age 45、T3N1M0、ER- PR- HER2-，請問能不能直接算 PREDICT/CTS5/IHC4 或決定化療？還缺什麼？",
+      "patient_context": {
+        "age": 45,
+        "er": "-",
+        "pr": "-",
+        "her2": "-",
+        "cT": "T3",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "不可直接完成所有計算或治療判斷；仍缺 size、grade、nodes_pos、Ki67、Oncotype RS 或病理細節。"
+    },
+    {
+      "id": "missing-264",
+      "category": "missing_fields",
+      "question": "目前只有 age 45、T4N2M0、ER- PR- HER2-，請問能不能直接算 PREDICT/CTS5/IHC4 或決定化療？還缺什麼？",
+      "patient_context": {
+        "age": 45,
+        "er": "-",
+        "pr": "-",
+        "her2": "-",
+        "cT": "T4",
+        "cN": "N2",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "不可直接完成所有計算或治療判斷；仍缺 size、grade、nodes_pos、Ki67、Oncotype RS 或病理細節。"
+    },
+    {
+      "id": "missing-265",
+      "category": "missing_fields",
+      "question": "目前只有 age 45、T1cN0M0、ER+ PR- HER2+，請問能不能直接算 PREDICT/CTS5/IHC4 或決定化療？還缺什麼？",
+      "patient_context": {
+        "age": 45,
+        "er": "+",
+        "pr": "-",
+        "her2": "+",
+        "cT": "T1c",
+        "cN": "N0",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "不可直接完成所有計算或治療判斷；仍缺 size、grade、nodes_pos、Ki67、Oncotype RS 或病理細節。"
+    },
+    {
+      "id": "missing-266",
+      "category": "missing_fields",
+      "question": "目前只有 age 45、T2N1M0、ER+ PR- HER2+，請問能不能直接算 PREDICT/CTS5/IHC4 或決定化療？還缺什麼？",
+      "patient_context": {
+        "age": 45,
+        "er": "+",
+        "pr": "-",
+        "her2": "+",
+        "cT": "T2",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "不可直接完成所有計算或治療判斷；仍缺 size、grade、nodes_pos、Ki67、Oncotype RS 或病理細節。"
+    },
+    {
+      "id": "missing-267",
+      "category": "missing_fields",
+      "question": "目前只有 age 45、T3N1M0、ER+ PR- HER2+，請問能不能直接算 PREDICT/CTS5/IHC4 或決定化療？還缺什麼？",
+      "patient_context": {
+        "age": 45,
+        "er": "+",
+        "pr": "-",
+        "her2": "+",
+        "cT": "T3",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "不可直接完成所有計算或治療判斷；仍缺 size、grade、nodes_pos、Ki67、Oncotype RS 或病理細節。"
+    },
+    {
+      "id": "missing-268",
+      "category": "missing_fields",
+      "question": "目前只有 age 45、T4N2M0、ER+ PR- HER2+，請問能不能直接算 PREDICT/CTS5/IHC4 或決定化療？還缺什麼？",
+      "patient_context": {
+        "age": 45,
+        "er": "+",
+        "pr": "-",
+        "her2": "+",
+        "cT": "T4",
+        "cN": "N2",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "不可直接完成所有計算或治療判斷；仍缺 size、grade、nodes_pos、Ki67、Oncotype RS 或病理細節。"
+    },
+    {
+      "id": "missing-269",
+      "category": "missing_fields",
+      "question": "目前只有 age 45、T1cN0M0、ER+ PR+ HER2+，請問能不能直接算 PREDICT/CTS5/IHC4 或決定化療？還缺什麼？",
+      "patient_context": {
+        "age": 45,
+        "er": "+",
+        "pr": "+",
+        "her2": "+",
+        "cT": "T1c",
+        "cN": "N0",
+        "cM": "M0"
+      },
+      "expected": {
+        "contains_regex": [
+          "缺|需要|不足|不完整",
+          "size|大小|腫瘤|grade|ER|PR|HER2|Ki-?67|T|N|M|淋巴"
+        ]
+      },
+      "reference_answer": "不可直接完成所有計算或治療判斷；仍缺 size、grade、nodes_pos、Ki67、Oncotype RS 或病理細節。"
+    },
+    {
+      "id": "extract-270",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：49歲，cT2N1M0，IDC size 25 mm，grade 3，ER positive，PR positive，HER2 3+，Ki-67 35%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "49",
+          "cT": "T2",
+          "cN": "N1",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "+",
+          "ki67": "35"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=49、cT=T2、cN=N1、cM=M0、er=+、pr=+、her2=+、ki67=35"
+    },
+    {
+      "id": "extract-271",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：62歲，cT1cN0M0，tumor size 12 mm，G2，ER+，PR-，HER2 negative，Ki67 10%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "62",
+          "cT": "T1c",
+          "cN": "N0",
+          "cM": "M0",
+          "er": "+",
+          "pr": "-",
+          "her2": "-",
+          "ki67": "10"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=62、cT=T1c、cN=N0、cM=M0、er=+、pr=-、her2=-、ki67=10"
+    },
+    {
+      "id": "extract-272",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：55歲，pT3N1M0，size 52 mm，grade II，ER positive，PR positive，HER2 1+，Ki-67 18%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "55",
+          "pT": "T3",
+          "pN": "N1",
+          "pM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "18"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=55、pT=T3、pN=N1、pM=M0、er=+、pr=+、her2=-、ki67=18"
+    },
+    {
+      "id": "extract-273",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：45歲，cTisN0M0，DCIS only，grade 2，ER positive PR positive HER2 negative Ki67 5%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "45",
+          "cT": "Tis",
+          "cN": "N0",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "5"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=45、cT=Tis、cN=N0、cM=M0、er=+、pr=+、her2=-、ki67=5"
+    },
+    {
+      "id": "extract-274",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：70歲，cT4N2M0，ER negative，PR negative，HER2 0+，Ki67 70%，tumor size 60mm，G3。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "70",
+          "cT": "T4",
+          "cN": "N2",
+          "cM": "M0",
+          "er": "-",
+          "pr": "-",
+          "her2": "-",
+          "ki67": "70"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=70、cT=T4、cN=N2、cM=M0、er=-、pr=-、her2=-、ki67=70"
+    },
+    {
+      "id": "extract-275",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT1cN0M0，invasive tumor size 18 mm，grade II，ER 90%, PR 80%, HER2 2+ ISH negative, Ki-67 12%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T1c",
+          "cN": "N0",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "12"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=41、cT=T1c、cN=N0、cM=M0、er=+、pr=+、her2=-、ki67=12"
+    },
+    {
+      "id": "extract-276",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT1cN0M0，invasive tumor size 18 mm，grade II，ER negative, PR negative, HER2 0+, Ki67 75%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T1c",
+          "cN": "N0",
+          "cM": "M0",
+          "er": "-",
+          "pr": "-",
+          "her2": "-",
+          "ki67": "75"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=41、cT=T1c、cN=N0、cM=M0、er=-、pr=-、her2=-、ki67=75"
+    },
+    {
+      "id": "extract-277",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT1cN0M0，invasive tumor size 18 mm，grade II，ER positive, PR negative, HER2 3+, Ki-67 35%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T1c",
+          "cN": "N0",
+          "cM": "M0",
+          "er": "+",
+          "pr": "-",
+          "her2": "+",
+          "ki67": "35"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=41、cT=T1c、cN=N0、cM=M0、er=+、pr=-、her2=+、ki67=35"
+    },
+    {
+      "id": "extract-278",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT1cN0M0，invasive tumor size 18 mm，grade II，ER 50%, PR 5%, HER2 1+, Ki67 5-14%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T1c",
+          "cN": "N0",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "5-14"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=41、cT=T1c、cN=N0、cM=M0、er=+、pr=+、her2=-、ki67=5-14"
+    },
+    {
+      "id": "extract-279",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT2N1miM0，invasive tumor size 22 mm，grade II，ER 90%, PR 80%, HER2 2+ ISH negative, Ki-67 12%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T2",
+          "cN": "N1mi",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "12"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=41、cT=T2、cN=N1mi、cM=M0、er=+、pr=+、her2=-、ki67=12"
+    },
+    {
+      "id": "extract-280",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT2N1miM0，invasive tumor size 22 mm，grade II，ER negative, PR negative, HER2 0+, Ki67 75%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T2",
+          "cN": "N1mi",
+          "cM": "M0",
+          "er": "-",
+          "pr": "-",
+          "her2": "-",
+          "ki67": "75"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=41、cT=T2、cN=N1mi、cM=M0、er=-、pr=-、her2=-、ki67=75"
+    },
+    {
+      "id": "extract-281",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT2N1miM0，invasive tumor size 22 mm，grade II，ER positive, PR negative, HER2 3+, Ki-67 35%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T2",
+          "cN": "N1mi",
+          "cM": "M0",
+          "er": "+",
+          "pr": "-",
+          "her2": "+",
+          "ki67": "35"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=41、cT=T2、cN=N1mi、cM=M0、er=+、pr=-、her2=+、ki67=35"
+    },
+    {
+      "id": "extract-282",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT2N1miM0，invasive tumor size 22 mm，grade II，ER 50%, PR 5%, HER2 1+, Ki67 5-14%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T2",
+          "cN": "N1mi",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "5-14"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=41、cT=T2、cN=N1mi、cM=M0、er=+、pr=+、her2=-、ki67=5-14"
+    },
+    {
+      "id": "extract-283",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT3N1M0，invasive tumor size 51 mm，grade II，ER 90%, PR 80%, HER2 2+ ISH negative, Ki-67 12%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T3",
+          "cN": "N1",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "12"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=41、cT=T3、cN=N1、cM=M0、er=+、pr=+、her2=-、ki67=12"
+    },
+    {
+      "id": "extract-284",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT3N1M0，invasive tumor size 51 mm，grade II，ER negative, PR negative, HER2 0+, Ki67 75%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T3",
+          "cN": "N1",
+          "cM": "M0",
+          "er": "-",
+          "pr": "-",
+          "her2": "-",
+          "ki67": "75"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=41、cT=T3、cN=N1、cM=M0、er=-、pr=-、her2=-、ki67=75"
+    },
+    {
+      "id": "extract-285",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT3N1M0，invasive tumor size 51 mm，grade II，ER positive, PR negative, HER2 3+, Ki-67 35%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T3",
+          "cN": "N1",
+          "cM": "M0",
+          "er": "+",
+          "pr": "-",
+          "her2": "+",
+          "ki67": "35"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=41、cT=T3、cN=N1、cM=M0、er=+、pr=-、her2=+、ki67=35"
+    },
+    {
+      "id": "extract-286",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT3N1M0，invasive tumor size 51 mm，grade II，ER 50%, PR 5%, HER2 1+, Ki67 5-14%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T3",
+          "cN": "N1",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "5-14"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=41、cT=T3、cN=N1、cM=M0、er=+、pr=+、her2=-、ki67=5-14"
+    },
+    {
+      "id": "extract-287",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，pT2N2aM0，invasive tumor size 30 mm，grade II，ER 90%, PR 80%, HER2 2+ ISH negative, Ki-67 12%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "pT": "T2",
+          "pN": "N2a",
+          "pM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "12"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=41、pT=T2、pN=N2a、pM=M0、er=+、pr=+、her2=-、ki67=12"
+    },
+    {
+      "id": "extract-288",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，pT2N2aM0，invasive tumor size 30 mm，grade II，ER negative, PR negative, HER2 0+, Ki67 75%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "pT": "T2",
+          "pN": "N2a",
+          "pM": "M0",
+          "er": "-",
+          "pr": "-",
+          "her2": "-",
+          "ki67": "75"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=41、pT=T2、pN=N2a、pM=M0、er=-、pr=-、her2=-、ki67=75"
+    },
+    {
+      "id": "extract-289",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，pT2N2aM0，invasive tumor size 30 mm，grade II，ER positive, PR negative, HER2 3+, Ki-67 35%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "pT": "T2",
+          "pN": "N2a",
+          "pM": "M0",
+          "er": "+",
+          "pr": "-",
+          "her2": "+",
+          "ki67": "35"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=41、pT=T2、pN=N2a、pM=M0、er=+、pr=-、her2=+、ki67=35"
+    },
+    {
+      "id": "extract-290",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，pT2N2aM0，invasive tumor size 30 mm，grade II，ER 50%, PR 5%, HER2 1+, Ki67 5-14%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "pT": "T2",
+          "pN": "N2a",
+          "pM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "5-14"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=41、pT=T2、pN=N2a、pM=M0、er=+、pr=+、her2=-、ki67=5-14"
+    },
+    {
+      "id": "extract-291",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：48歲，cT1cN0M0，invasive tumor size 18 mm，grade II，ER 90%, PR 80%, HER2 2+ ISH negative, Ki-67 12%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "48",
+          "cT": "T1c",
+          "cN": "N0",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "12"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=48、cT=T1c、cN=N0、cM=M0、er=+、pr=+、her2=-、ki67=12"
+    },
+    {
+      "id": "extract-292",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：48歲，cT1cN0M0，invasive tumor size 18 mm，grade II，ER negative, PR negative, HER2 0+, Ki67 75%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "48",
+          "cT": "T1c",
+          "cN": "N0",
+          "cM": "M0",
+          "er": "-",
+          "pr": "-",
+          "her2": "-",
+          "ki67": "75"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=48、cT=T1c、cN=N0、cM=M0、er=-、pr=-、her2=-、ki67=75"
+    },
+    {
+      "id": "extract-293",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：48歲，cT1cN0M0，invasive tumor size 18 mm，grade II，ER positive, PR negative, HER2 3+, Ki-67 35%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "48",
+          "cT": "T1c",
+          "cN": "N0",
+          "cM": "M0",
+          "er": "+",
+          "pr": "-",
+          "her2": "+",
+          "ki67": "35"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=48、cT=T1c、cN=N0、cM=M0、er=+、pr=-、her2=+、ki67=35"
+    },
+    {
+      "id": "extract-294",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：48歲，cT1cN0M0，invasive tumor size 18 mm，grade II，ER 50%, PR 5%, HER2 1+, Ki67 5-14%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "48",
+          "cT": "T1c",
+          "cN": "N0",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "5-14"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=48、cT=T1c、cN=N0、cM=M0、er=+、pr=+、her2=-、ki67=5-14"
+    },
+    {
+      "id": "extract-295",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：48歲，cT2N1miM0，invasive tumor size 22 mm，grade II，ER 90%, PR 80%, HER2 2+ ISH negative, Ki-67 12%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "48",
+          "cT": "T2",
+          "cN": "N1mi",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "12"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=48、cT=T2、cN=N1mi、cM=M0、er=+、pr=+、her2=-、ki67=12"
+    },
+    {
+      "id": "extract-296",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：48歲，cT2N1miM0，invasive tumor size 22 mm，grade II，ER negative, PR negative, HER2 0+, Ki67 75%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "48",
+          "cT": "T2",
+          "cN": "N1mi",
+          "cM": "M0",
+          "er": "-",
+          "pr": "-",
+          "her2": "-",
+          "ki67": "75"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=48、cT=T2、cN=N1mi、cM=M0、er=-、pr=-、her2=-、ki67=75"
+    },
+    {
+      "id": "extract-297",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：48歲，cT2N1miM0，invasive tumor size 22 mm，grade II，ER positive, PR negative, HER2 3+, Ki-67 35%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "48",
+          "cT": "T2",
+          "cN": "N1mi",
+          "cM": "M0",
+          "er": "+",
+          "pr": "-",
+          "her2": "+",
+          "ki67": "35"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=48、cT=T2、cN=N1mi、cM=M0、er=+、pr=-、her2=+、ki67=35"
+    },
+    {
+      "id": "extract-298",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：48歲，cT2N1miM0，invasive tumor size 22 mm，grade II，ER 50%, PR 5%, HER2 1+, Ki67 5-14%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "48",
+          "cT": "T2",
+          "cN": "N1mi",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "5-14"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=48、cT=T2、cN=N1mi、cM=M0、er=+、pr=+、her2=-、ki67=5-14"
+    },
+    {
+      "id": "extract-299",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：48歲，cT3N1M0，invasive tumor size 51 mm，grade II，ER 90%, PR 80%, HER2 2+ ISH negative, Ki-67 12%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "48",
+          "cT": "T3",
+          "cN": "N1",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "12"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=48、cT=T3、cN=N1、cM=M0、er=+、pr=+、her2=-、ki67=12"
+    },
+    {
+      "id": "extract-300",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：48歲，cT3N1M0，invasive tumor size 51 mm，grade II，ER negative, PR negative, HER2 0+, Ki67 75%。",
+      "patient_context": {},
+      "expected": {
+        "expected_patch": {
+          "age": "48",
+          "cT": "T3",
+          "cN": "N1",
+          "cM": "M0",
+          "er": "-",
+          "pr": "-",
+          "her2": "-",
+          "ki67": "75"
+        }
+      },
+      "reference_answer": "應抽取欄位：age=48、cT=T3、cN=N1、cM=M0、er=-、pr=-、her2=-、ki67=75"
+    }
+  ]
+}

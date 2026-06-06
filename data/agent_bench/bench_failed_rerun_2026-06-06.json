@@ -1,0 +1,3304 @@
+{
+  "schema": "onco_breast_agent_benchmark_result.v2",
+  "benchmark_version": "failed-subset-v1",
+  "run_at": "2026-06-06T14:11:26",
+  "base_url": "http://127.0.0.1:8080",
+  "runner": "tools/agent_benchmark.py",
+  "corpus": "data\\agent_bench\\bench_v1.json",
+  "summary": {
+    "total": 71,
+    "passed": 4,
+    "failed": 67,
+    "pass_rate": 0.0563
+  },
+  "categories": [
+    {
+      "category": "drug_price_indication",
+      "passed": 1,
+      "failed": 0
+    },
+    {
+      "category": "field_extraction",
+      "passed": 0,
+      "failed": 13
+    },
+    {
+      "category": "out_of_scope_drug",
+      "passed": 0,
+      "failed": 14
+    },
+    {
+      "category": "reasoning_composition",
+      "passed": 1,
+      "failed": 4
+    },
+    {
+      "category": "staging",
+      "passed": 2,
+      "failed": 33
+    },
+    {
+      "category": "support_resources",
+      "passed": 0,
+      "failed": 3
+    }
+  ],
+  "validation_policy": {
+    "principle": "Reference answers are generated before the agent call from local structured data/calculators. The run records agent_reply and called_tools for every case.",
+    "required_tool_checks": true,
+    "exact_text_match": false
+  },
+  "failure_summary": {
+    "by_type": {
+      "factual_omission_or_wrong_value": 47,
+      "tool_invocation_failure": 7,
+      "field_extraction_failure": 13
+    },
+    "data_questions": [
+      {
+        "id": "reason-002",
+        "category": "reasoning_composition",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "需要檢查多步推論題的 tool result 是否包含所有必要資料，以及 prompt 是否要求逐步引用網站資料。"
+      },
+      {
+        "id": "reason-003",
+        "category": "reasoning_composition",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "需要檢查多步推論題的 tool result 是否包含所有必要資料，以及 prompt 是否要求逐步引用網站資料。"
+      },
+      {
+        "id": "reason-004",
+        "category": "reasoning_composition",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "需要檢查多步推論題的 tool result 是否包含所有必要資料，以及 prompt 是否要求逐步引用網站資料。"
+      },
+      {
+        "id": "reason-012",
+        "category": "reasoning_composition",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "Agent 是否明確以 patient_context payload 優先於使用者問題文字；需要 system prompt 或 preprocessing 強化。"
+      },
+      {
+        "id": "external-013",
+        "category": "out_of_scope_drug",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。"
+      },
+      {
+        "id": "external-014",
+        "category": "out_of_scope_drug",
+        "failure_type": "tool_invocation_failure",
+        "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。"
+      },
+      {
+        "id": "external-015",
+        "category": "out_of_scope_drug",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。"
+      },
+      {
+        "id": "external-016",
+        "category": "out_of_scope_drug",
+        "failure_type": "tool_invocation_failure",
+        "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。"
+      },
+      {
+        "id": "external-018",
+        "category": "out_of_scope_drug",
+        "failure_type": "tool_invocation_failure",
+        "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。"
+      },
+      {
+        "id": "external-019",
+        "category": "out_of_scope_drug",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。"
+      },
+      {
+        "id": "external-020",
+        "category": "out_of_scope_drug",
+        "failure_type": "tool_invocation_failure",
+        "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。"
+      },
+      {
+        "id": "external-021",
+        "category": "out_of_scope_drug",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。"
+      },
+      {
+        "id": "external-022",
+        "category": "out_of_scope_drug",
+        "failure_type": "tool_invocation_failure",
+        "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。"
+      },
+      {
+        "id": "external-023",
+        "category": "out_of_scope_drug",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。"
+      },
+      {
+        "id": "external-024",
+        "category": "out_of_scope_drug",
+        "failure_type": "tool_invocation_failure",
+        "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。"
+      },
+      {
+        "id": "external-025",
+        "category": "out_of_scope_drug",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。"
+      },
+      {
+        "id": "external-026",
+        "category": "out_of_scope_drug",
+        "failure_type": "tool_invocation_failure",
+        "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。"
+      },
+      {
+        "id": "external-027",
+        "category": "out_of_scope_drug",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。"
+      },
+      {
+        "id": "support-031",
+        "category": "support_resources",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 support_resources.json 是否有對應資源、owner、申請文件與 agent support-resources tool 是否被呼叫。"
+      },
+      {
+        "id": "support-032",
+        "category": "support_resources",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 support_resources.json 是否有對應資源、owner、申請文件與 agent support-resources tool 是否被呼叫。"
+      },
+      {
+        "id": "support-035",
+        "category": "support_resources",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 support_resources.json 是否有對應資源、owner、申請文件與 agent support-resources tool 是否被呼叫。"
+      },
+      {
+        "id": "stage-136",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-137",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-138",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-139",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-140",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-141",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-142",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-143",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-145",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-146",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-147",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-148",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-149",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-150",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-151",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-152",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-153",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-154",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-155",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-156",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-157",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-158",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-159",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-160",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-161",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-162",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-163",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-164",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-165",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-166",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-167",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-168",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "stage-170",
+        "category": "staging",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。"
+      },
+      {
+        "id": "extract-275",
+        "category": "field_extraction",
+        "failure_type": "field_extraction_failure",
+        "data_question": "檢查病理文字抽取規則與 patient_patch schema 對應。"
+      },
+      {
+        "id": "extract-278",
+        "category": "field_extraction",
+        "failure_type": "field_extraction_failure",
+        "data_question": "檢查病理文字抽取規則與 patient_patch schema 對應。"
+      },
+      {
+        "id": "extract-279",
+        "category": "field_extraction",
+        "failure_type": "field_extraction_failure",
+        "data_question": "檢查病理文字抽取規則與 patient_patch schema 對應。"
+      },
+      {
+        "id": "extract-282",
+        "category": "field_extraction",
+        "failure_type": "field_extraction_failure",
+        "data_question": "檢查病理文字抽取規則與 patient_patch schema 對應。"
+      },
+      {
+        "id": "extract-283",
+        "category": "field_extraction",
+        "failure_type": "field_extraction_failure",
+        "data_question": "檢查病理文字抽取規則與 patient_patch schema 對應。"
+      },
+      {
+        "id": "extract-286",
+        "category": "field_extraction",
+        "failure_type": "field_extraction_failure",
+        "data_question": "檢查病理文字抽取規則與 patient_patch schema 對應。"
+      },
+      {
+        "id": "extract-287",
+        "category": "field_extraction",
+        "failure_type": "field_extraction_failure",
+        "data_question": "檢查病理文字抽取規則與 patient_patch schema 對應。"
+      },
+      {
+        "id": "extract-290",
+        "category": "field_extraction",
+        "failure_type": "field_extraction_failure",
+        "data_question": "檢查病理文字抽取規則與 patient_patch schema 對應。"
+      },
+      {
+        "id": "extract-291",
+        "category": "field_extraction",
+        "failure_type": "field_extraction_failure",
+        "data_question": "檢查病理文字抽取規則與 patient_patch schema 對應。"
+      },
+      {
+        "id": "extract-294",
+        "category": "field_extraction",
+        "failure_type": "field_extraction_failure",
+        "data_question": "檢查病理文字抽取規則與 patient_patch schema 對應。"
+      },
+      {
+        "id": "extract-295",
+        "category": "field_extraction",
+        "failure_type": "field_extraction_failure",
+        "data_question": "檢查病理文字抽取規則與 patient_patch schema 對應。"
+      },
+      {
+        "id": "extract-298",
+        "category": "field_extraction",
+        "failure_type": "field_extraction_failure",
+        "data_question": "檢查病理文字抽取規則與 patient_patch schema 對應。"
+      },
+      {
+        "id": "extract-299",
+        "category": "field_extraction",
+        "failure_type": "field_extraction_failure",
+        "data_question": "檢查病理文字抽取規則與 patient_patch schema 對應。"
+      }
+    ]
+  },
+  "case_results": [
+    {
+      "id": "reason-001",
+      "category": "reasoning_composition",
+      "question": "HER2+、LN-、M0 早期乳癌，網站資料內哪些 HER2 藥物可能需要自費？請同時指出哪些資料列是健保價可查但仍需事審，不要把 Phesgo 和 Perjeta 混在一起。",
+      "patient_context": {
+        "her2": "+",
+        "cN": "N0",
+        "cM": "M0",
+        "er": "+",
+        "pr": "+"
+      },
+      "reference_answer": "網站資料內：Phesgo 標示健保未給付/需全額自費；Perjeta/Pertuzumab 與 Herceptin/Trastuzumab 有健保價資料，但 Perjeta/部分 HER2 治療需事前審查。LN- 是否符合給付條件仍需依資料列條件與院內審查確認，不可把 Phesgo 自費狀態套到 Perjeta。",
+      "expected": {
+        "must_call": [
+          "drug-search",
+          "formulation-lookup"
+        ],
+        "contains_regex": [
+          "Phesgo",
+          "自費|未給付",
+          "Perjeta|Pertuzumab",
+          "事前審查|事審",
+          "Herceptin|Trastuzumab"
+        ],
+        "must_not_regex": [
+          "Perjeta[^。；\\n]{0,30}(全額)?自費",
+          "Phesgo[^。；\\n]{0,40}健保給付"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "tool:formulation-lookup",
+        "regex:Phesgo",
+        "regex:自費|未給付",
+        "regex:Perjeta|Pertuzumab",
+        "regex:事前審查|事審",
+        "regex:Herceptin|Trastuzumab",
+        "not_regex:Perjeta[^。；\\n]{0,30}(全額)?自費",
+        "not_regex:Phesgo[^。；\\n]{0,40}健保給付"
+      ],
+      "agent_reply": "針對 HER2+ 早期乳癌，藥物給付狀況如下：\n\n1. **需自費藥物**：\n- **Phesgo** (pertuzumab + trastuzumab SC)：目前資料標示為自費/健保未給付，需全額自費。\n\n2. **健保價可查但需事前審查 (Prior Auth) 藥物**：\n- **Herceptin (Trastuzumab)**：第1線，健保價 28,518 元 (440mg/vial)。\n- **Perjeta (Pertuzumab)**：第1線，健保價 44,929 元 (420mg/vial)。\n- **Kadcyla (Trastuzumab emtansine)**：第2線，健保價 50,983 元 (160mg/vial) 或 31,865 元 (100mg/vial)。\n\n請注意，Phesgo 為皮下注射複方，其自費狀態不適用於 Perjeta 靜脈製劑。實際給付仍需依完整病理、治療線別、院內政策與健保事前審查確認。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [
+        "drug:1747",
+        "drug:1757",
+        "drug:1768",
+        "drug:1773",
+        "drug:1748"
+      ],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 4650
+    },
+    {
+      "id": "reason-002",
+      "category": "reasoning_composition",
+      "question": "TNBC cT2N1M0 使用 KEYNOTE-522/KN522 架構時，依網站內 Keytruda 200mg q3w、暫估 17 次，pembrolizumab 藥費總額是多少？請列出計算式。",
+      "patient_context": {
+        "er": "-",
+        "pr": "-",
+        "her2": "-",
+        "cT": "T2",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "reference_answer": "Keytruda/pembrolizumab 網站價 54,267 元/100mg vial；若暫估 17 次，pembrolizumab 藥費 = 54,267 x 17 = 922,539 元。這只計 Keytruda，不含 paclitaxel/carboplatin/AC、給藥與檢查費。",
+      "expected": {
+        "must_call": [
+          "drug-search",
+          "formulation-lookup"
+        ],
+        "contains_regex": [
+          "KEYNOTE-?522|KN522",
+          "17|十七",
+          "54267|54,267",
+          "922539|922,539",
+          "54267\\s*[x×*]\\s*17|54,267\\s*[x×*]\\s*17"
+        ]
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern KEYNOTE-?522|KN522; reply=根據系統資料庫，Keytruda (Pembrolizumab) 的健保價格為 54,267 元 (單位：100mg/4mL vial)。\n\n若使用 200mg q3w 劑量，每劑需 2 瓶，暫估 17 次治療的藥費計算如下：\n\n計算式：54,267 元 × 2 瓶/劑 × 17 劑 = 1,845,078 元\n\n暫估藥費總額為 1,845,078 元。請注意，實際給付需依健保事前審查核准及院內政策確認。",
+      "failure_analysis": "需要檢查多步推論題的 tool result 是否包含所有必要資料，以及 prompt 是否要求逐步引用網站資料。",
+      "data_question": "需要檢查多步推論題的 tool result 是否包含所有必要資料，以及 prompt 是否要求逐步引用網站資料。",
+      "checks": [],
+      "agent_reply": "根據系統資料庫，Keytruda (Pembrolizumab) 的健保價格為 54,267 元 (單位：100mg/4mL vial)。\n\n若使用 200mg q3w 劑量，每劑需 2 瓶，暫估 17 次治療的藥費計算如下：\n\n計算式：54,267 元 × 2 瓶/劑 × 17 劑 = 1,845,078 元\n\n暫估藥費總額為 1,845,078 元。請注意，實際給付需依健保事前審查核准及院內政策確認。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [
+        {
+          "source": "nhi_drug_coverage.db",
+          "id": "drug:1774",
+          "title": "Pembrolizumab"
+        }
+      ],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3729
+    },
+    {
+      "id": "reason-003",
+      "category": "reasoning_composition",
+      "question": "Arimidex 可以和 Femara 共用嗎？請只根據網站內 anastrozole/letrozole 資料回答，並指出原因。",
+      "patient_context": {
+        "er": "+",
+        "pr": "+",
+        "her2": "-",
+        "menopause": "post"
+      },
+      "reference_answer": "不可共用。網站資料中 anastrozole/letrozole 均屬 aromatase inhibitor，給付條件文字包含不得與其他 aromatase inhibitor 併用。",
+      "expected": {
+        "must_call": [
+          "drug-search",
+          "formulation-lookup"
+        ],
+        "contains_regex": [
+          "Arimidex|Anastrozole",
+          "Femara|Letrozole",
+          "不得|不建議|不可|不能",
+          "其他\\s*aromatase inhibitor|AI|aromatase inhibitor"
+        ],
+        "must_not_regex": [
+          "可以[^。；\\n]{0,20}(共用|併用|一起使用)"
+        ]
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 不得|不建議|不可|不能; reply=本網站資料庫內目前沒有查到關於 Arimidex (anastrozole) 與 Femara (letrozole) 的相關資料，因此無法根據系統內資訊回答是否可共用及其原因。",
+      "failure_analysis": "需要檢查多步推論題的 tool result 是否包含所有必要資料，以及 prompt 是否要求逐步引用網站資料。",
+      "data_question": "需要檢查多步推論題的 tool result 是否包含所有必要資料，以及 prompt 是否要求逐步引用網站資料。",
+      "checks": [],
+      "agent_reply": "本網站資料庫內目前沒有查到關於 Arimidex (anastrozole) 與 Femara (letrozole) 的相關資料，因此無法根據系統內資訊回答是否可共用及其原因。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 4193
+    },
+    {
+      "id": "reason-004",
+      "category": "reasoning_composition",
+      "question": "Zoladex LA 三個月一次，配合 Femara 自費使用三年，依網站內院內價估算總藥費是多少？請列出 Zoladex、Femara 與總額。",
+      "patient_context": {
+        "er": "+",
+        "pr": "+",
+        "her2": "-",
+        "menopause": "pre"
+      },
+      "reference_answer": "假設 Zoladex LA 10.8mg 每 3 個月一次、3 年共 12 次：10,800 x 12 = 129,600 元。Femara/Lovizol 自費價 44 元/日，3 年暫用 365x3 天：44 x 1095 = 48,180 元。合計 177,780 元。",
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_regex": [
+          "Zoladex",
+          "Femara|Letrozole",
+          "10800|10,800",
+          "44|44",
+          "129600|129,600",
+          "48180|48,180",
+          "177780|177,780"
+        ]
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 44|44; reply=根據系統資料庫中的院內價格估算如下：\n\n1. Zoladex LA：單價 10,800 元/syringe。三個月一次，一年 4 次，三年共 12 次 $\\approx$ 129,600 元。\n2. Femara：本網站資料庫內目前沒有查到 Femara 的價格資訊。\n\n由於缺少 Femara 的價格，無法計算三年總藥費。請提供 Femara 的單價或確認藥品名稱以利重新估算。",
+      "failure_analysis": "需要檢查多步推論題的 tool result 是否包含所有必要資料，以及 prompt 是否要求逐步引用網站資料。",
+      "data_question": "需要檢查多步推論題的 tool result 是否包含所有必要資料，以及 prompt 是否要求逐步引用網站資料。",
+      "checks": [],
+      "agent_reply": "根據系統資料庫中的院內價格估算如下：\n\n1. Zoladex LA：單價 10,800 元/syringe。三個月一次，一年 4 次，三年共 12 次 $\\approx$ 129,600 元。\n2. Femara：本網站資料庫內目前沒有查到 Femara 的價格資訊。\n\n由於缺少 Femara 的價格，無法計算三年總藥費。請提供 Femara 的單價或確認藥品名稱以利重新估算。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 4088
+    },
+    {
+      "id": "reason-012",
+      "category": "reasoning_composition",
+      "question": "如果我貼的問題文字說 T2N1，但左邊 patient_context 是 T3N1M0，請你以 payload 的 patient_context 為準回答目前病人分期，不要被問題內 T2N1 誤導。",
+      "patient_context": {
+        "cT": "T3",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "reference_answer": "Agent 應以 API payload/patient_context 為準：T3N1M0 = IIIA。若被使用者文字內 T2N1 帶走，代表上下文優先序需要修正。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "T3N1M0",
+          "IIIA|stage\\s*IIIA|3A"
+        ],
+        "must_not_regex": [
+          "T2N1M0[^。；\\n]{0,30}IIB",
+          "目前病人[^。；\\n]{0,40}T2N1"
+        ]
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern T3N1M0; reply=根據系統紀錄，目前病人的分期為 IIIA (basis: clinical)。",
+      "failure_analysis": "Agent 是否明確以 patient_context payload 優先於使用者問題文字；需要 system prompt 或 preprocessing 強化。",
+      "data_question": "Agent 是否明確以 patient_context payload 優先於使用者問題文字；需要 system prompt 或 preprocessing 強化。",
+      "checks": [],
+      "agent_reply": "根據系統紀錄，目前病人的分期為 IIIA (basis: clinical)。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2456
+    },
+    {
+      "id": "external-013",
+      "category": "out_of_scope_drug",
+      "question": "我在國外聽到 Orserdu / elacestrant，你可以告訴我乳癌適應症與價格嗎？只准用網站資料。",
+      "patient_context": {},
+      "reference_answer": "外部資料可見 ER+/HER2- ESR1-mutated metastatic breast cancer，但本網站資料庫目前沒有 elacestrant/Orserdu。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "ESR1|metastatic|advanced|適應症"
+        ]
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 不可|不能|不應|無法; reply=本網站資料庫內目前沒有查到 Orserdu / elacestrant 的相關適應症與價格資訊。",
+      "failure_analysis": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "checks": [],
+      "agent_reply": "本網站資料庫內目前沒有查到 Orserdu / elacestrant 的相關適應症與價格資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2195
+    },
+    {
+      "id": "external-014",
+      "category": "out_of_scope_drug",
+      "question": "Truqap / capivasertib 如果病人問能不能用，請查本網站資料庫；沒有就明確說沒有，不要用你自己的知識補。",
+      "patient_context": {},
+      "reference_answer": "外部資料可見 HR+/HER2- biomarker-altered advanced breast cancer，但本網站資料庫目前沒有 capivasertib/Truqap。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "PIK3CA|AKT1|PTEN|fulvestrant"
+        ]
+      },
+      "passed": false,
+      "failure_type": "tool_invocation_failure",
+      "error": "missing tool drug-search; got ['calculate/staging-score']",
+      "failure_analysis": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "checks": [],
+      "agent_reply": "本網站資料庫內目前沒有查到 Truqap (capivasertib) 的相關資訊。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2299
+    },
+    {
+      "id": "external-015",
+      "category": "out_of_scope_drug",
+      "question": "幫我核對 Datroway / datopotamab deruxtecan 是否在 OncoBreast 資料庫，有沒有健保價、適應症、線別？",
+      "patient_context": {},
+      "reference_answer": "外部資料可見 HR+/HER2- metastatic breast cancer，但本網站資料庫目前沒有 datopotamab deruxtecan/Datroway。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "TROP2|Trop-2|topoisomerase"
+        ]
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 不可|不能|不應|無法; reply=本網站資料庫內目前沒有查到 Datroway / datopotamab deruxtecan 的相關資料（包括健保價、適應症與線別）。",
+      "failure_analysis": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "checks": [],
+      "agent_reply": "本網站資料庫內目前沒有查到 Datroway / datopotamab deruxtecan 的相關資料（包括健保價、適應症與線別）。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2898
+    },
+    {
+      "id": "external-016",
+      "category": "out_of_scope_drug",
+      "question": "這題是邊界測試：Inavolisib / Itovebi 請不要查外部，回答網站內查得到什麼。",
+      "patient_context": {},
+      "reference_answer": "外部資料可見 PIK3CA-mutated HR+/HER2- advanced breast cancer，但本網站資料庫目前沒有 inavolisib/Itovebi。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "PIK3CA|palbociclib|fulvestrant"
+        ]
+      },
+      "passed": false,
+      "failure_type": "tool_invocation_failure",
+      "error": "missing tool drug-search; got ['calculate/staging-score']",
+      "failure_analysis": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "checks": [],
+      "agent_reply": "本網站資料庫內目前沒有查到 Inavolisib / Itovebi 的相關資訊。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1174
+    },
+    {
+      "id": "external-018",
+      "category": "out_of_scope_drug",
+      "question": "Azenosertib 如果病人問能不能用，請查本網站資料庫；沒有就明確說沒有，不要用你自己的知識補。",
+      "patient_context": {},
+      "reference_answer": "外部研發中新藥，本網站資料庫目前沒有 Azenosertib。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "WEE1|phase|trial"
+        ]
+      },
+      "passed": false,
+      "failure_type": "tool_invocation_failure",
+      "error": "missing tool drug-search; got ['calculate/staging-score']",
+      "failure_analysis": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "checks": [],
+      "agent_reply": "本網站資料庫內目前沒有查到 Azenosertib 的相關資訊。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 776
+    },
+    {
+      "id": "external-019",
+      "category": "out_of_scope_drug",
+      "question": "幫我核對 Rilvegostomig 是否在 OncoBreast 資料庫，有沒有健保價、適應症、線別？",
+      "patient_context": {},
+      "reference_answer": "外部免疫治療研發藥，本網站資料庫目前沒有 Rilvegostomig。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "PD-1|TIGIT|immunotherapy"
+        ]
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 不可|不能|不應|無法; reply=本網站資料庫內目前沒有查到 Rilvegostomig 的相關資料。",
+      "failure_analysis": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "checks": [],
+      "agent_reply": "本網站資料庫內目前沒有查到 Rilvegostomig 的相關資料。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2085
+    },
+    {
+      "id": "external-020",
+      "category": "out_of_scope_drug",
+      "question": "這題是邊界測試：Vepdegestrant 請不要查外部，回答網站內查得到什麼。",
+      "patient_context": {},
+      "reference_answer": "外部 SERD/PROTAC 研發藥，本網站資料庫目前沒有 Vepdegestrant。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "PROTAC|ER degrader|SERD"
+        ]
+      },
+      "passed": false,
+      "failure_type": "tool_invocation_failure",
+      "error": "missing tool drug-search; got ['calculate/staging-score']",
+      "failure_analysis": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "checks": [],
+      "agent_reply": "本網站資料庫內目前沒有查到 Vepdegestrant 的相關資訊。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2110
+    },
+    {
+      "id": "external-021",
+      "category": "out_of_scope_drug",
+      "question": "我在國外聽到 Ladiratuzumab vedotin，你可以告訴我乳癌適應症與價格嗎？只准用網站資料。",
+      "patient_context": {},
+      "reference_answer": "外部 ADC 研發藥，本網站資料庫目前沒有 Ladiratuzumab vedotin。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "LIV-1|ADC"
+        ]
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 不可|不能|不應|無法; reply=本網站資料庫內目前沒有查到 Ladiratuzumab vedotin 的相關適應症與價格資訊。",
+      "failure_analysis": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "checks": [],
+      "agent_reply": "本網站資料庫內目前沒有查到 Ladiratuzumab vedotin 的相關適應症與價格資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 833
+    },
+    {
+      "id": "external-022",
+      "category": "out_of_scope_drug",
+      "question": "Patritumab deruxtecan 如果病人問能不能用，請查本網站資料庫；沒有就明確說沒有，不要用你自己的知識補。",
+      "patient_context": {},
+      "reference_answer": "外部 HER3 ADC，本網站資料庫目前沒有 Patritumab deruxtecan。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "HER3|ADC"
+        ]
+      },
+      "passed": false,
+      "failure_type": "tool_invocation_failure",
+      "error": "missing tool drug-search; got ['calculate/staging-score']",
+      "failure_analysis": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "checks": [],
+      "agent_reply": "本網站資料庫內目前沒有查到 Patritumab deruxtecan 的相關資訊。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1168
+    },
+    {
+      "id": "external-023",
+      "category": "out_of_scope_drug",
+      "question": "幫我核對 Gedatolisib 是否在 OncoBreast 資料庫，有沒有健保價、適應症、線別？",
+      "patient_context": {},
+      "reference_answer": "外部 PI3K/mTOR 相關研發藥，本網站資料庫目前沒有 Gedatolisib。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "PI3K|mTOR"
+        ]
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 不可|不能|不應|無法; reply=本網站資料庫內目前沒有查到 Gedatolisib 的相關資料。",
+      "failure_analysis": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "checks": [],
+      "agent_reply": "本網站資料庫內目前沒有查到 Gedatolisib 的相關資料。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2132
+    },
+    {
+      "id": "external-024",
+      "category": "out_of_scope_drug",
+      "question": "這題是邊界測試：Samuraciclib 請不要查外部，回答網站內查得到什麼。",
+      "patient_context": {},
+      "reference_answer": "外部 CDK7 研發藥，本網站資料庫目前沒有 Samuraciclib。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "CDK7"
+        ]
+      },
+      "passed": false,
+      "failure_type": "tool_invocation_failure",
+      "error": "missing tool drug-search; got ['calculate/staging-score']",
+      "failure_analysis": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "checks": [],
+      "agent_reply": "本網站資料庫內目前沒有查到 Samuraciclib 的相關資訊。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2251
+    },
+    {
+      "id": "external-025",
+      "category": "out_of_scope_drug",
+      "question": "我在國外聽到 Lasofoxifene，你可以告訴我乳癌適應症與價格嗎？只准用網站資料。",
+      "patient_context": {},
+      "reference_answer": "外部 endocrine therapy 相關藥，本網站資料庫目前沒有 Lasofoxifene。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "ESR1|SERD|SERM"
+        ]
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 不可|不能|不應|無法; reply=本網站資料庫內目前沒有查到 Lasofoxifene 的相關適應症與價格資訊。",
+      "failure_analysis": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "checks": [],
+      "agent_reply": "本網站資料庫內目前沒有查到 Lasofoxifene 的相關適應症與價格資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2532
+    },
+    {
+      "id": "external-026",
+      "category": "out_of_scope_drug",
+      "question": "Tarlatamab 如果病人問能不能用，請查本網站資料庫；沒有就明確說沒有，不要用你自己的知識補。",
+      "patient_context": {},
+      "reference_answer": "非乳癌主軸外部藥物，本網站乳癌資料庫目前沒有 Tarlatamab。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "DLL3|SCLC"
+        ]
+      },
+      "passed": false,
+      "failure_type": "tool_invocation_failure",
+      "error": "missing tool drug-search; got ['calculate/staging-score']",
+      "failure_analysis": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "checks": [],
+      "agent_reply": "本網站資料庫內目前沒有查到 Tarlatamab 的相關資訊。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2062
+    },
+    {
+      "id": "external-027",
+      "category": "out_of_scope_drug",
+      "question": "幫我核對 Amivantamab 是否在 OncoBreast 資料庫，有沒有健保價、適應症、線別？",
+      "patient_context": {},
+      "reference_answer": "非乳癌主軸外部藥物，本網站乳癌資料庫目前沒有 Amivantamab。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "EGFR|MET|NSCLC"
+        ]
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 不可|不能|不應|無法; reply=本網站資料庫內目前沒有查到 Amivantamab 的相關資料。",
+      "failure_analysis": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "data_question": "這是外部藥物邊界題；若 agent 補外部適應症，需強化只允許網站內資料回答，並考慮是否要正式新增此藥資料列。",
+      "checks": [],
+      "agent_reply": "本網站資料庫內目前沒有查到 Amivantamab 的相關資料。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2319
+    },
+    {
+      "id": "support-031",
+      "category": "support_resources",
+      "question": "標靶或免疫治療如果自費壓力大，病患照護支持卡內有沒有贈藥或藥費協助方向？ 請只根據網站內 support resources 回答。",
+      "patient_context": {},
+      "reference_answer": "應列出網站內支援資源：藥廠病人協助或贈藥方案、台灣癌症資源網補助媒合、醫師/藥師/個管師/社工、院內社工/癌症資源中心；並提醒資格、名額與方案效期需由院內窗口確認。",
+      "expected": {
+        "must_call": [
+          "support-resources"
+        ],
+        "contains_any": [
+          "藥廠病人協助或贈藥方案",
+          "台灣癌症資源網補助媒合"
+        ],
+        "contains_regex": [
+          "社工|個管|癌症資源中心|窗口",
+          "診斷證明|病理報告|收據|申請|文件"
+        ]
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing any of ['藥廠病人協助或贈藥方案', '台灣癌症資源網補助媒合']; reply=本網站內目前尚未建置相關的支援資源（support resources），因此無法提供關於病患照護支持卡內贈藥或藥費協助的具體資訊。",
+      "failure_analysis": "檢查 support_resources.json 是否有對應資源、owner、申請文件與 agent support-resources tool 是否被呼叫。",
+      "data_question": "檢查 support_resources.json 是否有對應資源、owner、申請文件與 agent support-resources tool 是否被呼叫。",
+      "checks": [],
+      "agent_reply": "本網站內目前尚未建置相關的支援資源（support resources），因此無法提供關於病患照護支持卡內贈藥或藥費協助的具體資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "support-resources",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1666
+    },
+    {
+      "id": "support-032",
+      "category": "support_resources",
+      "question": "病人說不確定重大傷病和民間基金會補助差在哪裡，請用網站內資源整理申請窗口與文件。 請只根據網站內 support resources 回答。",
+      "patient_context": {},
+      "reference_answer": "應列出網站內支援資源：重大傷病證明與健保給付資格、台灣癌症資源網補助媒合、醫師/個管師/批價或病歷窗口、院內社工/癌症資源中心；並提醒資格、名額與方案效期需由院內窗口確認。",
+      "expected": {
+        "must_call": [
+          "support-resources"
+        ],
+        "contains_any": [
+          "重大傷病證明與健保給付資格",
+          "台灣癌症資源網補助媒合"
+        ],
+        "contains_regex": [
+          "社工|個管|癌症資源中心|窗口",
+          "診斷證明|病理報告|收據|申請|文件"
+        ]
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing any of ['重大傷病證明與健保給付資格', '台灣癌症資源網補助媒合']; reply=根據系統內資源，重大傷病與民間基金會補助的差異整理如下：\n\n1. 重大傷病證明（健保給付）：\n- 目的：核准後符合項目可免除就醫部分負擔。\n- 申請窗口：由醫療院所代理或本人向健保署分區業務組提出。\n- 需備文件：病理報告、診斷證明、影像或手術/治療紀錄、健保卡或身分資料。\n- 負責人員：醫師/個管師/批價或病歷窗口。\n\n2. 民間基金會與社福補助（如台灣癌症資源網、各基金會）：\n- 目的：提供交通、住宿、營養品、醫療費或生活急難補助，依年度專案與經濟狀況而定。\n- 申請窗口：由院內社工或癌症資源中心媒合，依各基金會/單位要求申請。\n- 需備文件：診斷證明、身分/戶籍或收入證明、醫療費用單據、補助申請表。\n- 負責人員：院內社工。\n\n建議病患與院內社工或個管師聯繫，以確認具體申請資格與最新流程。",
+      "failure_analysis": "檢查 support_resources.json 是否有對應資源、owner、申請文件與 agent support-resources tool 是否被呼叫。",
+      "data_question": "檢查 support_resources.json 是否有對應資源、owner、申請文件與 agent support-resources tool 是否被呼叫。",
+      "checks": [],
+      "agent_reply": "根據系統內資源，重大傷病與民間基金會補助的差異整理如下：\n\n1. 重大傷病證明（健保給付）：\n- 目的：核准後符合項目可免除就醫部分負擔。\n- 申請窗口：由醫療院所代理或本人向健保署分區業務組提出。\n- 需備文件：病理報告、診斷證明、影像或手術/治療紀錄、健保卡或身分資料。\n- 負責人員：醫師/個管師/批價或病歷窗口。\n\n2. 民間基金會與社福補助（如台灣癌症資源網、各基金會）：\n- 目的：提供交通、住宿、營養品、醫療費或生活急難補助，依年度專案與經濟狀況而定。\n- 申請窗口：由院內社工或癌症資源中心媒合，依各基金會/單位要求申請。\n- 需備文件：診斷證明、身分/戶籍或收入證明、醫療費用單據、補助申請表。\n- 負責人員：院內社工。\n\n建議病患與院內社工或個管師聯繫，以確認具體申請資格與最新流程。",
+      "called_tools": [
+        "calculate/staging-score",
+        "support-resources"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [
+        {
+          "source": "data/support_resources.json",
+          "id": "support:major-illness-certificate",
+          "title": "重大傷病證明與健保給付資格"
+        },
+        {
+          "source": "data/support_resources.json",
+          "id": "support:cancer-resource-network-subsidy",
+          "title": "台灣癌症資源網補助媒合"
+        },
+        {
+          "source": "data/support_resources.json",
+          "id": "support:foundation-screening-assistance",
+          "title": "基金會篩檢、交通或醫療費補助"
+        }
+      ],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3548
+    },
+    {
+      "id": "support-035",
+      "category": "support_resources",
+      "question": "如果病人問義乳胸衣、假髮、營養品補助是否一定有，請依網站資料說明邊界。 請只根據網站內 support resources 回答。",
+      "patient_context": {},
+      "reference_answer": "應列出網站內支援資源：義乳與胸衣補助、乳癌病友急難救助、院內社工/基金會窗口、院內社工/癌症希望基金會窗口；並提醒資格、名額與方案效期需由院內窗口確認。",
+      "expected": {
+        "must_call": [
+          "support-resources"
+        ],
+        "contains_any": [
+          "義乳與胸衣補助",
+          "乳癌病友急難救助"
+        ],
+        "contains_regex": [
+          "社工|個管|癌症資源中心|窗口",
+          "診斷證明|病理報告|收據|申請|文件"
+        ]
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing any of ['義乳與胸衣補助', '乳癌病友急難救助']; reply=關於義乳胸衣、假髮及營養品補助，並非一定能獲得，需依各基金會之年度專案、申請資格及審核結果而定。根據本系統資料說明如下：\n\n1. 義乳與胸衣：\n- 台灣癌症臨床研究發展基金會：限單側或雙側乳房全切除手術（2021/1/1後），中低收入者優先，且曾申請者不得重複申請。\n- 癌症希望基金會：包含在急難救助項目中，需由社工或護理師評估實際生活困境後提供。\n\n2. 營養品：\n- 癌症希望基金會：屬於急難救助項目，需經審核評估（如就醫狀況、家庭收入、儲蓄等）後提供。\n- 其他基金會：部分年度專案可能涵蓋營養品，需由院內社工依當期公告確認。\n\n3. 假髮：\n- 本網站資料庫內目前未列出假髮之專項補助資源。\n\n申請方式：請洽院內社工或基金會窗口，備妥診斷證明書、身分證影本及收入證明等文件進行申請。",
+      "failure_analysis": "檢查 support_resources.json 是否有對應資源、owner、申請文件與 agent support-resources tool 是否被呼叫。",
+      "data_question": "檢查 support_resources.json 是否有對應資源、owner、申請文件與 agent support-resources tool 是否被呼叫。",
+      "checks": [],
+      "agent_reply": "關於義乳胸衣、假髮及營養品補助，並非一定能獲得，需依各基金會之年度專案、申請資格及審核結果而定。根據本系統資料說明如下：\n\n1. 義乳與胸衣：\n- 台灣癌症臨床研究發展基金會：限單側或雙側乳房全切除手術（2021/1/1後），中低收入者優先，且曾申請者不得重複申請。\n- 癌症希望基金會：包含在急難救助項目中，需由社工或護理師評估實際生活困境後提供。\n\n2. 營養品：\n- 癌症希望基金會：屬於急難救助項目，需經審核評估（如就醫狀況、家庭收入、儲蓄等）後提供。\n- 其他基金會：部分年度專案可能涵蓋營養品，需由院內社工依當期公告確認。\n\n3. 假髮：\n- 本網站資料庫內目前未列出假髮之專項補助資源。\n\n申請方式：請洽院內社工或基金會窗口，備妥診斷證明書、身分證影本及收入證明等文件進行申請。",
+      "called_tools": [
+        "calculate/staging-score",
+        "support-resources"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [
+        {
+          "source": "data/support_resources.json",
+          "id": "support:breast-care-prosthesis-bra",
+          "title": "義乳與胸衣補助"
+        },
+        {
+          "source": "data/support_resources.json",
+          "id": "support:breast-foundation-emergency-aid",
+          "title": "乳癌病友急難救助"
+        },
+        {
+          "source": "data/support_resources.json",
+          "id": "support:foundation-screening-assistance",
+          "title": "基金會篩檢、交通或醫療費補助"
+        }
+      ],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 4037
+    },
+    {
+      "id": "drug-037",
+      "category": "drug_price_indication",
+      "question": "門診病人問到 Keytruda / Pembrolizumab，請只用網站資料列出給付重點、價格和是否事審。",
+      "patient_context": {},
+      "reference_answer": "Keytruda（Pembrolizumab）：線別 1；健保價 54267/100mg/4mL vial；需事前審查。適應症摘要：1. 與 paclitaxel 及 carboplatin 併用於早期三陰性乳癌(第II期至第IIIb期，cT1c N1-2 或 T2-4 N0-2)病人的術前前導性治療用藥，病人需符合免疫檢查點抑制劑之藥品給付規定。(114/6/1) | 2. 臨床常用 KEYNOTE-522/KN522 架構：pembrolizumab 合併 taxane/platinum，接續 anthracycline/cyclophosphamide；手術後依規範評估 pembrolizumab ",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Keytruda",
+          "Pembrolizumab"
+        ],
+        "contains_regex": [
+          "54267|54,267",
+          "第\\s*1|第1|1\\s*線|第\\s*一\\s*線|一\\s*線",
+          "事前審查|事審"
+        ],
+        "drug_id": 1774,
+        "drug_identity": "keytruda"
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "contains_any",
+        "regex:54267|54,267",
+        "regex:第\\s*1|第1|1\\s*線|第\\s*一\\s*線|一\\s*線",
+        "regex:事前審查|事審"
+      ],
+      "agent_reply": "Keytruda (Pembrolizumab) 的相關資訊如下：\n\n- **給付重點**：\n  - 第1線治療。\n  - 適用於早期三陰性乳癌 (TNBC) 第II期至第IIIb期 (cT1c N1-2 或 T2-4 N0-2)，與 paclitaxel 及 carboplatin 併用作術前前導治療，且需符合免疫檢查點抑制劑之藥品給付規定。\n  - 轉移性或無法切除之 TNBC 需依 PD-L1、治療線別與當期健保規範另行確認。\n- **價格**：健保價格為 54,267 元 (單位：100mg/4mL vial)。\n- **事前審查**：是，需事前審查。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [
+        {
+          "source": "nhi_drug_coverage.db",
+          "id": "drug:1774",
+          "title": "Pembrolizumab"
+        }
+      ],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3149
+    },
+    {
+      "id": "stage-136",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN0(i+)M0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N0(i+)",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN0(i+)M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據 AJCC v8 分期標準，cTisN0(i+)M0 為 Stage 0。本結果基於 clinical basis。請注意，本資訊僅供參考，正式治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據 AJCC v8 分期標準，cTisN0(i+)M0 為 Stage 0。本結果基於 clinical basis。請注意，本資訊僅供參考，正式治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2563
+    },
+    {
+      "id": "stage-137",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN1miM0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N1mi",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN1miM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據 AJCC v8 分期，cTisN1miM0 為 Stage I。本結果基於 clinical basis 計算。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據 AJCC v8 分期，cTisN1miM0 為 Stage I。本結果基於 clinical basis 計算。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 957
+    },
+    {
+      "id": "stage-138",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN1M0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN1M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據您提供的 cTisN1M0，本系統目前未能從 system_context.staging.ajcc_v8.selected 中取得對應的分期結果。請注意，Tis (原位癌) 若伴隨 N1 (淋巴結陽性)，在 AJCC v8 分期邏輯中通常會被重新定義為浸潤性癌 (Invasive Cancer) 相關分期，建議請醫師根據完整病理報告確認浸潤深度與分期。本工具僅供資訊檢索，不取代正式臨床診斷。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據您提供的 cTisN1M0，本系統目前未能從 system_context.staging.ajcc_v8.selected 中取得對應的分期結果。請注意，Tis (原位癌) 若伴隨 N1 (淋巴結陽性)，在 AJCC v8 分期邏輯中通常會被重新定義為浸潤性癌 (Invasive Cancer) 相關分期，建議請醫師根據完整病理報告確認浸潤深度與分期。本工具僅供資訊檢索，不取代正式臨床診斷。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2475
+    },
+    {
+      "id": "stage-139",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN1aM0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N1a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN1aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據您提供的 cTisN1aM0，本系統目前在 system_context.staging.ajcc_v8.selected 中未查到對應的分期結果。請確認輸入資訊是否正確，或由醫師根據完整病理報告與 AJCC v8 指南判定。本工具僅提供資訊檢索輔助，不能取代正式臨床診斷。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據您提供的 cTisN1aM0，本系統目前在 system_context.staging.ajcc_v8.selected 中未查到對應的分期結果。請確認輸入資訊是否正確，或由醫師根據完整病理報告與 AJCC v8 指南判定。本工具僅提供資訊檢索輔助，不能取代正式臨床診斷。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1982
+    },
+    {
+      "id": "stage-140",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN2M0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N2",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN2M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據您提供的 cTisN2M0，本系統目前未在 system_context.staging.ajcc_v8.selected 中查到對應的分期結果。請確認輸入資訊是否正確，或嘗試重新執行分期計算工具。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據您提供的 cTisN2M0，本系統目前未在 system_context.staging.ajcc_v8.selected 中查到對應的分期結果。請確認輸入資訊是否正確，或嘗試重新執行分期計算工具。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1519
+    },
+    {
+      "id": "stage-141",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN2aM0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N2a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN2aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據您提供的 cTisN2aM0，本系統目前在 system_context.staging.ajcc_v8.selected 中未取得計算結果。請確認輸入資訊是否正確，或在系統中重新執行分期計算。本工具僅提供資訊檢索輔助，最終分期與治療決策請依據完整病理報告、病期、治療線別及院內政策確認。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據您提供的 cTisN2aM0，本系統目前在 system_context.staging.ajcc_v8.selected 中未取得計算結果。請確認輸入資訊是否正確，或在系統中重新執行分期計算。本工具僅提供資訊檢索輔助，最終分期與治療決策請依據完整病理報告、病期、治療線別及院內政策確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1400
+    },
+    {
+      "id": "stage-142",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN3M0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N3",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN3M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據您提供的 cTisN3M0，本系統目前在 system_context.staging.ajcc_v8.selected 中未取得計算結果。請確認輸入資訊是否正確，或嘗試重新執行分期計算工具。若需正式治療決策，仍請依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據您提供的 cTisN3M0，本系統目前在 system_context.staging.ajcc_v8.selected 中未取得計算結果。請確認輸入資訊是否正確，或嘗試重新執行分期計算工具。若需正式治療決策，仍請依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1345
+    },
+    {
+      "id": "stage-143",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN3aM0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N3a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN3aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據 system_context 中的 AJCC v8 計算結果，目前未提供 cTisN3aM0 的對應分期結果（selected 為 null）。請確認輸入資訊是否正確，或參考正式 AJCC v8 分期手冊。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據 system_context 中的 AJCC v8 計算結果，目前未提供 cTisN3aM0 的對應分期結果（selected 為 null）。請確認輸入資訊是否正確，或參考正式 AJCC v8 分期手冊。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1152
+    },
+    {
+      "id": "stage-144",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N0M0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N0",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N0M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "根據 system_context，目前 AJCC v8 的計算結果為空（selected: null），無法直接提供分期結果。請確認病患資料是否完整或重新執行分期計算工具。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1197
+    },
+    {
+      "id": "stage-145",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N0(i+)M0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N0(i+)",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N0(i+)M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據您提供的 cT0N0(i+)M0，本系統目前未能在 system_context.staging.ajcc_v8.selected 中取得對應的分期結果。請確認輸入資訊是否完整，或參考正式 AJCC v8 分期指南。最終治療決策仍需依據完整病理、病期與院內政策確認。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據您提供的 cT0N0(i+)M0，本系統目前未能在 system_context.staging.ajcc_v8.selected 中取得對應的分期結果。請確認輸入資訊是否完整，或參考正式 AJCC v8 分期指南。最終治療決策仍需依據完整病理、病期與院內政策確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1321
+    },
+    {
+      "id": "stage-146",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N1miM0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N1mi",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N1miM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據 AJCC v8 分期，cT0N1miM0 為 Stage IIA。本結果基於 clinical basis。請注意，最終治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據 AJCC v8 分期，cT0N1miM0 為 Stage IIA。本結果基於 clinical basis。請注意，最終治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1083
+    },
+    {
+      "id": "stage-147",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N1M0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N1M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據 AJCC v8 分期，cT0N1M0 為 Stage IIB。本結果基於 clinical basis 計算。請注意，本資訊僅供參考，正式治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據 AJCC v8 分期，cT0N1M0 為 Stage IIB。本結果基於 clinical basis 計算。請注意，本資訊僅供參考，正式治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1311
+    },
+    {
+      "id": "stage-148",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N1aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N1a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N1aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據 AJCC v8 分期標準，cT0N1aM0 為 Stage IIA。請注意，本結果僅供參考，最終治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據 AJCC v8 分期標準，cT0N1aM0 為 Stage IIA。請注意，本結果僅供參考，最終治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1055
+    },
+    {
+      "id": "stage-149",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N2M0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N2",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N2M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據 AJCC v8 分期，cT0N2M0 為 Stage IIIC。本結果基於 clinical basis。請注意，最終治療決策仍需依據完整病理報告、病期、治療線別、院內政策與健保事前審查確認。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據 AJCC v8 分期，cT0N2M0 為 Stage IIIC。本結果基於 clinical basis。請注意，最終治療決策仍需依據完整病理報告、病期、治療線別、院內政策與健保事前審查確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1490
+    },
+    {
+      "id": "stage-150",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N2aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N2a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N2aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據 AJCC v8 分期，cT0N2aM0 為 Stage IIIA。此結果基於 clinical basis。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據 AJCC v8 分期，cT0N2aM0 為 Stage IIIA。此結果基於 clinical basis。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1341
+    },
+    {
+      "id": "stage-151",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N3M0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N3",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N3M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據您提供的 cT0N3M0，本系統目前未在 system_context.staging.ajcc_v8.selected 中取得對應的分期結果。請確認輸入資訊是否正確，或嘗試重新執行分期計算工具。最終分期請務必依據完整病理報告與臨床評估確認。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據您提供的 cT0N3M0，本系統目前未在 system_context.staging.ajcc_v8.selected 中取得對應的分期結果。請確認輸入資訊是否正確，或嘗試重新執行分期計算工具。最終分期請務必依據完整病理報告與臨床評估確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1241
+    },
+    {
+      "id": "stage-152",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N3aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N3a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N3aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據您提供的 cT0N3aM0，本系統目前未在 system_context.staging.ajcc_v8.selected 中取得計算結果。請確認分期工具已正確執行，或提供完整病理資訊以利計算。最終分期與治療決策仍需依據完整病理報告、治療線別及院內政策確認。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據您提供的 cT0N3aM0，本系統目前未在 system_context.staging.ajcc_v8.selected 中取得計算結果。請確認分期工具已正確執行，或提供完整病理資訊以利計算。最終分期與治療決策仍需依據完整病理報告、治療線別及院內政策確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1351
+    },
+    {
+      "id": "stage-153",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1N0(i+)M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1",
+        "cN": "N0(i+)",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1N0(i+)M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據您提供的 cT1N0(i+)M0，本系統目前未在 system_context.staging.ajcc_v8.selected 中取得計算結果。請確認分期工具已正確執行或提供完整病理資訊以利計算。最終分期與治療決策仍需依據完整病理報告、治療線別及院內政策確認。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據您提供的 cT1N0(i+)M0，本系統目前未在 system_context.staging.ajcc_v8.selected 中取得計算結果。請確認分期工具已正確執行或提供完整病理資訊以利計算。最終分期與治療決策仍需依據完整病理報告、治療線別及院內政策確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3392
+    },
+    {
+      "id": "stage-154",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1N1miM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1",
+        "cN": "N1mi",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1N1miM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據您提供的 cT1N1miM0，本系統目前未在 system_context.staging.ajcc_v8.selected 中取得計算結果。請確認分期工具已正確執行或提供完整病理資訊以利計算。本回答僅供參考，最終治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據您提供的 cT1N1miM0，本系統目前未在 system_context.staging.ajcc_v8.selected 中取得計算結果。請確認分期工具已正確執行或提供完整病理資訊以利計算。本回答僅供參考，最終治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1594
+    },
+    {
+      "id": "stage-155",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1N1aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1",
+        "cN": "N1a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1N1aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據 AJCC v8 分期標準，cT1N1aM0 為 Stage IIA。請注意，本結果僅供參考，正式治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據 AJCC v8 分期標準，cT1N1aM0 為 Stage IIA。請注意，本結果僅供參考，正式治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1214
+    },
+    {
+      "id": "stage-156",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1N2aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1",
+        "cN": "N2a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1N2aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據您提供的 cT1N2aM0，本系統目前未在 system_context 中取得 AJCC v8 的計算結果。請確認分期工具已正確執行，或提供完整病理資料以進行計算。本回答僅供參考，正式治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據您提供的 cT1N2aM0，本系統目前未在 system_context 中取得 AJCC v8 的計算結果。請確認分期工具已正確執行，或提供完整病理資料以進行計算。本回答僅供參考，正式治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1263
+    },
+    {
+      "id": "stage-157",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1N3aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1",
+        "cN": "N3a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1N3aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據您提供的 cT1N3aM0，本系統目前未在 system_context.staging.ajcc_v8.selected 中取得計算結果。請確認分期工具已正確執行，或提供完整病理資訊以利計算。最終分期與治療決策仍需依據完整病理報告、病期、治療線別、院內政策與健保事前審查確認。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據您提供的 cT1N3aM0，本系統目前未在 system_context.staging.ajcc_v8.selected 中取得計算結果。請確認分期工具已正確執行，或提供完整病理資訊以利計算。最終分期與治療決策仍需依據完整病理報告、病期、治療線別、院內政策與健保事前審查確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 19167
+    },
+    {
+      "id": "stage-158",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN0M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N0",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN0M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據您提供的 cT1miN0M0，本系統目前未在 system_context.staging.ajcc_v8.selected 中取得計算結果。請確認分期工具已正確執行，或提供完整病理資訊以利計算。本結果僅供參考，正式治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據您提供的 cT1miN0M0，本系統目前未在 system_context.staging.ajcc_v8.selected 中取得計算結果。請確認分期工具已正確執行，或提供完整病理資訊以利計算。本結果僅供參考，正式治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1383
+    },
+    {
+      "id": "stage-159",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN0(i+)M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N0(i+)",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN0(i+)M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據 AJCC v8 分期，cT1miN0(i+)M0 為 Stage IA (Clinical basis)。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據 AJCC v8 分期，cT1miN0(i+)M0 為 Stage IA (Clinical basis)。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 959
+    },
+    {
+      "id": "stage-160",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN1miM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N1mi",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN1miM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據您提供的 cT1miN1miM0，本系統目前未在 system_context.staging.ajcc_v8.selected 中取得計算結果。請確認分期工具已正確執行或提供完整病理資訊以進行計算。本結果僅供參考，最終治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據您提供的 cT1miN1miM0，本系統目前未在 system_context.staging.ajcc_v8.selected 中取得計算結果。請確認分期工具已正確執行或提供完整病理資訊以進行計算。本結果僅供參考，最終治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1337
+    },
+    {
+      "id": "stage-161",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN1M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN1M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據您提供的 cT1miN1M0，目前 system_context 中尚未顯示 AJCC v8 的計算結果。請確認分期工具已正確執行，或提供完整病理資訊以利系統計算。本回答僅供參考，正式治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據您提供的 cT1miN1M0，目前 system_context 中尚未顯示 AJCC v8 的計算結果。請確認分期工具已正確執行，或提供完整病理資訊以利系統計算。本回答僅供參考，正式治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1338
+    },
+    {
+      "id": "stage-162",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN1aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N1a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN1aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據您提供的 cT1miN1aM0，本系統目前未在 system_context 中取得對應的 AJCC v8 分期計算結果。請確認分期工具已正確執行，或提供完整病理資訊以利計算。最終分期請依醫師判斷與完整病理報告確認。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據您提供的 cT1miN1aM0，本系統目前未在 system_context 中取得對應的 AJCC v8 分期計算結果。請確認分期工具已正確執行，或提供完整病理資訊以利計算。最終分期請依醫師判斷與完整病理報告確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1270
+    },
+    {
+      "id": "stage-163",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN2M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N2",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN2M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據 AJCC v8 分期，cT1miN2M0 為 Stage IIIA (Clinical basis)。請注意，本結果僅供參考，正式治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據 AJCC v8 分期，cT1miN2M0 為 Stage IIIA (Clinical basis)。請注意，本結果僅供參考，正式治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1100
+    },
+    {
+      "id": "stage-164",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN2aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N2a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN2aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據 AJCC v8 分期，cT1miN2aM0 為 Stage IIIA (Clinical basis)。請注意，本結果僅供參考，正式治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據 AJCC v8 分期，cT1miN2aM0 為 Stage IIIA (Clinical basis)。請注意，本結果僅供參考，正式治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1191
+    },
+    {
+      "id": "stage-165",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN3M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N3",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN3M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據您提供的 cT1miN3M0，本系統目前在 system_context 的 AJCC v8 計算結果中尚未顯示對應的分期（selected 為 null）。請確認輸入資訊是否正確，或重新執行分期計算工具。正式治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據您提供的 cT1miN3M0，本系統目前在 system_context 的 AJCC v8 計算結果中尚未顯示對應的分期（selected 為 null）。請確認輸入資訊是否正確，或重新執行分期計算工具。正式治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1342
+    },
+    {
+      "id": "stage-166",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN3aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N3a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN3aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據 AJCC v8 分期，cT1miN3aM0 為 Stage IIIC。此結果基於 clinical basis。請注意，本結果僅供參考，最終治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據 AJCC v8 分期，cT1miN3aM0 為 Stage IIIC。此結果基於 clinical basis。請注意，本結果僅供參考，最終治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1131
+    },
+    {
+      "id": "stage-167",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1aN0M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1a",
+        "cN": "N0",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1aN0M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據 AJCC v8 分期，cT1aN0M0 為 Stage IA (Clinical basis)。請注意，本結果僅供參考，最終治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據 AJCC v8 分期，cT1aN0M0 為 Stage IA (Clinical basis)。請注意，本結果僅供參考，最終治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1084
+    },
+    {
+      "id": "stage-168",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1aN0(i+)M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1a",
+        "cN": "N0(i+)",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1aN0(i+)M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據 AJCC v8 分期，cT1aN0(i+)M0 為 Stage I。本結果基於 clinical basis。請注意，本工具僅供參考，最終治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據 AJCC v8 分期，cT1aN0(i+)M0 為 Stage I。本結果基於 clinical basis。請注意，本工具僅供參考，最終治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1330
+    },
+    {
+      "id": "stage-169",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1aN1miM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1a",
+        "cN": "N1mi",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1aN1miM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "根據 system_context，目前 AJCC v8 的計算結果為空（selected 為 null），無法直接提供分期結果。請確認分期工具是否已正確執行或輸入資料是否完整。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1148
+    },
+    {
+      "id": "stage-170",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1aN1M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1a",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1aN1M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 無法|不足|不適用; reply=根據您提供的 cT1aN1M0，本系統目前未在 system_context 中取得 AJCC v8 的計算結果。請確認分期工具已正確執行，或提供完整病理資訊以利計算。正式治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "failure_analysis": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "data_question": "檢查 AJCC calculator/tool call 是否被使用，以及 agent 是否把問題內錯誤分期或舊上下文覆蓋 patient_context。",
+      "checks": [],
+      "agent_reply": "根據您提供的 cT1aN1M0，本系統目前未在 system_context 中取得 AJCC v8 的計算結果。請確認分期工具已正確執行，或提供完整病理資訊以利計算。正式治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1357
+    },
+    {
+      "id": "extract-275",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT1cN0M0，invasive tumor size 18 mm，grade II，ER 90%, PR 80%, HER2 2+ ISH negative, Ki-67 12%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=41、cT=T1c、cN=N0、cM=M0、er=+、pr=+、her2=-、ki67=12",
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T1c",
+          "cN": "N0",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "12"
+        }
+      },
+      "passed": false,
+      "failure_type": "field_extraction_failure",
+      "error": "patch her2 expected -, got None; patch={'age': '41', 'cT': 'T1c', 'cN': 'N0', 'cM': 'M0', 'size': '18', 'grade': '2', 'er': '+', 'pr': '+', 'her2_ihc': '2+', 'her2_fish': 'negative', 'ki67': '12'}",
+      "failure_analysis": "檢查病理文字抽取規則與 patient_patch schema 對應。",
+      "data_question": "檢查病理文字抽取規則與 patient_patch schema 對應。",
+      "checks": [],
+      "agent_reply": "已抓到候選欄位，請確認後套用：\n- 年齡：41\n- 分期：cT1c, cN0, cM0\n- 腫瘤大小：18 mm\n- 分級：Grade 2\n- ER：90%\n- PR：80%\n- HER2 IHC：2+\n- HER2 ISH：Negative\n- Ki-67：12%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "41",
+        "cT": "T1c",
+        "cN": "N0",
+        "cM": "M0",
+        "size": "18",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "2+",
+        "her2_fish": "negative",
+        "ki67": "12"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3933
+    },
+    {
+      "id": "extract-278",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT1cN0M0，invasive tumor size 18 mm，grade II，ER 50%, PR 5%, HER2 1+, Ki67 5-14%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=41、cT=T1c、cN=N0、cM=M0、er=+、pr=+、her2=-、ki67=5-14",
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T1c",
+          "cN": "N0",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "5-14"
+        }
+      },
+      "passed": false,
+      "failure_type": "field_extraction_failure",
+      "error": "patch ki67 expected 5-14, got 5; patch={'age': '41', 'cT': 'T1c', 'cN': 'N0', 'cM': 'M0', 'size': '18', 'grade': '2', 'er': '+', 'pr': '+', 'her2_ihc': '1+', 'ki67': '5', 'her2': '-'}",
+      "failure_analysis": "檢查病理文字抽取規則與 patient_patch schema 對應。",
+      "data_question": "檢查病理文字抽取規則與 patient_patch schema 對應。",
+      "checks": [],
+      "agent_reply": "已抓到候選欄位，請確認後套用：\n- 年齡：41\n- 分期：cT1cN0M0\n- 腫瘤大小：18 mm\n- 分級：II\n- ER：50%\n- PR：5%\n- HER2 IHC：1+\n- Ki67：5-14%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "41",
+        "cT": "T1c",
+        "cN": "N0",
+        "cM": "M0",
+        "size": "18",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "1+",
+        "ki67": "5",
+        "her2": "-"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3707
+    },
+    {
+      "id": "extract-279",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT2N1miM0，invasive tumor size 22 mm，grade II，ER 90%, PR 80%, HER2 2+ ISH negative, Ki-67 12%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=41、cT=T2、cN=N1mi、cM=M0、er=+、pr=+、her2=-、ki67=12",
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T2",
+          "cN": "N1mi",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "12"
+        }
+      },
+      "passed": false,
+      "failure_type": "field_extraction_failure",
+      "error": "patch her2 expected -, got None; patch={'age': '41', 'cT': 'T2', 'cN': 'N1mi', 'cM': 'M0', 'size': '22', 'grade': '2', 'er': '+', 'pr': '+', 'her2_ihc': '2+', 'her2_fish': 'negative', 'ki67': '12'}",
+      "failure_analysis": "檢查病理文字抽取規則與 patient_patch schema 對應。",
+      "data_question": "檢查病理文字抽取規則與 patient_patch schema 對應。",
+      "checks": [],
+      "agent_reply": "已抓到候選欄位，請確認後套用：\n- 年齡：41\n- 分期：cT2, cN1mi, cM0\n- 腫瘤大小：22 mm\n- 分級：Grade 2\n- ER：90%\n- PR：80%\n- HER2：IHC 2+, ISH negative\n- Ki-67：12%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "41",
+        "cT": "T2",
+        "cN": "N1mi",
+        "cM": "M0",
+        "size": "22",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "2+",
+        "her2_fish": "negative",
+        "ki67": "12"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 5565
+    },
+    {
+      "id": "extract-282",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT2N1miM0，invasive tumor size 22 mm，grade II，ER 50%, PR 5%, HER2 1+, Ki67 5-14%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=41、cT=T2、cN=N1mi、cM=M0、er=+、pr=+、her2=-、ki67=5-14",
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T2",
+          "cN": "N1mi",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "5-14"
+        }
+      },
+      "passed": false,
+      "failure_type": "field_extraction_failure",
+      "error": "patch ki67 expected 5-14, got 5; patch={'age': '41', 'cT': 'T2', 'cN': 'N1mi', 'cM': 'M0', 'size': '22', 'grade': '2', 'er': '+', 'pr': '+', 'her2_ihc': '1+', 'ki67': '5', 'her2': '-'}",
+      "failure_analysis": "檢查病理文字抽取規則與 patient_patch schema 對應。",
+      "data_question": "檢查病理文字抽取規則與 patient_patch schema 對應。",
+      "checks": [],
+      "agent_reply": "已抓到候選欄位，請確認後套用：\n- 年齡：41\n- 分期：cT2 N1mi M0\n- 腫瘤大小：22 mm\n- 分級：Grade II\n- ER：50%\n- PR：5%\n- HER2 IHC：1+\n- Ki67：5-14%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "41",
+        "cT": "T2",
+        "cN": "N1mi",
+        "cM": "M0",
+        "size": "22",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "1+",
+        "ki67": "5",
+        "her2": "-"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3132
+    },
+    {
+      "id": "extract-283",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT3N1M0，invasive tumor size 51 mm，grade II，ER 90%, PR 80%, HER2 2+ ISH negative, Ki-67 12%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=41、cT=T3、cN=N1、cM=M0、er=+、pr=+、her2=-、ki67=12",
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T3",
+          "cN": "N1",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "12"
+        }
+      },
+      "passed": false,
+      "failure_type": "field_extraction_failure",
+      "error": "patch her2 expected -, got None; patch={'age': '41', 'cT': 'T3', 'cN': 'N1', 'cM': 'M0', 'size': '51', 'grade': '2', 'er': '+', 'pr': '+', 'her2_ihc': '2+', 'her2_fish': 'negative', 'ki67': '12'}",
+      "failure_analysis": "檢查病理文字抽取規則與 patient_patch schema 對應。",
+      "data_question": "檢查病理文字抽取規則與 patient_patch schema 對應。",
+      "checks": [],
+      "agent_reply": "已為您從文字中抓到以下候選欄位，請確認後套用：\n- 年齡：41\n- 分期：cT3, cN1, cM0\n- 腫瘤大小：51 mm\n- 分級：Grade 2\n- ER：90%\n- PR：80%\n- HER2 IHC：2+\n- HER2 ISH：Negative\n- Ki-67：12%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "41",
+        "cT": "T3",
+        "cN": "N1",
+        "cM": "M0",
+        "size": "51",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "2+",
+        "her2_fish": "negative",
+        "ki67": "12"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3651
+    },
+    {
+      "id": "extract-286",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT3N1M0，invasive tumor size 51 mm，grade II，ER 50%, PR 5%, HER2 1+, Ki67 5-14%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=41、cT=T3、cN=N1、cM=M0、er=+、pr=+、her2=-、ki67=5-14",
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T3",
+          "cN": "N1",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "5-14"
+        }
+      },
+      "passed": false,
+      "failure_type": "field_extraction_failure",
+      "error": "patch ki67 expected 5-14, got 5; patch={'age': '41', 'cT': 'T3', 'cN': 'N1', 'cM': 'M0', 'size': '51', 'grade': '2', 'er': '+', 'pr': '+', 'her2_ihc': '1+', 'ki67': '5', 'her2': '-'}",
+      "failure_analysis": "檢查病理文字抽取規則與 patient_patch schema 對應。",
+      "data_question": "檢查病理文字抽取規則與 patient_patch schema 對應。",
+      "checks": [],
+      "agent_reply": "已為您從文字中抓到以下候選欄位，請確認後套用：",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "41",
+        "cT": "T3",
+        "cN": "N1",
+        "cM": "M0",
+        "size": "51",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "1+",
+        "ki67": "5",
+        "her2": "-"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 6796
+    },
+    {
+      "id": "extract-287",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，pT2N2aM0，invasive tumor size 30 mm，grade II，ER 90%, PR 80%, HER2 2+ ISH negative, Ki-67 12%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=41、pT=T2、pN=N2a、pM=M0、er=+、pr=+、her2=-、ki67=12",
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "pT": "T2",
+          "pN": "N2a",
+          "pM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "12"
+        }
+      },
+      "passed": false,
+      "failure_type": "field_extraction_failure",
+      "error": "patch her2 expected -, got None; patch={'age': '41', 'pT': 'T2', 'pN': 'N2a', 'pM': 'M0', 'size': '30', 'grade': '2', 'er': '+', 'pr': '+', 'her2_ihc': '2+', 'her2_fish': 'negative', 'ki67': '12'}",
+      "failure_analysis": "檢查病理文字抽取規則與 patient_patch schema 對應。",
+      "data_question": "檢查病理文字抽取規則與 patient_patch schema 對應。",
+      "checks": [],
+      "agent_reply": "已為您抓到以下候選欄位，請確認後套用：",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "41",
+        "pT": "T2",
+        "pN": "N2a",
+        "pM": "M0",
+        "size": "30",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "2+",
+        "her2_fish": "negative",
+        "ki67": "12"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 4453
+    },
+    {
+      "id": "extract-290",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，pT2N2aM0，invasive tumor size 30 mm，grade II，ER 50%, PR 5%, HER2 1+, Ki67 5-14%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=41、pT=T2、pN=N2a、pM=M0、er=+、pr=+、her2=-、ki67=5-14",
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "pT": "T2",
+          "pN": "N2a",
+          "pM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "5-14"
+        }
+      },
+      "passed": false,
+      "failure_type": "field_extraction_failure",
+      "error": "patch ki67 expected 5-14, got 5; patch={'age': '41', 'pT': 'T2', 'pN': 'N2a', 'pM': 'M0', 'size': '30', 'grade': '2', 'er': '+', 'pr': '+', 'her2_ihc': '1+', 'ki67': '5', 'her2': '-'}",
+      "failure_analysis": "檢查病理文字抽取規則與 patient_patch schema 對應。",
+      "data_question": "檢查病理文字抽取規則與 patient_patch schema 對應。",
+      "checks": [],
+      "agent_reply": "已抓到候選欄位，請確認後套用：\n- 年齡：41\n- 分期：pT2N2aM0\n- 腫瘤大小：30 mm\n- 分級：Grade II\n- ER：50%\n- PR：5%\n- HER2 IHC：1+\n- Ki67：5-14%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "41",
+        "pT": "T2",
+        "pN": "N2a",
+        "pM": "M0",
+        "size": "30",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "1+",
+        "ki67": "5",
+        "her2": "-"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 4092
+    },
+    {
+      "id": "extract-291",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：48歲，cT1cN0M0，invasive tumor size 18 mm，grade II，ER 90%, PR 80%, HER2 2+ ISH negative, Ki-67 12%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=48、cT=T1c、cN=N0、cM=M0、er=+、pr=+、her2=-、ki67=12",
+      "expected": {
+        "expected_patch": {
+          "age": "48",
+          "cT": "T1c",
+          "cN": "N0",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "12"
+        }
+      },
+      "passed": false,
+      "failure_type": "field_extraction_failure",
+      "error": "patch her2 expected -, got None; patch={'age': '48', 'cT': 'T1c', 'cN': 'N0', 'cM': 'M0', 'size': '18', 'grade': '2', 'er': '+', 'pr': '+', 'her2_ihc': '2+', 'her2_fish': 'negative', 'ki67': '12'}",
+      "failure_analysis": "檢查病理文字抽取規則與 patient_patch schema 對應。",
+      "data_question": "檢查病理文字抽取規則與 patient_patch schema 對應。",
+      "checks": [],
+      "agent_reply": "已抓到候選欄位，請確認後套用：\n- 年齡：48\n- 分期：cT1c, cN0, cM0\n- 腫瘤大小：18 mm\n- 分級：Grade II\n- ER：90%\n- PR：80%\n- HER2 IHC：2+\n- HER2 FISH：Negative\n- Ki-67：12%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "48",
+        "cT": "T1c",
+        "cN": "N0",
+        "cM": "M0",
+        "size": "18",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "2+",
+        "her2_fish": "negative",
+        "ki67": "12"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 4008
+    },
+    {
+      "id": "extract-294",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：48歲，cT1cN0M0，invasive tumor size 18 mm，grade II，ER 50%, PR 5%, HER2 1+, Ki67 5-14%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=48、cT=T1c、cN=N0、cM=M0、er=+、pr=+、her2=-、ki67=5-14",
+      "expected": {
+        "expected_patch": {
+          "age": "48",
+          "cT": "T1c",
+          "cN": "N0",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "5-14"
+        }
+      },
+      "passed": false,
+      "failure_type": "field_extraction_failure",
+      "error": "patch ki67 expected 5-14, got 5; patch={'age': '48', 'cT': 'T1c', 'cN': 'N0', 'cM': 'M0', 'size': '18', 'grade': '2', 'er': '+', 'pr': '+', 'her2_ihc': '1+', 'ki67': '5', 'her2': '-'}",
+      "failure_analysis": "檢查病理文字抽取規則與 patient_patch schema 對應。",
+      "data_question": "檢查病理文字抽取規則與 patient_patch schema 對應。",
+      "checks": [],
+      "agent_reply": "已抓到候選欄位，請確認後套用：\n- 年齡：48\n- 分期：cT1c, cN0, cM0\n- 腫瘤大小：18 mm\n- 分級：II\n- ER：50%\n- PR：5%\n- HER2 IHC：1+\n- Ki67：5-14%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "48",
+        "cT": "T1c",
+        "cN": "N0",
+        "cM": "M0",
+        "size": "18",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "1+",
+        "ki67": "5",
+        "her2": "-"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3118
+    },
+    {
+      "id": "extract-295",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：48歲，cT2N1miM0，invasive tumor size 22 mm，grade II，ER 90%, PR 80%, HER2 2+ ISH negative, Ki-67 12%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=48、cT=T2、cN=N1mi、cM=M0、er=+、pr=+、her2=-、ki67=12",
+      "expected": {
+        "expected_patch": {
+          "age": "48",
+          "cT": "T2",
+          "cN": "N1mi",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "12"
+        }
+      },
+      "passed": false,
+      "failure_type": "field_extraction_failure",
+      "error": "patch her2 expected -, got None; patch={'age': '48', 'cT': 'T2', 'cN': 'N1mi', 'cM': 'M0', 'size': '22', 'grade': '2', 'er': '+', 'pr': '+', 'her2_ihc': '2+', 'her2_fish': 'negative', 'ki67': '12'}",
+      "failure_analysis": "檢查病理文字抽取規則與 patient_patch schema 對應。",
+      "data_question": "檢查病理文字抽取規則與 patient_patch schema 對應。",
+      "checks": [],
+      "agent_reply": "已抓到候選欄位，請確認後套用：\n- 年齡：48\n- 分期：cT2, cN1mi, cM0\n- 腫瘤大小：22 mm\n- 分級：Grade 2\n- ER：90%\n- PR：80%\n- HER2 IHC：2+\n- HER2 ISH：Negative\n- Ki-67：12%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "48",
+        "cT": "T2",
+        "cN": "N1mi",
+        "cM": "M0",
+        "size": "22",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "2+",
+        "her2_fish": "negative",
+        "ki67": "12"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3636
+    },
+    {
+      "id": "extract-298",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：48歲，cT2N1miM0，invasive tumor size 22 mm，grade II，ER 50%, PR 5%, HER2 1+, Ki67 5-14%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=48、cT=T2、cN=N1mi、cM=M0、er=+、pr=+、her2=-、ki67=5-14",
+      "expected": {
+        "expected_patch": {
+          "age": "48",
+          "cT": "T2",
+          "cN": "N1mi",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "5-14"
+        }
+      },
+      "passed": false,
+      "failure_type": "field_extraction_failure",
+      "error": "patch ki67 expected 5-14, got 5; patch={'age': '48', 'cT': 'T2', 'cN': 'N1mi', 'cM': 'M0', 'size': '22', 'grade': '2', 'er': '+', 'pr': '+', 'her2_ihc': '1+', 'ki67': '5', 'her2': '-'}",
+      "failure_analysis": "檢查病理文字抽取規則與 patient_patch schema 對應。",
+      "data_question": "檢查病理文字抽取規則與 patient_patch schema 對應。",
+      "checks": [],
+      "agent_reply": "已抓到候選欄位，請確認後套用：\n- 年齡：48\n- cT：T2\n- cN：N1mi\n- cM：M0\n- 腫瘤大小：22 mm\n- 分級：2\n- ER：50%\n- PR：5%\n- HER2 IHC：1+\n- Ki67：5-14%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "48",
+        "cT": "T2",
+        "cN": "N1mi",
+        "cM": "M0",
+        "size": "22",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "1+",
+        "ki67": "5",
+        "her2": "-"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 4291
+    },
+    {
+      "id": "extract-299",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：48歲，cT3N1M0，invasive tumor size 51 mm，grade II，ER 90%, PR 80%, HER2 2+ ISH negative, Ki-67 12%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=48、cT=T3、cN=N1、cM=M0、er=+、pr=+、her2=-、ki67=12",
+      "expected": {
+        "expected_patch": {
+          "age": "48",
+          "cT": "T3",
+          "cN": "N1",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "12"
+        }
+      },
+      "passed": false,
+      "failure_type": "field_extraction_failure",
+      "error": "patch her2 expected -, got None; patch={'age': '48', 'cT': 'T3', 'cN': 'N1', 'cM': 'M0', 'size': '51', 'grade': '2', 'er': '+', 'pr': '+', 'her2_ihc': '2+', 'her2_fish': 'negative', 'ki67': '12'}",
+      "failure_analysis": "檢查病理文字抽取規則與 patient_patch schema 對應。",
+      "data_question": "檢查病理文字抽取規則與 patient_patch schema 對應。",
+      "checks": [],
+      "agent_reply": "已為您從文字中抓到以下候選欄位，請確認後套用：",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "48",
+        "cT": "T3",
+        "cN": "N1",
+        "cM": "M0",
+        "size": "51",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "2+",
+        "her2_fish": "negative",
+        "ki67": "12"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2818
+    }
+  ]
+}

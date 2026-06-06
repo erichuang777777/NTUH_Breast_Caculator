@@ -1,0 +1,27 @@
+{
+  "schema": "oncobreast.i18n_cache_manifest.v1",
+  "generated_at": "2026-06-06T12:28:00+08:00",
+  "source_language": "zh-TW",
+  "packaging": "static_site_bundle",
+  "runtime_note": "These files are bundled with the website and loaded by the frontend before requesting /api/translate. Netlify uses the same files in cache-only mode.",
+  "languages": {
+    "en": {
+      "label": "English",
+      "file": "data/i18n_cache/en.json",
+      "entries": 1111,
+      "bytes": 85707
+    },
+    "id": {
+      "label": "Indonesian",
+      "file": "data/i18n_cache/id.json",
+      "entries": 923,
+      "bytes": 69494
+    },
+    "ja": {
+      "label": "Japanese",
+      "file": "data/i18n_cache/ja.json",
+      "entries": 1145,
+      "bytes": 91531
+    }
+  }
+}

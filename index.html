@@ -6,10 +6,10 @@
 <meta name="theme-color" content="#0f766e">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" href="/icons/icon-192.png">
-<title>乳癌小幫手</title>
+<title>OncoBreast Calculator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/app.css?v=20260519a">
+<link rel="stylesheet" href="assets/css/app.css?v=20260605bk">
 <link rel="stylesheet" href="assets/css/ajcc-mobile.css?v=20260519a">
 </head>
 <body>
@@ -18,27 +18,34 @@
 
 <header class="header">
   <div>
-    <div class="header-title">健保腫瘤藥物查詢系統</div>
-    <div class="header-sub">NHI Oncology Drug Reference</div>
+    <div class="header-title">OncoBreast Calculator</div>
+    <div class="header-sub">Patient care, treatment support, and NHI reference</div>
   </div>
   <div class="header-right">
-    <div class="mode-slider" id="modeSlider" onclick="toggleViewMode()" title="切換介面模式">
-      <div class="mode-slider-thumb"></div>
-      <span class="mode-slider-opt">📱 手機</span>
-      <span class="mode-slider-opt">🖥 桌面</span>
+    <button class="clinical-notice" type="button" aria-label="本工具僅供醫療人員使用，不構成醫療建議" title="本工具僅供醫療人員使用，不構成醫療建議">
+      <span class="icon">&#9432;</span>
+      <span class="clinical-notice-text">
+        <span class="clinical-notice-line"><strong>本工具僅供醫療人員使用</strong>，作為臨床查詢與試算輔助。不構成醫療建議；實際診療、健保給付與用藥決策請以醫師判斷、病人狀況及官方公告為準。</span>
+      </span>
+    </button>
+    <button class="header-menu-link" type="button" onclick="openFunctionMenu()">功能選單</button>
+    <button class="header-api-link" type="button" onclick="showApiGuide()">API Docs</button>
+    <select class="site-language-switch" id="siteLanguageSwitch" onchange="setSiteLanguage(this.value)" aria-label="Language">
+      <option value="zh">繁中</option>
+      <option value="en">EN</option>
+      <option value="id">ID</option>
+      <option value="ja">日本語</option>
+    </select>
+    <div class="layout-mode-switch" id="layoutModeSwitch" aria-label="介面模式">
+      <button type="button" data-layout-mode="auto" onclick="setLayoutMode('auto')">Auto</button>
+      <button type="button" data-layout-mode="mobile" onclick="setLayoutMode('mobile')">Mobile</button>
+      <button type="button" data-layout-mode="desktop" onclick="setLayoutMode('desktop')">Desktop</button>
     </div>
-    <div class="header-badge" id="priceBadge">藥價公告 115/03/23｜生效 115/04/01</div>
+    <div class="header-badge" id="priceBadge">藥價公告 115/03/23｜生效 115/04/01｜資料更新 2026/06/04</div>
   </div>
 </header>
 
 <div class="container">
-
-  <button class="clinical-notice" type="button" aria-label="本工具僅供醫療人員使用，不構成醫療建議" title="本工具僅供醫療人員使用，不構成醫療建議">
-    <span class="icon">&#9432;</span>
-    <span class="clinical-notice-text">
-      <span class="clinical-notice-line"><strong>本工具僅供醫療人員使用</strong>，作為臨床查詢與試算輔助。不構成醫療建議；實際診療、健保給付與用藥決策請以醫師判斷、病人狀況及官方公告為準。</span>
-    </span>
-  </button>
 
   <!-- Version Banner -->
   <div class="version-banner" id="versionBanner">
@@ -177,7 +184,7 @@
   <div id="inpatientPage" class="dept-page">
     <div class="page-topbar inp">
       <button class="back-btn" onclick="showLanding()">← 返回</button>
-      <h2>住院化療計算</h2>
+      <h2>常用配方與劑量</h2>
     </div>
 
     <div style="max-width:960px;margin:0 auto;padding:0 .5rem 2rem">
@@ -204,7 +211,7 @@
 
       <!-- Regimen Picker -->
       <div class="reg-section">
-        <h3>選擇住院處方</h3>
+        <h3>選擇常用配方</h3>
         <div id="inpRegimenPicker"></div>
       </div>
 
@@ -239,12 +246,12 @@
   <div id="icdPage" class="dept-page">
     <div class="page-topbar icd">
       <button class="back-btn" onclick="showLanding()">← 返回</button>
-      <h2>ICD碼查詢 — 重大傷病卡申請</h2>
+      <h2>院內重卡編號 / ICD 查詢 — 重大傷病卡申請</h2>
     </div>
     <div style="max-width:960px;margin:0 auto;padding:0 .5rem 2rem">
       <div class="reg-section">
-        <h3>乳房部位對應 ICD-10 碼</h3>
-        <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:.8rem">點擊右乳或左乳的象限，查詢對應 C50 ICD-10 碼（申請重大傷病卡 010 乳癌用）</p>
+        <h3>乳房部位對應院內重卡編號與 ICD-10 碼</h3>
+        <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:.8rem">點擊右乳或左乳的象限，優先顯示台大院內重卡編號，並附院內診斷碼與 C50 ICD-10 對照（申請重大傷病卡 010 乳癌用）</p>
         <div style="display:flex;flex-wrap:wrap;gap:1.5rem;align-items:flex-start;justify-content:center">
           <!-- Two separate breast diagrams -->
           <div style="display:flex;gap:1.2rem;flex-wrap:wrap;justify-content:center">
@@ -303,7 +310,7 @@
             <div id="icdPopupArea">
               <div class="icd-popup" style="border-color:#fda4af;background:#fff1f2">
                 <div class="icd-popup-title">點擊乳房示意圖選擇部位</div>
-                <div style="font-size:.78rem;color:var(--text-muted);margin-top:.3rem">分別點選右乳或左乳的各象限，顯示對應 ICD-10 碼</div>
+                <div style="font-size:.78rem;color:var(--text-muted);margin-top:.3rem">分別點選右乳或左乳的各象限，顯示院內重卡編號、院內診斷碼與 ICD-10 對照</div>
               </div>
             </div>
           </div>
@@ -311,7 +318,7 @@
         <div style="font-size:.7rem;color:var(--text-muted);margin-top:.5rem;text-align:center">※ 患者視角：右乳外側在右、左乳外側在左</div>
       </div>
       <div class="reg-section">
-        <h3>特殊部位 / 無法分類 ICD-10 碼</h3>
+        <h3>特殊部位 / 無法分類：院內重卡編號與 ICD-10 對照</h3>
         <div class="icd-side-list" id="icdSideList"></div>
       </div>
       <div class="reg-section">
@@ -319,7 +326,7 @@
         <div class="icd-side-list" id="icdDcislist"></div>
       </div>
       <div style="font-size:.72rem;color:var(--text-muted);padding:.5rem;background:var(--surface);border-radius:var(--r-md);margin-top:.5rem">
-        ※ 重大傷病卡申請：填寫診斷書時需選擇 ICD-10-CM 碼，申請代碼為 「010」乳癌。C50 系列為惡性腫瘤，D05 為原位癌（DCIS/LCIS 通常不符合重大傷病申請條件，請確認）。
+        ※ 重大傷病卡申請：院內重卡下拉選單使用前方序號作為院內重卡編號；C50811 這類為 ICD 去點號後的院內診斷碼。本頁同步保留 ICD-10-CM 對照。申請代碼為 「010」乳癌。C50 系列為惡性腫瘤，D05 為原位癌（DCIS/LCIS 通常不符合重大傷病申請條件，請確認）。
       </div>
     </div>
   </div><!-- /icdPage -->
@@ -492,7 +499,9 @@
                     <option value="N0(i-)">N0(i-) — H&amp;E 陰性且 IHC 陰性</option>
                     <option value="N0(i+)">N0(i+) — isolated tumor cells ≤0.2 mm</option>
                     <option value="N1mi">N1mi — 微轉移（&gt;0.2 mm，≤2 mm）</option>
-                    <option value="N1">N1 — 1–3 個腋下淋巴（巨轉移）</option>
+                    <option value="N1a">N1a — 1–3 個腋下淋巴</option>
+                    <option value="N1b">N1b — 乳內淋巴</option>
+                    <option value="N1c">N1c — 腋下 + 乳內淋巴</option>
                     <option value="N2a">N2a — 4–9 個腋下淋巴</option>
                     <option value="N2b">N2b — 僅乳內淋巴（影像陽性，無腋下）</option>
                     <option value="N3a">N3a — ≥10 腋下 或 鎖骨下淋巴</option>
@@ -549,7 +558,9 @@
                     <option value="N0(i-)">N0(i-) — H&amp;E 陰性且 IHC 陰性</option>
                     <option value="N0(i+)">N0(i+) — isolated tumor cells ≤0.2 mm</option>
                     <option value="N1mi">N1mi — 微轉移（&gt;0.2 mm，≤2 mm）</option>
-                    <option value="N1">N1 — 1–3 個腋下淋巴（巨轉移）</option>
+                    <option value="N1a">N1a — 1–3 個腋下淋巴</option>
+                    <option value="N1b">N1b — 乳內淋巴</option>
+                    <option value="N1c">N1c — 腋下 + 乳內淋巴</option>
                     <option value="N2a">N2a — 4–9 個腋下淋巴</option>
                     <option value="N2b">N2b — 僅乳內淋巴（影像陽性，無腋下）</option>
                     <option value="N3a">N3a — ≥10 腋下 或 鎖骨下淋巴</option>
@@ -697,7 +708,7 @@
   <div id="wsPage" class="dept-page">
     <div class="page-topbar ws">
       <button class="back-btn" onclick="showLanding()">← 返回</button>
-      <h2>&#128100; 分期與分數</h2>
+      <h2>&#128100; 分期與亞型</h2>
     </div>
     <div class="page-body">
 
@@ -715,68 +726,90 @@
         </div>
       </div>
 
+      <details class="ws-section ws-optional ws-pathology-parser" hidden>
+        <summary>病理報告解析 Beta</summary>
+        <div class="ws-pathology-box">
+          <textarea id="ws_pathology_text" spellcheck="false" placeholder="貼上原始切片報告、手術病理報告或術前治療後病理報告全文；目前會抽取 size、grade、ER/PR/HER2/Ki-67、pT/pN、SLNB/ALND、margin、PNI、LVI、pCR/residual ca。"></textarea>
+          <div class="ws-pathology-actions">
+            <button class="ws-btn ws-btn-primary" type="button" onclick="parseWorkspacePathologyText()">解析報告</button>
+            <button class="ws-btn" type="button" onclick="applyWorkspacePathologyParse()">套用欄位</button>
+            <button class="ws-btn" type="button" onclick="clearWorkspacePathologyParse()">清除</button>
+          </div>
+          <div id="wsPathologyParseResult" class="ws-pathology-result">尚未解析</div>
+        </div>
+      </details>
+
       <!-- Quick entry section (visible only in quick mode) -->
       <div class="ws-section ws-quick-section">
-        <!-- Age + Size -->
+        <!-- Row 1: age / laterality + detection / ECOG -->
         <div class="ws-q-infobar">
-          <div class="ws-q-infofield">
+          <div class="ws-q-infofield ws-q-infofield-refinable ws-q-age-card">
             <label class="ws-q-infolabel">年齡</label>
             <input type="number" class="ws-qinput" id="wsQuickAge" min="20" max="120" placeholder="歲"
-              oninput="document.getElementById('ws_age').value=this.value;setPatientField('age',this.value)">
+              onfocus="showWsQuickRefine('wsQuickMenopauseRefine')" onclick="showWsQuickRefine('wsQuickMenopauseRefine')" oninput="setWsQuickAge(this.value)">
+            <div class="ws-q-refine ws-q-menopause-refine anchor-pos" id="wsQuickMenopauseRefine">
+              <button class="ws-qchip" data-value="post" title="已停經" onclick="event.stopPropagation();setWsQuickMenopause('post')">已停經</button>
+              <button class="ws-qchip" data-value="pre" title="未停經" onclick="event.stopPropagation();setWsQuickMenopause('pre')">未停經</button>
+            </div>
           </div>
-          <div class="ws-q-infofield">
-            <label class="ws-q-infolabel">Tumor size (mm)</label>
+          <div class="ws-q-biocol ws-q-side-symptom-card">
+            <div class="ws-q-blocklabel">側別 / 偵測</div>
+            <div class="ws-q-stack">
+              <div class="ws-q-row2" id="wsQuickSideChips">
+                <button class="ws-qchip" data-value="L" title="左側，PREDICT RT heart dose 預設 2 Gy" onclick="setWsQuickSimpleField('side','L')">左側</button>
+                <button class="ws-qchip" data-value="R" title="右側，PREDICT RT heart dose 預設 0 Gy" onclick="setWsQuickSimpleField('side','R')">右側</button>
+              </div>
+              <div class="ws-q-row2" id="wsQuickPredictModeChips">
+                <button class="ws-qchip" data-value="symp" onclick="setWsQuickSimpleField('predict_mode','symp')">有症狀</button>
+                <button class="ws-qchip" data-value="screen" onclick="setWsQuickSimpleField('predict_mode','screen')">篩檢</button>
+              </div>
+            </div>
+          </div>
+          <div class="ws-q-biocol ws-q-ecog-card">
+            <div class="ws-q-blocklabel">ECOG</div>
+            <div class="ws-q-stack">
+              <div class="ws-q-row5" id="wsQuickEcogChips">
+                <button class="ws-qchip" data-value="0" onclick="setWsQuickSimpleField('ecog','0')">0</button>
+                <button class="ws-qchip" data-value="1" onclick="setWsQuickSimpleField('ecog','1')">1</button>
+                <button class="ws-qchip" data-value="2" onclick="setWsQuickSimpleField('ecog','2')">2</button>
+                <button class="ws-qchip" data-value="3" onclick="setWsQuickSimpleField('ecog','3')">3</button>
+                <button class="ws-qchip" data-value="4" onclick="setWsQuickSimpleField('ecog','4')">4</button>
+              </div>
+              <div class="ws-q-row3 ws-q-comorb-row" id="wsQuickComorbChips">
+                <button class="ws-qchip" data-field="dm" onclick="toggleWsQuickField('dm')">DM</button>
+                <button class="ws-qchip" data-field="htn" onclick="toggleWsQuickField('htn')">HTN</button>
+                <button class="ws-qchip" data-field="cad" onclick="toggleWsQuickField('cad')">CAD</button>
+              </div>
+            </div>
+          </div>
+          <div class="ws-q-block ws-q-block-refinable ws-q-cm-card">
+            <div class="ws-q-blocklabel">M — 遠端轉移</div>
+            <div class="ws-q-row2" id="wsQuickMChips">
+              <button class="ws-qchip" data-value="M0" onclick="setWsQuickM('M0')">M0</button>
+              <button class="ws-qchip" data-value="M1" onclick="setWsQuickM('M1')">M1</button>
+            </div>
+            <div class="ws-q-refine ws-q-m-refine" id="wsQuickMRefine">
+              <button class="ws-qchip" data-field="mets_bone" onclick="toggleWsQuickField('mets_bone')">bone</button>
+              <button class="ws-qchip" data-field="mets_liver" onclick="toggleWsQuickField('mets_liver')">liver</button>
+              <button class="ws-qchip" data-field="mets_brain" onclick="toggleWsQuickField('mets_brain')">brain</button>
+              <button class="ws-qchip" data-field="mets_lung" onclick="toggleWsQuickField('mets_lung')">lung</button>
+            </div>
+          </div>
+          <div class="ws-q-infofield ws-q-infofield-refinable ws-q-size-card">
+            <label class="ws-q-infolabel">Tumor size (mm) - invasive</label>
             <input type="number" class="ws-qinput" id="wsQuickSize" min="0" max="500" step="0.1" placeholder="mm"
-              oninput="document.getElementById('ws_size').value=this.value;setPatientField('size',this.value)">
-          </div>
-        </div>
-        <div class="ws-q-divline"></div>
-        <!-- cT -->
-        <div class="ws-q-block">
-          <div class="ws-q-blocklabel">cT — 臨床腫瘤</div>
-          <div class="ws-q-row4" id="wsQuickTChips">
-            <button class="ws-qchip" onclick="setWsQuickT('T1')">T1</button>
-            <button class="ws-qchip" onclick="setWsQuickT('T2')">T2</button>
-            <button class="ws-qchip" onclick="setWsQuickT('T3')">T3</button>
-            <button class="ws-qchip" onclick="setWsQuickT('T4')">T4</button>
-          </div>
-        </div>
-        <!-- cN -->
-        <div class="ws-q-block">
-          <div class="ws-q-blocklabel">cN — 淋巴結</div>
-          <div class="ws-q-row4" id="wsQuickNChips">
-            <button class="ws-qchip" onclick="setWsQuickN('N0')">N0</button>
-            <button class="ws-qchip" onclick="setWsQuickN('N1')">N1</button>
-            <button class="ws-qchip" onclick="setWsQuickN('N2')">N2</button>
-            <button class="ws-qchip" onclick="setWsQuickN('N3')">N3</button>
-          </div>
-        </div>
-        <div class="ws-q-divline"></div>
-        <!-- Biomarkers 2×2 grid -->
-        <div class="ws-q-biogrid">
-          <div class="ws-q-biocol">
-            <div class="ws-q-blocklabel">ER</div>
-            <div class="ws-q-row2" id="wsQuickErChips">
-              <button class="ws-qchip" data-value="+" onclick="setWsQuickBio('er','+')">+</button>
-              <button class="ws-qchip" data-value="-" onclick="setWsQuickBio('er','-')">−</button>
+              onfocus="showWsQuickRefine('wsQuickSizeRefine')" onclick="showWsQuickRefine('wsQuickSizeRefine')" oninput="setWsQuickSize(this.value, true)">
+            <div class="ws-q-refine ws-q-size-refine anchor-pos" id="wsQuickSizeRefine">
+              <button class="ws-qchip" data-value="5" title="5 mm" onclick="setWsQuickSize('5')">5</button>
+              <button class="ws-qchip" data-value="10" title="10 mm" onclick="setWsQuickSize('10')">10</button>
+              <button class="ws-qchip" data-value="15" title="15 mm" onclick="setWsQuickSize('15')">15</button>
+              <button class="ws-qchip" data-value="20" title="20 mm" onclick="setWsQuickSize('20')">20</button>
+              <button class="ws-qchip" data-value="50" title="50 mm" onclick="setWsQuickSize('50')">50</button>
+              <button class="ws-qchip" data-kind="dcis" title="DCIS only" onclick="setWsQuickTumorKind('dcis')">DCIS only</button>
             </div>
           </div>
-          <div class="ws-q-biocol">
-            <div class="ws-q-blocklabel">PR</div>
-            <div class="ws-q-row2" id="wsQuickPrChips">
-              <button class="ws-qchip" data-value="+" onclick="setWsQuickBio('pr','+')">+</button>
-              <button class="ws-qchip" data-value="-" onclick="setWsQuickBio('pr','-')">−</button>
-            </div>
-          </div>
-          <div class="ws-q-biocol">
-            <div class="ws-q-blocklabel">HER2</div>
-            <div class="ws-q-row2" id="wsQuickHer2Chips">
-              <button class="ws-qchip" data-value="+" onclick="setWsQuickBio('her2','+')">+</button>
-              <button class="ws-qchip" data-value="-" onclick="setWsQuickBio('her2','-')">−</button>
-            </div>
-          </div>
-          <div class="ws-q-biocol">
-            <div class="ws-q-blocklabel">Grade</div>
+          <div class="ws-q-block ws-q-grade-card">
+            <div class="ws-q-blocklabel" id="wsQuickGradeLabel">Histologic grade</div>
             <div class="ws-q-row3" id="wsQuickGradeChips">
               <button class="ws-qchip" data-value="1" onclick="setWsQuickGrade('1')">I</button>
               <button class="ws-qchip" data-value="2" onclick="setWsQuickGrade('2')">II</button>
@@ -784,80 +817,276 @@
             </div>
           </div>
         </div>
+        <div class="ws-q-divline"></div>
+        <!-- cT -->
+        <div class="ws-q-block ws-q-block-refinable ws-q-ct-card">
+          <div class="ws-q-blocklabel">cT — 臨床腫瘤</div>
+          <div class="ws-q-row6" id="wsQuickTChips">
+            <button class="ws-qchip" data-coarse="Tx" onclick="setWsQuickT('Tx')">Tx</button>
+            <button class="ws-qchip" data-coarse="Tis" onclick="setWsQuickT('Tis')">Tis</button>
+            <button class="ws-qchip" data-coarse="T1" onclick="setWsQuickT('T1')">T1</button>
+            <button class="ws-qchip" data-coarse="T2" onclick="setWsQuickT('T2')">T2</button>
+            <button class="ws-qchip" data-coarse="T3" onclick="setWsQuickT('T3')">T3</button>
+            <button class="ws-qchip" data-coarse="T4" onclick="setWsQuickT('T4')">T4</button>
+          </div>
+          <div class="ws-q-refine" id="wsQuickTRefine">
+            <button class="ws-qchip" data-value="T1mi" onclick="setWsQuickTDetail('T1mi')">T1mi</button>
+            <button class="ws-qchip" data-value="T1a" onclick="setWsQuickTDetail('T1a')">T1a</button>
+            <button class="ws-qchip" data-value="T1b" onclick="setWsQuickTDetail('T1b')">T1b</button>
+            <button class="ws-qchip" data-value="T1c" onclick="setWsQuickTDetail('T1c')">T1c</button>
+          </div>
+        </div>
+        <!-- cN -->
+        <div class="ws-q-block ws-q-block-refinable ws-q-cn-card">
+          <div class="ws-q-blocklabel">cN — 淋巴結</div>
+          <div class="ws-q-row5" id="wsQuickNChips">
+            <button class="ws-qchip" data-coarse="Nx" onclick="setWsQuickN('Nx')">Nx</button>
+            <button class="ws-qchip" data-coarse="N0" onclick="setWsQuickN('N0')">N0</button>
+            <button class="ws-qchip" data-coarse="N1" onclick="setWsQuickN('N1')">N1</button>
+            <button class="ws-qchip" data-coarse="N2" onclick="setWsQuickN('N2')">N2</button>
+            <button class="ws-qchip" data-coarse="N3" onclick="setWsQuickN('N3')">N3</button>
+          </div>
+          <div class="ws-q-refine" id="wsQuickNRefine">
+            <button class="ws-qchip" data-group="N0" data-value="N0" onclick="setWsQuickNDetail('N0')">N0</button>
+            <button class="ws-qchip" data-group="N0" data-value="N0(i-)" onclick="setWsQuickNDetail('N0(i-)')">i-</button>
+            <button class="ws-qchip" data-group="N0" data-value="N0(i+)" onclick="setWsQuickNDetail('N0(i+)')">i+</button>
+            <button class="ws-qchip" data-group="N1" data-value="N1mi" onclick="setWsQuickNDetail('N1mi')">N1mi</button>
+            <button class="ws-qchip" data-group="N1" data-value="N1a" onclick="setWsQuickNDetail('N1a')">N1a</button>
+            <button class="ws-qchip" data-group="N1" data-value="N1b" onclick="setWsQuickNDetail('N1b')">N1b</button>
+            <button class="ws-qchip" data-group="N1" data-value="N1c" onclick="setWsQuickNDetail('N1c')">N1c</button>
+            <button class="ws-qchip" data-group="N2" data-value="N2a" onclick="setWsQuickNDetail('N2a')">N2a</button>
+            <button class="ws-qchip" data-group="N2" data-value="N2b" onclick="setWsQuickNDetail('N2b')">N2b</button>
+            <button class="ws-qchip" data-group="N3" data-value="N3a" onclick="setWsQuickNDetail('N3a')">N3a</button>
+            <button class="ws-qchip" data-group="N3" data-value="N3b" onclick="setWsQuickNDetail('N3b')">N3b</button>
+            <button class="ws-qchip" data-group="N3" data-value="N3c" onclick="setWsQuickNDetail('N3c')">N3c</button>
+          </div>
+        </div>
+        <div class="ws-q-divline"></div>
+        <!-- Biomarkers 2×2 grid -->
+        <div class="ws-q-biogrid">
+          <div class="ws-q-biocol ws-q-biocol-refinable">
+            <div class="ws-q-blocklabel">ER</div>
+            <div class="ws-q-row2" id="wsQuickErChips">
+              <button class="ws-qchip" data-value="+" onclick="setWsQuickBio('er','+')">+</button>
+              <button class="ws-qchip" data-value="-" onclick="setWsQuickBio('er','-')">−</button>
+            </div>
+            <div class="ws-q-refine ws-q-refine-marker" id="wsQuickErRefine">
+              <button class="ws-qchip" data-value="10" title="weak" onclick="setWsQuickMarkerLevel('er','10')">W</button>
+              <button class="ws-qchip" data-value="50" title="moderate" onclick="setWsQuickMarkerLevel('er','50')">M</button>
+              <button class="ws-qchip" data-value="90" title="strong" onclick="setWsQuickMarkerLevel('er','90')">S</button>
+              <input type="number" class="ws-q-refine-input" id="wsQuickErPct" min="0" max="100" step="1" placeholder="%" oninput="setWsQuickMarkerPercent('er',this.value)">
+            </div>
+          </div>
+          <div class="ws-q-biocol ws-q-biocol-refinable">
+            <div class="ws-q-blocklabel">PR</div>
+            <div class="ws-q-row2" id="wsQuickPrChips">
+              <button class="ws-qchip" data-value="+" onclick="setWsQuickBio('pr','+')">+</button>
+              <button class="ws-qchip" data-value="-" onclick="setWsQuickBio('pr','-')">−</button>
+            </div>
+            <div class="ws-q-refine ws-q-refine-marker" id="wsQuickPrRefine">
+              <button class="ws-qchip" data-value="10" title="weak" onclick="setWsQuickMarkerLevel('pr','10')">W</button>
+              <button class="ws-qchip" data-value="50" title="moderate" onclick="setWsQuickMarkerLevel('pr','50')">M</button>
+              <button class="ws-qchip" data-value="90" title="strong" onclick="setWsQuickMarkerLevel('pr','90')">S</button>
+              <input type="number" class="ws-q-refine-input" id="wsQuickPrPct" min="0" max="100" step="1" placeholder="%" oninput="setWsQuickMarkerPercent('pr',this.value)">
+            </div>
+          </div>
+          <div class="ws-q-biocol ws-q-biocol-refinable">
+            <div class="ws-q-blocklabel">HER2</div>
+            <div class="ws-q-row2" id="wsQuickHer2Chips">
+              <button class="ws-qchip" data-value="+" data-label="+" onclick="setWsQuickBio('her2','+')">+</button>
+              <button class="ws-qchip" data-value="-" data-label="−" onclick="setWsQuickBio('her2','-')">−</button>
+            </div>
+            <div class="ws-q-refine ws-q-refine-marker" id="wsQuickHer2Refine">
+              <button class="ws-qchip" data-group="+" data-value="3+" title="HER2 IHC 3+" onclick="setWsQuickHer2Detail('3+','')">3+</button>
+              <button class="ws-qchip" data-group="+" data-value="2+/ISH+" title="HER2 IHC 2+ with ISH amplified / positive" onclick="setWsQuickHer2Detail('2+','+')">2+/ISH+</button>
+              <button class="ws-qchip" data-group="-" data-value="2+/ISH-" title="HER2 IHC 2+ with ISH negative" onclick="setWsQuickHer2Detail('2+','-')">2+/ISH−</button>
+              <button class="ws-qchip" data-group="-" data-value="1+" title="HER2 IHC 1+" onclick="setWsQuickHer2Detail('1+','')">1+</button>
+              <button class="ws-qchip" data-group="-" data-value="0+" title="HER2 IHC 0+" onclick="setWsQuickHer2Detail('0+','')">0+</button>
+            </div>
+          </div>
+          <div class="ws-q-biocol ws-q-biocol-refinable">
+            <div class="ws-q-blocklabel">Ki-67 <span class="ws-q-note">20% cutoff</span></div>
+            <div class="ws-q-row2" id="wsQuickKi67Chips">
+              <button class="ws-qchip" data-value="+" title="Ki-67 ≥20%" onclick="setWsQuickKi67('+')">+</button>
+              <button class="ws-qchip" data-value="-" title="Ki-67 <20%" onclick="setWsQuickKi67('-')">−</button>
+            </div>
+            <div class="ws-q-refine ws-q-ki67-refine anchor-pos" id="wsQuickKi67Refine">
+              <button class="ws-qchip" data-sign="-" data-value="13" title="Ki-67 <14%" onclick="setWsQuickKi67Value('13')">&lt;14%</button>
+              <button class="ws-qchip" data-sign="-" data-value="4" title="Ki-67 <5%" onclick="setWsQuickKi67Value('4')">&lt;5%</button>
+              <input type="text" class="ws-q-refine-input" id="wsQuickKi67Pct" inputmode="decimal" placeholder="% / range" oninput="setWsQuickKi67Value(this.value, true)" onchange="hideWsQuickRefine('wsQuickKi67Refine')">
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="ws-section ws-intake-section">
+      <div class="ws-section ws-intake-section ws-quick-backed-section">
         <h3>初診快填</h3>
         <div class="ws-form">
-          <div class="ws-field"><label>PREDICT</label><select id="ws_predict_mode" onchange="setPatientField('predict_mode',this.value)"><option value="symp">有症狀</option><option value="screen">篩檢</option></select></div>
+          <div class="ws-field ws-quick-backed-field"><label>PREDICT</label><select id="ws_predict_mode" onchange="setPatientField('predict_mode',this.value)"><option value="">—</option><option value="symp">有症狀</option><option value="screen">篩檢</option></select></div>
           <div class="ws-intake-missing" id="wsInitialMissing"></div>
         </div>
       </div>
-      <div class="ws-section">
+      <div class="ws-section ws-quick-backed-section">
         <h3>基本資料 / 標記</h3>
         <div class="ws-form">
           <div class="ws-field"><label>病歷號</label><input type="text" id="ws_mrn" oninput="setPatientField('mrn',this.value)" placeholder="MRN"></div>
           <div class="ws-field"><label>年齡</label><input type="number" id="ws_age" min="20" max="120" oninput="setPatientField('age',this.value)"></div>
-          <div class="ws-field"><label>性別</label><select id="ws_sex" onchange="setPatientField('sex',this.value)"><option value="F">女</option><option value="M">男</option></select></div>
+          <div class="ws-field"><label>性別</label><select id="ws_sex" onchange="setPatientField('sex',this.value)"><option value="">—</option><option value="F">女</option><option value="M">男</option></select></div>
+          <div class="ws-field"><label>身高 cm</label><input type="number" id="ws_height" min="120" max="220" step="0.1" oninput="setPatientField('height',this.value)"></div>
+          <div class="ws-field"><label>體重 kg</label><input type="number" id="ws_weight" min="20" max="200" step="0.1" oninput="setPatientField('weight',this.value)"></div>
+          <div class="ws-field"><label>Cr mg/dL</label><input type="number" id="ws_scr" min="0.2" max="12" step="0.1" oninput="setPatientField('scr',this.value)"></div>
           <div class="ws-field"><label>Tumor size</label><input type="number" id="ws_size" min="0" max="500" step="0.1" oninput="setPatientField('size',this.value)"></div>
-          <div class="ws-field"><label>Grade</label><select id="ws_grade" onchange="setPatientField('grade',this.value)"><option value="x">X</option><option value="1">I</option><option value="2">II</option><option value="3">III</option></select></div>
+          <div class="ws-field"><label id="wsGradeFieldLabel">Histologic grade</label><select id="ws_grade" onchange="setPatientField('grade',this.value)"><option value="">—</option><option value="x">X</option><option value="1">I</option><option value="2">II</option><option value="3">III</option></select></div>
           <div class="ws-field"><label>ER</label><input type="text" id="ws_er" inputmode="decimal" placeholder="90 / + / -" oninput="setPatientField('er',this.value)"></div>
           <div class="ws-field"><label>PR</label><input type="text" id="ws_pr" inputmode="decimal" placeholder="30 / + / -" oninput="setPatientField('pr',this.value)"></div>
           <div class="ws-field"><label>HER2</label><select id="ws_her2" onchange="setPatientField('her2',this.value)"><option value="">—</option><option value="+">陽性</option><option value="-">陰性</option><option value="low">HER2-low</option></select></div>
-          <div class="ws-field"><label>Ki-67</label><input type="number" id="ws_ki67" min="0" max="100" step="0.1" oninput="setPatientField('ki67',this.value)"></div>
+          <div class="ws-field"><label>Ki-67</label><input type="text" id="ws_ki67" inputmode="decimal" placeholder="20 / 5-14%" oninput="setPatientField('ki67',this.value)"></div>
         </div>
       </div>
 
-      <div class="ws-section">
-        <h3>cTNM / 基因</h3>
+      <div class="ws-section ws-gene-section">
+        <h3>基因</h3>
         <div class="ws-form">
-          <div class="ws-field"><label>cT</label><select id="ws_cT" onchange="setPatientField('cT',this.value)"><option value="">Tx</option><option value="Tis">Tis</option><option value="T0">T0</option><option value="T1mi">T1mi</option><option value="T1a">T1a</option><option value="T1b">T1b</option><option value="T1c">T1c</option><option value="T2">T2</option><option value="T3">T3</option><option value="T4">T4</option></select></div>
-          <div class="ws-field"><label>cN</label><select id="ws_cN" onchange="setPatientField('cN',this.value)"><option value="">Nx</option><option value="N0">N0</option><option value="N0(i-)">N0(i-)</option><option value="N0(i+)">N0(i+)</option><option value="N1mi">N1mi</option><option value="N1">N1</option><option value="N2a">N2a</option><option value="N2b">N2b</option><option value="N3a">N3a</option><option value="N3b">N3b</option><option value="N3c">N3c</option></select></div>
-          <div class="ws-field"><label>cM</label><select id="ws_cM" onchange="setPatientField('cM',this.value)"><option value="">Mx</option><option value="M0">M0</option><option value="M1">M1</option></select></div>
+          <div class="ws-field ws-quick-backed-field"><label>cT</label><select id="ws_cT" onchange="setPatientField('cT',this.value)"><option value="Tx">Tx</option><option value="Tis">Tis</option><option value="T0">T0</option><option value="T1mi">T1mi</option><option value="T1a">T1a</option><option value="T1b">T1b</option><option value="T1c">T1c</option><option value="T2">T2</option><option value="T3">T3</option><option value="T4">T4</option></select></div>
+          <div class="ws-field ws-quick-backed-field"><label>cN</label><select id="ws_cN" onchange="setPatientField('cN',this.value)"><option value="Nx">Nx</option><option value="N0">N0</option><option value="N0(i-)">N0(i-)</option><option value="N0(i+)">N0(i+)</option><option value="N1mi">N1mi</option><option value="N1a">N1a</option><option value="N1b">N1b</option><option value="N1c">N1c</option><option value="N2a">N2a</option><option value="N2b">N2b</option><option value="N3a">N3a</option><option value="N3b">N3b</option><option value="N3c">N3c</option></select></div>
+          <div class="ws-field ws-quick-backed-field"><label>cM</label><select id="ws_cM" onchange="setPatientField('cM',this.value)"><option value="">Mx</option><option value="M0">M0</option><option value="M1">M1</option></select></div>
           <div class="ws-field"><label>BRCA</label><select id="ws_brca" onchange="setPatientField('brca',this.value)"><option value="">未檢驗</option><option value="wt">wild-type</option><option value="brca1">BRCA1+</option><option value="brca2">BRCA2+</option></select></div>
           <div class="ws-field"><label>PD-L1</label><select id="ws_pdl1" onchange="setPatientField('pdl1',this.value)"><option value="">未檢驗</option><option value="+">陽性</option><option value="-">陰性</option></select></div>
           <div class="ws-field"><label>TP53</label><select id="ws_tp53" onchange="setPatientField('tp53',this.value)"><option value="">未檢驗</option><option value="mut">mutation</option><option value="wt">wild-type</option></select></div>
           <div class="ws-field"><label>ESR1</label><select id="ws_esr1" onchange="setPatientField('esr1',this.value)"><option value="">未檢驗</option><option value="mut">mutation</option><option value="wt">wild-type</option></select></div>
+          <div class="ws-field"><label>PIK3CA</label><select id="ws_pik3ca" onchange="setPatientField('pik3ca',this.value)"><option value="">未檢驗</option><option value="mut">mutation</option><option value="wt">wild-type</option></select></div>
+          <div class="ws-field"><label>RS</label><input type="number" id="ws_oncotype_rs" min="0" max="100" step="1" placeholder="0-100" oninput="setPatientField('oncotype_rs',this.value)"></div>
+          <div class="ws-field"><label>CIViC</label><input type="text" id="ws_civic_variant" placeholder="PIK3CA H1047R" oninput="setPatientField('civic_variant',this.value)"></div>
         </div>
       </div>
 
-      <div class="ws-section">
+      <div class="ws-section ws-postop-section">
         <h3>手術後</h3>
+        <div class="ws-post-tnm-toolbar">
+          <button type="button" class="ws-qchip" id="wsPostNacChip" onclick="toggleWsPostNacPrefix()">y</button>
+          <span>有術前治療時勾選，術後分期顯示為 ypT/ypN；M 沿用上方遠端轉移</span>
+        </div>
+        <div class="ws-post-tnm-grid">
+          <div class="ws-q-block ws-q-block-refinable">
+            <div class="ws-q-blocklabel">pT — 病理腫瘤</div>
+            <div class="ws-q-row7" id="wsPostPTChips">
+              <button class="ws-qchip" data-coarse="Tx" onclick="setWsQuickPT('Tx')">Tx</button>
+              <button class="ws-qchip" data-coarse="Tis" onclick="setWsQuickPT('Tis')">Tis</button>
+              <button class="ws-qchip" data-coarse="T0" onclick="setWsQuickPT('T0')">T0</button>
+              <button class="ws-qchip" data-coarse="T1" onclick="setWsQuickPT('T1')">T1</button>
+              <button class="ws-qchip" data-coarse="T2" onclick="setWsQuickPT('T2')">T2</button>
+              <button class="ws-qchip" data-coarse="T3" onclick="setWsQuickPT('T3')">T3</button>
+              <button class="ws-qchip" data-coarse="T4" onclick="setWsQuickPT('T4')">T4</button>
+            </div>
+            <div class="ws-q-refine" id="wsPostPTRefine">
+              <button class="ws-qchip" data-value="T1mi" onclick="setWsQuickPTDetail('T1mi')">T1mi</button>
+              <button class="ws-qchip" data-value="T1a" onclick="setWsQuickPTDetail('T1a')">T1a</button>
+              <button class="ws-qchip" data-value="T1b" onclick="setWsQuickPTDetail('T1b')">T1b</button>
+              <button class="ws-qchip" data-value="T1c" onclick="setWsQuickPTDetail('T1c')">T1c</button>
+            </div>
+          </div>
+          <div class="ws-q-block ws-q-block-refinable">
+            <div class="ws-q-blocklabel">pN — 病理淋巴結</div>
+            <div class="ws-q-row5" id="wsPostPNChips">
+              <button class="ws-qchip" data-coarse="Nx" onclick="setWsQuickPN('Nx')">Nx</button>
+              <button class="ws-qchip" data-coarse="N0" onclick="setWsQuickPN('N0')">N0</button>
+              <button class="ws-qchip" data-coarse="N1" onclick="setWsQuickPN('N1')">N1</button>
+              <button class="ws-qchip" data-coarse="N2" onclick="setWsQuickPN('N2')">N2</button>
+              <button class="ws-qchip" data-coarse="N3" onclick="setWsQuickPN('N3')">N3</button>
+            </div>
+            <div class="ws-q-refine" id="wsPostPNRefine">
+              <button class="ws-qchip" data-group="N0" data-value="N0" onclick="setWsQuickPNDetail('N0')">N0</button>
+              <button class="ws-qchip" data-group="N0" data-value="N0(i-)" onclick="setWsQuickPNDetail('N0(i-)')">i-</button>
+              <button class="ws-qchip" data-group="N0" data-value="N0(i+)" onclick="setWsQuickPNDetail('N0(i+)')">i+</button>
+              <button class="ws-qchip" data-group="N1" data-value="N1mi" onclick="setWsQuickPNDetail('N1mi')">N1mi</button>
+              <button class="ws-qchip" data-group="N1" data-value="N1a" onclick="setWsQuickPNDetail('N1a')">N1a</button>
+              <button class="ws-qchip" data-group="N1" data-value="N1b" onclick="setWsQuickPNDetail('N1b')">N1b</button>
+              <button class="ws-qchip" data-group="N1" data-value="N1c" onclick="setWsQuickPNDetail('N1c')">N1c</button>
+              <button class="ws-qchip" data-group="N2" data-value="N2a" onclick="setWsQuickPNDetail('N2a')">N2a</button>
+              <button class="ws-qchip" data-group="N2" data-value="N2b" onclick="setWsQuickPNDetail('N2b')">N2b</button>
+              <button class="ws-qchip" data-group="N3" data-value="N3a" onclick="setWsQuickPNDetail('N3a')">N3a</button>
+              <button class="ws-qchip" data-group="N3" data-value="N3b" onclick="setWsQuickPNDetail('N3b')">N3b</button>
+              <button class="ws-qchip" data-group="N3" data-value="N3c" onclick="setWsQuickPNDetail('N3c')">N3c</button>
+            </div>
+          </div>
+        </div>
+        <div class="ws-post-aux-grid">
+          <div class="ws-post-aux-block">
+            <div class="ws-q-blocklabel">乳房手術</div>
+            <div class="ws-q-row2" id="wsPostBreastSurgeryChips">
+              <button class="ws-qchip" data-value="BCS" onclick="setWsQuickSimpleField('breast_surgery','BCS')">BCS</button>
+              <button class="ws-qchip" data-value="SM" onclick="setWsQuickSimpleField('breast_surgery','SM')">SM</button>
+            </div>
+          </div>
+          <div class="ws-post-aux-block">
+            <div class="ws-q-blocklabel">腋下手術</div>
+            <div class="ws-q-row3" id="wsPostAxillarySurgeryChips">
+              <button class="ws-qchip" data-value="SLNB" onclick="toggleWsAxillarySurgery('SLNB')">SLNB</button>
+              <button class="ws-qchip" data-value="TAD" onclick="toggleWsAxillarySurgery('TAD')">TAD</button>
+              <button class="ws-qchip" data-value="ALND" onclick="toggleWsAxillarySurgery('ALND')">ALND</button>
+            </div>
+          </div>
+          <div class="ws-post-aux-block">
+            <div class="ws-q-blocklabel">重建</div>
+            <div class="ws-q-row4" id="wsPostReconstructionChips">
+              <button class="ws-qchip" data-value="none" onclick="setWsQuickSimpleField('reconstruction_surgery','none')">無</button>
+              <button class="ws-qchip" data-value="TE" onclick="setWsQuickSimpleField('reconstruction_surgery','TE')">TE</button>
+              <button class="ws-qchip" data-value="implant" onclick="setWsQuickSimpleField('reconstruction_surgery','implant')">Implant</button>
+              <button class="ws-qchip" data-value="autologous" onclick="setWsQuickSimpleField('reconstruction_surgery','autologous')">Auto</button>
+            </div>
+          </div>
+          <div class="ws-post-aux-block">
+            <div class="ws-q-blocklabel">PNI / LVI</div>
+            <div class="ws-q-row4" id="wsPostPniLviChips">
+              <button class="ws-qchip" data-field="pni" data-value="present" onclick="setWsQuickSimpleField('pni','present')">PNI+</button>
+              <button class="ws-qchip" data-field="pni" data-value="absent" onclick="setWsQuickSimpleField('pni','absent')">PNI-</button>
+              <button class="ws-qchip" data-field="lvi" data-value="present" onclick="setWsQuickSimpleField('lvi','present')">LVI+</button>
+              <button class="ws-qchip" data-field="lvi" data-value="absent" onclick="setWsQuickSimpleField('lvi','absent')">LVI-</button>
+            </div>
+          </div>
+          <div class="ws-post-aux-block">
+            <div class="ws-q-blocklabel">Margin</div>
+            <div class="ws-q-row2" id="wsPostMarginChips">
+              <button class="ws-qchip" data-value="yes" onclick="setWsQuickSimpleField('margin_involved','yes')">Involved</button>
+              <button class="ws-qchip" data-value="no" onclick="setWsQuickSimpleField('margin_involved','no')">Uninvolved</button>
+            </div>
+          </div>
+          <div class="ws-post-aux-block">
+            <div class="ws-q-blocklabel">Post-NAC response</div>
+            <div class="ws-q-row3" id="wsPostNacResponseChips">
+              <button class="ws-qchip" data-value="pCR" onclick="setWsQuickSimpleField('post_nac_response','pCR')">pCR</button>
+              <button class="ws-qchip" data-value="residual ca" onclick="setWsQuickSimpleField('post_nac_response','residual ca')">Residual</button>
+              <button class="ws-qchip" data-value="DCIS only" onclick="setWsQuickSimpleField('post_nac_response','DCIS only')">DCIS only</button>
+            </div>
+          </div>
+        </div>
         <div class="ws-form">
-          <div class="ws-field"><label title="乳房手術">乳房</label><select id="ws_breast_surgery" onchange="setPatientField('breast_surgery',this.value)"><option value="">—</option><option value="BCS">BCS</option><option value="SM">SM</option></select></div>
-          <div class="ws-field"><label title="腋下手術">腋下</label><select id="ws_axillary_surgery" onchange="setPatientField('axillary_surgery',this.value)"><option value="">—</option><option value="SLNB">SLNB</option><option value="ALND">ALND</option></select></div>
-          <div class="ws-field"><label title="重建術式">重建</label><select id="ws_reconstruction_surgery" onchange="setPatientField('reconstruction_surgery',this.value)"><option value="">—</option><option value="none">無</option><option value="TE">TE</option><option value="implant">Implant</option><option value="autologous">Auto</option></select></div>
+          <div class="ws-field ws-post-select-hidden"><label title="乳房手術">乳房</label><select id="ws_breast_surgery" onchange="setPatientField('breast_surgery',this.value)"><option value="">—</option><option value="BCS">BCS</option><option value="SM">SM</option></select></div>
+          <div class="ws-field ws-post-select-hidden"><label title="腋下手術">腋下</label><select id="ws_axillary_surgery" onchange="setPatientField('axillary_surgery',this.value)"><option value="">—</option><option value="SLNB">SLNB</option><option value="TAD">TAD</option><option value="ALND">ALND</option></select></div>
+          <div class="ws-field ws-post-select-hidden"><label title="重建術式">重建</label><select id="ws_reconstruction_surgery" onchange="setPatientField('reconstruction_surgery',this.value)"><option value="">—</option><option value="none">無</option><option value="TE">TE</option><option value="implant">Implant</option><option value="autologous">Auto</option></select></div>
           <div class="ws-field"><label title="LN positive">LN+</label><input type="number" id="ws_nodes_pos" min="0" max="50" oninput="setPatientField('nodes_pos',this.value)"></div>
           <div class="ws-field"><label>LN total</label><input type="number" id="ws_nodes_total" min="0" max="100" oninput="setPatientField('nodes_total',this.value)"></div>
-          <div class="ws-field"><label title="Margin involved">Margin</label><select id="ws_margin_involved" onchange="setPatientField('margin_involved',this.value)"><option value="">—</option><option value="no">No</option><option value="yes">Involved</option><option value="close">Close</option></select></div>
-          <div class="ws-field"><label>pT</label><select id="ws_pT" onchange="setPatientField('pT',this.value)"><option value="">Tx</option><option value="Tis">Tis</option><option value="T0">T0</option><option value="T1mi">T1mi</option><option value="T1a">T1a</option><option value="T1b">T1b</option><option value="T1c">T1c</option><option value="T2">T2</option><option value="T3">T3</option><option value="T4">T4</option></select></div>
-          <div class="ws-field"><label>pN</label><select id="ws_pN" onchange="setPatientField('pN',this.value)"><option value="">Nx</option><option value="N0">N0</option><option value="N0(i-)">N0(i-)</option><option value="N0(i+)">N0(i+)</option><option value="N1mi">N1mi</option><option value="N1">N1</option><option value="N2a">N2a</option><option value="N2b">N2b</option><option value="N3a">N3a</option><option value="N3b">N3b</option><option value="N3c">N3c</option></select></div>
-          <div class="ws-field"><label>pM</label><select id="ws_pM" onchange="setPatientField('pM',this.value)"><option value="">Mx</option><option value="M0">M0</option><option value="M1">M1</option></select></div>
+          <div class="ws-field"><label>SLN+</label><input type="number" id="ws_sln_pos" min="0" max="30" oninput="setPatientField('sln_pos',this.value)"></div>
+          <div class="ws-field"><label>SLN total</label><input type="number" id="ws_sln_total" min="0" max="50" oninput="setPatientField('sln_total',this.value)"></div>
+          <div class="ws-field"><label>ALN+</label><input type="number" id="ws_aln_pos" min="0" max="50" oninput="setPatientField('aln_pos',this.value)"></div>
+          <div class="ws-field"><label>ALN total</label><input type="number" id="ws_aln_total" min="0" max="100" oninput="setPatientField('aln_total',this.value)"></div>
+          <div class="ws-field ws-post-select-hidden"><label>PNI</label><select id="ws_pni" onchange="setPatientField('pni',this.value)"><option value="">—</option><option value="absent">Absent</option><option value="present">Present</option></select></div>
+          <div class="ws-field ws-post-select-hidden"><label>LVI</label><select id="ws_lvi" onchange="setPatientField('lvi',this.value)"><option value="">—</option><option value="absent">Absent</option><option value="present">Present</option></select></div>
+          <div class="ws-field ws-post-select-hidden"><label title="Margin involved">Margin</label><select id="ws_margin_involved" onchange="setPatientField('margin_involved',this.value)"><option value="">—</option><option value="yes">Involved</option><option value="no">Uninvolved</option></select></div>
+          <div class="ws-field ws-post-select-hidden"><label>Post-NAC</label><select id="ws_post_nac_response" onchange="setPatientField('post_nac_response',this.value)"><option value="">—</option><option value="pCR">pCR</option><option value="residual ca">residual ca</option><option value="DCIS only">DCIS only</option></select></div>
+          <div class="ws-field ws-quick-backed-field ws-post-select-hidden"><label>pT</label><select id="ws_pT" onchange="setPatientField('pT',this.value)"><option value="Tx">Tx</option><option value="Tis">Tis</option><option value="T0">T0</option><option value="T1mi">T1mi</option><option value="T1a">T1a</option><option value="T1b">T1b</option><option value="T1c">T1c</option><option value="T2">T2</option><option value="T3">T3</option><option value="T4">T4</option></select></div>
+          <div class="ws-field ws-quick-backed-field ws-post-select-hidden"><label>pN</label><select id="ws_pN" onchange="setPatientField('pN',this.value)"><option value="Nx">Nx</option><option value="N0">N0</option><option value="N0(i-)">N0(i-)</option><option value="N0(i+)">N0(i+)</option><option value="N1mi">N1mi</option><option value="N1a">N1a</option><option value="N1b">N1b</option><option value="N1c">N1c</option><option value="N2a">N2a</option><option value="N2b">N2b</option><option value="N3a">N3a</option><option value="N3b">N3b</option><option value="N3c">N3c</option></select></div>
         </div>
       </div>
-
-      <!-- Clinical context -->
-      <div class="ws-section">
-        <h3>治療條件</h3>
-        <div class="ws-form">
-          <div class="ws-field"><label>停經狀態</label><select id="ws_menopause" onchange="setPatientField('menopause',this.value)"><option value="">—</option><option value="pre">未停經</option><option value="post">已停經</option></select></div>
-        </div>
-      </div>
-
-      <details class="ws-section ws-optional">
-        <summary>RCB 術後殘餘病理</summary>
-        <div class="ws-form">
-          <div class="ws-field"><label>Tumor bed 直徑 1 (mm)</label><input type="number" id="ws_rcb_d1" min="0" max="500" step="0.1" oninput="setPatientField('rcb_d1',this.value)"></div>
-          <div class="ws-field"><label>Tumor bed 直徑 2 (mm)</label><input type="number" id="ws_rcb_d2" min="0" max="500" step="0.1" oninput="setPatientField('rcb_d2',this.value)"></div>
-          <div class="ws-field"><label>Invasive carcinoma (%)</label><input type="number" id="ws_rcb_finv" min="0" max="100" step="1" oninput="setPatientField('rcb_finv',this.value)"></div>
-          <div class="ws-field"><label>陽性淋巴結數</label><input type="number" id="ws_rcb_ln" min="0" max="50" step="1" oninput="setPatientField('rcb_ln',this.value)"></div>
-          <div class="ws-field"><label>最大 LN 轉移 (mm)</label><input type="number" id="ws_rcb_dmet" min="0" max="100" step="0.1" oninput="setPatientField('rcb_dmet',this.value)"></div>
-        </div>
-      </details>
 
      </div><!-- /ws-input-col -->
 
      <div class="ws-result-col">
+      <div class="ws-step-label">Patient Context</div>
+      <div class="ws-section">
+        <div id="wsContextPanel" class="ws-context-panel"></div>
+      </div>
+
       <div class="ws-step-label">2. AJCC 第八版分期</div>
       <div class="ws-section">
         <div class="ws-stage-grid" id="wsStageResults">
@@ -865,17 +1094,14 @@
         </div>
       </div>
 
-      <div class="ws-step-label">3. 風險分數</div>
-      <div class="ws-score-sections" id="wsResults"></div>
      </div><!-- /ws-result-col -->
 
       <!-- Action bar -->
       <div class="ws-actions">
-        <button class="ws-btn ws-btn-primary" onclick="printWorkspaceSummary()">&#128203; 產生整合摘要</button>
-        <button class="ws-btn" onclick="exportPatientWorkspace()">&#128190; 匯出 JSON</button>
-        <button class="ws-btn" onclick="importPatientWorkspace()">&#128194; 匯入 JSON</button>
-        <span style="flex:1"></span>
-        <button class="ws-btn ws-btn-danger" onclick="clearPatient()">&#128465;&#65039; 清除全部</button>
+        <button class="ws-btn ws-btn-primary" onclick="generatePatientTreatmentPlan()">&#128203; 病人治療說明單</button>
+        <button class="ws-btn" onclick="printWorkspaceSummary()">&#128196; 病歷摘要</button>
+        <button class="ws-btn" onclick="exportPatientWorkspace()">&#128190; 匯出結構化 JSON</button>
+        <button class="ws-btn" onclick="importPatientWorkspace()">&#128194; 匯入資料</button>
       </div>
 
     </div>
@@ -930,7 +1156,7 @@
     <div class="page-body">
 
       <div class="calc-tabs">
-        <button class="calc-tab active" data-tab="predict" onclick="switchCalcTab('predict')">PREDICT v2.3</button>
+        <button class="calc-tab active" data-tab="predict" onclick="switchCalcTab('predict')">PREDICT v2.3/v3.0</button>
         <button class="calc-tab" data-tab="cts5" onclick="switchCalcTab('cts5')">CTS5</button>
         <button class="calc-tab" data-tab="pepi" onclick="switchCalcTab('pepi')">PEPI</button>
         <button class="calc-tab" data-tab="npi" onclick="switchCalcTab('npi')">NPI</button>
@@ -943,32 +1169,35 @@
         <button class="calc-tab" data-tab="ext" onclick="switchCalcTab('ext')">外連</button>
       </div>
 
-      <!-- PREDICT v2.3 -->
+      <!-- PREDICT v3 -->
       <div class="calc-panel active" id="calcPanel-predict">
         <div class="calc-card">
           <div class="calc-section-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem">
-            <span>PREDICT v2.3 — 乳癌術後存活率 + 治療獲益</span>
+            <span>PREDICT v2.3 / v3.0 — 乳癌術後存活率 + 治療獲益</span>
             <button class="ws-btn" style="font-size:.75rem;padding:.3rem .7rem;background:#fdf2f8;color:#be185d;border-color:#f9a8d4" onclick="loadPredictFromWorkspace()">&#128203; 從 Workspace 帶入</button>
           </div>
           <div style="font-size:.8rem;color:var(--text-muted);margin-bottom:.7rem;line-height:1.55">
             估算術後 5 / 10 / 15 年整體存活率，及各種輔助治療的<strong>增量獲益</strong>。
             <div style="margin-top:.4rem;padding:.6rem .8rem;background:#f0fdf4;border:2px solid #16a34a;border-radius:6px;font-size:.78rem;line-height:1.55;color:#14532d">
               <strong>✅ 已通過 R 自動化驗證</strong>（2,595 cases，最大誤差 &lt; 0.02%）<br>
-              <strong>本站使用版本</strong>：PREDICT v2.1，係數比照 <a href="https://github.com/cran/nhs.predict/blob/master/R/predict.os.R" target="_blank" style="color:#0369a1">cran/nhs.predict</a> R 原始碼，已與 R 演算法<strong>數學等價</strong>驗證。<br>
+              <strong>本站顯示版本</strong>：同時顯示 PREDICT v2.3 與 v3.0；v2.3 systemic therapy 核心係數比照 <a href="https://github.com/cran/nhs.predict/blob/master/R/predict.os.R" target="_blank" style="color:#0369a1">cran/nhs.predict</a> R 原始碼，已與 R 演算法<strong>數學等價</strong>驗證。<br>
               <strong>驗證細節</strong>：見 <code>tests/predict_validation_auto.html</code>（R-產生 snapshot + 自動比對 2,595 cases）。<br>
-              <strong>注意</strong>：最新 v4.0 (Grootes 2024) 含 radiotherapy benefit；本站採 v2.1（v4 論文 paywall）。如需 RT 請至 <a href="https://breast.predict.nhs.uk/" target="_blank" style="color:#0369a1"><strong>breast.predict.nhs.uk</strong></a>。
+              <strong>v3.0</strong>：已依 PREDICTv3 R package 移植完整公式；仍需用官方網站逐例做 full validation。
             </div>
           </div>
 
           <div style="font-weight:700;font-size:.82rem;color:#0e7490;margin:.7rem 0 .4rem">病人 / 腫瘤特徵</div>
           <div class="calc-form">
+            <div class="calc-field"><label>診斷年份</label><input type="number" id="pred_year" min="2000" max="2030" value="2026" oninput="calcPREDICT()"></div>
             <div class="calc-field"><label>診斷時年齡 (歲)</label><input type="number" id="pred_age" min="20" max="100" value="55" oninput="calcPREDICT()"></div>
             <div class="calc-field"><label>偵測方式</label><select id="pred_mode" onchange="calcPREDICT()"><option value="symp" selected>症狀性</option><option value="screen">篩檢發現</option><option value="other">其他/臨床偵測</option></select></div>
+            <div class="calc-field"><label>Smoking</label><select id="pred_smoker" onchange="calcPREDICT()"><option value="unk" selected>未知 / population average</option><option value="0">非目前吸菸</option><option value="1">目前吸菸</option></select></div>
             <div class="calc-field"><label>停經狀態</label><select id="pred_menopause" onchange="calcPREDICT()"><option value="">未知</option><option value="pre">未停經</option><option value="post" selected>已停經</option></select></div>
             <div class="calc-field"><label>腫瘤大小 (mm)</label><input type="number" id="pred_size" min="1" max="200" value="20" oninput="calcPREDICT()"></div>
             <div class="calc-field"><label>陽性淋巴結數</label><input type="number" id="pred_nodes" min="0" max="50" value="0" oninput="calcPREDICT()"></div>
             <div class="calc-field"><label>Grade</label><select id="pred_grade" onchange="calcPREDICT()"><option value="1">G1</option><option value="2" selected>G2</option><option value="3">G3</option></select></div>
             <div class="calc-field"><label>ER 狀態</label><select id="pred_er" onchange="calcPREDICT()"><option value="pos" selected>ER 陽性</option><option value="neg">ER 陰性</option></select></div>
+            <div class="calc-field"><label>PR 狀態</label><select id="pred_pr" onchange="calcPREDICT()"><option value="unk" selected>未知</option><option value="pos">PR 陽性</option><option value="neg">PR 陰性</option></select></div>
             <div class="calc-field"><label>HER2 狀態</label><select id="pred_her2" onchange="calcPREDICT()"><option value="neg" selected>HER2 陰性</option><option value="pos">HER2 陽性</option><option value="unk">未知</option></select></div>
             <div class="calc-field"><label>Ki-67</label><select id="pred_ki67" onchange="calcPREDICT()"><option value="unk" selected>未測 / 未知</option><option value="pos">≥10% (陽性)</option><option value="neg">&lt;10% (陰性)</option></select></div>
           </div>
@@ -976,23 +1205,25 @@
           <div style="font-weight:700;font-size:.82rem;color:#0e7490;margin:.85rem 0 .4rem">輔助治療選項</div>
           <div class="calc-form">
             <div class="calc-field"><label>內分泌治療 (僅 ER+)</label><select id="pred_endo" onchange="calcPREDICT()"><option value="0">無</option><option value="5" selected>5 年</option><option value="10">10 年（延長）</option></select></div>
-            <div class="calc-field"><label>化學治療（NHS v2.1 模型）</label><select id="pred_chemo" onchange="calcPREDICT()"><option value="0">無化療</option><option value="2">第 2 代：anthracycline-based（含 CMF）</option><option value="3" selected>第 3 代：anthracycline + taxane</option></select></div>
+            <div class="calc-field"><label>化學治療（PREDICT v3）</label><select id="pred_chemo" onchange="calcPREDICT()"><option value="0">無化療</option><option value="2">第 2 代：anthracycline-based（含 CMF）</option><option value="3" selected>第 3 代：anthracycline + taxane</option></select></div>
             <div class="calc-field"><label>Trastuzumab (HER2+)</label><select id="pred_trast" onchange="calcPREDICT()"><option value="0">無</option><option value="1" selected>使用</option></select></div>
             <div class="calc-field"><label>Bisphosphonates (停經後)</label><select id="pred_bis" onchange="calcPREDICT()"><option value="0" selected>無</option><option value="1">使用</option></select></div>
+            <div class="calc-field"><label>Radiotherapy</label><select id="pred_rt" onchange="calcPREDICT()"><option value="0">無放療</option><option value="1" selected>使用放療</option></select></div>
+            <div class="calc-field"><label>Heart mean dose (Gy)</label><input type="number" id="pred_rt_heart_dose" min="0" max="20" step="0.1" value="2" oninput="calcPREDICT()"></div>
           </div>
 
           <div id="pred_result"></div>
 
           <div class="calc-cite">
-            <strong>本站實作版本</strong>：PREDICT v2.1（與 v2.3 共用核心 Cox 係數）<br>
-            <strong>係數來源</strong>：<a href="https://github.com/cran/nhs.predict" target="_blank">cran/nhs.predict</a> R package 官方原始碼，逐一比對驗證<br>
+            <strong>本站顯示版本</strong>：PREDICT v2.3 / v3.0 並列<br>
+            <strong>係數來源</strong>：v2.3 依 <a href="https://github.com/cran/nhs.predict" target="_blank">cran/nhs.predict</a> R package；v3.0 依 <a href="https://github.com/pengpclab/PREDICTv3" target="_blank">PREDICTv3 R package</a> 與 <a href="https://breast.v3.predict.cam/predict-mathematics-PP.pdf" target="_blank">PREDICT v3.0 mathematics PDF</a><br>
             <strong>論文引用</strong>：
             <ul style="margin:.3rem 0 0 1.2rem;padding:0">
               <li>Candido dos Reis FJ, et al. <em>An updated PREDICT breast cancer prognostication and treatment benefit prediction model with independent validation</em>. Breast Cancer Res. 2017;19:58.</li>
               <li>Wishart GC, et al. <em>PREDICT: a new UK prognostic model</em>. Breast Cancer Res. 2010;12:R1.</li>
-              <li>v2.3 含 bisphosphonate 與 Ki67 修正</li>
+              <li>v3 顯示介面加入 diagnosis year、PR、smoking、bisphosphonate、Ki67、radiotherapy / heart dose 欄位</li>
             </ul>
-            <strong style="color:#b45309">最新版 v4.0 (Grootes I, 2025-2026)</strong>：含 radiotherapy benefit + 更新基線，請使用官方網站 <a href="https://breast.predict.nhs.uk/" target="_blank">breast.predict.nhs.uk</a>。
+            <strong style="color:#b45309">注意</strong>：v3 公式已移植；正式臨床採用前仍需以官方 PREDICT 輸出做逐例 validation。
           </div>
         </div>
       </div>
@@ -1183,7 +1414,7 @@
             <div class="calc-field"><label>ER H-score (0–300)</label><input type="number" id="ihc4_er" min="0" max="300" value="270" oninput="calcIHC4()"></div>
             <div class="calc-field"><label>PR H-score (0–300)</label><input type="number" id="ihc4_pr" min="0" max="300" value="200" oninput="calcIHC4()"></div>
             <div class="calc-field"><label>HER2</label><select id="ihc4_her2" onchange="calcIHC4()"><option value="0" selected>陰性 (0/1+/2+ FISH-)</option><option value="1">陽性 (3+ 或 FISH+)</option></select></div>
-            <div class="calc-field"><label>Ki67 (%)</label><input type="number" id="ihc4_ki67" min="0" max="100" step="0.1" value="15" oninput="calcIHC4()"></div>
+            <div class="calc-field"><label>Ki67 (%)</label><input type="text" id="ihc4_ki67" inputmode="decimal" value="15" placeholder="15 / 5-14%" oninput="calcIHC4()"></div>
           </div>
           <div id="ihc4_result"></div>
           <div class="calc-cite">
@@ -1223,11 +1454,11 @@
             <strong>公式</strong>：RCB = 1.4×(f_inv × d_prim)^0.17 + (4×(1 − 0.75^LN) × d_met)^0.17
           </div>
           <div class="calc-form">
-            <div class="calc-field"><label>Tumor bed 直徑 1 (mm)</label><input type="number" id="rcb_d1" min="0" max="500" step="0.1" value="20" oninput="calcRCB()"></div>
-            <div class="calc-field"><label>Tumor bed 直徑 2 (mm)</label><input type="number" id="rcb_d2" min="0" max="500" step="0.1" value="20" oninput="calcRCB()"></div>
-            <div class="calc-field"><label>Invasive carcinoma %</label><input type="number" id="rcb_finv" min="0" max="100" step="1" value="50" oninput="calcRCB()"></div>
-            <div class="calc-field"><label>陽性淋巴結數</label><input type="number" id="rcb_ln" min="0" max="50" value="0" oninput="calcRCB()"></div>
-            <div class="calc-field"><label>最大 LN 轉移 (mm)</label><input type="number" id="rcb_dmet" min="0" max="100" step="0.1" value="0" oninput="calcRCB()"></div>
+            <div class="calc-field"><label>Tumor bed 直徑 1 (mm)</label><input type="number" id="rcb_d1" min="0" max="500" step="0.1" value="20" oninput="setPatientField('rcb_d1',this.value);calcRCB()"></div>
+            <div class="calc-field"><label>Tumor bed 直徑 2 (mm)</label><input type="number" id="rcb_d2" min="0" max="500" step="0.1" value="20" oninput="setPatientField('rcb_d2',this.value);calcRCB()"></div>
+            <div class="calc-field"><label>Invasive carcinoma %</label><input type="number" id="rcb_finv" min="0" max="100" step="1" value="50" oninput="setPatientField('rcb_finv',this.value);calcRCB()"></div>
+            <div class="calc-field"><label>陽性淋巴結數</label><input type="number" id="rcb_ln" min="0" max="50" value="0" oninput="setPatientField('rcb_ln',this.value);calcRCB()"></div>
+            <div class="calc-field"><label>最大 LN 轉移 (mm)</label><input type="number" id="rcb_dmet" min="0" max="100" step="0.1" value="0" oninput="setPatientField('rcb_dmet',this.value);calcRCB()"></div>
           </div>
           <div id="rcb_result"></div>
           <div class="calc-cite">
@@ -1333,7 +1564,7 @@
           <div class="calc-section-title">官方 / 外連工具（版權所限，僅提供連結）</div>
           <div class="calc-extlinks">
             <a class="calc-extlink" href="https://breast.predict.nhs.uk/" target="_blank" rel="noopener">
-              <div class="calc-extlink-name">PREDICT v2.3 (UK NHS)</div>
+              <div class="calc-extlink-name">PREDICT v3 (UK NHS)</div>
               <div class="calc-extlink-desc">5/10/15 年存活率 + 治療效益（chemo, endocrine, trastuzumab, bisphosphonate）。Cambridge / NHS 官方。</div>
             </a>
             <a class="calc-extlink" href="https://ibis.ikonopedia.com/" target="_blank" rel="noopener">
@@ -1382,23 +1613,277 @@
     </div>
   </div><!-- /calcPage -->
 
-  <!-- Toggle Bar -->
-  <div class="toggle-bar">
-    <button onclick="showSettings()" title="設定 / 功能開關">&#9881;&#65039;</button>
-    <button id="darkToggle" onclick="toggleDarkMode()" title="切換深色模式 (Ctrl+D)">&#127769;</button>
+  <!-- ===== API GUIDE PAGE ===== -->
+  <div id="apiPage" class="dept-page">
+    <div class="page-topbar api">
+      <button class="back-btn" onclick="showLanding()">← 返回</button>
+      <h2>API Guide</h2>
+    </div>
+    <div class="api-guide">
+      <section class="api-guide-head">
+        <div>
+          <h3>Netlify read-only API</h3>
+          <p>供其他網頁或 agent 查詢藥物資料、藥價 payload 與呼叫風險分數 / 分期計算。Netlify 部署使用 <code>/api/*</code>，本機 Python server 也保留同樣路徑。</p>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="runApiGuideSmokeTest()">Run API smoke test</button>
+      </section>
+      <pre class="api-smoke-result" id="apiGuideSmokeResult">尚未測試</pre>
+      <section class="api-guide-grid">
+        <div class="api-guide-card">
+          <h3>Endpoints</h3>
+          <table class="api-endpoint-table">
+            <tbody>
+              <tr><th>GET</th><td><code>/api/health</code></td><td>部署狀態</td></tr>
+              <tr><th>GET</th><td><code>/api/config</code></td><td>首頁設定與藥價標籤</td></tr>
+              <tr><th>GET</th><td><code>/api/stats</code></td><td>藥物資料統計</td></tr>
+              <tr><th>GET</th><td><code>/api/drugs?category=oncology_breast</code></td><td>乳癌藥物清單</td></tr>
+              <tr><th>GET</th><td><code>/api/drug/:id</code></td><td>單一藥物</td></tr>
+              <tr><th>GET</th><td><code>/api/formulations?drug=trastuzumab</code></td><td>劑型與藥價</td></tr>
+              <tr><th>POST</th><td><code>/api/calculate/risk-scores</code></td><td>CTS5 / NPI / IHC4 / Magee</td></tr>
+              <tr><th>POST</th><td><code>/api/calculate/staging-score</code></td><td>AJCC + recurrence scores</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="api-guide-card">
+          <h3>Sample payload</h3>
+          <pre><code>{
+  "age": 55,
+  "size_mm": 20,
+  "grade": 2,
+  "nodes_pos": 0,
+  "cT": "T2",
+  "cN": "N0",
+  "cM": "M0",
+  "er_hscore": 270,
+  "pr_hscore": 200,
+  "her2": "-",
+  "ki67": 15
+}</code></pre>
+        </div>
+        <div class="api-guide-card">
+          <h3>curl</h3>
+          <pre><code>curl -X POST https://your-site.netlify.app/api/calculate/staging-score \
+  -H "content-type: application/json" \
+  -d "{\"age\":55,\"size_mm\":20,\"grade\":2,\"nodes_pos\":0,\"cT\":\"T2\",\"cN\":\"N0\",\"cM\":\"M0\",\"er_hscore\":270,\"pr_hscore\":200,\"her2\":\"-\",\"ki67\":15}"</code></pre>
+        </div>
+        <div class="api-guide-card">
+          <h3>JavaScript agent call</h3>
+          <pre><code>const res = await fetch("/api/calculate/risk-scores", {
+  method: "POST",
+  headers: {
+    "content-type": "application/json",
+    "x-contact-email": "team@example.org",
+    "x-client-app": "hospital-agent-dev"
+  },
+  body: JSON.stringify(patientContext)
+});
+const data = await res.json();</code></pre>
+        </div>
+        <div class="api-guide-card">
+          <h3>Agent / access policy</h3>
+          <p>公開端點目前只提供 read-only 查詢與計算。正式 agent 或其他網頁呼叫建議帶 <code>X-Contact-Email</code> 與 <code>X-Client-App</code>；病人資料庫、EMR 回寫、健保資料更新與 admin 寫入必須走院內 authenticated backend。</p>
+        </div>
+        <div class="api-guide-card">
+          <h3>External copilot endpoint</h3>
+          <pre><code>localStorage.setItem("nhi_dashboard_agent_api_config", JSON.stringify({
+  enabled: true,
+  endpoint: "/api/agent",
+  headers: { "x-contact-email": "team@example.org" }
+}));
+
+// Expected response:
+// { "reply": "已整理欄位", "tool_id": "calcPage" }</code></pre>
+        </div>
+        <div class="api-guide-card">
+          <h3>Agent benchmark</h3>
+          <p>公開 300 題 agent integration benchmark，可用來測試其他 LLM 是否能正確調用藥物、價錢、分期與風險分數工具。</p>
+          <div class="api-download-row">
+            <a class="function-menu-action" href="data/agent_bench/bench_v1.json" download>下載 300 題題庫</a>
+            <a class="function-menu-action subtle" href="data/agent_bench/bench_v1_results_2026-06-05.json" download>下載原始 full run</a>
+            <a class="function-menu-action subtle" href="data/agent_bench/bench_failed_rerun_final_2026-06-06.json" download>下載失敗題重測</a>
+            <a class="function-menu-action subtle" href="data/agent_bench/bench_adversarial_2026-06-06.json" download>下載困難題</a>
+            <a class="function-menu-action subtle" href="data/agent_bench/bench_adversarial_results_2026-06-06.json" download>下載困難題結果</a>
+          </div>
+          <pre><code>python tools/agent_benchmark.py run \
+  --corpus data/agent_bench/bench_v1.json \
+  --base-url http://127.0.0.1:8080</code></pre>
+        </div>
+      </section>
+      <section class="api-guide-note">
+        <strong>Patient context bundle</strong>
+        <span>Workspace 的 <code>Export structured data</code> 會輸出 <code>onco_breast_patient_context_bundle.v1</code>。目前 Netlify API 為 read-only；匯入資料庫、寫入特定病人或 admin 更新仍應走院內後端。</span>
+      </section>
+    </div>
   </div>
+
+  <!-- ===== AGENT BENCHMARK PAGE ===== -->
+  <div id="benchPage" class="dept-page">
+    <div class="page-topbar api">
+      <button class="back-btn" onclick="showLanding()">← 返回</button>
+      <h2>Agent Benchmark</h2>
+    </div>
+    <div class="api-guide">
+      <section class="api-guide-head">
+        <div>
+          <h3>Agent Q/A Benchmark</h3>
+          <p>本 benchmark 僅測試 OncoBreast Calculator 網站內資料的 information retrieval、工具調用與有限資料組合；不測試外部 guideline、正式治療建議或臨床醫囑推論。</p>
+          <p>標準答案先由本地資料庫或 deterministic calculator 產生，再呼叫 agent 比對。表格中的 actual called_tools 來自 <code>/api/agent</code> raw response；題庫內的 expected must_call 只代表本題預期應使用的網站工具。</p>
+          <p>超出網站資料庫、計算器與 API 端點的資訊，合格 agent 應明確拒絕或要求回到本系統內查詢。</p>
+        </div>
+        <div class="api-download-row">
+          <a class="function-menu-action" href="data/agent_bench/bench_v1.json" download>下載題庫 JSON</a>
+          <a class="function-menu-action subtle" href="data/agent_bench/bench_v1_results_2026-06-05.json" download>下載原始 full run</a>
+          <a class="function-menu-action subtle" href="data/agent_bench/bench_failed_rerun_final_2026-06-06.json" download>下載失敗題重測</a>
+          <a class="function-menu-action subtle" href="data/agent_bench/bench_adversarial_2026-06-06.json" download>下載困難題</a>
+          <a class="function-menu-action subtle" href="data/agent_bench/bench_adversarial_results_2026-06-06.json" download>下載困難題結果</a>
+        </div>
+      </section>
+      <section class="api-guide-card benchmark-safety-note">
+        <h3>使用者說明：哪些情況比較可靠？</h3>
+        <div class="benchmark-safety-grid">
+          <div>
+            <h4>錯誤率較低</h4>
+            <ul>
+              <li>單一藥物或劑型查詢：藥名、健保價、院內價、事前審查。</li>
+              <li>已填完整 T/N/M 的 AJCC 解剖分期查詢。</li>
+              <li>資料欄位完整時的 CTS5、IHC4、PEPI、PREDICT 等計算器呼叫。</li>
+              <li>明確要求「只根據網站資料」且問題與資料庫欄位名稱接近。</li>
+            </ul>
+          </div>
+          <div>
+            <h4>錯誤率會上升</h4>
+            <ul>
+              <li>需要兩段以上推論：例如療程次數 × 單價 × 自費/健保條件。</li>
+              <li>商品名、學名、縮寫、regimen 名稱混用：例如 KN522、Keytruda、pembrolizumab。</li>
+              <li>問題文字和左側 patient context 衝突時，可能需要再次確認以哪個為準。</li>
+              <li>病理 free text 抽取：HER2 IHC 2+ / ISH +/-、Ki-67 &lt;5 或 5-14、ER/PR weak positive 等格式容易正規化錯誤。</li>
+              <li>手術紀錄抽取：SLNB + TAD 後轉 ALND、ypT/ypN、DCIS only residual disease、淋巴結分子/分母都需要人工確認。</li>
+              <li>網站資料庫沒有的外部新藥、最新 guideline、正式治療建議。</li>
+              <li>社福、贈藥、保險、基金會補助等資料效期或院內窗口會變動的內容。</li>
+            </ul>
+          </div>
+        </div>
+        <div class="benchmark-example-box">
+          <h4>困難題範例</h4>
+          <ul>
+            <li><code>HER2 IHC 2+ but ISH negative</code>：應回答不是 HER2 陽性，且 schema 要正規化為 <code>her2_ihc=2+</code>、<code>her2_fish=-</code>、<code>her2=-</code>。</li>
+            <li><code>Ki-67 &lt;5%</code>：不可被簡化成 <code>5</code>，不等號與區間會影響 IHC4/風險摘要。</li>
+            <li><code>SLNB + TAD, converted to ALND</code>：腋下手術是多選，不應只留下最後的 ALND。</li>
+            <li><code>ypT1c ypN1mi</code>：乾淨 pTNM 可存 <code>T1c/N1mi</code>，但同時要標示 post-NAC y prefix。</li>
+            <li><code>no residual invasive carcinoma, residual DCIS only</code>：應正規化為 <code>DCIS only</code> 與 <code>pT=Tis</code>，不可寫成 residual invasive cancer。</li>
+          </ul>
+        </div>
+        <p>Benchmark 的目的不是證明 agent 永遠正確，而是找出它在網站資料檢索、工具調用、邊界拒答與多步推論中的失敗案例，作為 prompt、資料庫與工具 schema 的修正依據。</p>
+      </section>
+      <section class="api-guide-card benchmark-prompt-card">
+        <div class="api-benchmark-head">
+          <div>
+            <h3>System Prompt</h3>
+            <p>這是目前本機 <code>/api/agent</code> 使用的 system prompt；其他 LLM 接入時應先用同一份 prompt 跑 benchmark。</p>
+          </div>
+          <a class="function-menu-action subtle" href="/api/agent-prompt" target="_blank" rel="noopener">開啟 prompt JSON</a>
+        </div>
+        <pre id="agentSystemPromptText">讀取中</pre>
+      </section>
+      <section class="api-guide-card api-benchmark-browser">
+        <div class="api-benchmark-head">
+          <div>
+            <h3>Q/A 資料庫</h3>
+            <p>可用類別篩選，並直接檢查每題的 reference answer、agent reply、actual called_tools 與錯誤原因。</p>
+          </div>
+          <select id="benchmarkCategoryFilter" onchange="renderBenchmarkBrowser()" aria-label="Benchmark category">
+            <option value="">全部類別</option>
+          </select>
+        </div>
+        <div class="api-benchmark-summary" id="benchmarkSummary">讀取中</div>
+        <div class="api-benchmark-list" id="benchmarkList"></div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Function Menu Modal -->
+  <div class="function-menu-modal" id="functionMenuModal" onclick="if(event.target===this)closeFunctionMenu()">
+    <div class="function-menu-card">
+      <div class="function-menu-head">
+        <div>
+          <h2>功能選單</h2>
+          <p>版本、更新紀錄、工具說明與 API 端點集中查閱。</p>
+        </div>
+        <button class="close-x" type="button" onclick="closeFunctionMenu()" aria-label="關閉">&times;</button>
+      </div>
+      <div class="function-menu-grid">
+        <section class="function-menu-section">
+          <h3>更新紀錄 / 版本</h3>
+          <div class="function-menu-kv"><b>App version</b><span id="menuAppVersion">v1.8</span></div>
+          <div class="function-menu-kv"><b>Release date</b><span id="menuReleaseDate">2026-06-04</span></div>
+          <div class="function-menu-kv"><b>Price data</b><span id="menuPriceData">讀取中</span></div>
+          <div class="function-release-list" id="functionReleaseList"></div>
+          <button class="function-menu-action" type="button" onclick="showSettings();closeFunctionMenu()">設定 / 功能開關</button>
+          <button class="function-menu-action subtle" type="button" onclick="toggleFunctionReferenceList()">網站參考資料清單</button>
+          <div class="function-reference-list" id="functionReferenceList" hidden></div>
+          <div class="function-download-row">
+            <button class="function-menu-action" type="button" onclick="showBenchmarkGuide();closeFunctionMenu()">開啟 Agent Benchmark</button>
+            <a class="function-menu-action" href="data/agent_bench/bench_v1.json" download>下載 agent benchmark 題庫</a>
+            <a class="function-menu-action subtle" href="data/agent_bench/bench_v1_results_2026-06-05.json" download>下載原始 full run</a>
+            <a class="function-menu-action subtle" href="data/agent_bench/bench_failed_rerun_final_2026-06-06.json" download>下載失敗題重測</a>
+            <a class="function-menu-action subtle" href="data/agent_bench/bench_adversarial_2026-06-06.json" download>下載困難題</a>
+          </div>
+        </section>
+        <section class="function-menu-section">
+          <h3>工具說明</h3>
+          <div class="function-tool-docs">
+            <button type="button" onclick="showWorkspace();closeFunctionMenu()">Patient care copilot</button>
+            <button type="button" onclick="showBreast();closeFunctionMenu()">乳癌藥物查詢</button>
+            <button type="button" onclick="showInpatient();closeFunctionMenu()">常用配方與劑量</button>
+            <button type="button" onclick="showTrials();closeFunctionMenu()">臨床試驗搜尋</button>
+            <button type="button" onclick="showCalc();closeFunctionMenu()">風險分數 / PREDICT</button>
+            <button type="button" onclick="showICD();closeFunctionMenu()">重卡與 ICD</button>
+          </div>
+          <p class="function-menu-note">每個工具的詳細文件會逐步拆成獨立 Markdown；目前先以內建說明與 citation 區塊呈現。</p>
+          <a class="function-menu-action subtle" href="docs/MODULE_BOUNDARIES.md" target="_blank" rel="noopener">開啟模組邊界文件</a>
+          <a class="function-menu-action subtle" href="docs/REFACTOR_ROADMAP.md" target="_blank" rel="noopener">開啟 legacy 拆分路線</a>
+          <a class="function-menu-action subtle" href="docs/EXTERNAL_DATA_INTEGRATION.md" target="_blank" rel="noopener">開啟外部資料接入規範</a>
+          <a class="function-menu-action subtle" href="docs/MULTI_CANCER_MODULE_CONTRACT.md" target="_blank" rel="noopener">開啟跨癌別模組契約</a>
+        </section>
+        <section class="function-menu-section">
+          <h3>API 端點</h3>
+          <div class="function-endpoint-list">
+            <code>GET /api/health</code>
+            <code>GET /api/config</code>
+            <code>GET /api/stats</code>
+            <code>GET /api/drugs?category=oncology_breast</code>
+            <code>GET /api/drug/:id</code>
+            <code>GET /api/formulations?drug=trastuzumab</code>
+            <code>POST /api/calculate/risk-scores</code>
+            <code>POST /api/calculate/staging-score</code>
+          </div>
+          <button class="function-menu-action" type="button" onclick="showApiGuide();closeFunctionMenu()">開啟 API Guide</button>
+        </section>
+        <section class="function-menu-section">
+          <h3>API 使用管制</h3>
+          <ul class="function-menu-list">
+            <li>公開 read-only 查詢可保留開放，但要套 Netlify function rate limit。</li>
+            <li>正式 agent/server-to-server 用途建議帶 <code>X-Contact-Email</code> 與 <code>X-Client-App</code> 供聯絡與稽核。</li>
+            <li>若要真正控管使用者，應改成後端發 API key，使用 <code>Authorization: Bearer</code>，不要把密鑰放在前端。</li>
+            <li>病人資料寫入、EMR 回寫、院內資料庫存取必須走院內 authenticated backend。</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </div>
+
   <button class="report-btn" onclick="openIssueReport()" title="回報問題 → GitHub Issue">&#128027; 回報問題</button>
 
   <!-- Issue Report Modal -->
   <div class="issue-modal" id="issueReportModal" onclick="if(event.target===this)closeIssueReport()">
     <div class="issue-card">
       <h2>&#128027; 回報問題或錯誤 <button class="close-x" onclick="closeIssueReport()" style="background:transparent;border:0;font-size:1.4rem;cursor:pointer;color:var(--text-muted);width:auto;padding:0 .3rem">&times;</button></h2>
-      <div style="font-size:.85rem;color:var(--text-muted);margin-bottom:.4rem;line-height:1.5">填完後送出會自動帶資料到 GitHub Issues 頁面，你按一下「Submit new issue」即完成。</div>
+      <div style="font-size:.85rem;color:var(--text-muted);margin-bottom:.4rem;line-height:1.5">填完後會開啟 GitHub Issues 預填頁面。GitHub 需要登入且 repository 開啟 Issues；若無法送出，可先複製內容再由維護者代貼。</div>
 
       <label for="issue_module">哪個模組有問題？</label>
       <select id="issue_module">
         <option value="乳癌藥物清單">乳癌藥物清單</option>
-        <option value="住院化療計算">住院化療計算</option>
+        <option value="常用配方與劑量">常用配方與劑量</option>
         <option value="ICD 重大傷病">ICD 重大傷病</option>
         <option value="手術自費清單">手術自費清單</option>
         <option value="臨床試驗搜尋">臨床試驗搜尋</option>
@@ -1439,7 +1924,7 @@
 
       <div class="issue-info">
         &#9432; 你的回報會送到 <strong>GitHub 公開專案</strong>，請<strong>不要包含病人 PHI（姓名、病歷號、生日等）</strong>。<br>
-        系統會自動加上：瀏覽器版本、模組名稱、版本號、若勾選則含 Workspace 內容（你看得見再送出）。
+        GitHub 不支援純前端匿名建立 issue；這裡使用預填 URL，由使用者登入後提交。系統會自動加上瀏覽器版本、模組名稱、版本號與勾選的 Workspace 內容。
       </div>
 
       <div class="issue-buttons">
@@ -1461,7 +1946,7 @@
       </div>
       <div id="settingsContent"></div>
       <div class="settings-info">
-        &#9432; <strong>給同事測試</strong>：請他們點齒輪 → 切換「開發版」，即可看到所有實驗功能。或在網址後加 <code>?dev=1</code>。
+        &#9432; <strong>給同事測試</strong>：請他們從功能選單或 Agent 上方「設定」→ 切換「開發版」，即可看到所有實驗功能。或在網址後加 <code>?dev=1</code>。
       </div>
       <div class="settings-actions">
         <button onclick="resetFeatureFlags()">重置為預設</button>
@@ -1472,7 +1957,7 @@
 
   <footer class="site-footer">
     <span>本網站由台大癌醫黃祥瑋醫師維護，資料僅供臨床討論與費用估算參考。</span>
-    <button id="offlineDownloadBtn" type="button" onclick="downloadOfflineCopy()">下載離線版 2026-05-15</button>
+    <button id="offlineDownloadBtn" type="button" onclick="downloadOfflineCopy()">下載離線版 2026-06-04</button>
   </footer>
 </div><!-- /container -->
 
@@ -1493,7 +1978,13 @@
 </div>
 
 <script src="assets/js/app-config.js?v=20260519a"></script>
-<script src="assets/js/legacy-app.js?v=20260519a"></script>
+<script src="assets/js/modules/patient-context-adapter.js?v=20260606a"></script>
+<script src="assets/js/modules/disease-module-loader.js?v=20260606a"></script>
+<script src="assets/js/modules/agent-adapter.js?v=20260606a"></script>
+<script src="assets/js/modules/agent-panel-state.js?v=20260606a"></script>
+<script src="assets/js/modules/benchmark-loader.js?v=20260606a"></script>
+<script src="assets/js/modules/benchmark-browser.js?v=20260606a"></script>
+<script src="assets/js/legacy-app.js?v=20260605bk"></script>
 
 <!-- AJCC prognostic lookup table: pre-computed breast prognostic stage entries -->
 <!-- Source: breast_cancer_tools/data/ajcc_staging_9_reference_lookup.json (Taiwan VGH reference) -->
@@ -1502,7 +1993,7 @@
 <script src="assets/js/modules/ajcc/prognostic-lookup.js?v=20260519a"></script>
 <script src="assets/js/modules/ajcc/mobile-panel.js?v=20260519a"></script>
 
-<script src="assets/js/modules/drug-cards.js?v=20260519a"></script>
+<script src="assets/js/modules/drug-cards.js?v=20260528a"></script>
 
 </body>
 </html>

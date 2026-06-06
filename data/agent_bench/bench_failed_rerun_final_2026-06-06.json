@@ -1,0 +1,3027 @@
+{
+  "schema": "onco_breast_agent_benchmark_result.v2",
+  "benchmark_version": "failed-subset-v1",
+  "run_at": "2026-06-06T14:41:18",
+  "base_url": "http://127.0.0.1:8080",
+  "runner": "tools/agent_benchmark.py",
+  "corpus": "data\\agent_bench\\bench_v1.json",
+  "summary": {
+    "total": 71,
+    "passed": 71,
+    "failed": 0,
+    "pass_rate": 1.0
+  },
+  "categories": [
+    {
+      "category": "drug_price_indication",
+      "passed": 1,
+      "failed": 0
+    },
+    {
+      "category": "field_extraction",
+      "passed": 13,
+      "failed": 0
+    },
+    {
+      "category": "out_of_scope_drug",
+      "passed": 14,
+      "failed": 0
+    },
+    {
+      "category": "reasoning_composition",
+      "passed": 5,
+      "failed": 0
+    },
+    {
+      "category": "staging",
+      "passed": 35,
+      "failed": 0
+    },
+    {
+      "category": "support_resources",
+      "passed": 3,
+      "failed": 0
+    }
+  ],
+  "validation_policy": {
+    "principle": "Reference answers are generated before the agent call from local structured data/calculators. The run records agent_reply and called_tools for every case.",
+    "required_tool_checks": true,
+    "exact_text_match": false
+  },
+  "failure_summary": {
+    "by_type": {},
+    "data_questions": []
+  },
+  "case_results": [
+    {
+      "id": "reason-001",
+      "category": "reasoning_composition",
+      "question": "HER2+、LN-、M0 早期乳癌，網站資料內哪些 HER2 藥物可能需要自費？請同時指出哪些資料列是健保價可查但仍需事審，不要把 Phesgo 和 Perjeta 混在一起。",
+      "patient_context": {
+        "her2": "+",
+        "cN": "N0",
+        "cM": "M0",
+        "er": "+",
+        "pr": "+"
+      },
+      "reference_answer": "網站資料內：Phesgo 標示健保未給付/需全額自費；Perjeta/Pertuzumab 與 Herceptin/Trastuzumab 有健保價資料，但 Perjeta/部分 HER2 治療需事前審查。LN- 是否符合給付條件仍需依資料列條件與院內審查確認，不可把 Phesgo 自費狀態套到 Perjeta。",
+      "expected": {
+        "must_call": [
+          "drug-search",
+          "formulation-lookup"
+        ],
+        "contains_regex": [
+          "Phesgo",
+          "自費|未給付",
+          "Perjeta|Pertuzumab",
+          "事前審查|事審",
+          "Herceptin|Trastuzumab"
+        ],
+        "must_not_regex": [
+          "Perjeta[^。；\\n]{0,30}(全額)?自費",
+          "Phesgo[^。；\\n]{0,40}健保給付"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "tool:formulation-lookup",
+        "regex:Phesgo",
+        "regex:自費|未給付",
+        "regex:Perjeta|Pertuzumab",
+        "regex:事前審查|事審",
+        "regex:Herceptin|Trastuzumab",
+        "not_regex:Perjeta[^。；\\n]{0,30}(全額)?自費",
+        "not_regex:Phesgo[^。；\\n]{0,40}健保給付"
+      ],
+      "agent_reply": "針對 HER2+ 早期乳癌，根據網站資料庫資訊如下：\n\n1. 可能需要自費的藥物：\n- Phesgo (pertuzumab + trastuzumab SC)：目前標示為自費/健保未給付，需全額自費。\n\n2. 健保價可查但需事前審查 (Prior Authorization) 的藥物：\n- Herceptin (Trastuzumab)：第1線，健保價 28,518 元 (440mg/vial)。\n- Perjeta (Pertuzumab) 靜脈製劑：第1線，健保價 44,929 元 (420mg/vial)。\n- Kadcyla (Trastuzumab emtansine)：第2線，健保價 50,983 元 (160mg/vial) 或 31,865 元 (100mg/vial)。\n\n請注意，Phesgo 之自費狀態不適用於 Perjeta 靜脈製劑。實際給付仍需依完整病理、病期、治療線別、院內政策與健保事前審查確認。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [
+        {
+          "source": "nhi_drug_coverage.db",
+          "id": "drug:1773",
+          "title": "Phesgo"
+        },
+        {
+          "source": "nhi_drug_coverage.db",
+          "id": "drug:1747",
+          "title": "Herceptin"
+        },
+        {
+          "source": "nhi_drug_coverage.db",
+          "id": "drug:1757",
+          "title": "Perjeta"
+        },
+        {
+          "source": "nhi_drug_coverage.db",
+          "id": "drug:1748",
+          "title": "Kadcyla"
+        }
+      ],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 5122
+    },
+    {
+      "id": "reason-002",
+      "category": "reasoning_composition",
+      "question": "TNBC cT2N1M0 使用 KEYNOTE-522/KN522 架構時，依網站內 Keytruda 200mg q3w、暫估 17 次，pembrolizumab 藥費總額是多少？請列出計算式。",
+      "patient_context": {
+        "er": "-",
+        "pr": "-",
+        "her2": "-",
+        "cT": "T2",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "reference_answer": "Keytruda/pembrolizumab 網站價 54,267 元/100mg vial；若暫估 17 次，pembrolizumab 藥費 = 54,267 x 17 = 922,539 元。這只計 Keytruda，不含 paclitaxel/carboplatin/AC、給藥與檢查費。",
+      "expected": {
+        "must_call": [
+          "drug-search",
+          "formulation-lookup"
+        ],
+        "contains_regex": [
+          "KEYNOTE-?522|KN522",
+          "17|十七",
+          "54267|54,267",
+          "922539|922,539",
+          "54267\\s*[x×*]\\s*17|54,267\\s*[x×*]\\s*17"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "tool:formulation-lookup",
+        "regex:KEYNOTE-?522|KN522",
+        "regex:17|十七",
+        "regex:54267|54,267",
+        "regex:922539|922,539",
+        "regex:54267\\s*[x×*]\\s*17|54,267\\s*[x×*]\\s*17"
+      ],
+      "agent_reply": "針對 TNBC cT2N1M0 患者使用 KEYNOTE-522/KN522 架構，根據網站內 Keytruda (Pembrolizumab) 的資料，藥費估算如下：\n\n- 單價：54,267 元 (100mg/4mL vial)\n- 暫估次數：17 次\n- 計算式：54,267 元 × 17 次 = 922,539 元\n\npembrolizumab 藥費總額暫估為 922,539 元。請注意，此為藥費估算，實際給付需依健保事前審查、治療線別及院內政策確認。\n計算式：54,267 × 17 = 922,539 元。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [
+        {
+          "source": "nhi_drug_coverage.db",
+          "id": "drug:1774",
+          "title": "Pembrolizumab"
+        }
+      ],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3726
+    },
+    {
+      "id": "reason-003",
+      "category": "reasoning_composition",
+      "question": "Arimidex 可以和 Femara 共用嗎？請只根據網站內 anastrozole/letrozole 資料回答，並指出原因。",
+      "patient_context": {
+        "er": "+",
+        "pr": "+",
+        "her2": "-",
+        "menopause": "post"
+      },
+      "reference_answer": "不可共用。網站資料中 anastrozole/letrozole 均屬 aromatase inhibitor，給付條件文字包含不得與其他 aromatase inhibitor 併用。",
+      "expected": {
+        "must_call": [
+          "drug-search",
+          "formulation-lookup"
+        ],
+        "contains_regex": [
+          "Arimidex|Anastrozole",
+          "Femara|Letrozole",
+          "不得|不建議|不可|不能",
+          "其他\\s*aromatase inhibitor|AI|aromatase inhibitor"
+        ],
+        "must_not_regex": [
+          "可以[^。；\\n]{0,20}(共用|併用|一起使用)"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "tool:formulation-lookup",
+        "regex:Arimidex|Anastrozole",
+        "regex:Femara|Letrozole",
+        "regex:不得|不建議|不可|不能",
+        "regex:其他\\s*aromatase inhibitor|AI|aromatase inhibitor",
+        "not_regex:可以[^。；\\n]{0,20}(共用|併用|一起使用)"
+      ],
+      "agent_reply": "根據網站內資料，Arimidex (Anastrozole) 與 Femara (Letrozole) 不可共用。原因在於兩者的適應症均明確規定：作為延伸治療或輔助治療時，「不得與其他 aromatase inhibitor 併用」。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [
+        {
+          "source": "nhi_drug_coverage.db",
+          "id": "drug:1725",
+          "title": "Anastrozole"
+        },
+        {
+          "source": "nhi_drug_coverage.db",
+          "id": "drug:1751",
+          "title": "Letrozole"
+        }
+      ],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3039
+    },
+    {
+      "id": "reason-004",
+      "category": "reasoning_composition",
+      "question": "Zoladex LA 三個月一次，配合 Femara 自費使用三年，依網站內院內價估算總藥費是多少？請列出 Zoladex、Femara 與總額。",
+      "patient_context": {
+        "er": "+",
+        "pr": "+",
+        "her2": "-",
+        "menopause": "pre"
+      },
+      "reference_answer": "假設 Zoladex LA 10.8mg 每 3 個月一次、3 年共 12 次：10,800 x 12 = 129,600 元。Femara/Lovizol 自費價 44 元/日，3 年暫用 365x3 天：44 x 1095 = 48,180 元。合計 177,780 元。",
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_regex": [
+          "Zoladex",
+          "Femara|Letrozole",
+          "10800|10,800",
+          "44|44",
+          "129600|129,600",
+          "48180|48,180",
+          "177780|177,780"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:formulation-lookup",
+        "regex:Zoladex",
+        "regex:Femara|Letrozole",
+        "regex:10800|10,800",
+        "regex:44|44",
+        "regex:129600|129,600",
+        "regex:48180|48,180",
+        "regex:177780|177,780"
+      ],
+      "agent_reply": "根據網站內院內價估算，三年總藥費如下：\n\n1. Zoladex LA (10.8mg/syringe)：\n   - 單價：10,800 元\n   - 用法：每 3 個月一次 $\\rightarrow$ 每年 4 次 $\\rightarrow$ 三年共 12 次\n   - 小計：10,800 $\\times$ 12 = 129,600 元\n\n2. Femara (2.5mg/tab) 自費使用：\n   - 自費單價：44 元\n   - 用法：每日 1 顆 $\\rightarrow$ 每年 365 顆 $\\rightarrow$ 三年共 1,095 顆\n   - 小計：44 $\\times$ 1,095 = 48,180 元\n\n總計估算藥費：129,600 + 48,180 = 177,780 元\n\n請注意，此為根據資料庫單價之初步估算，實際費用請以院內正式開單與藥局核算為準。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 4687
+    },
+    {
+      "id": "reason-012",
+      "category": "reasoning_composition",
+      "question": "如果我貼的問題文字說 T2N1，但左邊 patient_context 是 T3N1M0，請你以 payload 的 patient_context 為準回答目前病人分期，不要被問題內 T2N1 誤導。",
+      "patient_context": {
+        "cT": "T3",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "reference_answer": "Agent 應以 API payload/patient_context 為準：T3N1M0 = IIIA。若被使用者文字內 T2N1 帶走，代表上下文優先序需要修正。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "T3N1M0",
+          "IIIA|stage\\s*IIIA|3A"
+        ],
+        "must_not_regex": [
+          "T2N1M0[^。；\\n]{0,30}IIB",
+          "目前病人[^。；\\n]{0,40}T2N1"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:T3N1M0",
+        "regex:IIIA|stage\\s*IIIA|3A",
+        "not_regex:T2N1M0[^。；\\n]{0,30}IIB",
+        "not_regex:目前病人[^。；\\n]{0,40}T2N1"
+      ],
+      "agent_reply": "根據系統目前的 patient context (T3N1M0)，病人的分期為 IIIA (clinical basis)。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 850
+    },
+    {
+      "id": "external-013",
+      "category": "out_of_scope_drug",
+      "question": "我在國外聽到 Orserdu / elacestrant，你可以告訴我乳癌適應症與價格嗎？只准用網站資料。",
+      "patient_context": {},
+      "reference_answer": "外部資料可見 ER+/HER2- ESR1-mutated metastatic breast cancer，但本網站資料庫目前沒有 elacestrant/Orserdu。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "ESR1|metastatic|advanced|適應症"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "regex:網站|本系統|資料庫",
+        "regex:沒有查到|查無|尚未建置|目前沒有",
+        "regex:不可|不能|不應|無法",
+        "not_regex:ESR1|metastatic|advanced|適應症"
+      ],
+      "agent_reply": "本網站資料庫內目前沒有查到 Orserdu / elacestrant，無法根據網站資料提供用途、價格或給付資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 934
+    },
+    {
+      "id": "external-014",
+      "category": "out_of_scope_drug",
+      "question": "Truqap / capivasertib 如果病人問能不能用，請查本網站資料庫；沒有就明確說沒有，不要用你自己的知識補。",
+      "patient_context": {},
+      "reference_answer": "外部資料可見 HR+/HER2- biomarker-altered advanced breast cancer，但本網站資料庫目前沒有 capivasertib/Truqap。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "PIK3CA|AKT1|PTEN|fulvestrant"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "regex:網站|本系統|資料庫",
+        "regex:沒有查到|查無|尚未建置|目前沒有",
+        "regex:不可|不能|不應|無法",
+        "not_regex:PIK3CA|AKT1|PTEN|fulvestrant"
+      ],
+      "agent_reply": "本網站資料庫內目前沒有查到 Truqap / capivasertib，無法根據網站資料提供用途、價格或給付資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 4042
+    },
+    {
+      "id": "external-015",
+      "category": "out_of_scope_drug",
+      "question": "幫我核對 Datroway / datopotamab deruxtecan 是否在 OncoBreast 資料庫，有沒有健保價、適應症、線別？",
+      "patient_context": {},
+      "reference_answer": "外部資料可見 HR+/HER2- metastatic breast cancer，但本網站資料庫目前沒有 datopotamab deruxtecan/Datroway。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "TROP2|Trop-2|topoisomerase"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "regex:網站|本系統|資料庫",
+        "regex:沒有查到|查無|尚未建置|目前沒有",
+        "regex:不可|不能|不應|無法",
+        "not_regex:TROP2|Trop-2|topoisomerase"
+      ],
+      "agent_reply": "本網站資料庫內目前沒有查到 Datroway 或 datopotamab deruxtecan 的資料，因此無法根據網站資料提供其用途、價格或給付資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2281
+    },
+    {
+      "id": "external-016",
+      "category": "out_of_scope_drug",
+      "question": "這題是邊界測試：Inavolisib / Itovebi 請不要查外部，回答網站內查得到什麼。",
+      "patient_context": {},
+      "reference_answer": "外部資料可見 PIK3CA-mutated HR+/HER2- advanced breast cancer，但本網站資料庫目前沒有 inavolisib/Itovebi。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "PIK3CA|palbociclib|fulvestrant"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "regex:網站|本系統|資料庫",
+        "regex:沒有查到|查無|尚未建置|目前沒有",
+        "regex:不可|不能|不應|無法",
+        "not_regex:PIK3CA|palbociclib|fulvestrant"
+      ],
+      "agent_reply": "本網站資料庫內目前沒有查到 Inavolisib / Itovebi，無法根據網站資料提供用途、價格或給付資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 815
+    },
+    {
+      "id": "external-018",
+      "category": "out_of_scope_drug",
+      "question": "Azenosertib 如果病人問能不能用，請查本網站資料庫；沒有就明確說沒有，不要用你自己的知識補。",
+      "patient_context": {},
+      "reference_answer": "外部研發中新藥，本網站資料庫目前沒有 Azenosertib。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "WEE1|phase|trial"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "regex:網站|本系統|資料庫",
+        "regex:沒有查到|查無|尚未建置|目前沒有",
+        "regex:不可|不能|不應|無法",
+        "not_regex:WEE1|phase|trial"
+      ],
+      "agent_reply": "本網站資料庫內目前沒有查到 Azenosertib，無法根據網站資料提供用途、價格或給付資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 872
+    },
+    {
+      "id": "external-019",
+      "category": "out_of_scope_drug",
+      "question": "幫我核對 Rilvegostomig 是否在 OncoBreast 資料庫，有沒有健保價、適應症、線別？",
+      "patient_context": {},
+      "reference_answer": "外部免疫治療研發藥，本網站資料庫目前沒有 Rilvegostomig。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "PD-1|TIGIT|immunotherapy"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "regex:網站|本系統|資料庫",
+        "regex:沒有查到|查無|尚未建置|目前沒有",
+        "regex:不可|不能|不應|無法",
+        "not_regex:PD-1|TIGIT|immunotherapy"
+      ],
+      "agent_reply": "本網站資料庫內目前沒有查到 Rilvegostomig 的資料，因此無法根據網站資料提供用途、價格或給付資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2270
+    },
+    {
+      "id": "external-020",
+      "category": "out_of_scope_drug",
+      "question": "這題是邊界測試：Vepdegestrant 請不要查外部，回答網站內查得到什麼。",
+      "patient_context": {},
+      "reference_answer": "外部 SERD/PROTAC 研發藥，本網站資料庫目前沒有 Vepdegestrant。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "PROTAC|ER degrader|SERD"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "regex:網站|本系統|資料庫",
+        "regex:沒有查到|查無|尚未建置|目前沒有",
+        "regex:不可|不能|不應|無法",
+        "not_regex:PROTAC|ER degrader|SERD"
+      ],
+      "agent_reply": "本網站資料庫內目前沒有查到 Vepdegestrant，無法根據網站資料提供用途、價格或給付資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1198
+    },
+    {
+      "id": "external-021",
+      "category": "out_of_scope_drug",
+      "question": "我在國外聽到 Ladiratuzumab vedotin，你可以告訴我乳癌適應症與價格嗎？只准用網站資料。",
+      "patient_context": {},
+      "reference_answer": "外部 ADC 研發藥，本網站資料庫目前沒有 Ladiratuzumab vedotin。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "LIV-1|ADC"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "regex:網站|本系統|資料庫",
+        "regex:沒有查到|查無|尚未建置|目前沒有",
+        "regex:不可|不能|不應|無法",
+        "not_regex:LIV-1|ADC"
+      ],
+      "agent_reply": "本網站資料庫內目前沒有查到 Ladiratuzumab vedotin，無法根據網站資料提供用途、價格或給付資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1156
+    },
+    {
+      "id": "external-022",
+      "category": "out_of_scope_drug",
+      "question": "Patritumab deruxtecan 如果病人問能不能用，請查本網站資料庫；沒有就明確說沒有，不要用你自己的知識補。",
+      "patient_context": {},
+      "reference_answer": "外部 HER3 ADC，本網站資料庫目前沒有 Patritumab deruxtecan。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "HER3|ADC"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "regex:網站|本系統|資料庫",
+        "regex:沒有查到|查無|尚未建置|目前沒有",
+        "regex:不可|不能|不應|無法",
+        "not_regex:HER3|ADC"
+      ],
+      "agent_reply": "本網站資料庫內目前沒有查到 Patritumab deruxtecan 的相關資料，無法根據網站資料提供用途、價格或給付資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 8596
+    },
+    {
+      "id": "external-023",
+      "category": "out_of_scope_drug",
+      "question": "幫我核對 Gedatolisib 是否在 OncoBreast 資料庫，有沒有健保價、適應症、線別？",
+      "patient_context": {},
+      "reference_answer": "外部 PI3K/mTOR 相關研發藥，本網站資料庫目前沒有 Gedatolisib。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "PI3K|mTOR"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "regex:網站|本系統|資料庫",
+        "regex:沒有查到|查無|尚未建置|目前沒有",
+        "regex:不可|不能|不應|無法",
+        "not_regex:PI3K|mTOR"
+      ],
+      "agent_reply": "本網站資料庫內目前沒有查到 Gedatolisib 的資料，因此無法根據網站資料提供用途、價格或給付資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2256
+    },
+    {
+      "id": "external-024",
+      "category": "out_of_scope_drug",
+      "question": "這題是邊界測試：Samuraciclib 請不要查外部，回答網站內查得到什麼。",
+      "patient_context": {},
+      "reference_answer": "外部 CDK7 研發藥，本網站資料庫目前沒有 Samuraciclib。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "CDK7"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "regex:網站|本系統|資料庫",
+        "regex:沒有查到|查無|尚未建置|目前沒有",
+        "regex:不可|不能|不應|無法",
+        "not_regex:CDK7"
+      ],
+      "agent_reply": "本網站資料庫內目前沒有查到 Samuraciclib，無法根據網站資料提供用途、價格或給付資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1078
+    },
+    {
+      "id": "external-025",
+      "category": "out_of_scope_drug",
+      "question": "我在國外聽到 Lasofoxifene，你可以告訴我乳癌適應症與價格嗎？只准用網站資料。",
+      "patient_context": {},
+      "reference_answer": "外部 endocrine therapy 相關藥，本網站資料庫目前沒有 Lasofoxifene。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "ESR1|SERD|SERM"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "regex:網站|本系統|資料庫",
+        "regex:沒有查到|查無|尚未建置|目前沒有",
+        "regex:不可|不能|不應|無法",
+        "not_regex:ESR1|SERD|SERM"
+      ],
+      "agent_reply": "本網站資料庫內目前沒有查到 Lasofoxifene，無法根據網站資料提供用途、價格或給付資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1303
+    },
+    {
+      "id": "external-026",
+      "category": "out_of_scope_drug",
+      "question": "Tarlatamab 如果病人問能不能用，請查本網站資料庫；沒有就明確說沒有，不要用你自己的知識補。",
+      "patient_context": {},
+      "reference_answer": "非乳癌主軸外部藥物，本網站乳癌資料庫目前沒有 Tarlatamab。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "DLL3|SCLC"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "regex:網站|本系統|資料庫",
+        "regex:沒有查到|查無|尚未建置|目前沒有",
+        "regex:不可|不能|不應|無法",
+        "not_regex:DLL3|SCLC"
+      ],
+      "agent_reply": "本網站資料庫內目前沒有查到 Tarlatamab，無法根據網站資料提供用途、價格或給付資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 839
+    },
+    {
+      "id": "external-027",
+      "category": "out_of_scope_drug",
+      "question": "幫我核對 Amivantamab 是否在 OncoBreast 資料庫，有沒有健保價、適應症、線別？",
+      "patient_context": {},
+      "reference_answer": "非乳癌主軸外部藥物，本網站乳癌資料庫目前沒有 Amivantamab。 合格回答只能說網站內查無資料，不能用外部知識補適應症、價格或給付。",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_regex": [
+          "網站|本系統|資料庫",
+          "沒有查到|查無|尚未建置|目前沒有",
+          "不可|不能|不應|無法"
+        ],
+        "must_not_regex": [
+          "EGFR|MET|NSCLC"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "regex:網站|本系統|資料庫",
+        "regex:沒有查到|查無|尚未建置|目前沒有",
+        "regex:不可|不能|不應|無法",
+        "not_regex:EGFR|MET|NSCLC"
+      ],
+      "agent_reply": "本網站資料庫內目前沒有查到 Amivantamab 的資料，因此無法根據網站資料提供其用途、價格、給付或線別資訊。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2285
+    },
+    {
+      "id": "support-031",
+      "category": "support_resources",
+      "question": "標靶或免疫治療如果自費壓力大，病患照護支持卡內有沒有贈藥或藥費協助方向？ 請只根據網站內 support resources 回答。",
+      "patient_context": {},
+      "reference_answer": "應列出網站內支援資源：藥廠病人協助或贈藥方案、台灣癌症資源網補助媒合、醫師/藥師/個管師/社工、院內社工/癌症資源中心；並提醒資格、名額與方案效期需由院內窗口確認。",
+      "expected": {
+        "must_call": [
+          "support-resources"
+        ],
+        "contains_any": [
+          "藥廠病人協助或贈藥方案",
+          "台灣癌症資源網補助媒合"
+        ],
+        "contains_regex": [
+          "社工|個管|癌症資源中心|窗口",
+          "診斷證明|病理報告|收據|申請|文件"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:support-resources",
+        "contains_any",
+        "regex:社工|個管|癌症資源中心|窗口",
+        "regex:診斷證明|病理報告|收據|申請|文件"
+      ],
+      "agent_reply": "根據網站內支援資源，針對標靶或免疫治療的藥費壓力，可尋求「藥廠病人協助或贈藥方案」。\n\n- **協助方向**：可能提供部分療程費用減免、贈藥、共付額協助或專案價（方案通常有名額與期限）。\n- **申請資格**：依藥品、適應症、健保給付/事審結果、治療線別、收入或保險狀況與藥廠當期方案判定。\n- **申請方式**：由醫師、藥師、個管師或社工向藥廠/病人協助方案窗口確認。需先核對健保與事審狀態，再準備相關資料。\n- **所需文件**：處方或治療計畫、健保給付/事審結果、收入或保險資料。",
+      "called_tools": [
+        "calculate/staging-score",
+        "support-resources",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [
+        {
+          "source": "data/support_resources.json",
+          "id": "support:manufacturer-pap",
+          "title": "藥廠病人協助或贈藥方案"
+        }
+      ],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2535
+    },
+    {
+      "id": "support-032",
+      "category": "support_resources",
+      "question": "病人說不確定重大傷病和民間基金會補助差在哪裡，請用網站內資源整理申請窗口與文件。 請只根據網站內 support resources 回答。",
+      "patient_context": {},
+      "reference_answer": "應列出網站內支援資源：重大傷病證明與健保給付資格、台灣癌症資源網補助媒合、醫師/個管師/批價或病歷窗口、院內社工/癌症資源中心；並提醒資格、名額與方案效期需由院內窗口確認。",
+      "expected": {
+        "must_call": [
+          "support-resources"
+        ],
+        "contains_any": [
+          "重大傷病證明與健保給付資格",
+          "台灣癌症資源網補助媒合"
+        ],
+        "contains_regex": [
+          "社工|個管|癌症資源中心|窗口",
+          "診斷證明|病理報告|收據|申請|文件"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:support-resources",
+        "contains_any",
+        "regex:社工|個管|癌症資源中心|窗口",
+        "regex:診斷證明|病理報告|收據|申請|文件"
+      ],
+      "agent_reply": "根據網站內資源，重大傷病與民間基金會補助的申請窗口與文件整理如下：\n\n1. 重大傷病證明與健保給付資格\n- 申請窗口：由本人、受委託人或醫療院所代理，向健保署分區業務組提出；院所也可透過健保資訊服務網申請。\n- 需備文件：病理報告、診斷證明、影像或手術/治療紀錄、健保卡或身分資料。\n\n2. 台灣癌症資源網補助媒合\n- 申請窗口：由個管師或社工依病人需求進入補助查詢頁，篩選符合項目後依各單位要求準備。\n- 需備文件：診斷證明、身分證明、收入或家庭狀況資料、醫療費用單據。\n\n3. 基金會篩檢、交通或醫療費補助\n- 申請窗口：由院內社工或癌症資源中心利用台灣癌症資源網、病友協會或基金會網站比對方案後申請。\n- 需備文件：診斷證明、身分/戶籍或收入證明、醫療費用單據、補助申請表。",
+      "called_tools": [
+        "calculate/staging-score",
+        "support-resources"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [
+        {
+          "source": "data/support_resources.json",
+          "id": "support:major-illness-certificate",
+          "title": "重大傷病證明與健保給付資格"
+        },
+        {
+          "source": "data/support_resources.json",
+          "id": "support:cancer-resource-network-subsidy",
+          "title": "台灣癌症資源網補助媒合"
+        },
+        {
+          "source": "data/support_resources.json",
+          "id": "support:foundation-screening-assistance",
+          "title": "基金會篩檢、交通或醫療費補助"
+        }
+      ],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 4222
+    },
+    {
+      "id": "support-035",
+      "category": "support_resources",
+      "question": "如果病人問義乳胸衣、假髮、營養品補助是否一定有，請依網站資料說明邊界。 請只根據網站內 support resources 回答。",
+      "patient_context": {},
+      "reference_answer": "應列出網站內支援資源：義乳與胸衣補助、乳癌病友急難救助、院內社工/基金會窗口、院內社工/癌症希望基金會窗口；並提醒資格、名額與方案效期需由院內窗口確認。",
+      "expected": {
+        "must_call": [
+          "support-resources"
+        ],
+        "contains_any": [
+          "義乳與胸衣補助",
+          "乳癌病友急難救助"
+        ],
+        "contains_regex": [
+          "社工|個管|癌症資源中心|窗口",
+          "診斷證明|病理報告|收據|申請|文件"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:support-resources",
+        "contains_any",
+        "regex:社工|個管|癌症資源中心|窗口",
+        "regex:診斷證明|病理報告|收據|申請|文件"
+      ],
+      "agent_reply": "關於義乳胸衣、假髮及營養品補助，並非每位病人一定能獲得，需依據各項資源的申請資格、年度名額及審核結果而定。根據本網站資料，可提供以下支援資源：\n\n1. 義乳與胸衣補助：限單側或雙側乳房全切除手術（2021年1月1日以後），中低收入者優先，且曾申請者不得重複申請。\n2. 乳癌病友急難救助：針對治療期間生活困境者，經審核後可能提供營養品、義乳胸衣、就醫交通等補助。\n3. 基金會篩檢、交通或醫療費補助：依年度專案、居住地與經濟條件判定，可能涵蓋營養品、用品或生活急難補助。\n4. 台灣癌症資源網補助媒合：可依癌別、地區、治療階段與需求媒合政府、醫院與民間資源。\n\n假髮補助在本網站資料庫中未列出相關資源。建議病人與院內社工或個管師聯繫，以確認最新申請期限、具體資格及所需證明文件。",
+      "called_tools": [
+        "calculate/staging-score",
+        "support-resources"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [
+        {
+          "source": "data/support_resources.json",
+          "id": "support:breast-care-prosthesis-bra",
+          "title": "義乳與胸衣補助"
+        },
+        {
+          "source": "data/support_resources.json",
+          "id": "support:breast-foundation-emergency-aid",
+          "title": "乳癌病友急難救助"
+        },
+        {
+          "source": "data/support_resources.json",
+          "id": "support:foundation-screening-assistance",
+          "title": "基金會篩檢、交通或醫療費補助"
+        },
+        {
+          "source": "data/support_resources.json",
+          "id": "support:cancer-resource-network-subsidy",
+          "title": "台灣癌症資源網補助媒合"
+        }
+      ],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 4674
+    },
+    {
+      "id": "drug-037",
+      "category": "drug_price_indication",
+      "question": "門診病人問到 Keytruda / Pembrolizumab，請只用網站資料列出給付重點、價格和是否事審。",
+      "patient_context": {},
+      "reference_answer": "Keytruda（Pembrolizumab）：線別 1；健保價 54267/100mg/4mL vial；需事前審查。適應症摘要：1. 與 paclitaxel 及 carboplatin 併用於早期三陰性乳癌(第II期至第IIIb期，cT1c N1-2 或 T2-4 N0-2)病人的術前前導性治療用藥，病人需符合免疫檢查點抑制劑之藥品給付規定。(114/6/1) | 2. 臨床常用 KEYNOTE-522/KN522 架構：pembrolizumab 合併 taxane/platinum，接續 anthracycline/cyclophosphamide；手術後依規範評估 pembrolizumab ",
+      "expected": {
+        "must_call": [
+          "drug-search"
+        ],
+        "contains_any": [
+          "Keytruda",
+          "Pembrolizumab"
+        ],
+        "contains_regex": [
+          "54267|54,267",
+          "第\\s*1|第1|1\\s*線|第\\s*一\\s*線|一\\s*線",
+          "事前審查|事審"
+        ],
+        "drug_id": 1774,
+        "drug_identity": "keytruda"
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "contains_any",
+        "regex:54267|54,267",
+        "regex:第\\s*1|第1|1\\s*線|第\\s*一\\s*線|一\\s*線",
+        "regex:事前審查|事審"
+      ],
+      "agent_reply": "根據網站資料庫，Keytruda (Pembrolizumab) 的資訊如下：\n\n- **給付重點**：\n  - 線別：第1線\n  - 適應症：與 paclitaxel 及 carboplatin 併用於早期三陰性乳癌（第II期至第IIIb期，cT1c N1-2 或 T2-4 N0-2）之術前前導性治療，需符合免疫檢查點抑制劑之藥品給付規定。轉移性或無法切除 TNBC 之適應症需依 PD-L1、治療線別與當期健保規範另行確認。\n- **價格**：健保價格為 54,267 元 (單位：100mg/4mL vial)。\n- **是否事審**：是，需經事前審查核准後使用。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [
+        {
+          "source": "nhi_drug_coverage.db",
+          "id": "drug:1774",
+          "title": "Pembrolizumab"
+        }
+      ],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2806
+    },
+    {
+      "id": "stage-136",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN0(i+)M0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N0(i+)",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN0(i+)M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 TNM 分期 TisN0(i+)M0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定或不適用。正式分期請參閱完整 AJCC 指南或病理報告。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3899
+    },
+    {
+      "id": "stage-137",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN1miM0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N1mi",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN1miM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 TNM 分期 TisN1miM0，本系統簡化之 AJCC v8 計算器不支援該子類別，因此無法判定/不適用。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1123
+    },
+    {
+      "id": "stage-138",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN1M0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN1M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 TNM 分期 TisN1M0，本系統簡化 AJCC 計算器無法判定或不適用。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 929
+    },
+    {
+      "id": "stage-139",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN1aM0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N1a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN1aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 TNM 分期 TisN1aM0，本系統簡化 AJCC 計算器不支援或不適用該組合，因此無法判定期別。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2178
+    },
+    {
+      "id": "stage-140",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN2M0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N2",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN2M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 TNM 分期 TisN2M0，本系統簡化 AJCC 計算器無法判定（不適用）。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1007
+    },
+    {
+      "id": "stage-141",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN2aM0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N2a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN2aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 TNM 分期 TisN2aM0，本系統簡化 AJCC 計算器不支援或不適用該組合，因此無法判定期別。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 956
+    },
+    {
+      "id": "stage-142",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN3M0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N3",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN3M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 TNM 分期 TisN3M0，本系統簡化 AJCC 計算器無法判定（不適用）。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1036
+    },
+    {
+      "id": "stage-143",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN3aM0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N3a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN3aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 TNM 分期 TisN3aM0，本系統簡化 AJCC 計算器不支援或不適用該組合，因此無法判定期別。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1322
+    },
+    {
+      "id": "stage-144",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N0M0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N0",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N0M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 TNM 分期 T0N0M0，本系統簡化 AJCC 計算器不支援或不適用該組合，因此無法判定期別。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1427
+    },
+    {
+      "id": "stage-145",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N0(i+)M0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N0(i+)",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N0(i+)M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 TNM 分期 T0N0(i+)M0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定/不適用。正式分期請依據完整病理報告與 AJCC v8 指南確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1753
+    },
+    {
+      "id": "stage-146",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N1miM0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N1mi",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N1miM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T0N1miM0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定/不適用。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 925
+    },
+    {
+      "id": "stage-147",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N1M0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N1M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T0N1M0，本系統簡化 AJCC 計算器不支援或不適用該 TNM 組合，因此無法判定分期。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1602
+    },
+    {
+      "id": "stage-148",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N1aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N1a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N1aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T0N1aM0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定/不適用。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1018
+    },
+    {
+      "id": "stage-149",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N2M0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N2",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N2M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T0N2M0，本系統簡化 AJCC 計算器不支援或不適用該 TNM 組合，因此無法判定分期。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1303
+    },
+    {
+      "id": "stage-150",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N2aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N2a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N2aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T0N2aM0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定/不適用。正式治療決策仍需依完整病理、病期、治療線別、院內政策與事前審查確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 7733
+    },
+    {
+      "id": "stage-151",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N3M0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N3",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N3M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 TNM 分期 T0N3M0，本系統簡化之 AJCC v8 計算器不支援該子類別，因此無法判定或不適用。請醫師依據完整病理、病期、治療線別、院內政策與事前審查確認正式治療決策。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 13673
+    },
+    {
+      "id": "stage-152",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N3aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N3a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N3aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 TNM 分期 T0N3aM0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定或不適用。正式分期請參閱完整 AJCC v8 指南或由醫師確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2810
+    },
+    {
+      "id": "stage-153",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1N0(i+)M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1",
+        "cN": "N0(i+)",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1N0(i+)M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1N0(i+)M0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定/不適用。正式分期請參閱完整 AJCC v8 指南或病理報告。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1617
+    },
+    {
+      "id": "stage-154",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1N1miM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1",
+        "cN": "N1mi",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1N1miM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1N1miM0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定/不適用。正式分期請參閱完整 AJCC v8 指南或病理報告。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3283
+    },
+    {
+      "id": "stage-155",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1N1aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1",
+        "cN": "N1a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1N1aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1N1aM0，由於本系統簡化 AJCC 計算器不支援該特定子類別，因此無法判定或不適用。正式分期請參閱完整 AJCC v8 指南。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1181
+    },
+    {
+      "id": "stage-156",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1N2aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1",
+        "cN": "N2a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1N2aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1N2aM0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定/不適用。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2046
+    },
+    {
+      "id": "stage-157",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1N3aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1",
+        "cN": "N3a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1N3aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1N3aM0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定/不適用。正式分期請參閱完整 AJCC v8 指南。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 7797
+    },
+    {
+      "id": "stage-158",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN0M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N0",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN0M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1miN0M0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定或不適用。正式分期請參閱完整 AJCC v8 指南或病理報告。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1078
+    },
+    {
+      "id": "stage-159",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN0(i+)M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N0(i+)",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN0(i+)M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 TNM 分期 T1miN0(i+)M0，由於本系統簡化 AJCC 計算器不支援該子類別，因此無法判定或不適用。正式分期請參閱完整 AJCC 指南或由醫師確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1489
+    },
+    {
+      "id": "stage-160",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN1miM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N1mi",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN1miM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1miN1miM0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定/不適用。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 962
+    },
+    {
+      "id": "stage-161",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN1M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN1M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1miN1M0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定/不適用。正式分期請依據完整病理報告與 AJCC v8 準則確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1071
+    },
+    {
+      "id": "stage-162",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN1aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N1a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN1aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1miN1aM0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定/不適用。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 986
+    },
+    {
+      "id": "stage-163",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN2M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N2",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN2M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1miN2M0，本系統簡化版 AJCC 計算器不支援該子類別，因此無法判定分期。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 936
+    },
+    {
+      "id": "stage-164",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN2aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N2a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN2aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1miN2aM0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定/不適用。正式分期請參閱完整 AJCC v8 指南或病理報告。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1068
+    },
+    {
+      "id": "stage-165",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN3M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N3",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN3M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1miN3M0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定/不適用。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 944
+    },
+    {
+      "id": "stage-166",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN3aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N3a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN3aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 TNM 分期 T1miN3aM0，由於本系統簡化版 AJCC 計算器不支援該特定子類別，因此無法判定/不適用。請醫師參閱完整 AJCC v8 指南以確認最終分期。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1213
+    },
+    {
+      "id": "stage-167",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1aN0M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1a",
+        "cN": "N0",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1aN0M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1aN0M0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定/不適用。正式分期請依據完整病理報告與 AJCC v8 指南確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1129
+    },
+    {
+      "id": "stage-168",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1aN0(i+)M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1a",
+        "cN": "N0(i+)",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1aN0(i+)M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1aN0(i+)M0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定/不適用。正式分期請依據完整病理報告與 AJCC v8 完整指南確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1237
+    },
+    {
+      "id": "stage-169",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1aN1miM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1a",
+        "cN": "N1mi",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1aN1miM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1aN1miM0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定或不適用。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 992
+    },
+    {
+      "id": "stage-170",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1aN1M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1a",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1aN1M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1aN1M0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定/不適用。正式分期請參閱完整 AJCC v8 指南或病理報告。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1181
+    },
+    {
+      "id": "extract-275",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT1cN0M0，invasive tumor size 18 mm，grade II，ER 90%, PR 80%, HER2 2+ ISH negative, Ki-67 12%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=41、cT=T1c、cN=N0、cM=M0、er=+、pr=+、her2=-、ki67=12",
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T1c",
+          "cN": "N0",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "12"
+        }
+      },
+      "passed": true,
+      "checks": [
+        "patch:age",
+        "patch:cT",
+        "patch:cN",
+        "patch:cM",
+        "patch:er",
+        "patch:pr",
+        "patch:her2",
+        "patch:ki67"
+      ],
+      "agent_reply": "已為您抓到以下候選欄位，請確認後套用：\n- 年齡：41\n- 臨床分期：cT1cN0M0\n- 腫瘤大小：18 mm\n- 分級：Grade II\n- ER：陽性 (90%)\n- PR：陽性 (80%)\n- HER2 IHC：2+\n- HER2 FISH：Negative\n- Ki-67：12%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "41",
+        "cT": "T1c",
+        "cN": "N0",
+        "cM": "M0",
+        "size": "18",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "2+",
+        "her2_fish": "negative",
+        "her2": "-",
+        "ki67": "12"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 28014
+    },
+    {
+      "id": "extract-278",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT1cN0M0，invasive tumor size 18 mm，grade II，ER 50%, PR 5%, HER2 1+, Ki67 5-14%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=41、cT=T1c、cN=N0、cM=M0、er=+、pr=+、her2=-、ki67=5-14",
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T1c",
+          "cN": "N0",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "5-14"
+        }
+      },
+      "passed": true,
+      "checks": [
+        "patch:age",
+        "patch:cT",
+        "patch:cN",
+        "patch:cM",
+        "patch:er",
+        "patch:pr",
+        "patch:her2",
+        "patch:ki67"
+      ],
+      "agent_reply": "已抓到候選欄位，請確認後套用：\n- 年齡：41\n- 分期：cT1cN0M0\n- 腫瘤大小：18 mm\n- 分級：Grade II\n- ER：50% (+)\n- PR：5% (+)\n- HER2 IHC：1+\n- Ki67：5-14%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "41",
+        "cT": "T1c",
+        "cN": "N0",
+        "cM": "M0",
+        "size": "18",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "1+",
+        "her2": "-",
+        "ki67": "5-14"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3704
+    },
+    {
+      "id": "extract-279",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT2N1miM0，invasive tumor size 22 mm，grade II，ER 90%, PR 80%, HER2 2+ ISH negative, Ki-67 12%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=41、cT=T2、cN=N1mi、cM=M0、er=+、pr=+、her2=-、ki67=12",
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T2",
+          "cN": "N1mi",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "12"
+        }
+      },
+      "passed": true,
+      "checks": [
+        "patch:age",
+        "patch:cT",
+        "patch:cN",
+        "patch:cM",
+        "patch:er",
+        "patch:pr",
+        "patch:her2",
+        "patch:ki67"
+      ],
+      "agent_reply": "已為您抓到以下候選欄位，請確認後套用：\n- 年齡：41\n- 臨床分期：cT2 N1mi M0\n- 腫瘤大小：22 mm\n- 分級：Grade II\n- ER：陽性 (90%)\n- PR：陽性 (80%)\n- HER2 IHC：2+\n- HER2 FISH：Negative\n- Ki-67：12%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "41",
+        "cT": "T2",
+        "cN": "N1mi",
+        "cM": "M0",
+        "size": "22",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "2+",
+        "her2_fish": "negative",
+        "her2": "-",
+        "ki67": "12"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 12101
+    },
+    {
+      "id": "extract-282",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT2N1miM0，invasive tumor size 22 mm，grade II，ER 50%, PR 5%, HER2 1+, Ki67 5-14%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=41、cT=T2、cN=N1mi、cM=M0、er=+、pr=+、her2=-、ki67=5-14",
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T2",
+          "cN": "N1mi",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "5-14"
+        }
+      },
+      "passed": true,
+      "checks": [
+        "patch:age",
+        "patch:cT",
+        "patch:cN",
+        "patch:cM",
+        "patch:er",
+        "patch:pr",
+        "patch:her2",
+        "patch:ki67"
+      ],
+      "agent_reply": "已抓到候選欄位，請確認後套用：\n- 年齡：41\n- cT: T2\n- cN: N1mi\n- cM: M0\n- 腫瘤大小：22 mm\n- 分級：Grade 2\n- ER: +\n- PR: +\n- HER2 IHC: 1+\n- HER2: -\n- Ki67: 5-14%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "41",
+        "cT": "T2",
+        "cN": "N1mi",
+        "cM": "M0",
+        "size": "22",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "1+",
+        "her2": "-",
+        "ki67": "5-14"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 10187
+    },
+    {
+      "id": "extract-283",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT3N1M0，invasive tumor size 51 mm，grade II，ER 90%, PR 80%, HER2 2+ ISH negative, Ki-67 12%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=41、cT=T3、cN=N1、cM=M0、er=+、pr=+、her2=-、ki67=12",
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T3",
+          "cN": "N1",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "12"
+        }
+      },
+      "passed": true,
+      "checks": [
+        "patch:age",
+        "patch:cT",
+        "patch:cN",
+        "patch:cM",
+        "patch:er",
+        "patch:pr",
+        "patch:her2",
+        "patch:ki67"
+      ],
+      "agent_reply": "已為您抓到以下候選欄位，請確認後套用：\n\n- 年齡：41\n- 分期：cT3N1M0\n- 腫瘤大小：51 mm\n- 分級：Grade II\n- ER：90% (+)\n- PR：80% (+)\n- HER2 IHC：2+\n- HER2 FISH：negative\n- Ki-67：12%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "41",
+        "cT": "T3",
+        "cN": "N1",
+        "cM": "M0",
+        "size": "51",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "2+",
+        "her2_fish": "negative",
+        "her2": "-",
+        "ki67": "12"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3520
+    },
+    {
+      "id": "extract-286",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，cT3N1M0，invasive tumor size 51 mm，grade II，ER 50%, PR 5%, HER2 1+, Ki67 5-14%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=41、cT=T3、cN=N1、cM=M0、er=+、pr=+、her2=-、ki67=5-14",
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "cT": "T3",
+          "cN": "N1",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "5-14"
+        }
+      },
+      "passed": true,
+      "checks": [
+        "patch:age",
+        "patch:cT",
+        "patch:cN",
+        "patch:cM",
+        "patch:er",
+        "patch:pr",
+        "patch:her2",
+        "patch:ki67"
+      ],
+      "agent_reply": "已為您抓到以下候選欄位，請確認後套用：\n\n- 年齡：41\n- 分期：cT3N1M0\n- 腫瘤大小：51 mm\n- 分級：Grade II\n- ER：50% (+)\n- PR：5% (+)\n- HER2 IHC：1+\n- HER2：- (陰性)\n- Ki67：5-14%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "41",
+        "cT": "T3",
+        "cN": "N1",
+        "cM": "M0",
+        "size": "51",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "1+",
+        "her2": "-",
+        "ki67": "5-14"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 7623
+    },
+    {
+      "id": "extract-287",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，pT2N2aM0，invasive tumor size 30 mm，grade II，ER 90%, PR 80%, HER2 2+ ISH negative, Ki-67 12%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=41、pT=T2、pN=N2a、pM=M0、er=+、pr=+、her2=-、ki67=12",
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "pT": "T2",
+          "pN": "N2a",
+          "pM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "12"
+        }
+      },
+      "passed": true,
+      "checks": [
+        "patch:age",
+        "patch:pT",
+        "patch:pN",
+        "patch:pM",
+        "patch:er",
+        "patch:pr",
+        "patch:her2",
+        "patch:ki67"
+      ],
+      "agent_reply": "已為您抓到以下候選欄位，請確認後套用：\n\n- 年齡：41\n- 分期：pT2 N2a M0\n- 腫瘤大小：30 mm\n- 分級：Grade II\n- ER：90% (+)\n- PR：80% (+)\n- HER2 IHC：2+\n- HER2 FISH：negative\n- Ki-67：12%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "41",
+        "pT": "T2",
+        "pN": "N2a",
+        "pM": "M0",
+        "size": "30",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "2+",
+        "her2_fish": "negative",
+        "her2": "-",
+        "ki67": "12"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3630
+    },
+    {
+      "id": "extract-290",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：41歲，pT2N2aM0，invasive tumor size 30 mm，grade II，ER 50%, PR 5%, HER2 1+, Ki67 5-14%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=41、pT=T2、pN=N2a、pM=M0、er=+、pr=+、her2=-、ki67=5-14",
+      "expected": {
+        "expected_patch": {
+          "age": "41",
+          "pT": "T2",
+          "pN": "N2a",
+          "pM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "5-14"
+        }
+      },
+      "passed": true,
+      "checks": [
+        "patch:age",
+        "patch:pT",
+        "patch:pN",
+        "patch:pM",
+        "patch:er",
+        "patch:pr",
+        "patch:her2",
+        "patch:ki67"
+      ],
+      "agent_reply": "已為您從文字中抓到以下候選欄位，請確認後套用：\n- 年齡：41\n- 分期 (Pathologic)：pT2N2aM0\n- 腫瘤大小：30 mm\n- 分級：Grade II\n- ER：50% (+)\n- PR：5% (+)\n- HER2 IHC：1+\n- Ki67：5-14%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "41",
+        "pT": "T2",
+        "pN": "N2a",
+        "pM": "M0",
+        "size": "30",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "1+",
+        "ki67": "5-14",
+        "her2": "-"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 4266
+    },
+    {
+      "id": "extract-291",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：48歲，cT1cN0M0，invasive tumor size 18 mm，grade II，ER 90%, PR 80%, HER2 2+ ISH negative, Ki-67 12%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=48、cT=T1c、cN=N0、cM=M0、er=+、pr=+、her2=-、ki67=12",
+      "expected": {
+        "expected_patch": {
+          "age": "48",
+          "cT": "T1c",
+          "cN": "N0",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "12"
+        }
+      },
+      "passed": true,
+      "checks": [
+        "patch:age",
+        "patch:cT",
+        "patch:cN",
+        "patch:cM",
+        "patch:er",
+        "patch:pr",
+        "patch:her2",
+        "patch:ki67"
+      ],
+      "agent_reply": "已抓到候選欄位，請確認後套用：\n- 年齡：48\n- cT: T1c\n- cN: N0\n- cM: M0\n- 腫瘤大小：18 mm\n- 分級：Grade II\n- ER: 90% (+)\n- PR: 80% (+)\n- HER2 IHC: 2+\n- HER2 FISH: negative\n- Ki-67: 12%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "48",
+        "cT": "T1c",
+        "cN": "N0",
+        "cM": "M0",
+        "size": "18",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "2+",
+        "her2_fish": "negative",
+        "her2": "-",
+        "ki67": "12"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 5613
+    },
+    {
+      "id": "extract-294",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：48歲，cT1cN0M0，invasive tumor size 18 mm，grade II，ER 50%, PR 5%, HER2 1+, Ki67 5-14%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=48、cT=T1c、cN=N0、cM=M0、er=+、pr=+、her2=-、ki67=5-14",
+      "expected": {
+        "expected_patch": {
+          "age": "48",
+          "cT": "T1c",
+          "cN": "N0",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "5-14"
+        }
+      },
+      "passed": true,
+      "checks": [
+        "patch:age",
+        "patch:cT",
+        "patch:cN",
+        "patch:cM",
+        "patch:er",
+        "patch:pr",
+        "patch:her2",
+        "patch:ki67"
+      ],
+      "agent_reply": "已抓到候選欄位，請確認後套用：\n- 年齡：48\n- 分期：cT1cN0M0\n- 腫瘤大小：18 mm\n- 分級：Grade II\n- ER：50% (+)\n- PR：5% (+)\n- HER2 IHC：1+\n- Ki67：5-14%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "48",
+        "cT": "T1c",
+        "cN": "N0",
+        "cM": "M0",
+        "size": "18",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "1+",
+        "ki67": "5-14",
+        "her2": "-"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3150
+    },
+    {
+      "id": "extract-295",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：48歲，cT2N1miM0，invasive tumor size 22 mm，grade II，ER 90%, PR 80%, HER2 2+ ISH negative, Ki-67 12%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=48、cT=T2、cN=N1mi、cM=M0、er=+、pr=+、her2=-、ki67=12",
+      "expected": {
+        "expected_patch": {
+          "age": "48",
+          "cT": "T2",
+          "cN": "N1mi",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "12"
+        }
+      },
+      "passed": true,
+      "checks": [
+        "patch:age",
+        "patch:cT",
+        "patch:cN",
+        "patch:cM",
+        "patch:er",
+        "patch:pr",
+        "patch:her2",
+        "patch:ki67"
+      ],
+      "agent_reply": "已為您抓到以下候選欄位，請確認後套用：\n- 年齡：48\n- cT：T2\n- cN：N1mi\n- cM：M0\n- 腫瘤大小：22 mm\n- 分級：Grade II\n- ER：陽性 (90%)\n- PR：陽性 (80%)\n- HER2 IHC：2+\n- HER2 FISH：Negative\n- Ki-67：12%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "48",
+        "cT": "T2",
+        "cN": "N1mi",
+        "cM": "M0",
+        "size": "22",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "2+",
+        "her2_fish": "negative",
+        "ki67": "12",
+        "her2": "-"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 4815
+    },
+    {
+      "id": "extract-298",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：48歲，cT2N1miM0，invasive tumor size 22 mm，grade II，ER 50%, PR 5%, HER2 1+, Ki67 5-14%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=48、cT=T2、cN=N1mi、cM=M0、er=+、pr=+、her2=-、ki67=5-14",
+      "expected": {
+        "expected_patch": {
+          "age": "48",
+          "cT": "T2",
+          "cN": "N1mi",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "5-14"
+        }
+      },
+      "passed": true,
+      "checks": [
+        "patch:age",
+        "patch:cT",
+        "patch:cN",
+        "patch:cM",
+        "patch:er",
+        "patch:pr",
+        "patch:her2",
+        "patch:ki67"
+      ],
+      "agent_reply": "已為您抓到以下候選欄位，請確認後套用：\n\n- 年齡：48\n- 分期 (Clinical)：T2N1miM0\n- 腫瘤大小：22 mm\n- 分級 (Grade)：2\n- ER：陽性 (+)\n- PR：陽性 (+)\n- HER2 (IHC)：1+\n- HER2：陰性 (-)\n- Ki67：5-14%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "48",
+        "cT": "T2",
+        "cN": "N1mi",
+        "cM": "M0",
+        "size": "22",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "1+",
+        "her2": "-",
+        "ki67": "5-14"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3679
+    },
+    {
+      "id": "extract-299",
+      "category": "field_extraction",
+      "question": "請從這段病理/臨床文字抽取欄位，先不要直接寫入：48歲，cT3N1M0，invasive tumor size 51 mm，grade II，ER 90%, PR 80%, HER2 2+ ISH negative, Ki-67 12%。",
+      "patient_context": {},
+      "reference_answer": "應抽取欄位：age=48、cT=T3、cN=N1、cM=M0、er=+、pr=+、her2=-、ki67=12",
+      "expected": {
+        "expected_patch": {
+          "age": "48",
+          "cT": "T3",
+          "cN": "N1",
+          "cM": "M0",
+          "er": "+",
+          "pr": "+",
+          "her2": "-",
+          "ki67": "12"
+        }
+      },
+      "passed": true,
+      "checks": [
+        "patch:age",
+        "patch:cT",
+        "patch:cN",
+        "patch:cM",
+        "patch:er",
+        "patch:pr",
+        "patch:her2",
+        "patch:ki67"
+      ],
+      "agent_reply": "已為您抓到以下候選欄位，請確認後套用：\n\n- 年齡：48\n- 分期 (Clinical)：T3N1M0\n- 腫瘤大小：51 mm\n- 分級：Grade 2\n- ER：陽性 (+)\n- PR：陽性 (+)\n- HER2 IHC：2+\n- HER2 FISH：陰性 (negative)\n- HER2 綜合判定：陰性 (-)\n- Ki-67：12%",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {
+        "age": "48",
+        "cT": "T3",
+        "cN": "N1",
+        "cM": "M0",
+        "size": "51",
+        "grade": "2",
+        "er": "+",
+        "pr": "+",
+        "her2_ihc": "2+",
+        "her2_fish": "negative",
+        "her2": "-",
+        "ki67": "12"
+      },
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3650
+    }
+  ]
+}

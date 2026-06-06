@@ -13,7 +13,7 @@ APP_CONFIG_DEFAULTS = {
     "price_announcement_date": "115/03/23",
     "price_effective_date": "115/04/01",
     "price_source": "健保公告 PDF",
-    "price_badge_text": "藥價公告 115/03/23｜生效 115/04/01",
+    "price_badge_text": "藥價公告 115/03/23｜生效 115/04/01｜資料更新 2026/06/04",
     "price_update_schedule": "通常每月 23 日抓取健保公告 PDF；必要時可針對單一藥物更新。",
 }
 

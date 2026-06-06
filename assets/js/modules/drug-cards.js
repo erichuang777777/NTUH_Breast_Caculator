@@ -264,6 +264,8 @@ let _inpWt = 60, _inpHt = 165, _inpBSA = 1.66, _inpCrCl = 80;
 let _inpAge = 50, _inpSex = 'F', _inpCr = 0.8;
 let _inpPriceType = 'nhi';
 let _inpSelectedRegimen = null;
+let _inpLastTotal = 0;
+let _inpLastPriceLabel = '';
 
 // ── Drug price data (NHI=115年健保支付價, Self=台大醫院2024/12參考) ──
 const INP_DRUG_DATA = {
@@ -870,7 +872,7 @@ function calcInpCrCl(age, sex, wt, cr){
 }
 
 // ── Patient update ──
-function updateInpPatient(){
+function updateInpPatient(syncWorkspace){
   _inpWt  = parseFloat(document.getElementById('inpWt').value)||60;
   _inpHt  = parseFloat(document.getElementById('inpHt').value)||165;
   _inpAge = parseInt(document.getElementById('inpAge').value)||50;
@@ -880,7 +882,17 @@ function updateInpPatient(){
   _inpCrCl = calcInpCrCl(_inpAge, _inpSex, _inpWt, _inpCr);
   document.getElementById('inpBSA').textContent  = 'BSA: '+_inpBSA.toFixed(2)+' m²';
   document.getElementById('inpCrCl').textContent = 'CrCl: '+Math.round(_inpCrCl)+' mL/min';
+  if(syncWorkspace !== false && typeof setPatientField === 'function'){
+    setPatientField('weight', String(_inpWt));
+    setPatientField('height', String(_inpHt));
+    setPatientField('age', String(_inpAge));
+    setPatientField('sex', _inpSex);
+    setPatientField('scr', String(_inpCr));
+  }
   if(_inpSelectedRegimen) calcInpRegimen();
+  if(document.body && document.body.classList.contains('modal-dashboard-mode') && typeof renderModalDashboardOverview === 'function'){
+    renderModalDashboardOverview();
+  }
 }
 
 function setInpPrice(type){
@@ -914,6 +926,9 @@ function selectInpRegimen(id){
     aucOverride.style.display='none';
   }
   calcInpRegimen();
+  if(document.body && document.body.classList.contains('modal-dashboard-mode') && typeof renderModalDashboardOverview === 'function'){
+    renderModalDashboardOverview();
+  }
   setTimeout(()=>document.getElementById('inpOptions').scrollIntoView({behavior:'smooth',block:'nearest'}),100);
 }
 
@@ -940,6 +955,8 @@ function calcInpRegimen(){
   document.getElementById('inpDetail').innerHTML = detailHtml;
 
   const priceLabel = pk==='nhi' ? '健保藥價' : '台大自費藥價';
+  _inpLastTotal = grandTotal;
+  _inpLastPriceLabel = priceLabel;
   document.getElementById('inpSummary').innerHTML = `
     <div class="inp-summary">
       <div class="inp-sum-line" style="font-weight:700;font-size:.9rem;margin-bottom:.2rem">
@@ -1026,7 +1043,7 @@ function inpRenderPhase(phaseName, drugs, cycles, pk, freq){
       </div>
       <div class="inp-drug-cost">
         <div>× ${cycles} = NT$ ${costTotal.toLocaleString()}</div>
-        <div style="font-size:.7rem;font-weight:400;color:var(--text-muted)">單一 cycle NT$ ${Math.round(perCycleDisplay ?? costTotal/cycles).toLocaleString()}</div>
+        <div style="font-size:.7rem;font-weight:400;color:var(--text-muted)">單一 cycle NT$ ${Math.round(perCycleDisplay != null ? perCycleDisplay : costTotal/cycles).toLocaleString()}</div>
       </div>
     </div>`;
   });
@@ -1090,24 +1107,24 @@ function printInpRegimen(){
 let _icdInited = false;
 
 const ICD_ZONES = {
-  UO: { label:'外上象限 (Upper-Outer Quadrant)', right:'C50.411', left:'C50.412', desc:'外上象限為最常見乳癌發生部位' },
-  UI: { label:'內上象限 (Upper-Inner Quadrant)', right:'C50.211', left:'C50.212', desc:'' },
-  LO: { label:'外下象限 (Lower-Outer Quadrant)', right:'C50.511', left:'C50.512', desc:'' },
-  LI: { label:'內下象限 (Lower-Inner Quadrant)', right:'C50.311', left:'C50.312', desc:'' },
-  nipple: { label:'乳頭及乳暈 (Nipple & Areola)', right:'C50.011', left:'C50.012', desc:'' }
+  UO: { label:'外上象限 (Upper-Outer Quadrant)', right:'C50.411', left:'C50.412', ntuhRight:'756', ntuhLeft:'754', hospitalRight:'C50411', hospitalLeft:'C50412', desc:'外上象限為最常見乳癌發生部位' },
+  UI: { label:'內上象限 (Upper-Inner Quadrant)', right:'C50.211', left:'C50.212', ntuhRight:'750', ntuhLeft:'748', hospitalRight:'C50211', hospitalLeft:'C50212', desc:'' },
+  LO: { label:'外下象限 (Lower-Outer Quadrant)', right:'C50.511', left:'C50.512', ntuhRight:'508', ntuhLeft:'506', hospitalRight:'C50511', hospitalLeft:'C50512', desc:'' },
+  LI: { label:'內下象限 (Lower-Inner Quadrant)', right:'C50.311', left:'C50.312', ntuhRight:'502', ntuhLeft:'500', hospitalRight:'C50311', hospitalLeft:'C50312', desc:'' },
+  nipple: { label:'乳頭及乳暈 (Nipple & Areola)', right:'C50.011', left:'C50.012', ntuhRight:'531', ntuhLeft:'529', hospitalRight:'C50011', hospitalLeft:'C50012', desc:'' }
 };
 
 const ICD_SIDE_CODES = [
-  { code:'C50.811', side:'右乳', desc:'Malignant neoplasm of overlapping sites of right female breast — 跨象限/重疊部位（右乳）' },
-  { code:'C50.812', side:'左乳', desc:'Malignant neoplasm of overlapping sites of left female breast — 跨象限/重疊部位（左乳）' },
-  { code:'C50.111', side:'右乳', desc:'Malignant neoplasm of central portion of right female breast — 中央區（右乳）' },
-  { code:'C50.112', side:'左乳', desc:'Malignant neoplasm of central portion of left female breast — 中央區（左乳）' },
-  { code:'C50.611', side:'右乳', desc:'Malignant neoplasm of axillary tail of right female breast — 腋窩尾部（右乳）' },
-  { code:'C50.612', side:'左乳', desc:'Malignant neoplasm of axillary tail of left female breast — 腋窩尾部（左乳）' },
-  { code:'C50.911', side:'右乳', desc:'Malignant neoplasm of unspecified site of right female breast — 未明確部位（右乳）' },
-  { code:'C50.912', side:'左乳', desc:'Malignant neoplasm of unspecified site of left female breast — 未明確部位（左乳）' },
-  { code:'C50.A1',  side:'右乳', desc:'Malignant inflammatory neoplasm of right breast — 炎性乳癌（右乳）' },
-  { code:'C50.A2',  side:'左乳', desc:'Malignant inflammatory neoplasm of left breast — 炎性乳癌（左乳）' },
+  { code:'C50.811', ntuhCode:'577', hospitalCode:'C50811', side:'右乳', desc:'Malignant neoplasm of overlapping sites of right female breast — 跨象限/重疊部位（右乳）' },
+  { code:'C50.812', ntuhCode:'561', hospitalCode:'C50812', side:'左乳', desc:'Malignant neoplasm of overlapping sites of left female breast — 跨象限/重疊部位（左乳）' },
+  { code:'C50.111', ntuhCode:'383', hospitalCode:'C50111', side:'右乳', desc:'Malignant neoplasm of central portion of right female breast — 中央區（右乳）' },
+  { code:'C50.112', ntuhCode:'381', hospitalCode:'C50112', side:'左乳', desc:'Malignant neoplasm of central portion of left female breast — 中央區（左乳）' },
+  { code:'C50.611', ntuhCode:'358', hospitalCode:'C50611', side:'右乳', desc:'Malignant neoplasm of axillary tail of right female breast — 腋窩尾部（右乳）' },
+  { code:'C50.612', ntuhCode:'356', hospitalCode:'C50612', side:'左乳', desc:'Malignant neoplasm of axillary tail of left female breast — 腋窩尾部（左乳）' },
+  { code:'C50.911', ntuhCode:'731', hospitalCode:'C50911', side:'右乳', desc:'Malignant neoplasm of unspecified site of right female breast — 未明確部位（右乳）' },
+  { code:'C50.912', ntuhCode:'728', hospitalCode:'C50912', side:'左乳', desc:'Malignant neoplasm of unspecified site of left female breast — 未明確部位（左乳）' },
+  { code:'C50.A1', ntuhCode:'', hospitalCode:'', side:'右乳', desc:'Malignant inflammatory neoplasm of right breast — 炎性乳癌（右乳；院內清單未見對應編號）' },
+  { code:'C50.A2', ntuhCode:'', hospitalCode:'', side:'左乳', desc:'Malignant inflammatory neoplasm of left breast — 炎性乳癌（左乳；院內清單未見對應編號）' },
 ];
 
 const ICD_DCIS_CODES = [
@@ -1128,33 +1145,69 @@ function selectIcdZone(side, zone){
   if(!info) return;
   const sideLabel = side==='R' ? '右乳' : '左乳';
   const code = side==='R' ? info.right : info.left;
+  const ntuhCode = side==='R' ? info.ntuhRight : info.ntuhLeft;
+  const hospitalCode = side==='R' ? info.hospitalRight : info.hospitalLeft;
   const zoneDesc = zone==='UO'?'（最常見乳癌部位）':zone==='nipple'?'（乳頭/乳暈區）':'';
+  if(typeof setPatientField === 'function'){
+    setPatientField('side', side);
+    setPatientField('quadrant', zone);
+  } else if(typeof _patient !== 'undefined') {
+    _patient.side = side;
+    _patient.quadrant = zone;
+  }
   document.getElementById('icdPopupArea').innerHTML = `
     <div class="icd-popup">
       <div class="icd-popup-title">${sideLabel}　${info.label}</div>
-      <div style="font-size:.75rem;color:var(--text-muted);margin:.2rem 0 .5rem">${zoneDesc}點擊代碼可複製到剪貼簿</div>
+      <div style="font-size:.75rem;color:var(--text-muted);margin:.2rem 0 .5rem">${zoneDesc}院內重卡申請優先使用「院內編號」；點擊可複製。</div>
       <div class="icd-code-row">
-        <span class="icd-code" id="icdCopyCode" onclick="icdCopy('${code}')">${code}</span>
-        <span style="font-size:.82rem">${sideLabel}　${info.label}</span>
+        <span class="icd-code ntuh-code" id="icdCopyCode" onclick="icdCopy('${ntuhCode}')">${ntuhCode}</span>
+        <span style="font-size:.82rem"><strong>院內重卡編號</strong>　${sideLabel}　${info.label}</span>
+      </div>
+      <div class="icd-code-row">
+        <span class="icd-code" onclick="icdCopy('${hospitalCode}')">${hospitalCode}</span>
+        <span style="font-size:.82rem">院內診斷碼（ICD 去點號）</span>
+      </div>
+      <div class="icd-code-row">
+        <span class="icd-code" onclick="icdCopy('${code}')">${code}</span>
+        <span style="font-size:.82rem">ICD-10-CM 對照</span>
       </div>
       <div style="margin-top:.7rem;padding-top:.5rem;border-top:1px solid #fda4af;font-size:.72rem;color:var(--text-muted)">
         <div>重大傷病申請代碼：<strong style="color:#be123c">010</strong>（乳癌）</div>
-        <div style="margin-top:.2rem">ICD-10-CM：<strong style="color:#be123c">${code}</strong></div>
+        <div style="margin-top:.2rem">院內重卡編號：<strong style="color:#be123c">${ntuhCode}</strong>　院內診斷碼：<strong style="color:#be123c">${hospitalCode}</strong>　ICD-10-CM：<strong style="color:#be123c">${code}</strong></div>
       </div>
     </div>`;
 }
 
 function icdCopy(code){
-  navigator.clipboard.writeText(code).then(()=>{
+  const done = () => {
     const el = document.getElementById('icdCopyCode');
     if(el){ el.textContent = code+' ✓'; setTimeout(()=>{ if(el) el.textContent=code; },1500); }
-  });
+  };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(code).then(done).catch(()=>window.prompt('請複製代碼', code));
+  } else {
+    window.prompt('請複製代碼', code);
+  }
 }
 
 function initIcdPage(){
   _icdInited = true;
-  const makeRow = (c) =>
-    `<div class="icd-side-item"><span class="icd-code" style="min-width:72px" onclick="icdCopy('${c.code}')" title="點擊複製">${c.code}</span><span><strong style="color:#be123c">${c.side}</strong>　${c.desc}</span></div>`;
+  const makeRow = (c) => {
+    const ntuh = c.ntuhCode || '';
+    const hospital = c.hospitalCode || '';
+    const ntuhCell = ntuh
+      ? `<span class="icd-code ntuh-code" style="min-width:72px" onclick="icdCopy('${ntuh}')" title="點擊複製院內重卡編號">${ntuh}</span>`
+      : `<span class="icd-code icd-code-empty" style="min-width:72px" title="院內清單未收載">—</span>`;
+    const hospitalCell = hospital
+      ? `<span class="icd-code" style="min-width:72px" onclick="icdCopy('${hospital}')" title="點擊複製院內診斷碼">${hospital}</span>`
+      : `<span class="icd-code icd-code-empty" style="min-width:72px" title="院內診斷碼未收載">—</span>`;
+    return `<div class="icd-side-item">
+      ${ntuhCell}
+      ${hospitalCell}
+      <span class="icd-code" style="min-width:72px" onclick="icdCopy('${c.code}')" title="點擊複製 ICD">${c.code}</span>
+      <span><strong style="color:#be123c">${c.side}</strong>　${c.desc}</span>
+    </div>`;
+  };
   document.getElementById('icdSideList').innerHTML = ICD_SIDE_CODES.map(makeRow).join('');
   document.getElementById('icdDcislist').innerHTML = ICD_DCIS_CODES.map(makeRow).join('');
 }
@@ -1426,7 +1479,8 @@ function printSurgeryList(){
   const today = new Date().toLocaleDateString('zh-TW');
   const hospitalEl = document.getElementById('surgHospital');
   const hospitalLabel = hospitalEl ? hospitalEl.options[hospitalEl.selectedIndex].text : '台大癌醫';
-  const maintCode = (document.getElementById('surgMaintCode')?.value || 'NTUCC HSW').trim();
+  const maintCodeEl = document.getElementById('surgMaintCode');
+  const maintCode = ((maintCodeEl ? maintCodeEl.value : '') || 'NTUCC HSW').trim();
   const rows = checked.map(c=>`<tr><td>${c.name}</td><td>${c.zh}</td><td style="text-align:right">NT$ ${c.price.toLocaleString()}</td></tr>`).join('');
   const w = window.open('','_blank','width=700,height=800');
   if(!w){alert('請允許彈出視窗');return;}
@@ -1453,6 +1507,7 @@ function printSurgeryList(){
 //  臨床試驗搜尋 (ClinicalTrials.gov API v2)
 // ═══════════════════════════════════════════════════════
 let _lastTrialResults = [];
+let _lastTrialTotal = 0;
 async function searchTrials(){
   const keyword  = document.getElementById('trialKeyword').value.trim() || 'breast cancer';
   const location = document.getElementById('trialLocation').value.trim() || 'Taiwan';
@@ -1460,12 +1515,13 @@ async function searchTrials(){
   const el = document.getElementById('trialResults');
   el.innerHTML = '<div style="color:var(--text-muted);padding:1rem">搜尋中，請稍候…</div>';
   _lastTrialResults = [];
+  _lastTrialTotal = 0;
 
   try {
     const params = new URLSearchParams({
       'query.cond': keyword,
       'query.locn': location,
-      'pageSize': 20,
+      'pageSize': 3,
       'fields': 'NCTId,BriefTitle,OverallStatus,Phase,StartDate,PrimaryCompletionDate,LeadSponsorName,LocationFacility,LocationCity,LocationCountry,BriefSummary,EligibilityCriteria',
       'format': 'json'
     });
@@ -1475,6 +1531,7 @@ async function searchTrials(){
     if(!resp.ok) throw new Error('API error: '+resp.status);
     const data = await resp.json();
     const studies = data.studies || [];
+    _lastTrialTotal = data.totalCount || studies.length;
 
     if(studies.length===0){
       el.innerHTML='<div style="padding:1rem;color:var(--text-muted)">未找到符合條件的試驗。請嘗試修改關鍵字或地點。</div>';
@@ -1482,7 +1539,7 @@ async function searchTrials(){
     }
 
     let html = `<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.4rem;margin-bottom:.6rem">
-        <div style="font-size:.78rem;color:var(--text-muted)">找到 ${data.totalCount||studies.length} 筆（顯示前 ${studies.length} 筆）</div>
+        <div style="font-size:.78rem;color:var(--text-muted)">符合條件 ${_lastTrialTotal} 筆（顯示前 ${studies.length} 筆）</div>
         <div style="display:flex;gap:.35rem">
           <button class="btn btn-outline btn-sm" onclick="exportTrialsCSV()" title="匯出為 CSV (Excel 可開啟)">&#11015;&#65039; CSV</button>
           <button class="btn btn-outline btn-sm" onclick="printTrialsList()" title="列印或存成 PDF">&#128438; 列印/PDF</button>
@@ -1502,11 +1559,11 @@ async function searchTrials(){
       const title = id.briefTitle||'(no title)';
       const overallStatus = statusMod.overallStatus||'';
       const phase = (design.phases||[]).join(', ')||'N/A';
-      const leadSponsor = sponsor.leadSponsor?.name||'';
+      const leadSponsor = sponsor.leadSponsor && sponsor.leadSponsor.name ? sponsor.leadSponsor.name : '';
       const twLocs = (locations.locations||[]).filter(l=>l.country==='Taiwan');
       const locs = twLocs.map(l=>`${l.facility||''} (${l.city||''})`).slice(0,3).join('、');
-      const startDate = statusMod.startDateStruct?.date || '';
-      const completionDate = statusMod.primaryCompletionDateStruct?.date || '';
+      const startDate = statusMod.startDateStruct && statusMod.startDateStruct.date ? statusMod.startDateStruct.date : '';
+      const completionDate = statusMod.primaryCompletionDateStruct && statusMod.primaryCompletionDateStruct.date ? statusMod.primaryCompletionDateStruct.date : '';
       const briefSummary = desc.briefSummary || '';
       const eligibility = elig.eligibilityCriteria || '';
 
@@ -1532,6 +1589,9 @@ async function searchTrials(){
       </div>`;
     });
     el.innerHTML = html;
+    if(document.body && document.body.classList.contains('modal-dashboard-mode') && typeof renderModalDashboardOverview === 'function'){
+      renderModalDashboardOverview();
+    }
   } catch(err){
     el.innerHTML = `<div style="padding:1rem;color:#ef4444">搜尋失敗：${err.message}。請確認網路連線，或稍後再試。</div>`;
   }
@@ -1623,5 +1683,5 @@ function initInpCalc(){
     html += '</div></div>';
   });
   document.getElementById('inpRegimenPicker').innerHTML = html;
-  updateInpPatient();
+  updateInpPatient(false);
 }

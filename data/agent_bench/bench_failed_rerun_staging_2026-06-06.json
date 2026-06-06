@@ -1,0 +1,1257 @@
+{
+  "schema": "onco_breast_agent_benchmark_result.v2",
+  "benchmark_version": "failed-subset-v1",
+  "run_at": "2026-06-06T14:29:57",
+  "base_url": "http://127.0.0.1:8080",
+  "runner": "tools/agent_benchmark.py",
+  "corpus": "data\\agent_bench\\bench_v1.json",
+  "summary": {
+    "total": 35,
+    "passed": 35,
+    "failed": 0,
+    "pass_rate": 1.0
+  },
+  "categories": [
+    {
+      "category": "staging",
+      "passed": 35,
+      "failed": 0
+    }
+  ],
+  "validation_policy": {
+    "principle": "Reference answers are generated before the agent call from local structured data/calculators. The run records agent_reply and called_tools for every case.",
+    "required_tool_checks": true,
+    "exact_text_match": false
+  },
+  "failure_summary": {
+    "by_type": {},
+    "data_questions": []
+  },
+  "case_results": [
+    {
+      "id": "stage-136",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN0(i+)M0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N0(i+)",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN0(i+)M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 TNM 分期 TisN0(i+)M0，由於本系統簡化 AJCC 計算器不支援該子類別，因此無法判定或不適用。正式分期請參閱完整 AJCC v8 指南或病理報告。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1964
+    },
+    {
+      "id": "stage-137",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN1miM0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N1mi",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN1miM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 TNM 分期 TisN1miM0，本系統簡化之 AJCC 計算器不支援該子類別，因此無法判定或不適用。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1108
+    },
+    {
+      "id": "stage-138",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN1M0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN1M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "根據 AJCC v8 分期，針對 TNM 為 TisN1M0 的情況，本系統簡化計算器無法判定/不適用。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1026
+    },
+    {
+      "id": "stage-139",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN1aM0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N1a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN1aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 TNM 分期 TisN1aM0，本系統簡化 AJCC 計算器不支援或不適用該組合，因此無法判定期別。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1225
+    },
+    {
+      "id": "stage-140",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN2M0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N2",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN2M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 TNM 分期 TisN2M0，本系統簡化 AJCC 計算器無法判定或不適用，請參閱完整 AJCC 指南。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2797
+    },
+    {
+      "id": "stage-141",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN2aM0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N2a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN2aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 TNM 分期 TisN2aM0，本系統簡化 AJCC 計算器不支援或不適用該組合，因此無法判定期別。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1054
+    },
+    {
+      "id": "stage-142",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN3M0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N3",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN3M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 TNM 分期 TisN3M0，本系統簡化 AJCC 計算器無法判定（不適用）。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1157
+    },
+    {
+      "id": "stage-143",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cTisN3aM0 是第幾期？",
+      "patient_context": {
+        "cT": "Tis",
+        "cN": "N3a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cTisN3aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 TNM 分期 TisN3aM0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定/不適用。正式分期請參閱完整 AJCC v8 指南或由醫師確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1401
+    },
+    {
+      "id": "stage-144",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N0M0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N0",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N0M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T0N0M0，本系統簡化 AJCC 計算器不支援或不適用該 TNM 組合，因此無法判定分期。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 925
+    },
+    {
+      "id": "stage-145",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N0(i+)M0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N0(i+)",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N0(i+)M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T0N0(i+)M0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定或不適用。正式分期請參閱完整 AJCC v8 指南並由醫師確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1230
+    },
+    {
+      "id": "stage-146",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N1miM0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N1mi",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N1miM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T0N1miM0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定或不適用。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2267
+    },
+    {
+      "id": "stage-147",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N1M0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N1M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T0N1M0，本系統簡化之 AJCC v8 解剖分期計算器不支援該子類別，因此無法判定或不適用。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1364
+    },
+    {
+      "id": "stage-148",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N1aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N1a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N1aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 TNM 分期 T0N1aM0，本系統簡化之 AJCC v8 解剖分期計算器不支援該子類別，因此無法判定/不適用。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1013
+    },
+    {
+      "id": "stage-149",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N2M0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N2",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N2M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 TNM 分期 T0N2M0，本系統簡化 AJCC 計算器不支援或不適用該組合，因此無法判定期別。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2016
+    },
+    {
+      "id": "stage-150",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N2aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N2a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N2aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T0N2aM0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定/不適用。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3340
+    },
+    {
+      "id": "stage-151",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N3M0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N3",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N3M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 TNM 分期 T0N3M0，本系統簡化版 AJCC 計算器不支援或不適用該組合，因此無法判定期別。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1672
+    },
+    {
+      "id": "stage-152",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT0N3aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T0",
+        "cN": "N3a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT0N3aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T0N3aM0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定或不適用。正式分期請參閱完整 AJCC v8 指南並由醫師確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2563
+    },
+    {
+      "id": "stage-153",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1N0(i+)M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1",
+        "cN": "N0(i+)",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1N0(i+)M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1N0(i+)M0，本系統之簡化 AJCC 計算器不支援該子類別，因此無法判定/不適用。正式分期請參閱完整 AJCC v8 指南或由醫師確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2459
+    },
+    {
+      "id": "stage-154",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1N1miM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1",
+        "cN": "N1mi",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1N1miM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1N1miM0，本系統簡化版 AJCC 計算器不支援該子類別，因此無法判定/不適用。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1217
+    },
+    {
+      "id": "stage-155",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1N1aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1",
+        "cN": "N1a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1N1aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1N1aM0，本系統簡化版 AJCC 計算器不支援該子類別，因此無法判定/不適用。正式分期請參閱完整 AJCC v8 指南或由醫師確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1175
+    },
+    {
+      "id": "stage-156",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1N2aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1",
+        "cN": "N2a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1N2aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 TNM 分期 T1N2aM0，由於本系統簡化 AJCC 計算器不支援該子類別，因此無法判定/不適用。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1151
+    },
+    {
+      "id": "stage-157",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1N3aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1",
+        "cN": "N3a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1N3aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1N3aM0，本系統簡化之 AJCC v8 解剖分期計算器不支援該子類別，因此無法判定/不適用。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 996
+    },
+    {
+      "id": "stage-158",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN0M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N0",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN0M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1miN0M0，由於本系統簡化版 AJCC 計算器不支援該特定子類別，因此無法判定/不適用。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 966
+    },
+    {
+      "id": "stage-159",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN0(i+)M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N0(i+)",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN0(i+)M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1miN0(i+)M0，由於本系統簡化版 AJCC 計算器不支援該特定子類別，因此無法判定或不適用。請醫師依據完整病理報告與正式 AJCC v8 指南進行分期判定。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1195
+    },
+    {
+      "id": "stage-160",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN1miM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N1mi",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN1miM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 TNM 分期 T1miN1miM0，本系統簡化之 AJCC v8 解剖分期計算器不支援該子類別，因此無法判定或不適用。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2165
+    },
+    {
+      "id": "stage-161",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN1M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN1M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1miN1M0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定分期。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 929
+    },
+    {
+      "id": "stage-162",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN1aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N1a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN1aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 TNM 分期 T1miN1aM0，本系統簡化版 AJCC 計算器不支援該子類別，因此無法判定或不適用。正式分期請參閱完整 AJCC v8 指南。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3290
+    },
+    {
+      "id": "stage-163",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN2M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N2",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN2M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1miN2M0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定/不適用。正式分期請參閱完整 AJCC v8 指南或病理報告。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1103
+    },
+    {
+      "id": "stage-164",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN2aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N2a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN2aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 TNM 分期 T1miN2aM0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定/不適用。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 5464
+    },
+    {
+      "id": "stage-165",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN3M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N3",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN3M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1miN3M0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定分期。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1100
+    },
+    {
+      "id": "stage-166",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1miN3aM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1mi",
+        "cN": "N3a",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1miN3aM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1miN3aM0，本系統簡化之 AJCC v8 解剖分期計算器不支援該子類別，因此無法判定/不適用。正式分期請參閱完整 AJCC 指南或病理報告。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2855
+    },
+    {
+      "id": "stage-167",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1aN0M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1a",
+        "cN": "N0",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1aN0M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1aN0M0，本系統簡化之 AJCC 解剖分期計算器不支援該子類別，因此無法判定或不適用。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 899
+    },
+    {
+      "id": "stage-168",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1aN0(i+)M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1a",
+        "cN": "N0(i+)",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1aN0(i+)M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1aN0(i+)M0，本系統的簡化 AJCC 計算器不支援該子類別，因此無法判定或不適用。正式分期請參閱完整 AJCC v8 指南或由醫師確認。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1143
+    },
+    {
+      "id": "stage-169",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1aN1miM0 是第幾期？",
+      "patient_context": {
+        "cT": "T1a",
+        "cN": "N1mi",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1aN1miM0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1aN1miM0，本系統簡化 AJCC 計算器不支援該子類別，因此無法判定/不適用。正式分期請參閱完整 AJCC v8 指南或病理報告。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 2408
+    },
+    {
+      "id": "stage-170",
+      "category": "staging",
+      "question": "請用 AJCC v8 解剖分期回答：cT1aN1M0 是第幾期？",
+      "patient_context": {
+        "cT": "T1a",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "reference_answer": "AJCC v8 解剖分期：cT1aN1M0 = 無法判定。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "無法|不足|不適用"
+        ],
+        "expected_stage": null
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:無法|不足|不適用"
+      ],
+      "agent_reply": "針對 T1aN1M0，本系統的簡化 AJCC 計算器不支援該子類別，因此無法判定或不適用。正式分期請參閱完整 AJCC v8 指南。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 1694
+    }
+  ]
+}

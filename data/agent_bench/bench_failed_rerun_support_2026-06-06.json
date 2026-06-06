@@ -1,0 +1,191 @@
+{
+  "schema": "onco_breast_agent_benchmark_result.v2",
+  "benchmark_version": "failed-subset-v1",
+  "run_at": "2026-06-06T14:31:44",
+  "base_url": "http://127.0.0.1:8080",
+  "runner": "tools/agent_benchmark.py",
+  "corpus": "data\\agent_bench\\bench_v1.json",
+  "summary": {
+    "total": 3,
+    "passed": 3,
+    "failed": 0,
+    "pass_rate": 1.0
+  },
+  "categories": [
+    {
+      "category": "support_resources",
+      "passed": 3,
+      "failed": 0
+    }
+  ],
+  "validation_policy": {
+    "principle": "Reference answers are generated before the agent call from local structured data/calculators. The run records agent_reply and called_tools for every case.",
+    "required_tool_checks": true,
+    "exact_text_match": false
+  },
+  "failure_summary": {
+    "by_type": {},
+    "data_questions": []
+  },
+  "case_results": [
+    {
+      "id": "support-031",
+      "category": "support_resources",
+      "question": "標靶或免疫治療如果自費壓力大，病患照護支持卡內有沒有贈藥或藥費協助方向？ 請只根據網站內 support resources 回答。",
+      "patient_context": {},
+      "reference_answer": "應列出網站內支援資源：藥廠病人協助或贈藥方案、台灣癌症資源網補助媒合、醫師/藥師/個管師/社工、院內社工/癌症資源中心；並提醒資格、名額與方案效期需由院內窗口確認。",
+      "expected": {
+        "must_call": [
+          "support-resources"
+        ],
+        "contains_any": [
+          "藥廠病人協助或贈藥方案",
+          "台灣癌症資源網補助媒合"
+        ],
+        "contains_regex": [
+          "社工|個管|癌症資源中心|窗口",
+          "診斷證明|病理報告|收據|申請|文件"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:support-resources",
+        "contains_any",
+        "regex:社工|個管|癌症資源中心|窗口",
+        "regex:診斷證明|病理報告|收據|申請|文件"
+      ],
+      "agent_reply": "根據網站內支援資源，針對標靶或免疫治療的藥費壓力，可參考以下資源：\n\n**藥廠病人協助或贈藥方案**\n- **協助方向**：可能提供部分療程費用減免、贈藥、共付額協助或專案價（方案通常有名額與期限）。\n- **申請資格**：依藥品、適應症、健保給付/事審結果、治療線別、收入或保險狀況與藥廠當期方案判定。\n- **申請方式**：由醫師、藥師、個管師或社工向藥廠/病人協助方案窗口確認。需先核對健保與事審狀態，再準備相關資料。\n- **所需文件**：處方或治療計畫、健保給付/事審結果、收入或保險資料。",
+      "called_tools": [
+        "calculate/staging-score",
+        "support-resources",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [
+        {
+          "source": "data/support_resources.json",
+          "id": "support:manufacturer-pap",
+          "title": "藥廠病人協助或贈藥方案"
+        }
+      ],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3112
+    },
+    {
+      "id": "support-032",
+      "category": "support_resources",
+      "question": "病人說不確定重大傷病和民間基金會補助差在哪裡，請用網站內資源整理申請窗口與文件。 請只根據網站內 support resources 回答。",
+      "patient_context": {},
+      "reference_answer": "應列出網站內支援資源：重大傷病證明與健保給付資格、台灣癌症資源網補助媒合、醫師/個管師/批價或病歷窗口、院內社工/癌症資源中心；並提醒資格、名額與方案效期需由院內窗口確認。",
+      "expected": {
+        "must_call": [
+          "support-resources"
+        ],
+        "contains_any": [
+          "重大傷病證明與健保給付資格",
+          "台灣癌症資源網補助媒合"
+        ],
+        "contains_regex": [
+          "社工|個管|癌症資源中心|窗口",
+          "診斷證明|病理報告|收據|申請|文件"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:support-resources",
+        "contains_any",
+        "regex:社工|個管|癌症資源中心|窗口",
+        "regex:診斷證明|病理報告|收據|申請|文件"
+      ],
+      "agent_reply": "根據網站內資源，重大傷病與民間基金會補助的差異與申請資訊如下：\n\n1. **重大傷病證明與健保給付資格**\n- **性質**：健保給付資格，核准後符合項目可免部分負擔。\n- **申請窗口**：由本人、受委託人或醫療院所代理，向健保署分區業務組提出；院所亦可透過健保資訊服務網申請。\n- **所需文件**：病理報告、診斷證明、影像或手術/治療紀錄、健保卡或身分資料。\n\n2. **台灣癌症資源網補助媒合**\n- **性質**：社福經濟補助媒合入口，提供政府、醫院與民間資源查詢。\n- **申請窗口**：由院內社工或個管師依需求進入查詢頁，篩選符合項目後申請。\n- **所需文件**：診斷證明、身分證明、收入或家庭狀況資料、醫療費用單據。\n\n3. **基金會篩檢、交通或醫療費補助**\n- **性質**：依年度專案、收入與需求提供交通、住宿、醫療費或生活急難補助。\n- **申請窗口**：由院內社工或癌症資源中心利用台灣癌症資源網、病友協會或基金會網站比對方案後申請。\n- **所需文件**：診斷證明、身分/戶籍或收入證明、醫療費用單據、補助申請表。",
+      "called_tools": [
+        "calculate/staging-score",
+        "support-resources"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [
+        {
+          "source": "data/support_resources.json",
+          "id": "support:major-illness-certificate",
+          "title": "重大傷病證明與健保給付資格"
+        },
+        {
+          "source": "data/support_resources.json",
+          "id": "support:cancer-resource-network-subsidy",
+          "title": "台灣癌症資源網補助媒合"
+        },
+        {
+          "source": "data/support_resources.json",
+          "id": "support:foundation-screening-assistance",
+          "title": "基金會篩檢、交通或醫療費補助"
+        }
+      ],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3368
+    },
+    {
+      "id": "support-035",
+      "category": "support_resources",
+      "question": "如果病人問義乳胸衣、假髮、營養品補助是否一定有，請依網站資料說明邊界。 請只根據網站內 support resources 回答。",
+      "patient_context": {},
+      "reference_answer": "應列出網站內支援資源：義乳與胸衣補助、乳癌病友急難救助、院內社工/基金會窗口、院內社工/癌症希望基金會窗口；並提醒資格、名額與方案效期需由院內窗口確認。",
+      "expected": {
+        "must_call": [
+          "support-resources"
+        ],
+        "contains_any": [
+          "義乳與胸衣補助",
+          "乳癌病友急難救助"
+        ],
+        "contains_regex": [
+          "社工|個管|癌症資源中心|窗口",
+          "診斷證明|病理報告|收據|申請|文件"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:support-resources",
+        "contains_any",
+        "regex:社工|個管|癌症資源中心|窗口",
+        "regex:診斷證明|病理報告|收據|申請|文件"
+      ],
+      "agent_reply": "關於義乳胸衣、假髮與營養品補助，並非每位病人一定能獲得，需依各項資源的申請資格、年度名額與審核結果而定。根據網站資料，可提供以下資源申請：\n\n1. 義乳與胸衣補助：限單側或雙側乳房全切除手術（2021年1月1日以後），中低收入者優先，且曾申請者不得重複申請。\n2. 乳癌病友急難救助：針對治療期間導致生活困境者，經審核評估後，補助項目包含營養品、義乳胸衣、就醫交通、住宿等。\n3. 基金會篩檢、交通或醫療費補助：依年度專案、居住地與經濟條件判定，可能涵蓋營養品、用品或醫療費。\n4. 台灣癌症資源網補助媒合：可依病人所在地、癌別、治療階段與需求，媒合政府、醫院與民間資源。\n\n建議由院內社工或個管師協助評估並準備相關證明文件（如診斷證明、收入證明等）進行申請。",
+      "called_tools": [
+        "calculate/staging-score",
+        "support-resources"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [
+        {
+          "source": "data/support_resources.json",
+          "id": "support:cancer-resource-network-subsidy",
+          "title": "台灣癌症資源網補助媒合"
+        },
+        {
+          "source": "data/support_resources.json",
+          "id": "support:breast-care-prosthesis-bra",
+          "title": "義乳與胸衣補助"
+        },
+        {
+          "source": "data/support_resources.json",
+          "id": "support:breast-foundation-emergency-aid",
+          "title": "乳癌病友急難救助"
+        },
+        {
+          "source": "data/support_resources.json",
+          "id": "support:foundation-screening-assistance",
+          "title": "基金會篩檢、交通或醫療費補助"
+        }
+      ],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3477
+    }
+  ]
+}

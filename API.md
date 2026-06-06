@@ -21,6 +21,9 @@ POST /api/calculate/risk-scores
 POST /api/calculate/staging-score
 ```
 
+The deployed frontend also includes an in-app guide at `/?page=api` with a
+browser smoke test that calls every public endpoint.
+
 Example calculation request:
 
 ```bash
@@ -28,6 +31,146 @@ curl -X POST https://your-site.netlify.app/api/calculate/staging-score \
   -H "content-type: application/json" \
   -d "{\"age\":55,\"size_mm\":20,\"grade\":2,\"nodes_pos\":0,\"cT\":\"T2\",\"cN\":\"N0\",\"cM\":\"M0\",\"er_hscore\":270,\"pr_hscore\":200,\"her2\":\"-\",\"ki67\":15}"
 ```
+
+JavaScript agent example:
+
+```js
+const patientContext = {
+  age: 55,
+  size_mm: 20,
+  grade: 2,
+  nodes_pos: 0,
+  cT: "T2",
+  cN: "N0",
+  cM: "M0",
+  er_hscore: 270,
+  pr_hscore: 200,
+  her2: "-",
+  ki67: 15
+};
+
+const res = await fetch("/api/calculate/risk-scores", {
+  method: "POST",
+  headers: {
+    "content-type": "application/json",
+    "x-contact-email": "team@example.org",
+    "x-client-app": "hospital-agent-dev"
+  },
+  body: JSON.stringify(patientContext)
+});
+const data = await res.json();
+```
+
+## Public API Policy
+
+The Netlify API is public read-only support for demos, calculators, and trusted
+frontend/agent integrations. Callers should send:
+
+- `X-Contact-Email`: maintainer or service contact for abuse/debug follow-up.
+- `X-Client-App`: human-readable caller name, for example `hospital-agent-dev`.
+
+Do not put patient identifiers, PHI, or API secrets into public browser calls.
+If a workflow needs patient database lookup, EMR write-back, admin data updates,
+or strong access control, route it through an authenticated hospital backend.
+The frontend can then consume the returned patient context bundle.
+
+## External Copilot Endpoint
+
+The dashboard AI Agent calls an agent gateway before falling back to local
+rules.
+
+Local demo:
+
+- On `127.0.0.1` or `localhost`, the frontend automatically calls `/api/agent`.
+- `web_app.py` proxies `/api/agent` to Ollama.
+- Default model: `gemma4:31b-cloud`.
+
+Optional browser override:
+
+```js
+localStorage.setItem("nhi_dashboard_agent_api_config", JSON.stringify({
+  enabled: true,
+  endpoint: "/api/agent",
+  headers: { "x-contact-email": "team@example.org" }
+}));
+```
+
+The system prompt belongs in the server-side gateway, not frontend code. The
+frontend sends context and tool registry; the gateway owns model selection,
+guardrails, secrets, source policy, logging, and rate limits.
+
+Local Ollama override:
+
+```powershell
+$env:OLLAMA_HOST = "http://127.0.0.1:11434"
+$env:OLLAMA_MODEL = "gemma4:31b-cloud"
+python web_app.py --port 8080
+```
+
+The frontend sends:
+
+```json
+{
+  "message": "...",
+  "patient_context": {},
+  "derived": {},
+  "report_text": "...",
+  "tool_registry": []
+}
+```
+
+The external API may return:
+
+```json
+{
+  "reply": "已整理欄位",
+  "tool_id": "",
+  "patient_patch": {
+    "cT": "T2",
+    "cN": "N1",
+    "cM": "M0",
+    "er": "+",
+    "pr": "+",
+    "her2": "+"
+  },
+  "citations": []
+}
+```
+
+`tool_id` is optional and should be returned only when the user explicitly asks
+to open/call/show a tool. `patient_patch` is optional; the frontend shows a
+confirmation button before writing fields into Patient Context.
+
+Supported `tool_id` values include `wsPage`, `breastPage`,
+`inpatientPage`, `icdPage`, `trialsPage`, `calcPage`, `ihc4Page`, `cts5Page`,
+`pepiPage`, `supportResources`, and `apiPage`.
+
+## GitHub Issue Reports
+
+The in-app issue reporter opens a prefilled GitHub Issues URL. GitHub still
+requires the user to sign in and the repository must have Issues enabled. A
+static Netlify frontend cannot create issues anonymously without exposing a
+token. If anonymous submission is required later, add a server-side Netlify
+Function backed by a GitHub App or repository-scoped token and rate-limit that
+function.
+
+## Patient Context Bundle
+
+The Workspace export button writes a structured JSON file:
+
+```json
+{
+  "schema": "onco_breast_patient_context_bundle.v1",
+  "patient_id": "...",
+  "encounter_id": "...",
+  "patient_context": {},
+  "derived": {}
+}
+```
+
+Netlify remains read-only. Importing this bundle into a patient database,
+writing back to an EMR, or storing partially completed records should be handled
+by a separate authenticated hospital backend.
 
 ## Refreshing Netlify API Data
 

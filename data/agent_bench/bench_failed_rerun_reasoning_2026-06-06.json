@@ -1,0 +1,318 @@
+{
+  "schema": "onco_breast_agent_benchmark_result.v2",
+  "benchmark_version": "failed-subset-v1",
+  "run_at": "2026-06-06T14:31:58",
+  "base_url": "http://127.0.0.1:8080",
+  "runner": "tools/agent_benchmark.py",
+  "corpus": "data\\agent_bench\\bench_v1.json",
+  "summary": {
+    "total": 5,
+    "passed": 4,
+    "failed": 1,
+    "pass_rate": 0.8
+  },
+  "categories": [
+    {
+      "category": "reasoning_composition",
+      "passed": 4,
+      "failed": 1
+    }
+  ],
+  "validation_policy": {
+    "principle": "Reference answers are generated before the agent call from local structured data/calculators. The run records agent_reply and called_tools for every case.",
+    "required_tool_checks": true,
+    "exact_text_match": false
+  },
+  "failure_summary": {
+    "by_type": {
+      "factual_omission_or_wrong_value": 1
+    },
+    "data_questions": [
+      {
+        "id": "reason-002",
+        "category": "reasoning_composition",
+        "failure_type": "factual_omission_or_wrong_value",
+        "data_question": "需要檢查多步推論題的 tool result 是否包含所有必要資料，以及 prompt 是否要求逐步引用網站資料。"
+      }
+    ]
+  },
+  "case_results": [
+    {
+      "id": "reason-001",
+      "category": "reasoning_composition",
+      "question": "HER2+、LN-、M0 早期乳癌，網站資料內哪些 HER2 藥物可能需要自費？請同時指出哪些資料列是健保價可查但仍需事審，不要把 Phesgo 和 Perjeta 混在一起。",
+      "patient_context": {
+        "her2": "+",
+        "cN": "N0",
+        "cM": "M0",
+        "er": "+",
+        "pr": "+"
+      },
+      "reference_answer": "網站資料內：Phesgo 標示健保未給付/需全額自費；Perjeta/Pertuzumab 與 Herceptin/Trastuzumab 有健保價資料，但 Perjeta/部分 HER2 治療需事前審查。LN- 是否符合給付條件仍需依資料列條件與院內審查確認，不可把 Phesgo 自費狀態套到 Perjeta。",
+      "expected": {
+        "must_call": [
+          "drug-search",
+          "formulation-lookup"
+        ],
+        "contains_regex": [
+          "Phesgo",
+          "自費|未給付",
+          "Perjeta|Pertuzumab",
+          "事前審查|事審",
+          "Herceptin|Trastuzumab"
+        ],
+        "must_not_regex": [
+          "Perjeta[^。；\\n]{0,30}(全額)?自費",
+          "Phesgo[^。；\\n]{0,40}健保給付"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "tool:formulation-lookup",
+        "regex:Phesgo",
+        "regex:自費|未給付",
+        "regex:Perjeta|Pertuzumab",
+        "regex:事前審查|事審",
+        "regex:Herceptin|Trastuzumab",
+        "not_regex:Perjeta[^。；\\n]{0,30}(全額)?自費",
+        "not_regex:Phesgo[^。；\\n]{0,40}健保給付"
+      ],
+      "agent_reply": "根據網站資料庫，針對 HER2 陽性早期乳癌之藥物給付情況如下：\n\n1. **需自費藥物**：\n- **Phesgo** (pertuzumab + trastuzumab SC)：目前標示為自費/健保未給付，需全額自費。\n\n2. **健保價可查但需事前審查 (Prior Auth) 之藥物**：\n- **Herceptin (Trastuzumab)**：第1線，健保價 28,518 元 (440mg/vial)。\n- **Perjeta (Pertuzumab)**：第1線，健保價 44,929 元 (420mg/vial)。\n- **Kadcyla (Trastuzumab emtansine)**：第2線，健保價 50,983 元 (160mg/vial) 或 31,865 元 (100mg/vial)。\n\n請注意，Phesgo 之自費狀態不適用於 Perjeta 靜脈製劑。實際給付仍需依完整病理、病期、治療線別、院內政策與健保事前審查確認，本資訊不能取代醫師判斷或正式醫囑。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [
+        {
+          "source": "nhi_drug_coverage.db",
+          "id": "drug:1773",
+          "title": "Phesgo"
+        },
+        {
+          "source": "nhi_drug_coverage.db",
+          "id": "drug:1747",
+          "title": "Herceptin"
+        },
+        {
+          "source": "nhi_drug_coverage.db",
+          "id": "drug:1757",
+          "title": "Perjeta"
+        },
+        {
+          "source": "nhi_drug_coverage.db",
+          "id": "drug:1748",
+          "title": "Kadcyla"
+        }
+      ],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 7339
+    },
+    {
+      "id": "reason-002",
+      "category": "reasoning_composition",
+      "question": "TNBC cT2N1M0 使用 KEYNOTE-522/KN522 架構時，依網站內 Keytruda 200mg q3w、暫估 17 次，pembrolizumab 藥費總額是多少？請列出計算式。",
+      "patient_context": {
+        "er": "-",
+        "pr": "-",
+        "her2": "-",
+        "cT": "T2",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "reference_answer": "Keytruda/pembrolizumab 網站價 54,267 元/100mg vial；若暫估 17 次，pembrolizumab 藥費 = 54,267 x 17 = 922,539 元。這只計 Keytruda，不含 paclitaxel/carboplatin/AC、給藥與檢查費。",
+      "expected": {
+        "must_call": [
+          "drug-search",
+          "formulation-lookup"
+        ],
+        "contains_regex": [
+          "KEYNOTE-?522|KN522",
+          "17|十七",
+          "54267|54,267",
+          "922539|922,539",
+          "54267\\s*[x×*]\\s*17|54,267\\s*[x×*]\\s*17"
+        ]
+      },
+      "passed": false,
+      "failure_type": "factual_omission_or_wrong_value",
+      "error": "missing pattern 922539|922,539; reply=根據網站資料庫，Keytruda (Pembrolizumab) 的健保價格為 54,267 元 (單位：100mg/4mL vial)。\n\n若使用 200mg q3w，每劑需 2 瓶，總計 17 次治療的暫估藥費計算如下：\n- 單劑費用：54,267 元 × 2 瓶 = 108,534 元\n- 總額：108,534 元 × 17 次 = 1,845,078 元\n\n該病患 (T2N1M0) 屬於早期三陰性乳癌，符合 KEYNOTE-522/KN522 架構之適應症（第II期至第IIIb期，cT2-4 N0-2），但實際給付需依健保規定並經事前審查核准。",
+      "failure_analysis": "需要檢查多步推論題的 tool result 是否包含所有必要資料，以及 prompt 是否要求逐步引用網站資料。",
+      "data_question": "需要檢查多步推論題的 tool result 是否包含所有必要資料，以及 prompt 是否要求逐步引用網站資料。",
+      "checks": [],
+      "agent_reply": "根據網站資料庫，Keytruda (Pembrolizumab) 的健保價格為 54,267 元 (單位：100mg/4mL vial)。\n\n若使用 200mg q3w，每劑需 2 瓶，總計 17 次治療的暫估藥費計算如下：\n- 單劑費用：54,267 元 × 2 瓶 = 108,534 元\n- 總額：108,534 元 × 17 次 = 1,845,078 元\n\n該病患 (T2N1M0) 屬於早期三陰性乳癌，符合 KEYNOTE-522/KN522 架構之適應症（第II期至第IIIb期，cT2-4 N0-2），但實際給付需依健保規定並經事前審查核准。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [
+        {
+          "source": "nhi_drug_coverage.db",
+          "id": "drug:1774",
+          "title": "Pembrolizumab"
+        }
+      ],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 7171
+    },
+    {
+      "id": "reason-003",
+      "category": "reasoning_composition",
+      "question": "Arimidex 可以和 Femara 共用嗎？請只根據網站內 anastrozole/letrozole 資料回答，並指出原因。",
+      "patient_context": {
+        "er": "+",
+        "pr": "+",
+        "her2": "-",
+        "menopause": "post"
+      },
+      "reference_answer": "不可共用。網站資料中 anastrozole/letrozole 均屬 aromatase inhibitor，給付條件文字包含不得與其他 aromatase inhibitor 併用。",
+      "expected": {
+        "must_call": [
+          "drug-search",
+          "formulation-lookup"
+        ],
+        "contains_regex": [
+          "Arimidex|Anastrozole",
+          "Femara|Letrozole",
+          "不得|不建議|不可|不能",
+          "其他\\s*aromatase inhibitor|AI|aromatase inhibitor"
+        ],
+        "must_not_regex": [
+          "可以[^。；\\n]{0,20}(共用|併用|一起使用)"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:drug-search",
+        "tool:formulation-lookup",
+        "regex:Arimidex|Anastrozole",
+        "regex:Femara|Letrozole",
+        "regex:不得|不建議|不可|不能",
+        "regex:其他\\s*aromatase inhibitor|AI|aromatase inhibitor",
+        "not_regex:可以[^。；\\n]{0,20}(共用|併用|一起使用)"
+      ],
+      "agent_reply": "根據網站內資料，Arimidex (Anastrozole) 與 Femara (Letrozole) 不可共用。原因為兩者均屬 aromatase inhibitor，根據資料庫中 Anastrozole 與 Letrozole 的適應症規定，無論是作為 tamoxifen 治療後之延伸治療或早期乳癌之輔助治療，均明確註明「不得與其他 aromatase inhibitor 併用」。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [
+        {
+          "source": "nhi_drug_coverage.db",
+          "id": "drug:1725",
+          "title": "Anastrozole"
+        },
+        {
+          "source": "nhi_drug_coverage.db",
+          "id": "drug:1751",
+          "title": "Letrozole"
+        }
+      ],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 3426
+    },
+    {
+      "id": "reason-004",
+      "category": "reasoning_composition",
+      "question": "Zoladex LA 三個月一次，配合 Femara 自費使用三年，依網站內院內價估算總藥費是多少？請列出 Zoladex、Femara 與總額。",
+      "patient_context": {
+        "er": "+",
+        "pr": "+",
+        "her2": "-",
+        "menopause": "pre"
+      },
+      "reference_answer": "假設 Zoladex LA 10.8mg 每 3 個月一次、3 年共 12 次：10,800 x 12 = 129,600 元。Femara/Lovizol 自費價 44 元/日，3 年暫用 365x3 天：44 x 1095 = 48,180 元。合計 177,780 元。",
+      "expected": {
+        "must_call": [
+          "formulation-lookup"
+        ],
+        "contains_regex": [
+          "Zoladex",
+          "Femara|Letrozole",
+          "10800|10,800",
+          "44|44",
+          "129600|129,600",
+          "48180|48,180",
+          "177780|177,780"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:formulation-lookup",
+        "regex:Zoladex",
+        "regex:Femara|Letrozole",
+        "regex:10800|10,800",
+        "regex:44|44",
+        "regex:129600|129,600",
+        "regex:48180|48,180",
+        "regex:177780|177,780"
+      ],
+      "agent_reply": "根據網站內院內價（self_pay_price）估算，三年總藥費如下：\n\n1. Zoladex LA (10.8mg/syringe)：\n- 單價：10,800 元\n- 頻率：每 3 個月一次 $\rightarrow$ 每年 4 次 $\rightarrow$ 三年共 12 次\n- 小計：10,800 $\times$ 12 = 129,600 元\n\n2. Femara (2.5mg/tab)：\n- 單價：44 元\n- 頻率：每日 1 顆 $\rightarrow$ 每年 365 顆 $\rightarrow$ 三年共 1,095 顆\n- 小計：44 $\times$ 1,095 = 48,180 元\n\n總額估算：129,600 + 48,180 = 177,780 元\n\n※ 以上金額僅為藥品單價估算，實際費用請以院內正式開單為準。",
+      "called_tools": [
+        "calculate/staging-score",
+        "drug-search",
+        "formulation-lookup"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 4296
+    },
+    {
+      "id": "reason-012",
+      "category": "reasoning_composition",
+      "question": "如果我貼的問題文字說 T2N1，但左邊 patient_context 是 T3N1M0，請你以 payload 的 patient_context 為準回答目前病人分期，不要被問題內 T2N1 誤導。",
+      "patient_context": {
+        "cT": "T3",
+        "cN": "N1",
+        "cM": "M0"
+      },
+      "reference_answer": "Agent 應以 API payload/patient_context 為準：T3N1M0 = IIIA。若被使用者文字內 T2N1 帶走，代表上下文優先序需要修正。",
+      "expected": {
+        "must_call": [
+          "calculate/staging-score"
+        ],
+        "contains_regex": [
+          "T3N1M0",
+          "IIIA|stage\\s*IIIA|3A"
+        ],
+        "must_not_regex": [
+          "T2N1M0[^。；\\n]{0,30}IIB",
+          "目前病人[^。；\\n]{0,40}T2N1"
+        ]
+      },
+      "passed": true,
+      "checks": [
+        "tool:calculate/staging-score",
+        "regex:T3N1M0",
+        "regex:IIIA|stage\\s*IIIA|3A",
+        "not_regex:T2N1M0[^。；\\n]{0,30}IIB",
+        "not_regex:目前病人[^。；\\n]{0,40}T2N1"
+      ],
+      "agent_reply": "根據系統目前的 patient context (T3N1M0)，病人的分期為 IIIA (clinical basis)。",
+      "called_tools": [
+        "calculate/staging-score"
+      ],
+      "tool_id": "",
+      "patient_patch": {},
+      "citations": [],
+      "model": "gemma4:31b-cloud",
+      "runtime": "local-ollama",
+      "elapsed_ms": 880
+    }
+  ]
+}
