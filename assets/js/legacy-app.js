@@ -2171,6 +2171,26 @@ function dashboardSupportToolCard(ctx){
         <span class="modal-dashboard-summary summary-supportResources">${lines}</span>
     </button>`;
 }
+function dashboardRecordingToolCard(){
+    const recording = _patientCenterRecorder && _patientCenterRecorder.state === 'recording';
+    const hasAudio = !!_patientCenterRecordingBlob;
+    const hasEncounter = !!_patientCenterEncounterId;
+    const status = recording ? 'green' : (hasAudio || hasEncounter ? 'green' : 'yellow');
+    const statusText = recording ? '錄音中' : (hasEncounter ? '已建立 encounter' : (hasAudio ? '已錄音' : '未錄音'));
+    const service = getPatientCenterRecordingServiceConfig();
+    const lines = [
+        `<span class="modal-dashboard-line"><b>狀態</b><span>${esc(statusText)}</span></span>`,
+        `<span class="modal-dashboard-line"><b>轉錄服務</b><span>${esc(service.enabled && service.baseUrl ? '已設定' : '未設定')}</span></span>`,
+        `<span class="modal-dashboard-line"><b>輸出</b><span>摘要 / SOAP / Plan</span></span>`
+    ].join('');
+    return `<button type="button" class="modal-dashboard-card patient-tool-card card-recordingPage binding-optional" style="--tool-span:1" onclick="showPatientCenter()">
+        <span class="modal-dashboard-card-head">
+            <span class="modal-dashboard-card-title-wrap"><span class="modal-dashboard-card-icon">🎙</span><strong class="modal-dashboard-card-title">門診錄音</strong><span class="modal-dashboard-status ${status}" title="${esc(statusText)}"></span></span>
+            <span class="modal-dashboard-card-action">展開 ›</span>
+        </span>
+        <span class="modal-dashboard-summary summary-recordingPage">${lines}</span>
+    </button>`;
+}
 function safeDashboardWidgetSummary(widget){
     try {
         return dashboardWidgetSummary(widget);
@@ -3487,7 +3507,7 @@ function renderModalDashboardOverview(){
         .map(id => DASHBOARD_WIDGETS.find(w => w.id === id))
         .filter(w => w && isDashboardWidgetAvailable(w) && visible[w.id] !== false)
         .map(w => dashboardOpenToolCard(w, safeDashboardWidgetSummary(w)))
-        .join('') + dashboardSupportToolCard(dashboardPatientContext());
+        .join('') + dashboardRecordingToolCard() + dashboardSupportToolCard(dashboardPatientContext());
     const compact = dashboardCompactContextParts(ctx);
     const pills = [
         dashboardContextPill('分期', compact.stageOverview, ctx.stage.T && ctx.stage.N && ctx.stage.M ? 'ok' : 'warn'),
@@ -6763,8 +6783,6 @@ function patientCenterAdminChecklistItems(p, bundle){
     const items = [];
     const add = (id, title, detail, autoState='open') => items.push({ id, title, detail, autoState });
     add('stage-complete', 'TNM / stage 已確認', st.anatomic ? `${patientCenterTnmString(p)}，stage ${st.anatomic}` : '缺 T/N/M，Tumor Board 與病人摘要會不完整', st.anatomic ? 'ready' : 'warn');
-    add('biomarker-complete', 'ER / PR / HER2 / Ki-67 報告欄位', (p.er && p.pr && p.her2 && p.ki67) ? '核心 biomarker 已可組成摘要' : '仍有 biomarker 空白，請回 Workspace 補齊', (p.er && p.pr && p.her2 && p.ki67) ? 'ready' : 'warn');
-    add('icd-catastrophic', 'ICD / 重大傷病資訊', (p.side && p.quadrant) ? '側別與象限已可產生 ICD / 重卡碼' : '缺側別或象限，重卡/ICD 需確認', (p.side && p.quadrant) ? 'ready' : 'warn');
     if(her2Pos) add('her2-echo', 'HER2+ 行政核對：Echo 基線紀錄', '若後續使用 anti-HER2 藥物，事審或病歷常需心臟基線資料');
     if(preMenopause) add('fertility-discussion', '停經前 / 年輕病人：生育保存討論紀錄', '確認是否已說明或記錄不適用原因');
     if(tnbc && !p.brca) add('tnbc-brca-status', 'TNBC：BRCA 送檢狀態', 'BRCA 報告影響部分資格確認，先記錄目前送檢狀態');
@@ -6918,21 +6936,15 @@ function renderDesktopPatientCareCard(bundle){
     bundle = bundle || patientWorkspaceStructuredData();
     const p = bundle.patient_context || _patient || {};
     const checklist = renderPatientCenterChecklist(patientCenterAdminChecklistItems(p, bundle));
-    const summary = patientCenterCopySummary(p);
     return `<section class="patient-journey-panel patient-desktop-care-card">
         <div class="patient-panel-head">
             <span>Patient care checklist</span>
             <b>門診交付 / 行政核對</b>
         </div>
         <div class="patient-desktop-care-body">
-            <div class="patient-desktop-care-summary">
-                <label>病歷摘要</label>
-                <textarea readonly rows="3">${_journeyEsc(summary)}</textarea>
-                <div class="patient-desktop-care-actions">
-                    <button type="button" class="icon-copy-btn" title="複製病歷摘要" aria-label="複製病歷摘要" onclick="copyWorkspaceCommonVariableSummary(this)"><span aria-hidden="true">⧉</span></button>
-                    <button type="button" onclick="generatePatientTreatmentPlan()">病人說明單</button>
-                    <button type="button" onclick="printWorkspaceSummary()">列印病歷摘要</button>
-                </div>
+            <div class="patient-desktop-care-actions">
+                <button type="button" onclick="generatePatientTreatmentPlan()">病人說明單</button>
+                <button type="button" onclick="printWorkspaceSummary()">列印病歷摘要</button>
             </div>
             <div class="patient-desktop-checklist">${checklist || '<div class="modal-dashboard-placeholder">目前無待核對項目</div>'}</div>
         </div>
