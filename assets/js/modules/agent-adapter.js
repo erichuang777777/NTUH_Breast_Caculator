@@ -5,12 +5,12 @@
 
   function defaultConfig(locationLike){
     const loc = locationLike || global.location || {};
-    const host = loc.hostname || '';
-    const isLocal = host === '127.0.0.1' || host === 'localhost';
+    const protocol = loc.protocol || '';
+    const hasHttpApi = protocol === 'http:' || protocol === 'https:';
     return {
-      enabled: isLocal,
-      endpoint: isLocal ? '/api/agent' : '',
-      headers: isLocal ? { 'x-client-app':'oncobreast-local-ollama-demo' } : {}
+      enabled: hasHttpApi,
+      endpoint: hasHttpApi ? '/api/agent' : '',
+      headers: hasHttpApi ? { 'x-client-app':'oncobreast-copilot' } : {}
     };
   }
 
@@ -23,9 +23,11 @@
       const raw = storage && storage.getItem ? storage.getItem(key) : '';
       if(!raw) return fallback;
       const saved = JSON.parse(raw || '{}');
+      const endpoint = String(saved.endpoint || '').trim();
+      if(!endpoint && fallback && fallback.endpoint) return fallback;
       return {
         enabled: !!saved.enabled,
-        endpoint: String(saved.endpoint || '').trim(),
+        endpoint,
         headers: saved.headers && typeof saved.headers === 'object' ? saved.headers : {}
       };
     } catch(e){

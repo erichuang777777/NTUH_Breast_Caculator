@@ -6,6 +6,17 @@ const API_DIR = path.resolve(__dirname, '../../data/api');
 const I18N_CACHE_DIR = path.resolve(__dirname, '../../data/i18n_cache');
 const FEEDBACK_REPO = process.env.FEEDBACK_GITHUB_REPO || 'erichuang777777/NTUH_Breast_Caculator';
 const FEEDBACK_LABEL = process.env.FEEDBACK_GITHUB_LABEL || 'feedback-board';
+const OLLAMA_HOST = (process.env.OLLAMA_HOST || 'https://ollama.com').replace(/\/+$/, '');
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'gpt-oss:120b';
+const OLLAMA_TIMEOUT_MS = Number(process.env.OLLAMA_TIMEOUT_MS || process.env.OLLAMA_TIMEOUT_SECONDS || 90000);
+const PATIENT_PATCH_FIELDS = new Set([
+  'age', 'menopause', 'side', 'symptoms', 'ecog', 'dm', 'htn', 'cad', 'size', 'tumor_kind',
+  'grade', 'cT', 'cN', 'cM', 'pT', 'pN', 'pM', 'er', 'pr', 'her2', 'her2_ihc', 'her2_fish',
+  'ki67', 'oncotype_rs', 'nodes_pos', 'nodes_total', 'sln_pos', 'sln_total', 'aln_pos',
+  'aln_total', 'pni', 'lvi', 'margin_involved', 'post_nac_response', 'brca', 'pdl1',
+  'pik3ca', 'esr1', 'civic_variant', 'height', 'weight', 'scr', 'breast_surgery',
+  'axillary_surgery',
+]);
 const AGENT_SYSTEM_PROMPT = [
   '你是 OncoBreast Calculator 的臨床工作區 copilot，面向醫師與護理師。',
   '請用繁體中文，回答要精簡、臨床可讀。',
@@ -82,6 +93,109 @@ function bodyJson(event) {
 
 function sanitizeFeedbackText(value, maxLength) {
   return String(value || '').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '').trim().slice(0, maxLength);
+}
+
+function parseAgentJsonText(text) {
+  const raw = String(text || '').trim();
+  if (!raw) return {};
+  try {
+    return JSON.parse(raw);
+  } catch (err) {
+    const match = raw.match(/\{[\s\S]*\}/);
+    if (!match) return { reply: raw };
+    try {
+      return JSON.parse(match[0]);
+    } catch (innerErr) {
+      return { reply: raw };
+    }
+  }
+}
+
+function sanitizePatientPatch(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
+  const patch = {};
+  for (const [key, raw] of Object.entries(value)) {
+    if (!PATIENT_PATCH_FIELDS.has(key)) continue;
+    if (raw === undefined || raw === null || raw === '') continue;
+    patch[key] = String(raw).slice(0, 120);
+  }
+  return patch;
+}
+
+function compactAgentPayload(body) {
+  const payload = body || {};
+  return {
+    message: String(payload.message || '').slice(0, 4000),
+    patient_context: payload.patient_context || {},
+    derived: payload.derived || {},
+    report_text: String(payload.report_text || '').slice(0, 8000),
+    tool_registry: Array.isArray(payload.tool_registry) ? payload.tool_registry.slice(0, 24) : [],
+    client: payload.client || {},
+    system_context: payload.system_context || {
+      note: 'Netlify Ollama Cloud gateway. Use only patient_context, derived, report_text, and website-provided payload data. If drug/risk/staging results are not present, ask for missing fields or say the website tool must be opened.',
+    },
+    preferred_model: OLLAMA_MODEL,
+  };
+}
+
+async function callOllamaAgent(body) {
+  const apiKey = process.env.OLLAMA_API_KEY || '';
+  if (!apiKey) {
+    return { ok: false, status: 503, error: 'OLLAMA_API_KEY is not configured on Netlify.' };
+  }
+  const agentContext = compactAgentPayload(body);
+  if (!agentContext.message.trim()) {
+    return { ok: false, status: 400, error: 'message required' };
+  }
+  const allowedTools = new Set(agentContext.tool_registry.map(t => String((t && t.id) || '')).filter(Boolean));
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), Math.max(1000, OLLAMA_TIMEOUT_MS));
+  try {
+    const res = await fetch(`${OLLAMA_HOST}/api/chat`, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: OLLAMA_MODEL,
+        stream: false,
+        format: 'json',
+        messages: [
+          { role: 'system', content: AGENT_SYSTEM_PROMPT },
+          { role: 'user', content: JSON.stringify(agentContext) },
+        ],
+        options: {
+          temperature: 0.2,
+          num_ctx: 8192,
+        },
+      }),
+      signal: controller.signal,
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      return { ok: false, status: res.status, error: data.error || data.message || 'Ollama Cloud request failed.' };
+    }
+    const content = String(((data.message || {}).content) || '').trim();
+    const answer = parseAgentJsonText(content);
+    let toolId = String(answer.tool_id || '').trim();
+    if (toolId && allowedTools.size && !allowedTools.has(toolId)) toolId = '';
+    const reply = String(answer.reply || answer.message || answer.text || '').trim() || 'Ollama Cloud 有回應，但沒有產生可顯示的文字。';
+    return {
+      ok: true,
+      reply,
+      tool_id: toolId,
+      patient_patch: sanitizePatientPatch(answer.patient_patch),
+      citations: Array.isArray(answer.citations) ? answer.citations.slice(0, 8) : [],
+      called_tools: Array.isArray(answer.called_tools) ? answer.called_tools.slice(0, 8) : ['ollama-cloud'],
+      model: OLLAMA_MODEL,
+      runtime: 'ollama-cloud',
+    };
+  } catch (err) {
+    return { ok: false, status: 502, error: 'Ollama Cloud agent unavailable', detail: err.name === 'AbortError' ? 'timeout' : err.message };
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 async function githubFeedbackRequest(pathname, options = {}) {
@@ -196,6 +310,13 @@ exports.handler = async function handler(event) {
       if (body === null) return json(400, { ok: false, error: 'Invalid JSON body' });
       const result = await createFeedback(body);
       return json(result.ok ? 200 : result.status || 503, result);
+    }
+
+    if (method === 'POST' && p === '/agent') {
+      const body = bodyJson(event);
+      if (body === null) return json(400, { ok: false, error: 'Invalid JSON body' });
+      const result = await callOllamaAgent(body);
+      return json(result.ok ? 200 : result.status || 502, result);
     }
 
     if (method === 'GET' && p === '/drugs') {

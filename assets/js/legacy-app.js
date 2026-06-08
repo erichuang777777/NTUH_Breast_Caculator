@@ -2897,9 +2897,9 @@ const DASHBOARD_AGENT_HISTORY_KEY = 'nhi_dashboard_agent_history_v1';
 const DASHBOARD_AGENT_CONTEXT_LIMIT = 8192;
 function dashboardAgentDefaultApiConfig(){
     if(window.OncoBreastAgentAdapter) return window.OncoBreastAgentAdapter.defaultConfig(location);
-    const host = (location && location.hostname) ? location.hostname : '';
-    const isLocal = host === '127.0.0.1' || host === 'localhost';
-    return { enabled: isLocal, endpoint: isLocal ? '/api/agent' : '', headers: isLocal ? { 'x-client-app':'oncobreast-local-ollama-demo' } : {} };
+    const protocol = (location && location.protocol) ? location.protocol : '';
+    const hasHttpApi = protocol === 'http:' || protocol === 'https:';
+    return { enabled: hasHttpApi, endpoint: hasHttpApi ? '/api/agent' : '', headers: hasHttpApi ? { 'x-client-app':'oncobreast-copilot' } : {} };
 }
 function getDashboardAgentPosition(){
     try {
@@ -2942,9 +2942,11 @@ function getDashboardAgentApiConfig(){
         const raw = localStorage.getItem(DASHBOARD_AGENT_API_CONFIG_KEY);
         if(!raw) return fallback;
         const saved = JSON.parse(raw || '{}');
+        const endpoint = String(saved.endpoint || '').trim();
+        if(!endpoint && fallback && fallback.endpoint) return fallback;
         return {
             enabled: !!saved.enabled,
-            endpoint: String(saved.endpoint || '').trim(),
+            endpoint,
             headers: saved.headers && typeof saved.headers === 'object' ? saved.headers : {}
         };
     } catch(e){
