@@ -2388,8 +2388,10 @@ function dashboardPredictSurvivalSummary(p, erSign, age, size, nodes, grade, ki6
     const isERpos = erSign === '+';
     const her2tok = p.her2 === '+' ? 'pos' : ((p.her2 === '-' || p.her2 === 'low') ? 'neg' : 'unk');
     const ki67tok = typeof ki67 === 'number' && !Number.isNaN(ki67) ? (ki67 >= 10 ? 'pos' : 'neg') : 'unk';
-    const mode = readDashboardSelectValue('pred_mode', p.predict_mode || 'symp');
-    const year = readDashboardSelectNumber('pred_year', p.diagnosis_year || (p.initial_visit_date ? String(p.initial_visit_date).slice(0, 4) : new Date().getFullYear()));
+    const mode = readDashboardSelectValue('pred_mode', p.predict_mode || '');
+    const year = readDashboardSelectNumber('pred_year', p.diagnosis_year || '');
+    if(!['symp','screen','other'].includes(mode)) return null;
+    if(!Number.isFinite(Number(year)) || Number(year) < 2000 || Number(year) > 2030) return null;
     const smoker = readDashboardSelectValue('pred_smoker', p.smoker || 'unk');
     const prFromForm = readDashboardSelectValue('pred_pr', '');
     const prSign = prFromForm === 'pos' ? '+' : (prFromForm === 'neg' ? '-' : _markerSign(p.pr));
@@ -2397,7 +2399,7 @@ function dashboardPredictSurvivalSummary(p, erSign, age, size, nodes, grade, ki6
         ? _predictPI_ERpos(age, size, nodes, grade, mode, her2tok, ki67tok)
         : _predictPI_ERneg(age, size, nodes, grade, mode, her2tok);
     const mi = _predictMI(age);
-    const endo = readDashboardSelectNumber('pred_endo', isERpos ? 5 : 0);
+    const endo = readDashboardSelectNumber('pred_endo', 0);
     const chemo = readDashboardSelectNumber('pred_chemo', 0);
     const trast = readDashboardSelectNumber('pred_trast', 0);
     const bis = readDashboardSelectNumber('pred_bis', 0);
@@ -2500,8 +2502,8 @@ function dashboardPredictInputFromForm(p){
             ...(p || {}),
             pr: prSign || (p && p.pr) || '',
             her2: her2,
-            predict_mode: readDashboardSelectValue('pred_mode', (p && p.predict_mode) || 'symp'),
-            diagnosis_year: readDashboardSelectNumber('pred_year', (p && p.diagnosis_year) || new Date().getFullYear()),
+            predict_mode: readDashboardSelectValue('pred_mode', (p && p.predict_mode) || ''),
+            diagnosis_year: readDashboardSelectNumber('pred_year', (p && p.diagnosis_year) || ''),
             smoker: readDashboardSelectValue('pred_smoker', (p && p.smoker) || 'unk'),
             menopause: readDashboardSelectValue('pred_menopause', (p && p.menopause) || '')
         },
@@ -2531,6 +2533,7 @@ function dashboardCalcPredictionSource(p){
 function dashboardCalcScoreSummary(p){
     p = p || {};
     const items = [];
+    if(isWorkspaceDcisOnly(p)) return items;
     const st = getWorkspaceStage(p);
     const erSign = _markerSign(p.er);
     const prSign = _markerSign(p.pr);
@@ -2635,6 +2638,14 @@ function dashboardIcdLegend(side, quadrant){
 }
 function dashboardWidgetSummary(widget){
     const p = typeof _patient !== 'undefined' ? _patient : {};
+    const dcisOnly = isWorkspaceDcisOnly(p);
+    if(dcisOnly && ['calcPage','riskPage','cts5Page','pepiPage','ihc4Page','rcbPage'].includes(widget.id)){
+        return {
+            status: dashboardStatus(false),
+            metric: '',
+            lines: [dashboardPlainLine('DCIS only 不適用 invasive breast cancer risk score')]
+        };
+    }
     const sideLabel = {R:'右乳', L:'左乳', B:'雙側'}[p.side] || '';
     const quadrantLabel = {UO:'外上', UI:'內上', LO:'外下', LI:'內下', central:'中央/乳頭', nipple:'乳頭/乳暈', overlapping:'跨象限'}[p.quadrant] || '';
     if(widget.id === 'wsPage'){
@@ -5491,8 +5502,12 @@ function _gradeNumber(v){
 }
 function workspaceUsesNuclearGrade(p){
     p = p || {};
+    return isWorkspaceDcisOnly(p);
+}
+function isWorkspaceDcisOnly(p){
+    p = p || {};
     const st = getWorkspaceStageForDisplay(p);
-    return p.tumor_kind === 'dcis' || st.T === 'Tis' || p.cT === 'Tis' || p.pT === 'Tis';
+    return p.tumor_kind === 'dcis' || st.T === 'Tis' || p.cT === 'Tis' || p.pT === 'Tis' || p.T === 'Tis';
 }
 function workspaceGradeLabel(p){
     return workspaceUsesNuclearGrade(p) ? 'Nuclear grade' : 'Histologic grade';
@@ -5536,8 +5551,17 @@ function renderWorkspaceStageSummary(p){
     if(!el) return;
     const st = getWorkspaceStageForDisplay(p);
     if(st.T && st.N && st.M) p = { ...p, T: st.T, N: st.N, M: st.M, stageKind: st.kind };
+    const commonSummary = patientCenterOneLineSummary(p);
+    const copyRow = `
+      <div class="ws-stage-copy-row">
+        <div class="ws-stage-copy-main">
+          <span class="ws-stage-copy-label">病人整合摘要</span>
+          <strong>${esc(commonSummary || '待補病人資料')}</strong>
+        </div>
+        <button class="ws-btn" type="button" ${commonSummary ? '' : 'disabled'} onclick="copyWorkspaceCommonVariableSummary()">複製</button>
+      </div>`;
     if(!p.T || !p.N || !p.M){
-        el.innerHTML = '<div class="ws-empty">請先填入 T / N / M，完成後會自動顯示 AJCC 第八版解剖期別。</div>';
+        el.innerHTML = '<div class="ws-empty">請先填入 T / N / M，完成後會自動顯示 AJCC 第八版解剖期別。</div>' + copyRow;
         return;
     }
     let anat = '—';
@@ -5562,7 +5586,8 @@ function renderWorkspaceStageSummary(p){
         <div class="ws-stage-label">AJCC v8 預後期別</div>
         <div class="ws-stage-value">${prog ? 'Stage ' + prog : '—'}</div>
         <div class="ws-stage-sub">${progText}${subtypeText ? '　' + subtypeText : ''}</div>
-      </div>`;
+      </div>
+      ${copyRow}`;
 }
 
 function deriveCrossSectionSupport(p){
@@ -5777,6 +5802,22 @@ function refreshDashboardResults(){
         cards.push(_dashCard({ id:'ajcc', title:'AJCC 期別', missing:'需 T / N / M' }));
     }
 
+    const dcisOnly = isWorkspaceDcisOnly(p);
+    if(dcisOnly){
+        const dcisMsg = 'DCIS only 不適用 invasive breast cancer risk score';
+        [
+            ['predict', 'PREDICT v2.3/v3.0', '術後整體存活率估算'],
+            ['cts5', 'CTS5', '內分泌治療後晚期遠端復發風險'],
+            ['pepi', 'PEPI', '術前內分泌治療後病理風險分數'],
+            ['npi', 'NPI', 'Nottingham Prognostic Index'],
+            ['magee', 'Magee (估算 RS)', '以病理與 IHC 近似估算 Oncotype DX RS'],
+            ['ihc4', 'IHC4', 'IHC 乳癌復發風險分數'],
+            ['oncotype-rs', 'Oncotype DX RS', 'Recurrence Score'],
+            ['rcb', 'RCB', '術前治療後殘餘癌負荷']
+        ].forEach(([id, title, desc]) => {
+            cards.push(_dashCard({ id, title, desc, missing: dcisMsg }));
+        });
+    } else {
     // 2) CTS5 (Dowsett 2018: tumor size in mm)
     const cts5Exclusion = getCTS5Exclusion(erSign, prSign, p.her2);
     if(cts5Exclusion){
@@ -5825,19 +5866,21 @@ function refreshDashboardResults(){
     }
 
     // 3) PREDICT
+    const predictYear = p.diagnosis_year || '';
+    const predictMode = p.predict_mode || '';
     if(p.tumor_kind === 'dcis'){
         cards.push(_dashCard({
             id:'predict', title:'PREDICT v2.3/v3.0', desc:'術後整體存活率估算',
             missing:'DCIS only 不適用 invasive breast cancer PREDICT',
             tab:'predict'
         }));
-    } else if(p.age && p.size && p.nodes_pos!=='' && gradeNum && erSign && p.her2){
+    } else if(p.age && p.size && p.nodes_pos!=='' && gradeNum && erSign && p.her2 && predictYear && predictMode){
         const r2 = calcPredictPure({
             age:+p.age, size_mm:+p.size, nodes_pos:+p.nodes_pos, grade: gradeNum,
-            er: erSign, her2: p.her2, ki67Pct: p.ki67 ? workspaceKi67Number(p.ki67) : NaN, mode: p.predict_mode || 'symp'
+            er: erSign, her2: p.her2, ki67Pct: p.ki67 ? workspaceKi67Number(p.ki67) : NaN, mode: predictMode
         });
         const r3 = _predictV3Survival({
-            year: p.diagnosis_year || (p.initial_visit_date ? String(p.initial_visit_date).slice(0, 4) : new Date().getFullYear()),
+            year: predictYear,
             age:+p.age,
             smoker:p.smoker || 'unk',
             er: erSign === '+' ? 1 : 0,
@@ -5846,7 +5889,7 @@ function refreshDashboardResults(){
             ki67: p.ki67 ? (workspaceKi67CutoffSign(p.ki67, 10) === '+' ? 1 : (workspaceKi67CutoffSign(p.ki67, 10) === '-' ? 0 : null)) : null,
             size:+p.size,
             grade:gradeNum,
-            screen:_predictScreenVal(p.predict_mode || 'symp'),
+            screen:_predictScreenVal(predictMode),
             nodes:+p.nodes_pos,
             radio:0, heartGy:0, horm:0, gen:0, traz:0, bis:0
         });
@@ -5865,7 +5908,16 @@ function refreshDashboardResults(){
             cards.push(_dashCard({ id:'predict', title:'PREDICT v2.3/v3.0', desc:'術後整體存活率估算', missing:'資料超出模型範圍 (age 25-85, size≥1mm)' }));
         }
     } else {
-        cards.push(_dashCard({ id:'predict', title:'PREDICT v2.3/v3.0', desc:'術後整體存活率估算', missing:'需 age/size/N+/Grade/ER/HER2' }));
+        const missingPredict = [];
+        if(!p.age) missingPredict.push('age');
+        if(!p.size) missingPredict.push('size');
+        if(p.nodes_pos === '') missingPredict.push('N+');
+        if(!gradeNum) missingPredict.push('Grade');
+        if(!erSign) missingPredict.push('ER');
+        if(!p.her2) missingPredict.push('HER2');
+        if(!predictYear) missingPredict.push('診斷年份');
+        if(!predictMode) missingPredict.push('偵測方式');
+        cards.push(_dashCard({ id:'predict', title:'PREDICT v2.3/v3.0', desc:'術後整體存活率估算', missing:'需 ' + missingPredict.join('/') }));
     }
 
     // 4) NPI
@@ -5991,6 +6043,7 @@ function refreshDashboardResults(){
             missing:'需 tumor bed / invasive % / LN metastasis size',
             tab:'rcb'
         }));
+    }
     }
 
     // 6d) Gail moved to landing page; do not show it in patient staging workspace.
@@ -6637,6 +6690,9 @@ function patientCenterTumorBoardStructuredData(){
 function copyPatientCenterOneLineSummary(){
     copyTextToClipboard(patientCenterOneLineSummary(_patient || {}), '已複製病人整合摘要。');
 }
+function copyWorkspaceCommonVariableSummary(){
+    copyTextToClipboard(patientCenterOneLineSummary(_patient || {}), '已複製病人整合摘要。');
+}
 function copyTumorBoardStructuredData(){
     copyTextToClipboard(JSON.stringify(patientCenterTumorBoardStructuredData(), null, 2), '已複製 Tumor Board JSON。');
 }
@@ -7169,12 +7225,6 @@ function _setCalcValWorkspaceDefault(id, value){
         el.dataset.workspaceDefault = next;
     }
 }
-function defaultPredictHeartDoseBySide(side){
-    if(side === 'R') return 0;
-    if(side === 'L') return 2;
-    if(side === 'B') return 2;
-    return 2;
-}
 function predictNodeCountFromStage(nStage){
     const n = String(nStage || '').replace(/^[cyp]*N/i, 'N');
     if(!n || n === 'Nx') return '';
@@ -7186,6 +7236,22 @@ function predictNodeCountFromStage(nStage){
 }
 function syncPredictClinicalInputsFromPatient(){
     const p = _patient || {};
+    if(isWorkspaceDcisOnly(p)){
+        ['pred_year','pred_age','pred_size','pred_nodes','pred_grade','pred_rt_heart_dose'].forEach(id => _setCalcValForced(id, ''));
+        _setCalcValForced('pred_mode', '');
+        _setCalcValForced('pred_smoker', 'unk');
+        _setCalcValForced('pred_menopause', '');
+        _setCalcValForced('pred_er', 'unk');
+        _setCalcValForced('pred_pr', 'unk');
+        _setCalcValForced('pred_her2', 'unk');
+        _setCalcValForced('pred_ki67', 'unk');
+        _setCalcValForced('pred_endo', '0');
+        _setCalcValForced('pred_chemo', '0');
+        _setCalcValForced('pred_trast', '0');
+        _setCalcValForced('pred_bis', '0');
+        _setCalcValForced('pred_rt', '0');
+        return;
+    }
     const st = getWorkspaceStage(p);
     const erSign = _markerSign(p.er);
     const prSign = _markerSign(p.pr);
@@ -7193,7 +7259,7 @@ function syncPredictClinicalInputsFromPatient(){
     const inferredNodes = predictNodeCountFromStage(st.N);
     const sizeMm = has(p.size) ? Number(p.size) : '';
     const grade = has(p.grade) ? Number(p.grade) : '';
-    const year = p.diagnosis_year || (p.initial_visit_date ? String(p.initial_visit_date).slice(0, 4) : new Date().getFullYear());
+    const year = p.diagnosis_year || '';
     const nodeValue = has(p.nodes_pos) ? p.nodes_pos : (inferredNodes !== '' ? inferredNodes : '');
     const menopause = p.menopause || (Number(p.age) >= 54 ? 'post' : (Number(p.age) <= 45 && Number(p.age) > 0 ? 'pre' : ''));
     const erVal = erSign ? (erSign === '+' ? 'pos' : 'neg') : 'unk';
@@ -7206,7 +7272,7 @@ function syncPredictClinicalInputsFromPatient(){
     }
     _setCalcValForced('pred_year', year);
     _setCalcValForced('pred_age', p.age || '');
-    _setCalcValForced('pred_mode', p.predict_mode || 'symp');
+    _setCalcValForced('pred_mode', p.predict_mode || '');
     _setCalcValForced('pred_smoker', p.smoker || 'unk');
     _setCalcValForced('pred_menopause', menopause);
     _setCalcValForced('pred_size', sizeMm || '');
@@ -7216,7 +7282,7 @@ function syncPredictClinicalInputsFromPatient(){
     _setCalcValForced('pred_pr', prVal);
     _setCalcValForced('pred_her2', her2Val);
     _setCalcValForced('pred_ki67', ki67Val);
-    _setCalcValForced('pred_rt_heart_dose', defaultPredictHeartDoseBySide(p.side));
+    _setCalcValForced('pred_rt_heart_dose', '');
 }
 function syncPredictFromWorkspaceIfActive(changedKey){
     const watched = new Set(['age','diagnosis_year','initial_visit_date','predict_mode','smoker','menopause','size','nodes_pos','cN','pN','grade','er','pr','her2','ki67','side']);
@@ -7246,10 +7312,6 @@ function syncCalculatorFromWorkspace(tab){
 
     if(tab === 'predict'){
         syncPredictClinicalInputsFromPatient();
-        _setCalcValWorkspaceDefault('pred_chemo', '3');
-        _setCalcValWorkspaceDefault('pred_endo', erSign === '+' ? '5' : '0');
-        _setCalcValWorkspaceDefault('pred_trast', p.her2 === '+' ? '1' : '0');
-        _setCalcValWorkspaceDefault('pred_rt', '1');
         calcPREDICT();
     } else if(tab === 'cts5'){
         if(erSign) _setCalcVal('cts5_er', erSign === '+' ? 'pos' : 'neg');
@@ -7645,15 +7707,14 @@ function _readRequiredNumberInput(id){
 function calcPREDICT(){
     const el = document.getElementById('pred_result');
     if(!el) return;
-    const dcisOnly = typeof _patient !== 'undefined' && _patient && _patient.tumor_kind === 'dcis';
+    const dcisOnly = typeof _patient !== 'undefined' && isWorkspaceDcisOnly(_patient);
     if(dcisOnly){
         el.innerHTML = '<div class="calc-result"><div class="calc-result-label">DCIS only</div><div class="calc-result-detail">PREDICT v2.3/v3.0 是 invasive breast cancer 術後模型；DCIS only 不應用此模型計算存活率或治療獲益。</div></div>';
         return;
     }
     const workspaceSide = (typeof _patient !== 'undefined' && _patient && _patient.side) ? _patient.side : '';
     const sideLabel = {R:'Right breast', L:'Left breast', B:'Bilateral'}[workspaceSide] || 'Unknown';
-    const yearEl = document.getElementById('pred_year');
-    const year = yearEl ? +yearEl.value : new Date().getFullYear();
+    const year = _readRequiredNumberInput('pred_year');
     const age = _readRequiredNumberInput('pred_age');
     const mode = document.getElementById('pred_mode').value;
     const smokerEl = document.getElementById('pred_smoker');
@@ -7679,7 +7740,9 @@ function calcPREDICT(){
     const useBis = bis === 1 && menopause === 'post';
 
     const missingPredict = [];
+    if(!Number.isFinite(year) || year < 2000 || year > 2030) missingPredict.push('診斷年份');
     if(!Number.isFinite(age) || age < 25 || age > 85) missingPredict.push('年齡 (25-85)');
+    if(!['symp','screen','other'].includes(mode)) missingPredict.push('偵測方式');
     if(!Number.isFinite(size) || size < 1) missingPredict.push('invasive tumor size');
     if(!Number.isFinite(nodes) || nodes < 0) missingPredict.push('陽性淋巴結數或 N 分期');
     if(!Number.isFinite(grade)) missingPredict.push('Grade');
@@ -7849,7 +7912,7 @@ function calcPREDICT(){
         ['Bisphosphonates', useBis ? 'Yes' : 'No'],
         ['Radiotherapy', rt === 1 ? 'Yes' : 'No'],
         ['Heart mean dose', rt === 1 ? `${heartDose.toFixed(1)} Gy` : 'Not used'],
-        ['Laterality', `${sideLabel}; not a PREDICT input, only default heart dose helper`]
+        ['Laterality', `${sideLabel}; not a PREDICT input`]
     ];
     const officialSurv10 = model => model ? model.treated[9] * 100 : null;
     const v3Base10 = officialSurv10(v3BaseModel);
@@ -7982,15 +8045,6 @@ function calcPREDICT(){
         renderModalDashboardOverview();
     }
 }
-function loadPredictFromWorkspace(){
-    if(typeof _patient === 'undefined' || !_patient.age){
-        alert('Workspace 尚未填入資料。請先到「病人 Workspace」分頁填入年齡、腫瘤大小等基本資訊。');
-        return;
-    }
-    syncAllCalculatorsFromWorkspace();
-    switchCalcTab('predict');
-}
-
 // ── NPI (Galea 1992) ──
 function calcNPI(){
     const el = document.getElementById('npi_result');

@@ -3632,10 +3632,18 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
 .ws-stage-card.bad .ws-stage-value { color: #991b1b; }
 .ws-stage-sub { font-size: .78rem; color: var(--text-muted); margin-top: .35rem; line-height: 1.45; overflow-wrap: anywhere; }
 .ws-stage-inline .ws-stage-sub { margin-top: 0; white-space: normal; }
+.ws-stage-copy-row { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: .75rem; border: 1px solid var(--border); border-radius: var(--r-md); background: #f8fafc; padding: .62rem .72rem; }
+.ws-stage-copy-main { min-width: 0; display: grid; gap: .2rem; }
+.ws-stage-copy-label { font-size: .72rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: .05em; }
+.ws-stage-copy-main strong { font-size: .84rem; line-height: 1.45; color: var(--text); overflow-wrap: anywhere; }
+.ws-stage-copy-row .ws-btn { flex: 0 0 auto; }
+.ws-stage-copy-row .ws-btn:disabled { opacity: .45; cursor: not-allowed; }
 @media (max-width: 760px){
   .ws-form { grid-template-columns: 1fr 1fr; }
   .nhi-elig-list { grid-template-columns: 1fr; }
   .ws-stage-grid { grid-template-columns: 1fr; }
+  .ws-stage-copy-row { align-items: stretch; flex-direction: column; }
+  .ws-stage-copy-row .ws-btn { width: 100%; }
   .dashboard-mode .ws-input-col .ws-section,
   .dashboard-mode .ws-section.ws-optional[open] {
     grid-template-columns: 1fr;

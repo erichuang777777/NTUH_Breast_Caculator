@@ -1242,7 +1242,6 @@
         <div class="calc-card">
           <div class="calc-section-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem">
             <span>PREDICT v2.3 / v3.0 — 乳癌術後存活率 + 治療獲益</span>
-            <button class="ws-btn" style="font-size:.75rem;padding:.3rem .7rem;background:#fdf2f8;color:#be185d;border-color:#f9a8d4" onclick="loadPredictFromWorkspace()">&#128203; 從 Workspace 帶入</button>
           </div>
           <div style="font-size:.8rem;color:var(--text-muted);margin-bottom:.7rem;line-height:1.55">
             估算術後 5 / 10 / 15 年整體存活率，及各種輔助治療的<strong>增量獲益</strong>。
@@ -1256,28 +1255,28 @@
 
           <div style="font-weight:700;font-size:.82rem;color:#0e7490;margin:.7rem 0 .4rem">病人 / 腫瘤特徵</div>
           <div class="calc-form">
-            <div class="calc-field"><label>診斷年份</label><input type="number" id="pred_year" min="2000" max="2030" value="2026" oninput="calcPREDICT()"></div>
+            <div class="calc-field"><label>診斷年份</label><input type="number" id="pred_year" min="2000" max="2030" value="" placeholder="例如 2026" oninput="calcPREDICT()"></div>
             <div class="calc-field"><label>診斷時年齡 (歲)</label><input type="number" id="pred_age" min="20" max="100" value="" placeholder="由共用設定帶入" oninput="calcPREDICT()"></div>
-            <div class="calc-field"><label>偵測方式</label><select id="pred_mode" onchange="calcPREDICT()"><option value="symp" selected>症狀性</option><option value="screen">篩檢發現</option><option value="other">其他/臨床偵測</option></select></div>
+            <div class="calc-field"><label>偵測方式</label><select id="pred_mode" onchange="calcPREDICT()"><option value="" selected>未知</option><option value="symp">症狀性</option><option value="screen">篩檢發現</option><option value="other">其他/臨床偵測</option></select></div>
             <div class="calc-field"><label>Smoking</label><select id="pred_smoker" onchange="calcPREDICT()"><option value="unk" selected>未知 / population average</option><option value="0">非目前吸菸</option><option value="1">目前吸菸</option></select></div>
-            <div class="calc-field"><label>停經狀態</label><select id="pred_menopause" onchange="calcPREDICT()"><option value="">未知</option><option value="pre">未停經</option><option value="post" selected>已停經</option></select></div>
+            <div class="calc-field"><label>停經狀態</label><select id="pred_menopause" onchange="calcPREDICT()"><option value="" selected>未知</option><option value="pre">未停經</option><option value="post">已停經</option></select></div>
             <div class="calc-field"><label>腫瘤大小 (mm)</label><input type="number" id="pred_size" min="1" max="200" value="" placeholder="由共用設定帶入" oninput="calcPREDICT()"></div>
             <div class="calc-field"><label>陽性淋巴結數</label><input type="number" id="pred_nodes" min="0" max="50" value="" placeholder="由 LN+ 或 N 分期帶入" oninput="calcPREDICT()"></div>
             <div class="calc-field"><label>Grade</label><select id="pred_grade" onchange="calcPREDICT()"><option value="">未知</option><option value="1">G1</option><option value="2">G2</option><option value="3">G3</option></select></div>
             <div class="calc-field"><label>ER 狀態</label><select id="pred_er" onchange="calcPREDICT()"><option value="unk" selected>未知</option><option value="pos">ER 陽性</option><option value="neg">ER 陰性</option></select></div>
             <div class="calc-field"><label>PR 狀態</label><select id="pred_pr" onchange="calcPREDICT()"><option value="unk" selected>未知</option><option value="pos">PR 陽性</option><option value="neg">PR 陰性</option></select></div>
-            <div class="calc-field"><label>HER2 狀態</label><select id="pred_her2" onchange="calcPREDICT()"><option value="neg" selected>HER2 陰性</option><option value="pos">HER2 陽性</option><option value="unk">未知</option></select></div>
+            <div class="calc-field"><label>HER2 狀態</label><select id="pred_her2" onchange="calcPREDICT()"><option value="unk" selected>未知</option><option value="pos">HER2 陽性</option><option value="neg">HER2 陰性</option></select></div>
             <div class="calc-field"><label>Ki-67</label><select id="pred_ki67" onchange="calcPREDICT()"><option value="unk" selected>未測 / 未知</option><option value="pos">≥10% (陽性)</option><option value="neg">&lt;10% (陰性)</option></select></div>
           </div>
 
           <div style="font-weight:700;font-size:.82rem;color:#0e7490;margin:.85rem 0 .4rem">輔助治療選項</div>
           <div class="calc-form">
-            <div class="calc-field"><label>內分泌治療 (僅 ER+)</label><select id="pred_endo" onchange="calcPREDICT()"><option value="0">無</option><option value="5" selected>5 年</option><option value="10">10 年（延長）</option></select></div>
-            <div class="calc-field"><label>化學治療（PREDICT v3）</label><select id="pred_chemo" onchange="calcPREDICT()"><option value="0">無化療</option><option value="2">第 2 代：anthracycline-based（含 CMF）</option><option value="3" selected>第 3 代：anthracycline + taxane</option></select></div>
-            <div class="calc-field"><label>Trastuzumab (HER2+)</label><select id="pred_trast" onchange="calcPREDICT()"><option value="0">無</option><option value="1" selected>使用</option></select></div>
+            <div class="calc-field"><label>內分泌治療 (僅 ER+)</label><select id="pred_endo" onchange="calcPREDICT()"><option value="0" selected>無</option><option value="5">5 年</option><option value="10">10 年（延長）</option></select></div>
+            <div class="calc-field"><label>化學治療（PREDICT v3）</label><select id="pred_chemo" onchange="calcPREDICT()"><option value="0" selected>無化療</option><option value="2">第 2 代：anthracycline-based（含 CMF）</option><option value="3">第 3 代：anthracycline + taxane</option></select></div>
+            <div class="calc-field"><label>Trastuzumab (HER2+)</label><select id="pred_trast" onchange="calcPREDICT()"><option value="0" selected>無</option><option value="1">使用</option></select></div>
             <div class="calc-field"><label>Bisphosphonates (停經後)</label><select id="pred_bis" onchange="calcPREDICT()"><option value="0" selected>無</option><option value="1">使用</option></select></div>
-            <div class="calc-field"><label>Radiotherapy</label><select id="pred_rt" onchange="calcPREDICT()"><option value="0">無放療</option><option value="1" selected>使用放療</option></select></div>
-            <div class="calc-field"><label>Heart mean dose (Gy)</label><input type="number" id="pred_rt_heart_dose" min="0" max="20" step="0.1" value="2" oninput="calcPREDICT()"></div>
+            <div class="calc-field"><label>Radiotherapy</label><select id="pred_rt" onchange="calcPREDICT()"><option value="0" selected>無放療</option><option value="1">使用放療</option></select></div>
+            <div class="calc-field"><label>Heart mean dose (Gy)</label><input type="number" id="pred_rt_heart_dose" min="0" max="20" step="0.1" value="" placeholder="使用放療時填寫" oninput="calcPREDICT()"></div>
           </div>
 
           <div id="pred_result"></div>
