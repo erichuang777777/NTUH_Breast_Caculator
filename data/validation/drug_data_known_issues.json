@@ -1,0 +1,46 @@
+{
+  "generated_from": "docs/DRUG_DATA_AUDIT_2026-06-09.md",
+  "purpose": "Known legacy drug-data issues. Strict validation fails only on new error-level issues not listed here.",
+  "known": [
+    {"code": "off_specialty_breast_row", "target": "drug:1730", "note": "Bevacizumab row contains non-breast indications"},
+    {"code": "off_specialty_breast_row", "target": "drug:1732", "note": "Ceritinib row is lung cancer data"},
+    {"code": "off_specialty_breast_row", "target": "drug:1733", "note": "Cetuximab row is head-neck/non-breast data"},
+    {"code": "off_specialty_breast_row", "target": "drug:1740", "note": "Erlotinib row is lung cancer data"},
+    {"code": "off_specialty_breast_row", "target": "drug:1750", "note": "Lenvatinib row is HCC/non-breast data"},
+    {"code": "off_specialty_breast_row", "target": "drug:1760", "note": "Ramucirumab row is non-breast data"},
+    {"code": "off_specialty_breast_row", "target": "drug:1765", "note": "Sorafenib row is HCC/RCC/thyroid data"},
+
+    {"code": "trade_name_is_other_generic", "target": "drug:1528", "note": "Bortezomib/Velcade duplicate modeling"},
+    {"code": "trade_name_is_other_generic", "target": "drug:1534", "note": "Dasatinib/Sprycel duplicate modeling"},
+    {"code": "trade_name_is_other_generic", "target": "drug:1542", "note": "Ibrutinib/Imbruvica duplicate modeling"},
+    {"code": "trade_name_is_other_generic", "target": "drug:1546", "note": "Lenalidomide/Revlimid duplicate modeling"},
+    {"code": "trade_name_is_other_generic", "target": "drug:1551", "note": "Pomalidomide/Pomalyst duplicate modeling"},
+    {"code": "trade_name_is_other_generic", "target": "drug:1553", "note": "Ponatinib/Iclusig duplicate modeling"},
+    {"code": "trade_name_is_other_generic", "target": "drug:1561", "note": "Venetoclax/Venclexta duplicate modeling"},
+    {"code": "trade_name_is_other_generic", "target": "drug:1724", "note": "Alpelisib/Piqray duplicate modeling"},
+    {"code": "trade_name_is_other_generic", "target": "drug:1725", "note": "Anastrozole/Arimidex duplicate modeling"},
+    {"code": "trade_name_is_other_generic", "target": "drug:1730", "note": "Bevacizumab/Avastin duplicate modeling"},
+    {"code": "trade_name_is_other_generic", "target": "drug:1749", "note": "Lapatinib/Tykerb duplicate modeling"},
+    {"code": "trade_name_is_other_generic", "target": "drug:1756", "note": "Palbociclib trade_names contains ribociclib"},
+    {"code": "trade_name_is_other_generic", "target": "drug:1758", "note": "Pertuzumab/Perjeta duplicate modeling"},
+    {"code": "trade_name_is_other_generic", "target": "drug:1768", "note": "Trastuzumab/Herceptin duplicate modeling"},
+    {"code": "trade_name_is_other_generic", "target": "drug:1769", "note": "Trastuzumab deruxtecan/Enhertu duplicate modeling"},
+    {"code": "trade_name_is_other_generic", "target": "drug:1770", "note": "Trastuzumab emtansine/Kadcyla duplicate modeling"},
+
+    {"code": "brand_generic_duplicate_rows", "target": "drug:1768,1747", "note": "Trastuzumab/Herceptin duplicate rows"},
+    {"code": "brand_generic_duplicate_rows", "target": "drug:1758,1757", "note": "Pertuzumab/Perjeta duplicate rows"},
+    {"code": "brand_generic_duplicate_rows", "target": "drug:1770,1748", "note": "T-DM1/Kadcyla duplicate rows"},
+    {"code": "brand_generic_duplicate_rows", "target": "drug:1769,1739", "note": "T-DXd/Enhertu duplicate rows"},
+    {"code": "brand_generic_duplicate_rows", "target": "drug:1725,1727", "note": "Anastrozole/Arimidex duplicate rows"},
+    {"code": "brand_generic_duplicate_rows", "target": "drug:1741,1721", "note": "Everolimus/Afinitor duplicate rows"},
+    {"code": "brand_generic_duplicate_rows", "target": "drug:1749,1771", "note": "Lapatinib/Tykerb duplicate rows"},
+    {"code": "brand_generic_duplicate_rows", "target": "drug:1724,1759", "note": "Alpelisib/Piqray duplicate rows"},
+
+    {"code": "known_bad_condition_text", "target": "drug:1742", "note": "Exemestane coverage rule appears copied from 2.5mg AI rule"},
+    {"code": "self_pay_text_with_nhi_price", "target": "drug:1773", "note": "Phesgo self-pay/NHI price semantics need cleanup"},
+    {"code": "formulation_without_drug_row", "target": "formulation:abemaciclib", "note": "Formulation exists without breast drug row"},
+    {"code": "formulation_without_drug_row", "target": "formulation:tucatinib", "note": "Formulation exists without breast drug row"},
+    {"code": "formulation_without_drug_row", "target": "formulation:neratinib", "note": "Formulation exists without breast drug row"},
+    {"code": "formulation_without_drug_row", "target": "formulation:atezolizumab", "note": "Formulation exists without breast drug row"}
+  ]
+}

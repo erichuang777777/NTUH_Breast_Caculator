@@ -118,8 +118,20 @@ async function call(method, path, queryStringParameters = {}, body = null) {
     subprocess.run(["node", "-e", script], cwd=ROOT, check=True)
 
 
+def check_drug_data_semantics():
+    subprocess.run([
+        sys.executable,
+        str(ROOT / "tools" / "validate_drug_data.py"),
+        "--baseline",
+        str(ROOT / "data" / "validation" / "drug_data_known_issues.json"),
+        "--strict",
+        "--hide-known",
+    ], cwd=ROOT, check=True)
+
+
 def main():
     check_exports_match_db()
+    check_drug_data_semantics()
     check_python_calculators()
     check_netlify_function()
     print("[OK] API/data checks passed")
