@@ -2234,38 +2234,92 @@ function dashboardRecordingToolCard(){
         <span class="modal-dashboard-summary summary-recordingPage">${lines}</span>
     </button>`;
 }
-function dashboardPatientInformToolCard(ctx){
+function dashboardPhaseFocus(ctx){
     ctx = ctx || dashboardPatientContext();
-    const p = (ctx && ctx.p) || _patient || {};
-    const bundle = patientWorkspaceStructuredData();
-    const regimen = patientPlanSelectedRegimenSummary();
-    const summary = patientCenterClinicalSummaryLine(p) || '請先填寫共用設定檔';
-    const missing = [];
-    if(!p.side || !p.quadrant) missing.push('重卡部位');
-    if(!p.size) missing.push('大小');
-    if(!p.grade) missing.push('Grade');
-    if(!p.er || !p.pr || !p.her2) missing.push('ER/PR/HER2');
-    if(!p.ki67) missing.push('Ki-67');
-    if(!((bundle.derived || {}).stage || {}).anatomic) missing.push('stage');
-    if(!regimen.selected) missing.push('處方');
-    const status = missing.length ? 'yellow' : 'green';
-    const statusText = missing.length ? `缺 ${missing.slice(0, 3).join('、')}${missing.length > 3 ? '…' : ''}` : '可產生';
-    const lines = [
-        `<span class="modal-dashboard-line"><b>摘要</b><span>${esc(summary)}</span></span>`,
-        `<span class="modal-dashboard-line"><b>處方</b><span>${esc(regimen.selected ? regimen.name : '尚未選擇化療配方')}</span></span>`,
-        `<span class="modal-dashboard-line"><b>狀態</b><span>${esc(statusText)}</span></span>`
-    ].join('');
-    return `<section class="modal-dashboard-card patient-tool-card card-patientInform binding-required patient-desktop-care-card" style="--tool-span:1">
-        <span class="modal-dashboard-card-head">
-            <span class="modal-dashboard-card-title-wrap"><span class="modal-dashboard-card-icon">🖨</span><strong class="modal-dashboard-card-title">病人治療說明單</strong><span class="modal-dashboard-status ${status}" title="${esc(statusText)}"></span></span>
-            <span class="modal-dashboard-card-action">${esc(statusText)}</span>
-        </span>
-        <span class="modal-dashboard-summary summary-patientInform">${lines}</span>
-        <div class="patient-desktop-care-actions">
-            <button type="button" onclick="generatePatientTreatmentPlan()">產生 A4 說明單</button>
-            <button type="button" onclick="openDashboardWidgetModal('inpatientPage')">編輯處方</button>
+    const phase = ctx.p && ctx.p.phase ? ctx.p.phase : '';
+    const base = {
+        group:'diagnosis',
+        label: ctx.phaseLabel || '尚未設定',
+        title:'先定位病人狀態',
+        detail:'選治療階段後，首頁會把相關工具群組排到前面。',
+        actions:['分期與亞型','重卡','PREDICT']
+    };
+    const map = {
+        initial: {
+            group:'diagnosis', label:'初診定位', title:'先完成診斷與分期',
+            detail:'補齊 TNM、受體、Ki-67、重卡部位，再進入藥物與處方討論。',
+            actions:['共用設定檔','重卡','PREDICT']
+        },
+        neoadjuvant: {
+            group:'treatment', label:'術前治療評估', title:'優先整理治療規劃',
+            detail:'先看藥物給付、常用配方、臨床試驗，再產生病人說明單。',
+            actions:['乳癌藥物','常用配方','病人說明單']
+        },
+        advanced: {
+            group:'treatment', label:'局部晚期規劃', title:'優先整理治療順序',
+            detail:'聚焦術前系統治療、臨床試驗、處方費用與病人溝通。',
+            actions:['乳癌藥物','臨床試驗','病人說明單']
+        },
+        adjuvant: {
+            group:'treatment', label:'術後輔助治療', title:'優先估算輔助治療',
+            detail:'先確認 PREDICT/IHC4，再看藥物、配方與病人說明單。',
+            actions:['PREDICT 3.0','常用配方','病人說明單']
+        },
+        post_neoadjuvant_residual: {
+            group:'treatment', label:'Post-NAC response', title:'優先整理術後殘餘病灶路徑',
+            detail:'把 pCR/殘餘病灶、post-op stage、藥物選項與說明單放在同一條線。',
+            actions:['共用設定檔','乳癌藥物','病人說明單']
+        },
+        locoregional: {
+            group:'treatment', label:'局部/區域復發', title:'優先重新評估治療策略',
+            detail:'聚焦再分期、可用藥物、臨床試驗與跨科討論。',
+            actions:['分期與亞型','乳癌藥物','臨床試驗']
+        },
+        metastatic: {
+            group:'treatment', label:'轉移性第一線', title:'優先比對給付與治療線別',
+            detail:'把藥物查詢、臨床試驗、配方與費用估算排在前面。',
+            actions:['乳癌藥物','臨床試驗','常用配方']
+        },
+        metastatic_2L: {
+            group:'treatment', label:'轉移性後線', title:'優先比對後線選項',
+            detail:'聚焦 biomarker、治療線別、藥物給付與臨床試驗。',
+            actions:['乳癌藥物','臨床試驗','病人說明單']
+        },
+        followup: {
+            group:'workflow', label:'追蹤', title:'優先整理門診紀錄',
+            detail:'摘要、錄音、SOAP/Plan 與 Tumor Board 輸出排在前面。',
+            actions:['門診錄音','病歷摘要','Agent']
+        }
+    };
+    return map[phase] || base;
+}
+function dashboardPhaseFocusHtml(ctx){
+    const focus = dashboardPhaseFocus(ctx);
+    return `<section class="patient-phase-focus focus-${esc(focus.group)}">
+        <div>
+            <span>${esc(focus.label)}</span>
+            <strong>${esc(focus.title)}</strong>
+            <p>${esc(focus.detail)}</p>
         </div>
+        <div class="patient-phase-actions">${(focus.actions || []).map(x => `<b>${esc(x)}</b>`).join('')}</div>
     </section>`;
+}
+function dashboardToolGroupsHtml(cardById, ctx){
+    const focus = dashboardPhaseFocus(ctx);
+    const groups = [
+        { id:'diagnosis', title:'診斷與分期', note:'先確認這個病人的正確資料', ids:['icdPage','calcPage','ihc4Page','riskPage'] },
+        { id:'treatment', title:'治療規劃', note:'藥物、處方、費用與病人說明', ids:['breastPage','inpatientPage','trialsPage'] },
+        { id:'workflow', title:'門診工作流', note:'摘要、錄音與後續輸出', ids:['recordingPage'] }
+    ];
+    const ordered = groups.slice().sort((a, b) => (a.id === focus.group ? -1 : 0) - (b.id === focus.group ? -1 : 0));
+    return ordered.map(group => {
+        const cards = group.ids.map(id => cardById[id]).filter(Boolean).join('');
+        if(!cards) return '';
+        return `<section class="patient-tool-group ${group.id === focus.group ? 'active' : ''}">
+            <header><div><strong>${esc(group.title)}</strong><span>${esc(group.note)}</span></div>${group.id === focus.group ? '<em>目前優先</em>' : ''}</header>
+            <div class="patient-tool-group-grid">${cards}</div>
+        </section>`;
+    }).filter(Boolean).join('');
 }
 function safeDashboardWidgetSummary(widget){
     try {
@@ -3728,18 +3782,19 @@ function renderModalDashboardOverview(){
     }
     const ctx = dashboardPatientContext();
     const journey = dashboardJourneyState(ctx);
-    const toolIds = ['breastPage','inpatientPage','icdPage','trialsPage','patientInformPage','recordingPage','supportResources','calcPage','ihc4Page','riskPage'];
-    const toolCards = toolIds
-        .map(id => {
-            if(id === 'patientInformPage') return dashboardPatientInformToolCard(ctx);
-            if(id === 'recordingPage') return dashboardRecordingToolCard();
-            if(id === 'supportResources') return dashboardSupportToolCard(ctx);
+    const toolIds = ['breastPage','inpatientPage','icdPage','trialsPage','recordingPage','calcPage','ihc4Page','riskPage'];
+    const cardById = {};
+    toolIds.forEach(id => {
+        if(id === 'recordingPage') cardById[id] = dashboardRecordingToolCard();
+        else if(id === 'supportResources') cardById[id] = dashboardSupportToolCard(ctx);
+        else {
             const widget = DASHBOARD_WIDGETS.find(w => w.id === id);
-            if(!widget || !isDashboardWidgetAvailable(widget) || visible[widget.id] === false) return '';
-            return dashboardOpenToolCard(widget, safeDashboardWidgetSummary(widget));
-        })
-        .filter(Boolean)
-        .join('');
+            if(widget && isDashboardWidgetAvailable(widget) && visible[widget.id] !== false){
+                cardById[id] = dashboardOpenToolCard(widget, safeDashboardWidgetSummary(widget));
+            }
+        }
+    });
+    const toolGroups = dashboardToolGroupsHtml(cardById, ctx);
     const compact = dashboardCompactContextParts(ctx);
     const pills = [
         dashboardContextPill('分期', compact.stageOverview, ctx.stage.T && ctx.stage.N && ctx.stage.M ? 'ok' : 'warn'),
@@ -3751,8 +3806,9 @@ function renderModalDashboardOverview(){
     ].filter(Boolean).join('');
     const mainHtml = `
         <section class="patient-context-bar">
-            <div>
+            <div class="patient-context-title">
                 <strong>共用設定檔</strong>
+                <button type="button" class="patient-context-inform-btn" onclick="generatePatientTreatmentPlan()">病人說明單</button>
             </div>
             <div class="patient-context-actions">
                 <select id="dashboardPhaseSelect" onchange="setPatientField('phase', this.value)" aria-label="治療階段">
@@ -3771,6 +3827,7 @@ function renderModalDashboardOverview(){
             </div>
         </section>
         <section class="patient-context-pills">${pills}<button type="button" class="patient-context-copy" onclick="copyDashboardCompactContextSummary(this)" title="複製病歷摘要" aria-label="複製病歷摘要">⧉</button></section>
+        ${dashboardPhaseFocusHtml(ctx)}
         <section class="patient-journey-panel patient-journey-main">
             <div class="patient-panel-head">
                 <span>Evidence Block</span>
@@ -3780,7 +3837,7 @@ function renderModalDashboardOverview(){
                 ${renderNccnCitationBox(journey.citation)}
             </div>
         </section>
-        <section class="patient-tool-grid patient-journey-tools">${toolCards}</section>`;
+        <section class="patient-tool-grid patient-journey-tools">${toolGroups}</section>`;
     overview.innerHTML = `<div class="modal-dashboard-main">${mainHtml}</div>${renderDashboardAgentPanel()}`;
     setTimeout(() => dashboardAgentRefreshStatus(false), 0);
 }

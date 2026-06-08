@@ -1607,7 +1607,7 @@ body.mobile-device-shell .ws-context-pill-row {
     height: calc(100vh - 74px);
     overflow: hidden;
     display: grid;
-    grid-template-rows: auto auto minmax(144px, auto) auto minmax(0, 1fr);
+    grid-template-rows: auto auto auto minmax(112px, auto) minmax(0, 1fr);
     gap: 10px;
     align-items: start;
   }
@@ -1627,6 +1627,12 @@ body.mobile-device-shell .ws-context-pill-row {
     color: #122132;
     line-height: 1.2;
   }
+  .patient-context-title {
+    display: inline-flex;
+    align-items: center;
+    gap: .55rem;
+    min-width: 0;
+  }
   .patient-context-bar span {
     display: block;
     margin-top: .16rem;
@@ -1643,6 +1649,62 @@ body.mobile-device-shell .ws-context-pill-row {
     font-family: inherit;
     font-weight: 800;
     cursor: pointer;
+  }
+  .patient-context-bar .patient-context-inform-btn {
+    min-height: 30px;
+    padding: .32rem .62rem;
+    border-color: #fed7aa;
+    background: #fff7ed;
+    color: #9a3412;
+    font-size: .78rem;
+  }
+  .patient-phase-focus {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: .75rem;
+    align-items: center;
+    border: 1px solid #d8e3ee;
+    border-left: 4px solid #0f766e;
+    border-radius: 8px;
+    background: #fff;
+    padding: .55rem .7rem;
+  }
+  .patient-phase-focus span {
+    display: block;
+    color: #0f766e;
+    font-size: .68rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+  }
+  .patient-phase-focus strong {
+    display: block;
+    margin-top: .05rem;
+    color: #122132;
+    font-size: .95rem;
+    line-height: 1.22;
+  }
+  .patient-phase-focus p {
+    margin: .1rem 0 0;
+    color: #64748b;
+    font-size: .74rem;
+    line-height: 1.35;
+  }
+  .patient-phase-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: .32rem;
+  }
+  .patient-phase-actions b {
+    border: 1px solid #b8d6ca;
+    border-radius: 999px;
+    background: #f0fdfa;
+    color: #0f766e;
+    padding: .18rem .48rem;
+    font-size: .68rem;
+    font-weight: 900;
+    white-space: nowrap;
   }
   .patient-context-actions {
     flex: 0 0 auto;
@@ -1791,46 +1853,6 @@ body.mobile-device-shell .ws-context-pill-row {
     min-width: 1.72rem;
     height: 1.72rem;
     padding: 0 !important;
-  }
-  .patient-tool-card.card-patientInform {
-    cursor: default;
-  }
-  .patient-tool-card.card-patientInform .modal-dashboard-summary {
-    grid-template-rows: repeat(3, minmax(0, auto));
-    gap: .18rem;
-    min-height: 0;
-    max-height: 70px;
-    margin-top: .38rem;
-  }
-  .patient-tool-card.card-patientInform .modal-dashboard-line {
-    align-items: flex-start;
-    min-height: 0;
-    gap: .34rem;
-    font-size: .72rem;
-    line-height: 1.22;
-  }
-  .patient-tool-card.card-patientInform .modal-dashboard-line b {
-    flex: 0 0 2.4rem;
-    font-size: .62rem;
-    line-height: 1.22;
-    padding-top: .04rem;
-  }
-  .patient-tool-card.card-patientInform .modal-dashboard-line span {
-    display: -webkit-box;
-    overflow: hidden;
-    line-height: 1.22;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
-  }
-  .patient-tool-card.card-patientInform .modal-dashboard-line:first-child span {
-    -webkit-line-clamp: 2;
-  }
-  .patient-tool-card.card-patientInform .patient-desktop-care-actions {
-    margin-top: .34rem;
-  }
-  .patient-tool-card.card-patientInform .patient-desktop-care-actions button:first-child {
-    background: #0f766e;
-    color: #fff;
   }
   .patient-desktop-checklist {
     display: grid;
@@ -2018,16 +2040,64 @@ body.mobile-device-shell .ws-context-pill-row {
   }
   .patient-tool-grid {
     display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    grid-auto-rows: minmax(126px, 1fr);
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
     gap: .55rem;
     padding: 0;
     min-height: 0;
-    overflow: hidden;
+    overflow: auto;
+    padding-right: .12rem;
+  }
+  .patient-tool-group {
+    min-width: 0;
+    border: 1px solid #d8e3ee;
+    border-radius: 8px;
+    background: #fff;
+    padding: .5rem;
+  }
+  .patient-tool-group.active {
+    border-color: #99f6e4;
+    box-shadow: inset 0 0 0 1px #ccfbf1;
+  }
+  .patient-tool-group header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .6rem;
+    margin-bottom: .42rem;
+  }
+  .patient-tool-group header strong {
+    display: block;
+    color: #122132;
+    font-size: .82rem;
+    line-height: 1.2;
+  }
+  .patient-tool-group header span {
+    display: block;
+    color: #64748b;
+    font-size: .68rem;
+    line-height: 1.25;
+    margin-top: .06rem;
+  }
+  .patient-tool-group header em {
+    flex: 0 0 auto;
+    border-radius: 999px;
+    background: #ccfbf1;
+    color: #0f766e;
+    padding: .16rem .45rem;
+    font-size: .64rem;
+    font-style: normal;
+    font-weight: 900;
+    white-space: nowrap;
+  }
+  .patient-tool-group-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: .45rem;
   }
   .patient-tool-card {
     height: 100%;
-    min-height: 126px;
+    min-height: 112px;
     grid-column: span var(--tool-span, 1);
   }
   .patient-tool-card.card-breastPage,
@@ -2151,6 +2221,9 @@ body.mobile-device-shell .ws-context-pill-row {
       grid-template-columns: minmax(0, 1fr);
     }
     body.modal-dashboard-mode .patient-tool-grid {
+      grid-template-columns: 1fr;
+    }
+    body.modal-dashboard-mode .patient-tool-group-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
     body.modal-dashboard-mode .patient-tool-card {
@@ -2647,7 +2720,7 @@ body.mobile-device-shell .ws-context-pill-row {
     padding: .2rem .5rem;
   }
   @media (max-width: 1180px) {
-    .patient-tool-grid {
+    .patient-tool-group-grid {
       grid-template-columns: repeat(4, minmax(0, 1fr));
     }
     .patient-tool-card { grid-column: span var(--tool-span, 1); }
@@ -2662,7 +2735,7 @@ body.mobile-device-shell .ws-context-pill-row {
     }
   }
   @media (max-width: 760px) {
-    .patient-tool-grid {
+    .patient-tool-group-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
     .patient-tool-card { grid-column: span var(--tool-span, 1); }
