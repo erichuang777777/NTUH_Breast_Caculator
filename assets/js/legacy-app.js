@@ -2131,7 +2131,7 @@ function dashboardCompactContextSummaryText(){
     return lines.join('\n');
 }
 function copyDashboardCompactContextSummary(trigger){
-    copyTextToClipboard(patientCenterOneLineSummary(_patient || {}), '', trigger);
+    copyTextToClipboard(patientCenterCopySummary(_patient || {}), '', trigger);
 }
 function dashboardOpenToolCard(widget, summary, extraClass){
     const m = dashboardWidgetCardMeta(widget);
@@ -6694,8 +6694,9 @@ function patientCenterClinicalSummaryLine(p){
     const stageLine = [tnm, stage ? `stage ${stage}` : ''].filter(Boolean).join(', ');
     return `${parts.join(', ')}${stageLine ? `. ${stageLine}` : ''}`;
 }
-function patientCenterPostOpSummaryLine(p){
+function patientCenterPostOpSummaryLine(p, options={}){
     p = p || {};
+    const forCopy = options.mode === 'copy';
     const hasPostValue = k => p[k] !== undefined && p[k] !== null && String(p[k]).trim() !== '';
     const hasPostOp = ['pT','pN','breast_surgery','axillary_surgery','nodes_pos','nodes_total','sln_pos','sln_total','aln_pos','aln_total','pni','lvi','margin_involved','post_nac_response']
         .some(hasPostValue);
@@ -6709,18 +6710,17 @@ function patientCenterPostOpSummaryLine(p){
     else if(totalPos !== '') parts.push(`LN+${totalPos}`);
     if(hasPostValue('sln_pos') || hasPostValue('sln_total')) parts.push(`SLN ${p.sln_pos || '?'}/${p.sln_total || '?'}`);
     if(hasPostValue('aln_pos') || hasPostValue('aln_total')) parts.push(`ALN ${p.aln_pos || '?'}/${p.aln_total || '?'}`);
-    if(p.pni === 'present') parts.push('PNI+');
-    if(p.lvi === 'present') parts.push('LVI+');
+    if(!forCopy && p.pni === 'present') parts.push('PNI+');
+    if(!forCopy && p.lvi === 'present') parts.push('LVI+');
     if(p.margin_involved === 'yes') parts.push('margin involved');
-    if(p.margin_involved === 'no') parts.push('margin uninvolved');
     const tnm = patientCenterPostOpTnmString(p);
     if(tnm) parts.push(tnm);
-    const stage = patientCenterPostOpStageLabel(p);
-    if(stage) parts.push(stage);
     if(String(p.post_nac_prefix || '') === 'yes' && p.post_nac_response){
         const response = dashboardPostNacResponse(p) || p.post_nac_response;
-        parts.push(`post NAC status: ${response}`);
+        parts.push(forCopy ? response : `post NAC status: ${response}`);
     }
+    const stage = patientCenterPostOpStageLabel(p);
+    if(stage) parts.push(stage);
     return parts.length ? `s/p ${parts.join(', ')}` : '';
 }
 function patientCenterPostNacSummaryLine(p){
@@ -6738,6 +6738,16 @@ function patientCenterSummaryLines(p){
 }
 function patientCenterOneLineSummary(p){
     return patientCenterSummaryLines(p).join('\n');
+}
+function patientCenterCopySummaryLines(p){
+    const lines = [
+        patientCenterClinicalSummaryLine(p),
+        patientCenterPostOpSummaryLine(p, { mode:'copy' })
+    ].filter(Boolean);
+    return lines.length ? lines : [''];
+}
+function patientCenterCopySummary(p){
+    return patientCenterCopySummaryLines(p).join('\n');
 }
 function patientCenterAdminChecklistItems(p, bundle){
     p = p || {};
@@ -6850,10 +6860,10 @@ function patientCenterTumorBoardStructuredData(){
     };
 }
 function copyPatientCenterOneLineSummary(trigger){
-    copyTextToClipboard(patientCenterOneLineSummary(_patient || {}), '', trigger);
+    copyTextToClipboard(patientCenterCopySummary(_patient || {}), '', trigger);
 }
 function copyWorkspaceCommonVariableSummary(trigger){
-    copyTextToClipboard(patientCenterOneLineSummary(_patient || {}), '', trigger);
+    copyTextToClipboard(patientCenterCopySummary(_patient || {}), '', trigger);
 }
 function copyPatientContextProfile(trigger){
     const payload = {
