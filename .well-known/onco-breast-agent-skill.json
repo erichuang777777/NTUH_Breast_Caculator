@@ -1,7 +1,7 @@
 {
   "schema": "onco_breast_agent_skill.v1",
   "name": "OncoBreast Calculator",
-  "version": "v1.9-dev",
+  "version": "v1.9",
   "description": "Single-timepoint breast cancer patient context, staging, drug lookup, regimen, risk score, pathology extraction beta, support resources, and API guide for clinician-facing agents.",
   "documentation": "/docs/AGENT_SKILL.md",
   "api_base": "/api",
@@ -14,8 +14,8 @@
   },
   "system_prompt_ownership": "server-side agent gateway",
   "starter_prompts": [
-    "HER2 陽性 LN 轉移病人有哪些藥可以用？",
-    "ER+ T2N1 是第幾期？",
+    "請只依左側 Patient Context 查詢這個病人的可用藥物。",
+    "請只依左側 Patient Context 判斷這個病人的 AJCC 分期。",
     "我貼上病理報告後可以抽取哪些欄位？"
   ],
   "tools": [

@@ -103,13 +103,14 @@
     const tone = u.percent >= 90 ? 'danger' : (u.percent >= 70 ? 'warn' : 'ok');
     const label = u.percent >= 90 ? '接近上限' : (u.percent >= 70 ? '偏高' : '正常');
     const reportPart = u.chars && u.chars.report ? ` · 報告 ${Math.round(u.chars.report / 100) / 10}k字` : '';
-    return `<div class="dashboard-agent-context-meter ${tone}" title="估算值：含 system prompt、patient context、工具 registry、對話紀錄與已貼上的報告文字；實際 token 以模型 tokenizer 為準。">
+    return `<div class="dashboard-agent-context-meter ${tone}" title="前端粗估 token：含固定 overhead（system prompt、工具/JSON 包裝）、patient context、工具 registry、對話紀錄與已貼上的報告文字；實際 token 以模型 tokenizer 為準。">
       <div class="dashboard-agent-context-line">
-        <span>Context ${u.tokens.toLocaleString()} / ${u.limit.toLocaleString()} est.</span>
+        <span>Context est. ${u.tokens.toLocaleString()} / ${u.limit.toLocaleString()}</span>
         <b>${label} ${u.percent}%</b>
       </div>
       <div class="dashboard-agent-context-bar"><i style="width:${Math.min(100, u.percent)}%"></i></div>
       <div class="dashboard-agent-context-meta">對話 ${u.turns}/${u.maxTurns}${reportPart}</div>
+      ${u.percent >= 70 ? '<button class="dashboard-agent-context-action" type="button" onclick="dashboardAgentClearHistory()">清除對話紀錄</button>' : ''}
     </div>`;
   }
 

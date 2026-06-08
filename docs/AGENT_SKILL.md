@@ -1,6 +1,6 @@
 # OncoBreast Calculator Agent Skill
 
-Version: v1.9-dev
+Version: v1.9
 Audience: clinical decision-support agents, hospital workflow agents, and frontend copilots.
 Deployment target: static Netlify site with read-only Netlify Functions.
 
@@ -50,8 +50,8 @@ The current local system prompt is implemented in `web_app.py` inside the `/api/
 
 Agents may present these as clickable prompt suggestions:
 
-- HER2 陽性 LN 轉移病人有哪些藥可以用？
-- ER+ T2N1 是第幾期？
+- 請只依左側 Patient Context 查詢這個病人的可用藥物。
+- 請只依左側 Patient Context 判斷這個病人的 AJCC 分期。
 - 我貼上病理報告後可以抽取哪些欄位？
 
 ## Tool Registry
@@ -101,7 +101,7 @@ When an external agent endpoint is configured, the frontend posts this payload:
   ],
   "client": {
     "app": "OncoBreast Calculator",
-    "version": "v1.9-dev"
+    "version": "v1.9"
   }
 }
 ```

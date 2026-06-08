@@ -8,7 +8,7 @@ const _STATIC_CONFIG={
     price_badge_text:'藥價公告 115/03/23｜生效 115/04/01｜資料更新 2026/06/04',
     price_update_schedule:'每月23日抓取健保署公告 PDF；單一藥物更新僅作補查或院內價追蹤'
 };
-const APP_RELEASE_DATE = '2026-06-04';
+const APP_RELEASE_DATE = '2026-06-06';
 const APP_OFFLINE_FILENAME = `NTUH_Breast_Calculator_offline_${APP_RELEASE_DATE}.html`;
 const DRUG_ALIAS_MAP = {
     abemaciclib:['verzenio'],
@@ -485,8 +485,10 @@ function applySiteLanguage(){
     if(document.body) document.body.dataset.siteLanguage = lang;
     const sw = document.getElementById('siteLanguageSwitch');
     if(sw) sw.value = lang;
-    const menu = document.querySelector('.header-menu-link');
-    if(menu) menu.textContent = meta.menu;
+    const menuLabel = document.querySelector('.header-menu-label');
+    if(menuLabel) menuLabel.textContent = meta.menu;
+    const headerDate = document.getElementById('headerReleaseDate');
+    if(headerDate) headerDate.textContent = `${typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v1.9'} · ${typeof APP_RELEASE_DATE !== 'undefined' ? APP_RELEASE_DATE : '2026-06-06'}`;
     const sub = document.querySelector('.header-sub');
     if(sub) sub.textContent = meta.sub;
     if(document.body){
@@ -641,6 +643,13 @@ async function loadLanding(){
             <h2>分期與亞型</h2>
             <div class="count" style="color:#be185d">AJCC v8 + Risk Scores</div>
             <div class="desc">上方統一填變數，中間顯示 AJCC，下方顯示可用風險分數；資料不足者反灰</div>
+        </div>`;
+    if(F.workspace) html += `<div class="dept-card journey" onclick="showPatientCenter()">
+            ${_moduleBadge(false)}
+            <div style="font-size:2.5rem">&#128203;</div>
+            <h2>診間 Copilot</h2>
+            <div class="count" style="color:#ea580c">狀態板 / 列印 / 錄音</div>
+            <div class="desc">行政核對、病人整合摘要、Tumor Board 輸出、病人說明單與門診錄音工作流</div>
         </div>`;
     if(F.breast) html += `<div class="dept-card breast" onclick="showBreast()">
             ${_moduleBadge(false)}
@@ -2229,6 +2238,66 @@ function syncBreastFiltersFromWorkspace(){
     });
     const tnbc = document.getElementById('tnbcBadge');
     if(tnbc) tnbc.style.display = activeFilters.tnbc === 'true' ? 'inline-block' : 'none';
+    updatePatientFilterStatus('已依 Patient Context 套用篩選。');
+}
+function syncBreastFilterChips(){
+    document.querySelectorAll('#breastPage .filter-chip').forEach(chip => {
+        chip.classList.toggle('active', activeFilters[chip.dataset.f] === chip.dataset.v);
+    });
+    const tnbc = document.getElementById('tnbcBadge');
+    if(tnbc) tnbc.style.display = activeFilters.tnbc === 'true' ? 'inline-block' : 'none';
+}
+function patientContextFilterConflicts(){
+    const p = typeof _patient !== 'undefined' ? _patient : {};
+    const expected = buildBreastFiltersFromWorkspace(p);
+    const conflicts = [];
+    const labels = {
+        stage:{early:'早期', advanced:'局部晚期', metastatic:'轉移性'},
+        er_pr:{positive:'ER/PR 陽性', negative:'ER/PR 陰性'},
+        her2:{positive:'HER2 陽性', negative:'HER2 陰性'},
+        menopause:{pre:'停經前', post:'停經後'}
+    };
+    for(const key of ['stage','er_pr','her2','menopause']){
+        if(activeFilters[key] && expected[key] && activeFilters[key] !== expected[key]){
+            conflicts.push(`病人 ${labels[key][expected[key]] || expected[key]}，但篩選為 ${labels[key][activeFilters[key]] || activeFilters[key]}`);
+        }
+    }
+    const nodePositive = Number(p.nodes_pos || 0) > 0 || /^N[1-3]/i.test(String(p.cN || p.pN || ''));
+    if(activeFilters.ln === 'true' && !nodePositive && (p.nodes_pos !== '' || p.cN || p.pN)){
+        conflicts.push('病人未標示 LN+，但篩選中選了淋巴結轉移');
+    }
+    if(nodePositive && activeFilters.ln !== 'true' && (p.nodes_pos !== '' || p.cN || p.pN)){
+        conflicts.push('病人 LN+，但篩選未選淋巴結轉移');
+    }
+    return conflicts;
+}
+function updatePatientFilterStatus(message){
+    const el = document.getElementById('patientFilterStatus');
+    if(!el) return;
+    const conflicts = patientContextFilterConflicts();
+    if(conflicts.length){
+        el.hidden = false;
+        el.className = 'patient-filter-status warn';
+        el.textContent = conflicts.join('；');
+    } else if(message === null){
+        return;
+    } else if(message){
+        el.hidden = false;
+        el.className = 'patient-filter-status ok';
+        el.textContent = message;
+    } else {
+        el.hidden = true;
+        el.textContent = '';
+    }
+}
+function applyPatientContextToFilters(){
+    const p = typeof _patient !== 'undefined' ? _patient : {};
+    activeFilters = buildBreastFiltersFromWorkspace(p);
+    const nodePositive = Number(p.nodes_pos || 0) > 0 || /^N[1-3]/i.test(String(p.cN || p.pN || ''));
+    if(nodePositive) activeFilters.ln = 'true';
+    syncBreastFilterChips();
+    filterBreast();
+    updatePatientFilterStatus(Object.keys(activeFilters).length ? '已依 Patient Context 套用篩選。' : 'Patient Context 尚不足以產生篩選條件。');
 }
 function buildTrialKeywordFromWorkspace(){
     const p = typeof _patient !== 'undefined' ? _patient : {};
@@ -2897,13 +2966,14 @@ function dashboardAgentContextMeterHtml(extraText=''){
     const tone = usage.percent >= 90 ? 'danger' : (usage.percent >= 70 ? 'warn' : 'ok');
     const label = usage.percent >= 90 ? '接近上限' : (usage.percent >= 70 ? '偏高' : '正常');
     const reportPart = usage.chars.report ? ` · 報告 ${Math.round(usage.chars.report / 100) / 10}k字` : '';
-    return `<div class="dashboard-agent-context-meter ${tone}" title="估算值：含 system prompt、patient context、工具 registry、對話紀錄與已貼上的報告文字；實際 token 以模型 tokenizer 為準。">
+    return `<div class="dashboard-agent-context-meter ${tone}" title="前端粗估 token：含固定 overhead（system prompt、工具/JSON 包裝）、patient context、工具 registry、對話紀錄與已貼上的報告文字；實際 token 以模型 tokenizer 為準。">
         <div class="dashboard-agent-context-line">
-            <span>Context ${usage.tokens.toLocaleString()} / ${usage.limit.toLocaleString()} est.</span>
+            <span>Context est. ${usage.tokens.toLocaleString()} / ${usage.limit.toLocaleString()}</span>
             <b>${label} ${usage.percent}%</b>
         </div>
         <div class="dashboard-agent-context-bar"><i style="width:${Math.min(100, usage.percent)}%"></i></div>
         <div class="dashboard-agent-context-meta">對話 ${usage.turns}/${usage.maxTurns}${reportPart}</div>
+        ${usage.percent >= 70 ? '<button class="dashboard-agent-context-action" type="button" onclick="dashboardAgentClearHistory()">清除對話紀錄</button>' : ''}
     </div>`;
 }
 function dashboardAgentRefreshContextMeter(extraText=''){
@@ -2958,19 +3028,8 @@ function dashboardAgentShouldOpenTool(text){
     return /(開啟|打開|開\s|呼叫|調用|切到|進入|open|show|launch)/i.test(String(text || ''));
 }
 function dashboardAgentContextQuestion(kind){
-    const p = _patient || {};
-    const t = p.cT || p.pT || 'T?';
-    const n = p.cN || p.pN || 'N?';
-    const m = p.cM || p.pM || 'M0';
-    const er = p.er ? `ER${p.er}` : 'ER?';
-    const pr = p.pr ? `PR${p.pr}` : 'PR?';
-    const her2 = p.her2 ? `HER2${p.her2}` : 'HER2?';
-    const nodeText = (/N[1-3]/i.test(n) || Number(p.nodes_pos || 0) > 0) ? 'LN 轉移' : 'LN 狀態依 workspace';
-    const hasStageContext = t !== 'T?' && n !== 'N?' && m !== 'M?';
-    if(kind === 'stage' && !hasStageContext) return '這個病人的分期：目前左側 Patient Context 還沒有完整 T/N/M，請告訴我需要先補哪些欄位。';
-    if(kind === 'drug' && (!p.er || !p.pr || !p.her2)) return `這個病人的可用藥物：目前左側 Patient Context 仍缺 ER/PR/HER2 或完整分期，請先告訴我還缺哪些欄位，再列出可查詢的藥物類別。`;
-    if(kind === 'drug') return `目前 workspace：${er} ${pr} ${her2} ${t}${n}${m} ${nodeText}，有哪些藥物可以查？請列適應症、線別、健保價與事前審查。`;
-    if(kind === 'stage') return `這個病人的分期：目前左側 Patient Context 是 ${er} ${pr} ${her2} ${t}${n}${m}，請用左側資料判斷 AJCC 分期；如果我的文字和左側不同，請提醒我。`;
+    if(kind === 'stage') return '請只依左側 Patient Context 判斷這個病人的 AJCC 分期；如果我輸入文字和左側 Patient Context 不同，請先提醒衝突，不要默默改用文字覆蓋。';
+    if(kind === 'drug') return '請只依左側 Patient Context 查詢這個病人的可用藥物；請列出網站資料庫內可查到的適應症、線別、健保價與事前審查。若左側資料不足，請先列缺少欄位。';
     return '我貼上病理報告後可以抽取哪些欄位？';
 }
 function dashboardAgentAskContext(kind){
@@ -2997,6 +3056,7 @@ function renderDashboardAgentPanel(){
                     <button type="button" class="${pos === 'left' ? 'active' : ''}" onclick="setDashboardAgentPosition('left')">左</button>
                     <button type="button" class="${pos === 'right' ? 'active' : ''}" onclick="setDashboardAgentPosition('right')">右</button>
                 </div>
+                <button type="button" class="dashboard-agent-top-btn" onclick="openAgentIssueReport()" title="回報 Agent 對話錯誤">回報錯誤</button>
                 <button type="button" class="dashboard-agent-top-btn" onclick="dashboardAgentClearHistory()" title="清除對話紀錄">清對話</button>
                 <button type="button" class="dashboard-agent-collapse-btn" onclick="setDashboardAgentCollapsed(true)" title="縮小 AI Agent">收合</button>
             </div>
@@ -3083,6 +3143,12 @@ function dashboardAgentResponseHtml(response){
     const citations = Array.isArray(response.citations) ? response.citations : (Array.isArray(response.context) ? response.context : []);
     const calledTools = Array.isArray(response.called_tools) ? response.called_tools : [];
     let html = `<div>${esc(reply || '已處理。')}</div>`;
+    if(response.action === 'apiGuide'){
+        html += `<div class="dashboard-agent-action">
+            <div>需要接入完整 agent API 才能取得工具化回答。</div>
+            <button type="button" onclick="showApiGuide()">查看 API 接入說明</button>
+        </div>`;
+    }
     if(patch && typeof patch === 'object' && Object.keys(patch).length){
         const id = `patch_${++_dashboardAgentPatchSeq}`;
         _dashboardAgentPatches[id] = patch;
@@ -3225,11 +3291,13 @@ function dashboardAgentReply(text){
     const support = deriveCrossSectionSupport(ctx.p);
     const toolId = dashboardAgentToolFromText(text);
     if(toolId) return dashboardAgentRunTool(toolId);
-    if(/her2|her-2|陽性/.test(q) && /ln|淋巴|轉移|node/.test(q) && /藥|drug|用/.test(q)){
-        return `HER2 陽性且 LN 轉移時，可先依治療情境整理 HER2-directed therapy：trastuzumab、pertuzumab、T-DM1、trastuzumab deruxtecan、lapatinib/tucatinib 類藥物；實際可用性需依 early/metastatic、治療線別、術前/術後、有無殘餘病灶、事前審查與健保條件篩選。`;
+    if(/期|stage|ajcc|分期/.test(q)){
+        const st = ctx.stage || {};
+        const tnm = `${st.T || '?'}${st.N || '?'}${st.M || '?'}`;
+        return { action:'apiGuide', reply:`目前 fallback 模式只能讀左側 Patient Context，不會套用範例分期。左側 TNM 為 ${tnm}。請使用 /api/calculate/staging-score 或接入 agent API 取得正式工具結果；若左側欄位不足，請先補 T/N/M。` };
     }
-    if(/er\+|er positive|荷爾蒙|陽性/.test(q) && /t2\s*n1|t2n1/.test(q) && /期|stage|第幾/.test(q)){
-        return `以 AJCC v8 解剖分期，T2N1M0 通常為 Stage IIB。若要判斷預後期別，還需要 Grade、PR、HER2、Ki-67/Oncotype 等欄位。`;
+    if(/藥|drug|用藥|適應症|給付|健保|事審|自費/.test(q)){
+        return { action:'apiGuide', reply:'目前 fallback 模式不直接產生藥物建議，也不使用範例病人資料。請以左側 Patient Context 呼叫 agent API 或藥物查詢工具；若左側 ER/PR/HER2/TNM 不完整，需先補欄位。' };
     }
     if(/套用.*報告|報告.*套用|apply.*pathology/i.test(q)){
         if(!_dashboardAgentReportText) return '目前沒有已上傳或已貼上的病理報告文字。請先貼上文字或上傳 .txt。';
@@ -3404,7 +3472,7 @@ function initDashboardWidgetContent(id){
         if(!_inpInited) initInpCalc();
         syncInpatientInputsFromPatient();
     }
-    if(id === 'icdPage' && !_icdInited) initIcdPage();
+    if(id === 'icdPage') initIcdPage();
     if(id === 'surgeryPage' && !_surgInited) initSurgeryList();
     if(id === 'wsPage' && !_wsInited){ initWorkspace(); _wsInited=true; }
     if(id === 'calcPage'){
@@ -3718,7 +3786,7 @@ function showICD(){
     document.getElementById('calcPage').classList.remove('active');
     document.getElementById('wsPage').classList.remove('active');
     document.getElementById('journeyPage').classList.remove('active');
-    if(!_icdInited) initIcdPage();
+    initIcdPage();
 }
 function showSurgery(){
     leaveDesktopDashboard();
@@ -3798,8 +3866,26 @@ function showWorkspace(){
     document.getElementById('wsPage').classList.add('active');
     if(!_wsInited){ initWorkspace(); _wsInited=true; }
 }
+function showPatientCenter(){
+    leaveDesktopDashboard();
+    document.getElementById('landingPage').style.display='none';
+    document.getElementById('breastPage').classList.remove('active');
+    document.getElementById('inpatientPage').classList.remove('active');
+    document.getElementById('icdPage').classList.remove('active');
+    document.getElementById('surgeryPage').classList.remove('active');
+    document.getElementById('trialsPage').classList.remove('active');
+    document.getElementById('ajccPage').classList.remove('active');
+    document.getElementById('calcPage').classList.remove('active');
+    document.getElementById('wsPage').classList.remove('active');
+    document.getElementById('journeyPage').classList.add('active');
+    updatePatientCenterRecordingServiceUi();
+    renderPatientJourney();
+}
 function showPatientJourney(){
-    showWorkspace();
+    showPatientCenter();
+}
+function showJourney(){
+    showPatientCenter();
 }
 // ── Patient Workspace ──
 const PATIENT_DEFAULTS = {
@@ -5014,6 +5100,66 @@ function deriveWorkspaceICD(p){
     if(!code) return null;
     return { code, ntuhNo, subtitle: (SIDE_LABEL[p.side]||'') + ' ' + (QUAD_LABEL[p.quadrant]||'') };
 }
+let _icdInited = false;
+function icdCopyButton(value){
+    const text = String(value || '').trim();
+    if(!text || text === '-') return '';
+    return `<button class="icd-copy-btn" type="button" data-copy="${esc(text)}" data-msg="已複製 ${esc(text)}" onclick="event.stopPropagation();copyTextToClipboard(this.dataset.copy,this.dataset.msg)">複製</button>`;
+}
+function icdCodeRow(label, value, extraClass=''){
+    const text = value || '-';
+    const empty = !value;
+    return `<div class="icd-code-row">
+        <span>${esc(label)}</span>
+        <span class="icd-code ${extraClass} ${empty ? 'icd-code-empty' : ''}" ${empty ? '' : `data-copy="${esc(text)}" data-msg="已複製 ${esc(text)}" onclick="copyTextToClipboard(this.dataset.copy,this.dataset.msg)"`}>${esc(text)}</span>
+        ${icdCopyButton(text)}
+    </div>`;
+}
+function renderIcdSelection(side, zone){
+    const info = deriveWorkspaceICD({ side, quadrant:zone });
+    const area = document.getElementById('icdPopupArea');
+    if(!area || !info) return;
+    area.innerHTML = `<div class="icd-popup">
+        <div class="icd-popup-title">${esc(info.subtitle)}</div>
+        ${icdCodeRow('院內重卡編號', info.ntuhNo, 'ntuh-code')}
+        ${icdCodeRow('ICD-10-CM', info.code)}
+        ${icdCodeRow('院內診斷碼', String(info.code || '').replace('.', ''))}
+    </div>`;
+}
+function selectIcdZone(side, zone){
+    document.querySelectorAll('.icd-q').forEach(el => {
+        el.classList.toggle('selected', el.dataset.side === side && el.dataset.zone === zone);
+    });
+    renderIcdSelection(side, zone);
+}
+function initIcdPage(){
+    const zones = ['UO','UI','LO','LI','nipple','central','overlapping'];
+    const sides = ['R','L'];
+    const sideList = document.getElementById('icdSideList');
+    if(sideList){
+        sideList.innerHTML = sides.flatMap(side => zones.map(zone => {
+            const info = deriveWorkspaceICD({ side, quadrant:zone });
+            if(!info) return '';
+            return `<div class="icd-side-item"><strong>${esc(info.subtitle)}</strong><div>
+                ${icdCodeRow('重卡', info.ntuhNo, 'ntuh-code')}
+                ${icdCodeRow('ICD', info.code)}
+            </div></div>`;
+        })).join('');
+    }
+    const dcisList = document.getElementById('icdDcislist');
+    if(dcisList){
+        const patientSide = (typeof _patient !== 'undefined' && _patient && _patient.side) || 'R';
+        dcisList.innerHTML = zones.map(zone => {
+            const info = deriveWorkspaceICD({ side:patientSide, quadrant:zone, T:'Tis' });
+            if(!info) return '';
+            return `<div class="icd-side-item"><strong>DCIS ${esc(info.subtitle.replace(/^[左右]乳\s*/, ''))}</strong><div>
+                ${icdCodeRow('ICD', info.code)}
+                ${icdCodeRow('院內診斷碼', String(info.code || '').replace('.', ''))}
+            </div></div>`;
+        }).join('');
+    }
+    _icdInited = true;
+}
 function deriveWorkspaceSubtype(p){
     const er = _markerSign(p.er);
     const pr = _markerSign(p.pr);
@@ -6187,6 +6333,561 @@ function _journeyFact(label, value, note){
         ${note ? `<div class="journey-fact-note">${note}</div>` : ''}
     </div>`;
 }
+const PATIENT_CENTER_CHECKLIST_STATE_KEY = 'nhi_patient_center_copilot_checklist_v1';
+function patientCenterReadChecklistState(){
+    try {
+        const saved = JSON.parse(localStorage.getItem(PATIENT_CENTER_CHECKLIST_STATE_KEY) || '{}');
+        return saved && typeof saved === 'object' ? saved : {};
+    } catch(e){
+        return {};
+    }
+}
+function patientCenterWriteChecklistState(state){
+    try { localStorage.setItem(PATIENT_CENTER_CHECKLIST_STATE_KEY, JSON.stringify(state || {})); } catch(e){}
+}
+function setPatientCenterChecklistState(id, state){
+    const states = patientCenterReadChecklistState();
+    if(state) states[id] = state;
+    else delete states[id];
+    patientCenterWriteChecklistState(states);
+    renderPatientJourney();
+}
+function patientCenterChecklistStateButtons(id, current){
+    const opts = [
+        ['done', '已確認'],
+        ['na', '不適用'],
+        ['later', '稍後確認']
+    ];
+    return `<div class="patient-center-check-actions">${opts.map(([value, label]) => (
+        `<button type="button" class="${current === value ? 'active' : ''}" onclick="setPatientCenterChecklistState('${id}','${value}')">${label}</button>`
+    )).join('')}</div>`;
+}
+function patientCenterStableId(text){
+    return String(text || '').toLowerCase().replace(/[^\w\u4e00-\u9fff]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 48) || 'item';
+}
+function patientCenterTrimNumber(n, digits=1){
+    if(!Number.isFinite(n)) return '';
+    return n.toFixed(digits).replace(/\.0+$/, '').replace(/(\.\d*[1-9])0+$/, '$1');
+}
+function patientCenterSizeCmLabel(size){
+    const n = Number(String(size || '').replace(/[^\d.]/g, ''));
+    if(!Number.isFinite(n) || n <= 0) return '';
+    return `${patientCenterTrimNumber(n / 10, 1)}cm`;
+}
+function patientCenterGradeLabel(grade){
+    const g = String(grade || '').trim().toLowerCase();
+    const map = { '1':'I', '2':'II', '3':'III', i:'I', ii:'II', iii:'III' };
+    return map[g] ? `Gr${map[g]}` : '';
+}
+function patientCenterPercentOrSign(value){
+    const s = String(value == null ? '' : value).trim().replace(/\s+/g, '');
+    if(!s) return '';
+    if(s === '+' || s === '-') return s;
+    if(/^\d+(?:\.\d+)?$/.test(s)) return `${s}%`;
+    return s;
+}
+function patientCenterHer2Label(p){
+    p = p || {};
+    const ihc = String(p.her2_ihc || '').trim();
+    if(ihc) return ihc;
+    const h = String(p.her2 || '').trim();
+    if(h === '+') return 'positive';
+    if(h === '-') return 'negative';
+    if(h === 'low') return 'low';
+    return h;
+}
+function patientCenterFishLabel(value){
+    const s = String(value || '').trim();
+    if(!s) return '';
+    if(s === '+') return 'positive';
+    if(s === '-') return 'negative';
+    return s;
+}
+function patientCenterStageBundle(p){
+    p = p || {};
+    const st = getWorkspaceStageForDisplay(p);
+    const stagePatient = st.T && st.N && st.M ? { ...p, T: st.T, N: st.N, M: st.M, stageKind: st.kind } : p;
+    let anatomic = '';
+    try { anatomic = stagePatient.T && stagePatient.N && stagePatient.M ? (_ajccAnatomic(stagePatient.T, stagePatient.N, stagePatient.M) || '') : ''; } catch(e){}
+    return { st, stagePatient, anatomic };
+}
+function patientCenterTnmString(p){
+    const bundle = patientCenterStageBundle(p);
+    const st = bundle.st || {};
+    if(!st.T || !st.N || !st.M) return '';
+    const prefix = st.kind === 'pTNM' ? 'p' : (st.kind === 'ypTNM' ? 'yp' : (st.kind === 'cTNM' ? 'c' : ''));
+    return `${prefix}${st.T}${st.N}${st.M}`.replace(/\s+/g, '');
+}
+function patientCenterOneLineSummary(p){
+    p = p || {};
+    const side = ({R:"R't", L:"L't", B:'Bilateral'}[p.side] || '').trim();
+    const diagnosis = `${side ? side + ' ' : ''}breast ca`;
+    const parts = [diagnosis];
+    const size = patientCenterSizeCmLabel(p.size);
+    if(size) parts.push(size);
+    const grade = patientCenterGradeLabel(p.grade);
+    if(grade) parts.push(grade);
+    const er = patientCenterPercentOrSign(p.er);
+    if(er) parts.push(`ER:${er}`);
+    const pr = patientCenterPercentOrSign(p.pr);
+    if(pr) parts.push(`PR:${pr}`);
+    const her2 = patientCenterHer2Label(p);
+    if(her2) parts.push(`Her2:${her2}`);
+    const fish = patientCenterFishLabel(p.her2_fish);
+    if(fish) parts.push(`FISH:${fish}`);
+    const ki67 = patientCenterPercentOrSign(p.ki67);
+    if(ki67) parts.push(`Ki67:${ki67}`);
+    const tnm = patientCenterTnmString(p);
+    const stage = patientCenterStageBundle(p).anatomic;
+    const stageLine = [tnm, stage ? `stage ${stage}` : ''].filter(Boolean).join(', ');
+    return `${parts.join(', ')}${stageLine ? `. ${stageLine}` : ''}`;
+}
+function patientCenterAdminChecklistItems(p, bundle){
+    p = p || {};
+    const derived = (bundle && bundle.derived) || {};
+    const st = patientCenterStageBundle(p);
+    const subtype = derived.subtype || deriveWorkspaceSubtype(p) || '';
+    const tnbc = /TNBC|Triple Negative/i.test(subtype) || (_markerSign(p.er) === '-' && _markerSign(p.pr) === '-' && p.her2 === '-');
+    const her2Pos = p.her2 === '+';
+    const preMenopause = p.menopause === 'pre' || (Number(p.age) > 0 && Number(p.age) < 50 && p.menopause !== 'post');
+    const regimen = patientPlanSelectedRegimenSummary();
+    const regimenText = (regimen.drugs || []).join(' ').toLowerCase();
+    const items = [];
+    const add = (id, title, detail, autoState='open') => items.push({ id, title, detail, autoState });
+    add('stage-complete', 'TNM / stage 已確認', st.anatomic ? `${patientCenterTnmString(p)}，stage ${st.anatomic}` : '缺 T/N/M，Tumor Board 與病人摘要會不完整', st.anatomic ? 'ready' : 'warn');
+    add('biomarker-complete', 'ER / PR / HER2 / Ki-67 報告欄位', (p.er && p.pr && p.her2 && p.ki67) ? '核心 biomarker 已可組成摘要' : '仍有 biomarker 空白，請回 Workspace 補齊', (p.er && p.pr && p.her2 && p.ki67) ? 'ready' : 'warn');
+    add('icd-catastrophic', 'ICD / 重大傷病資訊', (p.side && p.quadrant) ? '側別與象限已可產生 ICD / 重卡碼' : '缺側別或象限，重卡/ICD 需確認', (p.side && p.quadrant) ? 'ready' : 'warn');
+    if(her2Pos) add('her2-echo', 'HER2+ 行政核對：Echo 基線紀錄', '若後續使用 anti-HER2 藥物，事審或病歷常需心臟基線資料');
+    if(preMenopause) add('fertility-discussion', '停經前 / 年輕病人：生育保存討論紀錄', '確認是否已說明或記錄不適用原因');
+    if(tnbc && !p.brca) add('tnbc-brca-status', 'TNBC：BRCA 送檢狀態', 'BRCA 報告影響部分資格確認，先記錄目前送檢狀態');
+    if(regimenText && /epirubicin|doxorubicin|anthracycline/.test(regimenText)) add('anthracycline-echo', 'Anthracycline 方案：心臟基線資料', '已選含 anthracycline 配方時，確認 Echo 或 cardiac risk 文件');
+    if(regimenText && /zoledronic|denosumab|bisphosphonate|xgeva|prolia/.test(regimenText)) add('bone-agent-dental', 'Bone agent：口腔/牙科評估', '已選骨保護相關藥物時，確認口腔評估或衛教紀錄');
+    if((derived.support && derived.support.coverage || []).some(x => /事審|prior|審/i.test(x))) add('prior-auth-docs', '事前審查文件', '整理病理、影像、治療線別、前線用藥與 biomarker 報告');
+    return items;
+}
+function patientCenterAdminHints(p, bundle){
+    p = p || {};
+    const hints = [];
+    const st = patientCenterStageBundle(p);
+    if(p.her2 === '+') hints.push('HER2 positive：行政上常需 anti-HER2 給付條件、療程階段與 Echo 基線文件。');
+    if(p.ki67) hints.push(`Ki-67 ${patientCenterPercentOrSign(p.ki67)}：可列入病理摘要與部分事審附件核對。`);
+    if(Number(p.nodes_pos || 0) > 0 || /^N[1-3]/i.test(String(st.st.N || ''))) hints.push('LN positive：重大傷病/分期摘要與 tumor board 欄位需明確標示 N 分期或陽性顆數。');
+    if(p.brca === 'brca1' || p.brca === 'brca2') hints.push('BRCA positive：Tumor Board 摘要需保留基因報告狀態與檢驗來源。');
+    if(p.side && p.quadrant) hints.push('側別與象限已填：可產生 ICD-10-CM 與院內重卡編號。');
+    if(!hints.length) hints.push('目前可先補齊 TNM、ER/PR/HER2、Ki-67、側別/象限，讓摘要與行政清單更完整。');
+    return hints;
+}
+function patientCenterTumorBoardStructuredData(){
+    const bundle = patientWorkspaceStructuredData();
+    const p = bundle.patient_context || {};
+    const stage = patientCenterStageBundle(p);
+    const checklist = patientCenterAdminChecklistItems(p, bundle);
+    return {
+        schema: 'onco_breast_tumor_board_case.v1',
+        generated_at: new Date().toISOString(),
+        source_app: 'OncoBreast Calculator',
+        one_line_summary: patientCenterOneLineSummary(p),
+        patient_id: bundle.patient_id || '',
+        encounter_id: bundle.encounter_id || '',
+        tumor_board: {
+            diagnosis_line: patientCenterOneLineSummary(p),
+            demographics: {
+                age: p.age || '',
+                sex: p.sex || '',
+                menopause: p.menopause || '',
+                ecog: p.ecog || ''
+            },
+            tumor: {
+                side: p.side || '',
+                quadrant: p.quadrant || '',
+                size_mm: p.size || '',
+                grade: p.grade || '',
+                tumor_kind: p.tumor_kind || ''
+            },
+            biomarkers: {
+                er: p.er || '',
+                pr: p.pr || '',
+                her2: p.her2 || '',
+                her2_ihc: p.her2_ihc || '',
+                her2_fish: p.her2_fish || '',
+                ki67: p.ki67 || '',
+                brca: p.brca || '',
+                pdl1: p.pdl1 || '',
+                pik3ca: p.pik3ca || '',
+                esr1: p.esr1 || '',
+                oncotype_rs: p.oncotype_rs || ''
+            },
+            stage: {
+                kind: stage.st.kind || '',
+                tnm: patientCenterTnmString(p),
+                T: stage.st.T || '',
+                N: stage.st.N || '',
+                M: stage.st.M || '',
+                anatomic: stage.anatomic || '',
+                prognostic: (bundle.derived.stage || {}).prognostic || ''
+            },
+            pathology: {
+                nodes_pos: p.nodes_pos || '',
+                nodes_total: p.nodes_total || '',
+                sln_pos: p.sln_pos || '',
+                sln_total: p.sln_total || '',
+                aln_pos: p.aln_pos || '',
+                aln_total: p.aln_total || '',
+                lvi: p.lvi || '',
+                pni: p.pni || '',
+                margin_involved: p.margin_involved || '',
+                post_nac_response: p.post_nac_response || ''
+            },
+            current_phase: p.phase || '',
+            administrative: {
+                icd10: ((bundle.derived.icd || {}).code) || '',
+                ntuh_catastrophic_no: ((bundle.derived.icd || {}).ntuhNo) || '',
+                checklist: checklist.map(item => ({ id:item.id, title:item.title, detail:item.detail, auto_state:item.autoState }))
+            },
+            completeness: {
+                missing: patientCenterPrintReadiness(p, stage.anatomic || '—'),
+                conflicts: ((bundle.derived.support || {}).conflicts) || []
+            }
+        },
+        patient_context_bundle: bundle
+    };
+}
+function copyPatientCenterOneLineSummary(){
+    copyTextToClipboard(patientCenterOneLineSummary(_patient || {}), '已複製病人整合摘要。');
+}
+function copyTumorBoardStructuredData(){
+    copyTextToClipboard(JSON.stringify(patientCenterTumorBoardStructuredData(), null, 2), '已複製 Tumor Board JSON。');
+}
+function downloadTumorBoardStructuredData(){
+    downloadJsonFile(patientCenterTumorBoardStructuredData(), `tumor_board_case_${patientWorkspaceFileStem(_patient)}_${new Date().toISOString().slice(0,10)}.json`);
+}
+function renderPatientCenterCopilotStatus(bundle){
+    const p = (bundle && bundle.patient_context) || {};
+    const d = (bundle && bundle.derived) || {};
+    const stage = patientCenterStageBundle(p);
+    const missing = patientCenterPrintReadiness(p, stage.anatomic || '—');
+    const conflicts = ((d.support || {}).conflicts) || [];
+    const summary = patientCenterOneLineSummary(p);
+    const card = (tone, label, value, note) => `<div class="patient-center-status-card ${tone}">
+        <div class="patient-center-status-label">${_journeyEsc(label)}</div>
+        <div class="patient-center-status-value">${_journeyEsc(value || '—')}</div>
+        <div class="patient-center-status-note">${_journeyEsc(note || '')}</div>
+    </div>`;
+    return [
+        card(stage.anatomic ? 'ok' : 'warn', 'Stage', stage.anatomic ? `Stage ${stage.anatomic}` : '待補', patientCenterTnmString(p) || '需 T/N/M'),
+        card(d.subtype ? 'ok' : 'warn', 'Subtype', d.subtype || '待判讀', '由 ER/PR/HER2/Ki-67 派生'),
+        card(conflicts.length ? 'danger' : (missing.length ? 'warn' : 'ok'), '資料狀態', conflicts.length ? `${conflicts.length} conflict` : (missing.length ? `缺 ${missing.length} 項` : 'Ready'), conflicts[0] || missing[0] || '可產生門診摘要'),
+        card(summary ? 'ok' : 'warn', '可複製摘要', summary || '待補資料', '貼到院內系統前請醫師確認')
+    ].join('');
+}
+function renderPatientCenterChecklist(items){
+    const states = patientCenterReadChecklistState();
+    return items.map(item => {
+        const current = states[item.id] || '';
+        const stateLabel = {done:'已確認',na:'不適用',later:'稍後確認'}[current] || (item.autoState === 'ready' ? '資料已具備' : '待確認');
+        return `<div class="patient-center-check-item ${item.autoState || 'open'} ${current || ''}">
+            <div class="patient-center-check-main">
+              <strong>${_journeyEsc(item.title)}</strong>
+              <span>${_journeyEsc(item.detail)}</span>
+              <em>${_journeyEsc(stateLabel)}</em>
+            </div>
+            ${patientCenterChecklistStateButtons(item.id, current)}
+        </div>`;
+    }).join('');
+}
+let _patientCenterRecorder = null;
+let _patientCenterRecordingChunks = [];
+let _patientCenterRecordingBlob = null;
+let _patientCenterRecordingMime = 'audio/webm';
+let _patientCenterEncounterId = '';
+let _patientCenterLastServiceResult = null;
+function updatePatientCenterRecordingStatus(text){
+    const el = document.getElementById('patientCenterRecordingStatus');
+    if(el) el.textContent = text;
+}
+function patientCenterRecordingServiceDefaultConfig(){
+    if(window.OncoBreastRecordingServiceClient) return window.OncoBreastRecordingServiceClient.defaultConfig();
+    return { enabled:false, baseUrl:'', headers:{} };
+}
+function getPatientCenterRecordingServiceConfig(){
+    const fallback = patientCenterRecordingServiceDefaultConfig();
+    if(window.OncoBreastRecordingServiceClient){
+        return window.OncoBreastRecordingServiceClient.readConfig({
+            fallback,
+            onError: e => console.warn('Failed to read recording service config', e)
+        });
+    }
+    try {
+        const raw = localStorage.getItem('nhi_patient_center_recording_service_config');
+        if(!raw) return fallback;
+        const saved = JSON.parse(raw || '{}');
+        return {
+            enabled: !!saved.enabled,
+            baseUrl: String(saved.baseUrl || '').trim().replace(/\/+$/, ''),
+            headers: saved.headers && typeof saved.headers === 'object' ? saved.headers : {}
+        };
+    } catch(e){
+        return fallback;
+    }
+}
+function setPatientCenterRecordingServiceConfig(baseUrl, enabled=true, headers={}){
+    const cfg = { enabled: !!enabled, baseUrl: String(baseUrl || '').trim().replace(/\/+$/, ''), headers: headers || {} };
+    if(window.OncoBreastRecordingServiceClient){
+        return window.OncoBreastRecordingServiceClient.writeConfig(cfg, {
+            onError: e => console.warn('Failed to save recording service config', e)
+        });
+    }
+    try { localStorage.setItem('nhi_patient_center_recording_service_config', JSON.stringify(cfg)); } catch(e){}
+    return cfg;
+}
+function updatePatientCenterRecordingServiceUi(){
+    const cfg = getPatientCenterRecordingServiceConfig();
+    const input = document.getElementById('patientCenterRecordingEndpoint');
+    const status = document.getElementById('patientCenterRecordingServiceStatus');
+    if(input && document.activeElement !== input) input.value = cfg.baseUrl || '';
+    if(status){
+        if(cfg.enabled && cfg.baseUrl){
+            status.textContent = `已設定轉錄服務：${cfg.baseUrl}${_patientCenterEncounterId ? `｜Encounter ${_patientCenterEncounterId}` : ''}`;
+            status.classList.add('ready');
+        } else {
+            status.textContent = '尚未設定轉錄服務；可先使用本機錄音下載。';
+            status.classList.remove('ready');
+        }
+    }
+}
+function savePatientCenterRecordingServiceConfig(){
+    const input = document.getElementById('patientCenterRecordingEndpoint');
+    const baseUrl = input ? input.value : '';
+    const cfg = setPatientCenterRecordingServiceConfig(baseUrl, !!String(baseUrl || '').trim());
+    updatePatientCenterRecordingServiceUi();
+    updatePatientCenterRecordingStatus(cfg.enabled ? '轉錄服務設定已儲存。錄音完成後可上傳。' : '已清除轉錄服務設定，目前只做本機錄音。');
+}
+async function testPatientCenterRecordingService(){
+    const input = document.getElementById('patientCenterRecordingEndpoint');
+    if(input) setPatientCenterRecordingServiceConfig(input.value, !!String(input.value || '').trim());
+    const cfg = getPatientCenterRecordingServiceConfig();
+    if(!cfg.enabled || !cfg.baseUrl){
+        alert('請先輸入轉錄服務 API Base URL。');
+        return;
+    }
+    updatePatientCenterRecordingStatus('正在測試轉錄服務連線...');
+    try {
+        if(!window.OncoBreastRecordingServiceClient) throw new Error('Recording service client not loaded.');
+        const data = await window.OncoBreastRecordingServiceClient.health(cfg);
+        updatePatientCenterRecordingStatus(`轉錄服務連線正常：${data.status || data.ok || 'OK'}`);
+        updatePatientCenterRecordingServiceUi();
+    } catch(err){
+        updatePatientCenterRecordingStatus('轉錄服務測試失敗。');
+        alert(`無法連線到轉錄服務：${err.message || err}`);
+    }
+}
+function patientCenterDerivedPayload(){
+    const p = _patient || {};
+    let anat = '';
+    if(p.T && p.N && p.M){
+        try { anat = _ajccAnatomic(p.T, p.N, p.M) || ''; } catch(e){ anat = ''; }
+    }
+    const icdInfo = deriveWorkspaceICD(p) || {};
+    return {
+        anatomic_stage: anat,
+        subtype: deriveWorkspaceSubtype(p) || '',
+        icd10: icdInfo.code || '',
+        ntuh_catastrophic_no: icdInfo.ntuhNo || '',
+        phase_label: {neoadjuvant:'術前治療',adjuvant:'術後輔助治療',advanced:'局部晚期',metastatic:'轉移性 first-line',metastatic_2L:'轉移性後線'}[p.phase] || ''
+    };
+}
+function patientCenterRecordingFilename(){
+    return `patient_center_recording_${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.webm`;
+}
+async function startPatientCenterRecording(){
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || typeof MediaRecorder === 'undefined'){
+        alert('此瀏覽器不支援本機錄音。');
+        return;
+    }
+    if(!confirm('開始錄音前，請確認已取得病人與家屬同意。音檔會先暫存在本機瀏覽器；只有按下上傳時才會送到你設定的轉錄服務。')) return;
+    let stream = null;
+    try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio:true });
+        _patientCenterRecordingChunks = [];
+        _patientCenterRecordingBlob = null;
+        _patientCenterLastServiceResult = null;
+        _patientCenterEncounterId = '';
+        updatePatientCenterRecordingServiceUi();
+        const supportedMime = MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ? 'audio/webm;codecs=opus' : '';
+        _patientCenterRecordingMime = supportedMime || 'audio/webm';
+        _patientCenterRecorder = supportedMime ? new MediaRecorder(stream, { mimeType:supportedMime }) : new MediaRecorder(stream);
+        _patientCenterRecorder.ondataavailable = event => {
+            if(event.data && event.data.size > 0) _patientCenterRecordingChunks.push(event.data);
+        };
+        _patientCenterRecorder.onstop = () => {
+            _patientCenterRecordingMime = _patientCenterRecorder.mimeType || _patientCenterRecordingMime || 'audio/webm';
+            _patientCenterRecordingBlob = new Blob(_patientCenterRecordingChunks, { type:_patientCenterRecordingMime });
+            stream.getTracks().forEach(track => track.stop());
+            updatePatientCenterRecordingStatus(`錄音完成，可下載或上傳到轉錄服務（${Math.round(_patientCenterRecordingBlob.size / 1024)} KB）。`);
+        };
+        _patientCenterRecorder.start();
+        updatePatientCenterRecordingStatus('錄音中。請在說明結束後按「停止」。');
+    } catch(err){
+        if(stream) stream.getTracks().forEach(track => track.stop());
+        updatePatientCenterRecordingStatus('錄音啟動失敗。');
+        alert(`無法啟動錄音：${err.message || err}`);
+    }
+}
+function stopPatientCenterRecording(){
+    if(_patientCenterRecorder && _patientCenterRecorder.state === 'recording'){
+        _patientCenterRecorder.stop();
+    } else {
+        updatePatientCenterRecordingStatus('目前沒有進行中的錄音。');
+    }
+}
+function downloadPatientCenterRecording(){
+    if(!_patientCenterRecordingBlob){
+        alert('尚無錄音可下載。');
+        return;
+    }
+    const url = URL.createObjectURL(_patientCenterRecordingBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = patientCenterRecordingFilename();
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+function renderPatientCenterRecordingResult(data){
+    _patientCenterLastServiceResult = data || _patientCenterLastServiceResult;
+    const result = _patientCenterLastServiceResult || {};
+    const el = document.getElementById('patientCenterRecordingResult');
+    if(!el) return;
+    el.hidden = false;
+    const summary = result.summary || {};
+    const soap = result.soap || result.soap_note || '';
+    const plan = result.plan || (summary && summary.plan) || '';
+    const transcript = result.transcript || '';
+    const status = result.status || 'received';
+    const hasValue = value => {
+        if(!value) return false;
+        if(Array.isArray(value)) return value.length > 0;
+        if(typeof value === 'object') return Object.keys(value).length > 0;
+        return true;
+    };
+    const block = (title, value) => {
+        if(!hasValue(value)) return '';
+        const text = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
+        return `<section><h4>${_journeyEsc(title)}</h4><pre>${_journeyEsc(text)}</pre></section>`;
+    };
+    el.innerHTML = `
+        <div class="patient-center-result-head">
+          <b>轉錄服務結果</b>
+          <span>${_journeyEsc(status)}${_patientCenterEncounterId ? `｜${_journeyEsc(_patientCenterEncounterId)}` : ''}</span>
+        </div>
+        ${block('Plan draft', plan)}
+        ${block('SOAP draft', soap)}
+        ${block('病人摘要', summary.patient_summary || summary.patient || summary)}
+        ${block('逐字稿', transcript)}
+    `;
+}
+async function patientCenterEnsureEncounter(cfg){
+    if(_patientCenterEncounterId) return _patientCenterEncounterId;
+    if(!window.OncoBreastRecordingServiceClient) throw new Error('Recording service client not loaded.');
+    const payload = window.OncoBreastRecordingServiceClient.buildEncounterPayload({
+        patientContext: _patient || {},
+        derived: patientCenterDerivedPayload(),
+        consentConfirmed: true,
+        version: (window.APP_VERSION || window.NHI_APP_VERSION || '')
+    });
+    const data = await window.OncoBreastRecordingServiceClient.createEncounter(cfg, payload);
+    _patientCenterEncounterId = data.encounter_id || data.id || '';
+    if(!_patientCenterEncounterId) throw new Error('Recording service did not return encounter_id.');
+    updatePatientCenterRecordingServiceUi();
+    return _patientCenterEncounterId;
+}
+async function uploadPatientCenterRecording(){
+    if(_patientCenterRecorder && _patientCenterRecorder.state === 'recording'){
+        alert('請先停止錄音，再上傳。');
+        return;
+    }
+    if(!_patientCenterRecordingBlob){
+        alert('尚無錄音可上傳。');
+        return;
+    }
+    const cfg = getPatientCenterRecordingServiceConfig();
+    if(!cfg.enabled || !cfg.baseUrl){
+        alert('請先設定轉錄服務 API Base URL。');
+        return;
+    }
+    if(!confirm('即將把錄音上傳到你設定的轉錄服務。請再次確認已取得同意，且該服務可處理 PHI。')) return;
+    updatePatientCenterRecordingStatus('正在建立 encounter 並上傳音檔...');
+    try {
+        const encounterId = await patientCenterEnsureEncounter(cfg);
+        const data = await window.OncoBreastRecordingServiceClient.uploadAudio(cfg, encounterId, _patientCenterRecordingBlob, {
+            filename: patientCenterRecordingFilename(),
+            mime_type: _patientCenterRecordingMime,
+            size_bytes: _patientCenterRecordingBlob.size,
+            patient_context_included: true
+        });
+        renderPatientCenterRecordingResult(data);
+        updatePatientCenterRecordingStatus(`音檔已上傳。Encounter ${encounterId} 可開始轉錄/摘要。`);
+    } catch(err){
+        updatePatientCenterRecordingStatus('音檔上傳失敗。');
+        alert(`上傳失敗：${err.message || err}`);
+    }
+}
+async function processPatientCenterRecording(){
+    const cfg = getPatientCenterRecordingServiceConfig();
+    if(!cfg.enabled || !cfg.baseUrl){
+        alert('請先設定轉錄服務 API Base URL。');
+        return;
+    }
+    if(!_patientCenterEncounterId && _patientCenterRecordingBlob){
+        await uploadPatientCenterRecording();
+        if(!_patientCenterEncounterId) return;
+    }
+    if(!_patientCenterEncounterId){
+        alert('尚未建立 encounter。請先錄音並上傳。');
+        return;
+    }
+    updatePatientCenterRecordingStatus('正在要求轉錄服務產生摘要 / SOAP / Plan...');
+    try {
+        const payload = {
+            outputs: ['transcript', 'patient_summary', 'soap', 'plan'],
+            patient_context: _patient || {},
+            derived: patientCenterDerivedPayload(),
+            plan_requires_physician_confirmation: true
+        };
+        const data = await window.OncoBreastRecordingServiceClient.processEncounter(cfg, _patientCenterEncounterId, payload);
+        renderPatientCenterRecordingResult(data);
+        updatePatientCenterRecordingStatus(`已送出處理要求：${data.status || 'processing'}。`);
+        if((data.status || '').toLowerCase() !== 'done') patientCenterPollEncounter(cfg, _patientCenterEncounterId);
+    } catch(err){
+        updatePatientCenterRecordingStatus('轉錄/摘要處理失敗。');
+        alert(`處理失敗：${err.message || err}`);
+    }
+}
+async function patientCenterPollEncounter(cfg, encounterId){
+    for(let i=0; i<20; i++){
+        await new Promise(resolve => setTimeout(resolve, i < 4 ? 2500 : 5000));
+        try {
+            const data = await window.OncoBreastRecordingServiceClient.getEncounter(cfg, encounterId);
+            renderPatientCenterRecordingResult(data);
+            const status = String(data.status || '').toLowerCase();
+            updatePatientCenterRecordingStatus(`轉錄服務狀態：${data.status || 'processing'}。`);
+            if(status === 'done' || status === 'failed' || status === 'error') return;
+        } catch(e){
+            console.warn('Recording service polling failed', e);
+            return;
+        }
+    }
+}
+function patientCenterAskAgentDraft(){
+    const prompt = '請整理這位病人的病人版說明草稿，列出分期、亞型、下一步、待補資料、健保/自費提醒；不要包含姓名、病歷號、生日等 PHI。';
+    const input = document.getElementById('dashboardAgentInput');
+    if(input){
+        dashboardAgentAsk(prompt);
+        return;
+    }
+    copyTextToClipboard(prompt, '已複製 Agent 草稿 prompt。請在 Dashboard Agent 開啟後貼上。');
+}
 function _journeyMarker(label, value){
     let dot = 'warn';
     if(value==='+' || value==='陽性' || value==='brca1' || value==='brca2') dot = 'pos';
@@ -6202,6 +6903,15 @@ function _journeyStageInfo(p, anat){
     if(p.phase === 'advanced') return { idx:1, label:'局部晚期規劃', main:'目前重點是治療順序與跨科溝通', sub:'可先確認分期、receptor 狀態、是否需要術前治療與影像追蹤。' };
     return { idx:1, label:'診斷與分期說明', main:'目前重點是讓病人理解分期與腫瘤特性', sub:'接下來通常會確認治療階段、是否需要補檢驗，以及費用/健保相關問題。' };
 }
+function patientCenterPrintReadiness(p, anat){
+    const items = [];
+    if(!p.T || !p.N || !p.M) items.push('分期說明缺 T / N / M。');
+    if(!p.er || !p.pr || !p.her2) items.push('治療分類缺 ER / PR / HER2。');
+    if(!p.phase) items.push('治療階段尚未設定，說明單會較難對齊下一步。');
+    if(!p.side || !p.quadrant) items.push('重大傷病/ICD 缺側別與象限。');
+    if(['IIA','IIB','IIIA','IIIB','IIIC','IV'].includes(anat) && (!p.er || !p.her2)) items.push('健保/事審說明前需補 receptor。');
+    return items;
+}
 function renderPatientJourney(){
     const p = _patient || {};
     const hero = document.getElementById('journeyHero');
@@ -6209,6 +6919,10 @@ function renderPatientJourney(){
     const markers = document.getElementById('journeyMarkers');
     const missing = document.getElementById('journeyMissing');
     const questions = document.getElementById('journeyQuestions');
+    const copilotStatus = document.getElementById('patientCenterCopilotStatus');
+    const oneLineSummary = document.getElementById('patientCenterOneLineSummary');
+    const adminChecklist = document.getElementById('patientCenterAdminChecklist');
+    const adminHints = document.getElementById('patientCenterAdminHints');
     if(!hero || !facts || !markers || !missing || !questions) return;
 
     let anat = '—';
@@ -6218,9 +6932,15 @@ function renderPatientJourney(){
     const subtype = deriveWorkspaceSubtype(p) || '—';
     const icdInfo = deriveWorkspaceICD(p);
     const stageInfo = _journeyStageInfo(p, anat);
+    const bundle = patientWorkspaceStructuredData();
     const stageText = anat==='—' ? '尚未完成' : `第 ${anat} 期`;
     const phaseLabel = {neoadjuvant:'術前治療',adjuvant:'術後輔助治療',advanced:'局部晚期',metastatic:'轉移性 first-line',metastatic_2L:'轉移性後線'}[p.phase] || '尚未設定';
     const steps = ['診斷分期','術前治療','手術','術後輔助','轉移/追蹤'];
+
+    if(copilotStatus) copilotStatus.innerHTML = renderPatientCenterCopilotStatus(bundle);
+    if(oneLineSummary) oneLineSummary.value = patientCenterOneLineSummary(p);
+    if(adminChecklist) adminChecklist.innerHTML = renderPatientCenterChecklist(patientCenterAdminChecklistItems(p, bundle));
+    if(adminHints) adminHints.innerHTML = patientCenterAdminHints(p, bundle).map(x => _journeyItem('i', _journeyEsc(x))).join('');
 
     hero.innerHTML = `
       <div class="journey-stage">${stageInfo.label}</div>
@@ -6250,19 +6970,19 @@ function renderPatientJourney(){
         _journeyMarker('PD-L1', p.pdl1)
     ].join('');
 
-    const gaps = [];
-    if(!p.T || !p.N || !p.M) gaps.push('補齊 T / N / M，才能清楚說明分期、重大傷病與部分健保條件。');
-    if(!p.er || !p.pr || !p.her2) gaps.push('補齊 ER / PR / HER2，這是乳癌治療分類與藥物條件的核心資料。');
+    const gaps = patientCenterPrintReadiness(p, anat);
     if(!p.size || p.nodes_pos==='') gaps.push('補上腫瘤大小與陽性淋巴結數，方便用圖像化方式說明風險與模型。');
     if(!p.brca && (p.her2==='-' || p.her2==='low')) gaps.push('若後續討論特定標靶或遺傳風險，可確認是否需要 BRCA 資料。');
     if(!gaps.length) gaps.push('目前核心說明資料大致齊全，可進一步搭配藥物費用與整合摘要列印。');
     missing.innerHTML = gaps.map(x=>_journeyItem('□', _journeyEsc(x))).join('');
 
     const q = [];
+    q.push('列印前先決定用途：病人一頁式說明、醫療團隊摘要、或健保/事審文件清單。');
     q.push('今天最需要讓病人理解的是：目前分期、受體狀態，以及下一步為什麼。');
     if(!nhiReady) q.push('若要討論健保或自費，先確認是否還缺分期或生物標記。');
     else q.push('健保欄位適合用「條件對照」說明，不直接說成最終給付判定。');
     if(anat !== '—') q.push(`可用「第 ${anat} 期」搭配 receptor 狀態，簡短說明目前為什麼要討論這些項目。`);
+    q.push('錄音摘要需先取得同意；音檔請交由院內受控後端或合規轉錄流程處理。');
     q.push('若病人關心費用，先分成健保、可能自費、需補資料三類，避免一次列出太多細節。');
     questions.innerHTML = q.map(x=>_journeyItem('•', _journeyEsc(x))).join('');
 }
@@ -6356,6 +7076,17 @@ function _setCalcValForced(id, value){
     }
     el.value = next;
 }
+function _setCalcValWorkspaceDefault(id, value){
+    const el = document.getElementById(id);
+    if(!el) return;
+    const next = value === undefined || value === null ? '' : String(value);
+    if(el.tagName === 'SELECT' && !Array.from(el.options).some(opt => opt.value === next)) return;
+    const prev = el.dataset.workspaceDefault;
+    if(prev === undefined || el.value === '' || el.value === prev){
+        el.value = next;
+        el.dataset.workspaceDefault = next;
+    }
+}
 function defaultPredictHeartDoseBySide(side){
     if(side === 'R') return 0;
     if(side === 'L') return 2;
@@ -6381,9 +7112,9 @@ function syncPredictClinicalInputsFromPatient(){
     const sizeMm = has(p.size) ? Number(p.size) : '';
     const grade = has(p.grade) ? Number(p.grade) : '';
     const year = p.diagnosis_year || (p.initial_visit_date ? String(p.initial_visit_date).slice(0, 4) : new Date().getFullYear());
-    const nodeValue = has(p.nodes_pos) ? p.nodes_pos : (inferredNodes !== '' ? inferredNodes : 0);
+    const nodeValue = has(p.nodes_pos) ? p.nodes_pos : (inferredNodes !== '' ? inferredNodes : '');
     const menopause = p.menopause || (Number(p.age) >= 54 ? 'post' : (Number(p.age) <= 45 && Number(p.age) > 0 ? 'pre' : ''));
-    const erVal = erSign ? (erSign === '+' ? 'pos' : 'neg') : 'pos';
+    const erVal = erSign ? (erSign === '+' ? 'pos' : 'neg') : 'unk';
     const prVal = prSign ? (prSign === '+' ? 'pos' : 'neg') : 'unk';
     const her2Val = p.her2 ? (p.her2 === '+' ? 'pos' : (p.her2 === '-' || p.her2 === 'low') ? 'neg' : 'unk') : 'unk';
     let ki67Val = 'unk';
@@ -6398,7 +7129,7 @@ function syncPredictClinicalInputsFromPatient(){
     _setCalcValForced('pred_menopause', menopause);
     _setCalcValForced('pred_size', sizeMm || '');
     _setCalcValForced('pred_nodes', nodeValue);
-    _setCalcValForced('pred_grade', grade || '2');
+    _setCalcValForced('pred_grade', grade || '');
     _setCalcValForced('pred_er', erVal);
     _setCalcValForced('pred_pr', prVal);
     _setCalcValForced('pred_her2', her2Val);
@@ -6433,10 +7164,10 @@ function syncCalculatorFromWorkspace(tab){
 
     if(tab === 'predict'){
         syncPredictClinicalInputsFromPatient();
-        _setCalcVal('pred_chemo', '3');
-        _setCalcVal('pred_endo', erSign === '+' ? '5' : '0');
-        _setCalcVal('pred_trast', p.her2 === '+' ? '1' : '0');
-        _setCalcVal('pred_rt', '1');
+        _setCalcValWorkspaceDefault('pred_chemo', '3');
+        _setCalcValWorkspaceDefault('pred_endo', erSign === '+' ? '5' : '0');
+        _setCalcValWorkspaceDefault('pred_trast', p.her2 === '+' ? '1' : '0');
+        _setCalcValWorkspaceDefault('pred_rt', '1');
         calcPREDICT();
     } else if(tab === 'cts5'){
         if(erSign) _setCalcVal('cts5_er', erSign === '+' ? 'pos' : 'neg');
@@ -6822,10 +7553,16 @@ function _predictV3Survival(opts){
         treatedPct: treated.map(v => v * 100)
     };
 }
+function _readRequiredNumberInput(id){
+    const el = document.getElementById(id);
+    const raw = el ? String(el.value || '').trim() : '';
+    if(raw === '') return NaN;
+    const value = Number(raw);
+    return Number.isFinite(value) ? value : NaN;
+}
 function calcPREDICT(){
     const el = document.getElementById('pred_result');
     if(!el) return;
-    syncPredictClinicalInputsFromPatient();
     const dcisOnly = typeof _patient !== 'undefined' && _patient && _patient.tumor_kind === 'dcis';
     if(dcisOnly){
         el.innerHTML = '<div class="calc-result"><div class="calc-result-label">DCIS only</div><div class="calc-result-detail">PREDICT v2.3/v3.0 是 invasive breast cancer 術後模型；DCIS only 不應用此模型計算存活率或治療獲益。</div></div>';
@@ -6835,15 +7572,15 @@ function calcPREDICT(){
     const sideLabel = {R:'Right breast', L:'Left breast', B:'Bilateral'}[workspaceSide] || 'Unknown';
     const yearEl = document.getElementById('pred_year');
     const year = yearEl ? +yearEl.value : new Date().getFullYear();
-    const age = +document.getElementById('pred_age').value;
+    const age = _readRequiredNumberInput('pred_age');
     const mode = document.getElementById('pred_mode').value;
     const smokerEl = document.getElementById('pred_smoker');
     const smoker = smokerEl ? smokerEl.value : 'unk';
     const predMenopauseEl = document.getElementById('pred_menopause');
     const menopause = predMenopauseEl ? predMenopauseEl.value : '';
-    const size = +document.getElementById('pred_size').value;
-    const nodes = +document.getElementById('pred_nodes').value;
-    const grade = +document.getElementById('pred_grade').value;
+    const size = _readRequiredNumberInput('pred_size');
+    const nodes = _readRequiredNumberInput('pred_nodes');
+    const grade = _readRequiredNumberInput('pred_grade');
     const er = document.getElementById('pred_er').value;
     const prEl = document.getElementById('pred_pr');
     const pr = prEl ? prEl.value : 'unk';
@@ -6859,8 +7596,14 @@ function calcPREDICT(){
     const heartDose = heartDoseEl ? Math.max(0, +heartDoseEl.value || 0) : 0;
     const useBis = bis === 1 && menopause === 'post';
 
-    if(!age || !size || isNaN(nodes) || isNaN(grade) || age<25 || age>85 || size<1){
-        el.innerHTML = '<div class="calc-result"><div class="calc-result-detail">請填入合法的年齡 (25–85)、腫瘤大小、Grade、淋巴結數。</div></div>';
+    const missingPredict = [];
+    if(!Number.isFinite(age) || age < 25 || age > 85) missingPredict.push('年齡 (25-85)');
+    if(!Number.isFinite(size) || size < 1) missingPredict.push('invasive tumor size');
+    if(!Number.isFinite(nodes) || nodes < 0) missingPredict.push('陽性淋巴結數或 N 分期');
+    if(!Number.isFinite(grade)) missingPredict.push('Grade');
+    if(!['pos','neg'].includes(er)) missingPredict.push('ER 狀態');
+    if(missingPredict.length){
+        el.innerHTML = `<div class="calc-result"><div class="calc-result-detail">左側 Patient Context 缺少或不合法：${missingPredict.map(esc).join('、')}。</div></div>`;
         return;
     }
 
@@ -7430,10 +8173,10 @@ function hideSettings(){
     document.getElementById('settingsModal').classList.remove('show');
 }
 const APP_RELEASE_NOTES = [
-    { version:'v1.9-dev', date:'2026-06-05', items:[
+    { version:'v1.9', date:'2026-06-06', items:[
         '新增右/左 1/3 AI Agent 側欄、文字病理報告上傳與 rule-based 欄位解析入口。',
         '新增病患照護支持卡：勞保、重大傷病、癌症希望基金會、義乳胸衣、贈藥與保險理賠資料結構。',
-        'API Guide 改為頁面內測試，返回時清除 page=api 網址狀態。'
+        '統一功能選單為漢堡下拉、修正 Agent 範例不得帶入預設病人資料、PREDICT 改由共用 Patient Context 帶入。'
     ]},
     { version:'v1.8', date:'2026-06-04', items:[
         '新增 patient context bundle export/import/reset 與 Patient treatment plan。',
@@ -7481,11 +8224,17 @@ function toggleFunctionReferenceList(){
 function openFunctionMenu(){
     const modal = document.getElementById('functionMenuModal');
     if(!modal) return;
+    if(modal.classList.contains('show')){
+        closeFunctionMenu();
+        return;
+    }
     const ver = document.getElementById('menuAppVersion');
     const rel = document.getElementById('menuReleaseDate');
     const price = document.getElementById('menuPriceData');
+    const headerDate = document.getElementById('headerReleaseDate');
     if(ver) ver.textContent = typeof APP_VERSION !== 'undefined' ? APP_VERSION : '-';
     if(rel) rel.textContent = typeof APP_RELEASE_DATE !== 'undefined' ? APP_RELEASE_DATE : '-';
+    if(headerDate) headerDate.textContent = `${typeof APP_VERSION !== 'undefined' ? APP_VERSION : '-'} · ${typeof APP_RELEASE_DATE !== 'undefined' ? APP_RELEASE_DATE : '-'}`;
     if(price){
         const badge = document.getElementById('priceBadge');
         price.textContent = badge ? badge.textContent : '-';
@@ -7493,11 +8242,28 @@ function openFunctionMenu(){
     renderFunctionReleaseList();
     renderFunctionReferenceList();
     modal.classList.add('show');
+    const toggle = document.getElementById('headerFunctionMenuToggle');
+    if(toggle) toggle.setAttribute('aria-expanded', 'true');
 }
 function closeFunctionMenu(){
     const modal = document.getElementById('functionMenuModal');
     if(modal) modal.classList.remove('show');
+    const toggle = document.getElementById('headerFunctionMenuToggle');
+    if(toggle) toggle.setAttribute('aria-expanded', 'false');
 }
+document.addEventListener('click', event => {
+    const modal = document.getElementById('functionMenuModal');
+    if(!modal || !modal.classList.contains('show')) return;
+    const toggle = document.getElementById('headerFunctionMenuToggle');
+    const target = event.target;
+    if((toggle && toggle.contains(target)) || modal.contains(target)) return;
+    closeFunctionMenu();
+});
+document.addEventListener('keydown', event => {
+    if(event.key !== 'Escape') return;
+    const modal = document.getElementById('functionMenuModal');
+    if(modal && modal.classList.contains('show')) closeFunctionMenu();
+});
 function renderSettings(){
     const flags = [
         {key:'breast', label:'乳癌藥物清單', stable:true},
@@ -7556,13 +8322,29 @@ if('serviceWorker' in navigator && window.location.protocol !== 'file:'){
 
 // ── Issue Report (GitHub Issues prefilled URL) ──
 const GITHUB_REPO = 'erichuang777777/NTUH_Breast_Caculator';
-const APP_VERSION = 'v1.9-dev';
+const APP_VERSION = 'v1.9';
 
-function openIssueReport(){
+function openIssueReport(defaults={}){
+    const moduleEl = document.getElementById('issue_module');
+    const typeEl = document.getElementById('issue_type');
+    const descEl = document.getElementById('issue_desc');
+    const inputsEl = document.getElementById('issue_inputs');
+    if(moduleEl && defaults.module) moduleEl.value = defaults.module;
+    if(typeEl && defaults.type) typeEl.value = defaults.type;
+    if(descEl && defaults.desc !== undefined) descEl.value = defaults.desc;
+    if(inputsEl && defaults.inputs !== undefined) inputsEl.value = defaults.inputs;
     document.getElementById('issueReportModal').classList.add('show');
 }
 function closeIssueReport(){
     document.getElementById('issueReportModal').classList.remove('show');
+}
+function openAgentIssueReport(){
+    openIssueReport({
+        module: 'AI Agent 對話',
+        type: 'bug',
+        desc: 'Agent 對話錯誤回報：\n1. 我問了：\n2. Agent 回答：\n3. 預期應該是：\n\n請送出前移除姓名、病歷號、生日等 PHI。',
+        inputs: '（選填）如需附上對話摘要請手動貼上，送出前請確認已移除姓名、病歷號、生日等 PHI。'
+    });
 }
 function _buildIssueBody(module, type, desc, inputs, includeState){
     const lines = [];
@@ -7650,6 +8432,17 @@ function copyIssueReport(){
         navigator.clipboard.writeText(text).then(()=>alert('已複製 issue 內容，可手動貼到 GitHub。')).catch(()=>alert(text));
     } else {
         alert(text);
+    }
+}
+function copyTextToClipboard(text, successMessage){
+    const value = String(text || '').trim();
+    if(!value) return;
+    if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(value).then(() => {
+            if(successMessage) alert(successMessage);
+        }).catch(() => alert(value));
+    } else {
+        alert(value);
     }
 }
 document.addEventListener('DOMContentLoaded', () => {
@@ -8576,6 +9369,7 @@ function toggleChip(el){
     }
     // Determine which page
     if(document.getElementById('breastPage').classList.contains('active'))filterBreast();
+    updatePatientFilterStatus('');
 }
 
 function matchesFilters(drug, filters){
@@ -8623,12 +9417,14 @@ function filterBreast(){
     let list=breastDrugs;
     if(q)list=list.filter(d=>drugSearchText(d).includes(q));
     renderBreast(list);
+    updatePatientFilterStatus(null);
 }
 function resetBreastFilters(){
     document.getElementById('breastSearch').value='';
     activeFilters={};
     document.querySelectorAll('#breastPage .filter-chip').forEach(c=>c.classList.remove('active'));
     renderBreast(breastDrugs);
+    updatePatientFilterStatus('');
 }
 // ── Render ──
 function stageLabel(s){
@@ -8909,6 +9705,12 @@ const RENAL_ADJUSTMENTS = {
 // Alias: drug cards use openDetail() onclick, but historically named showDetail()
 const openDetail = (id) => showDetail(id);
 let _lastBreastDrug = null;
+function priorAuthNextStepHtml(drug){
+    if(!drug || !drug.prior_auth) return '';
+    return `<div class="detail-sec prior-auth-next-step"><h3>事前審查下一步</h3>
+        <p>送審前請先整理病理報告、影像或療效評估資料、治療線別、前線用藥紀錄、受體/基因檢測結果，以及本頁給付條件中列出的必要文件。實際表單與附件仍以院內流程與健保署最新公告為準。</p>
+    </div>`;
+}
 async function showDetail(id){
     const r=await cachedFetch('/api/drug/'+id);const d=await r.json();
     if(d && d.specialty_id === 'oncology_breast'){
@@ -8938,6 +9740,7 @@ async function showDetail(id){
     if(d.conditions){
         h+=`<div class="detail-sec"><h3>給付條件</h3>${d.conditions.split(' | ').map(p=>'<p>'+esc(p)+'</p>').join('')}</div>`;
     }
+    h += priorAuthNextStepHtml(d);
     // Side effects card
     const drugName = d.generic_name || d.trade_names || '';
     const seKey = Object.keys(SIDE_EFFECTS).find(k=>drugName.toLowerCase().includes(k.toLowerCase())||k.toLowerCase().includes(drugName.toLowerCase()));
@@ -9174,11 +9977,20 @@ function showDownloads(){
 }
 
 // ── Version Check ──
+function latestReleaseMessage(fallback){
+    const latest = Array.isArray(APP_RELEASE_NOTES) ? APP_RELEASE_NOTES[0] : null;
+    if(latest && latest.version && latest.items && latest.items.length){
+        return `有新版本 ${latest.version}：${latest.items[0]} — ${fallback || '請重新載入以使用最新版本。'}`;
+    }
+    return fallback || '有新版本，請重新載入。';
+}
 async function checkVersion(){
     try{
-        return; // static mode
+        const r = await fetch('/api/version');
+        if(!r.ok) return;
+        const d = await r.json();
         if(d.update_available){
-            document.getElementById('versionMsg').textContent=d.message;
+            document.getElementById('versionMsg').textContent=latestReleaseMessage(d.message);
             document.getElementById('versionBanner').classList.add('show');
         }
     }catch(e){}

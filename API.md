@@ -172,6 +172,115 @@ Netlify remains read-only. Importing this bundle into a patient database,
 writing back to an EMR, or storing partially completed records should be handled
 by a separate authenticated hospital backend.
 
+## Patient Center Recording Service
+
+The Netlify frontend does not store audio, transcribe recordings, or call LLMs
+directly. Patient Center only records audio in the browser and, after explicit
+user action, calls a separately configured recording service. Configure the base
+URL in Patient Center, for example `http://localhost:8787/api`.
+
+Required CORS behavior:
+
+- Allow the deployed Netlify origin.
+- Accept `POST` with `multipart/form-data` for audio upload.
+- Return JSON for every endpoint.
+
+Expected endpoints:
+
+```text
+GET  /health
+POST /encounters
+POST /encounters/{encounter_id}/audio
+POST /encounters/{encounter_id}/process
+GET  /encounters/{encounter_id}
+```
+
+Create an encounter:
+
+```http
+POST /encounters
+Content-Type: application/json
+```
+
+```json
+{
+  "patient_context": {},
+  "derived": {
+    "anatomic_stage": "IIA",
+    "subtype": "HR+/HER2-",
+    "icd10": "C50.412",
+    "ntuh_catastrophic_no": "...",
+    "phase_label": "術後輔助治療"
+  },
+  "consent_confirmed": true,
+  "client": {
+    "app": "OncoBreast Calculator Patient Center",
+    "version": "",
+    "timezone": "Asia/Taipei"
+  }
+}
+```
+
+Response:
+
+```json
+{
+  "encounter_id": "enc_20260608_001",
+  "status": "created"
+}
+```
+
+Upload audio:
+
+```http
+POST /encounters/enc_20260608_001/audio
+Content-Type: multipart/form-data
+```
+
+Fields:
+
+- `audio`: recorded browser audio, usually `audio/webm`
+- `metadata`: JSON string with `filename`, `mime_type`, `size_bytes`, and
+  `patient_context_included`
+
+Start transcription and note generation:
+
+```http
+POST /encounters/enc_20260608_001/process
+Content-Type: application/json
+```
+
+```json
+{
+  "outputs": ["transcript", "patient_summary", "soap", "plan"],
+  "patient_context": {},
+  "derived": {},
+  "plan_requires_physician_confirmation": true
+}
+```
+
+Get status/result:
+
+```json
+{
+  "encounter_id": "enc_20260608_001",
+  "status": "done",
+  "transcript": "...",
+  "summary": {
+    "patient_summary": "...",
+    "patient_questions": [],
+    "family_questions": [],
+    "doctor_explanations": []
+  },
+  "soap": "...",
+  "plan": "..."
+}
+```
+
+The `plan` field is an AI draft. The frontend displays it as a draft for
+physician review; the recording service should not mark it as final clinical
+documentation without a physician confirmation step.
+
 ## Refreshing Netlify API Data
 
 After changing the SQLite database locally, refresh the static Netlify payloads:

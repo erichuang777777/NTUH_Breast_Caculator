@@ -9,12 +9,12 @@
 <title>OncoBreast Calculator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/app.css?v=20260605bk">
+<link rel="stylesheet" href="assets/css/app.css?v=20260606b">
 <link rel="stylesheet" href="assets/css/ajcc-mobile.css?v=20260519a">
 </head>
 <body>
 
-<div id="offlineBar">離線模式 — 使用快取資料，部分功能可能受限</div>
+<div id="offlineBar" title="受限功能：臨床試驗資料、AI Agent 外部連線、藥價 PDF 更新。藥物查詢與計算機仍可使用。">離線模式 — 使用快取資料，部分功能可能受限</div>
 
 <header class="header">
   <div>
@@ -28,7 +28,13 @@
         <span class="clinical-notice-line"><strong>本工具僅供醫療人員使用</strong>，作為臨床查詢與試算輔助。不構成醫療建議；實際診療、健保給付與用藥決策請以醫師判斷、病人狀況及官方公告為準。</span>
       </span>
     </button>
-    <button class="header-menu-link" type="button" onclick="openFunctionMenu()">功能選單</button>
+    <div class="header-menu-wrap">
+      <button class="header-menu-link header-menu-toggle" id="headerFunctionMenuToggle" type="button" onclick="openFunctionMenu()" aria-controls="functionMenuModal" aria-expanded="false" title="功能選單">
+        <span class="hamburger-icon" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="header-menu-label">功能選單</span>
+      </button>
+      <span class="header-release-pill" id="headerReleaseDate">v1.9 · 2026-06-06</span>
+    </div>
     <button class="header-api-link" type="button" onclick="showApiGuide()">API Docs</button>
     <select class="site-language-switch" id="siteLanguageSwitch" onchange="setSiteLanguage(this.value)" aria-label="Language">
       <option value="zh">繁中</option>
@@ -150,9 +156,11 @@
 
           <hr class="filter-divider">
           <div class="sidebar-actions">
+            <button class="btn btn-outline btn-sm" onclick="applyPatientContextToFilters()" style="flex:1">依病人條件篩選</button>
             <button class="btn btn-primary btn-sm" onclick="filterBreast()" style="flex:1">搜尋</button>
             <button class="btn btn-outline btn-sm" onclick="resetBreastFilters()">重置</button>
           </div>
+          <div id="patientFilterStatus" class="patient-filter-status" hidden></div>
         </aside>
 
         <!-- Main content -->
@@ -1098,7 +1106,8 @@
 
       <!-- Action bar -->
       <div class="ws-actions">
-        <button class="ws-btn ws-btn-primary" onclick="generatePatientTreatmentPlan()">&#128203; 病人治療說明單</button>
+        <button class="ws-btn ws-btn-primary" onclick="showPatientCenter()">&#128203; 診間 Copilot</button>
+        <button class="ws-btn" onclick="generatePatientTreatmentPlan()">病人治療說明單</button>
         <button class="ws-btn" onclick="printWorkspaceSummary()">&#128196; 病歷摘要</button>
         <button class="ws-btn" onclick="exportPatientWorkspace()">&#128190; 匯出結構化 JSON</button>
         <button class="ws-btn" onclick="importPatientWorkspace()">&#128194; 匯入資料</button>
@@ -1107,16 +1116,43 @@
     </div>
   </div><!-- /wsPage -->
 
-  <!-- ===== PATIENT JOURNEY EXPLANATION PAGE (BETA) ===== -->
+  <!-- ===== PATIENT CENTER ===== -->
   <div id="journeyPage" class="dept-page">
     <div class="page-topbar journey">
       <button class="back-btn" onclick="showLanding()">← 返回</button>
-      <h2>&#128506; 門診說明摘要</h2>
-      <span class="journey-dev-tag">開發中</span>
+      <h2>&#128203; 診間 Copilot</h2>
+      <span class="journey-dev-tag">Patient Center</span>
     </div>
     <div class="journey-layout">
       <div>
         <div class="journey-panel journey-hero" id="journeyHero"></div>
+        <div class="journey-panel" style="margin-top:1rem">
+          <h3>診間 Copilot 狀態板</h3>
+          <div id="patientCenterCopilotStatus" class="patient-center-status-board"></div>
+          <div class="journey-note">紅/黃/綠代表資料完整度與行政核對狀態，不代表治療優先順序。</div>
+        </div>
+        <div class="journey-panel" style="margin-top:1rem">
+          <h3>整合摘要與 Tumor Board</h3>
+          <div class="patient-center-copy-card">
+            <label for="patientCenterOneLineSummary">病人整合摘要</label>
+            <textarea id="patientCenterOneLineSummary" rows="3" readonly></textarea>
+            <div class="journey-actions">
+              <button class="ws-btn ws-btn-primary" onclick="copyPatientCenterOneLineSummary()">複製摘要</button>
+              <button class="ws-btn" onclick="copyTumorBoardStructuredData()">複製 Tumor Board JSON</button>
+              <button class="ws-btn" onclick="downloadTumorBoardStructuredData()">下載 Tumor Board JSON</button>
+            </div>
+          </div>
+          <div class="journey-note">摘要格式設計給醫師貼到院內系統；Tumor Board JSON 保留結構化欄位，供會議或後續 API 使用。</div>
+        </div>
+        <div class="journey-panel" style="margin-top:1rem">
+          <h3>列印與交付資料</h3>
+          <div class="patient-center-print-grid">
+            <button class="ws-btn ws-btn-primary" onclick="generatePatientTreatmentPlan()">病人治療說明單</button>
+            <button class="ws-btn" onclick="printWorkspaceSummary()">醫療團隊病歷摘要</button>
+            <button class="ws-btn" onclick="window.print()">列印本頁說明中心</button>
+          </div>
+          <div class="journey-note">病人版適合一頁式說明；醫療團隊摘要包含較完整 TNM、ICD、重卡與 biomarker。</div>
+        </div>
         <div class="journey-panel" style="margin-top:1rem">
           <h3>目前重點</h3>
           <div class="journey-facts" id="journeyFacts"></div>
@@ -1128,6 +1164,38 @@
       </div>
       <div>
         <div class="journey-panel">
+          <h3>行政核對清單</h3>
+          <div class="journey-list patient-center-checklist" id="patientCenterAdminChecklist"></div>
+        </div>
+        <div class="journey-panel" style="margin-top:1rem">
+          <h3>資訊含意</h3>
+          <div class="journey-list" id="patientCenterAdminHints"></div>
+        </div>
+        <div class="journey-panel" style="margin-top:1rem">
+          <h3>門診錄音與 AI 摘要</h3>
+          <div class="patient-center-recorder">
+            <div id="patientCenterRecordingStatus" class="patient-center-recording-status">尚未錄音</div>
+            <div class="patient-center-service-config">
+              <label for="patientCenterRecordingEndpoint">轉錄服務 API Base URL</label>
+              <div class="patient-center-service-row">
+                <input id="patientCenterRecordingEndpoint" type="url" placeholder="例如：http://localhost:8787/api">
+                <button class="ws-btn" type="button" onclick="savePatientCenterRecordingServiceConfig()">儲存</button>
+                <button class="ws-btn" type="button" onclick="testPatientCenterRecordingService()">測試</button>
+              </div>
+              <div id="patientCenterRecordingServiceStatus" class="patient-center-service-status">尚未設定轉錄服務；可先使用本機錄音下載。</div>
+            </div>
+            <div class="journey-actions">
+              <button class="ws-btn ws-btn-primary" onclick="startPatientCenterRecording()">開始錄音</button>
+              <button class="ws-btn" onclick="stopPatientCenterRecording()">停止</button>
+              <button class="ws-btn" onclick="downloadPatientCenterRecording()">下載音檔</button>
+              <button class="ws-btn" onclick="uploadPatientCenterRecording()">上傳到轉錄服務</button>
+              <button class="ws-btn" onclick="processPatientCenterRecording()">產生摘要 / SOAP / Plan</button>
+            </div>
+            <div class="patient-center-result" id="patientCenterRecordingResult" hidden></div>
+            <div class="journey-note">錄音前需取得病人與家屬同意。此頁只負責錄音、上傳與顯示結果；音檔儲存、轉錄、SOAP 與 Plan 摘要由你設定的院內或本地服務處理。</div>
+          </div>
+        </div>
+        <div class="journey-panel" style="margin-top:1rem">
           <h3>需要補齊或確認</h3>
           <div class="journey-list" id="journeyMissing"></div>
         </div>
@@ -1137,13 +1205,13 @@
           <div class="journey-actions">
             <button class="ws-btn ws-btn-primary" onclick="renderPatientJourney()">重新整理</button>
             <button class="ws-btn" onclick="showWorkspace()">回 Workspace</button>
-            <button class="ws-btn" onclick="window.print()">列印</button>
+            <button class="ws-btn" onclick="patientCenterAskAgentDraft()">請 Agent 草擬說明</button>
           </div>
         </div>
       </div>
     </div>
     <div class="journey-note">
-      此模組為開發中：用途是協助專科護理師或醫師把 Workspace 已輸入的病人資料整理成門診說明重點，不取代醫療判斷，也不產生治療建議。
+      用途是協助專科護理師或醫師把 Workspace 已輸入的資料整理成門診說明、列印與追蹤重點。不取代醫療判斷，也不保證健保給付。
     </div>
   </div><!-- /journeyPage -->
 
@@ -1189,14 +1257,14 @@
           <div style="font-weight:700;font-size:.82rem;color:#0e7490;margin:.7rem 0 .4rem">病人 / 腫瘤特徵</div>
           <div class="calc-form">
             <div class="calc-field"><label>診斷年份</label><input type="number" id="pred_year" min="2000" max="2030" value="2026" oninput="calcPREDICT()"></div>
-            <div class="calc-field"><label>診斷時年齡 (歲)</label><input type="number" id="pred_age" min="20" max="100" value="55" oninput="calcPREDICT()"></div>
+            <div class="calc-field"><label>診斷時年齡 (歲)</label><input type="number" id="pred_age" min="20" max="100" value="" placeholder="由共用設定帶入" oninput="calcPREDICT()"></div>
             <div class="calc-field"><label>偵測方式</label><select id="pred_mode" onchange="calcPREDICT()"><option value="symp" selected>症狀性</option><option value="screen">篩檢發現</option><option value="other">其他/臨床偵測</option></select></div>
             <div class="calc-field"><label>Smoking</label><select id="pred_smoker" onchange="calcPREDICT()"><option value="unk" selected>未知 / population average</option><option value="0">非目前吸菸</option><option value="1">目前吸菸</option></select></div>
             <div class="calc-field"><label>停經狀態</label><select id="pred_menopause" onchange="calcPREDICT()"><option value="">未知</option><option value="pre">未停經</option><option value="post" selected>已停經</option></select></div>
-            <div class="calc-field"><label>腫瘤大小 (mm)</label><input type="number" id="pred_size" min="1" max="200" value="20" oninput="calcPREDICT()"></div>
-            <div class="calc-field"><label>陽性淋巴結數</label><input type="number" id="pred_nodes" min="0" max="50" value="0" oninput="calcPREDICT()"></div>
-            <div class="calc-field"><label>Grade</label><select id="pred_grade" onchange="calcPREDICT()"><option value="1">G1</option><option value="2" selected>G2</option><option value="3">G3</option></select></div>
-            <div class="calc-field"><label>ER 狀態</label><select id="pred_er" onchange="calcPREDICT()"><option value="pos" selected>ER 陽性</option><option value="neg">ER 陰性</option></select></div>
+            <div class="calc-field"><label>腫瘤大小 (mm)</label><input type="number" id="pred_size" min="1" max="200" value="" placeholder="由共用設定帶入" oninput="calcPREDICT()"></div>
+            <div class="calc-field"><label>陽性淋巴結數</label><input type="number" id="pred_nodes" min="0" max="50" value="" placeholder="由 LN+ 或 N 分期帶入" oninput="calcPREDICT()"></div>
+            <div class="calc-field"><label>Grade</label><select id="pred_grade" onchange="calcPREDICT()"><option value="">未知</option><option value="1">G1</option><option value="2">G2</option><option value="3">G3</option></select></div>
+            <div class="calc-field"><label>ER 狀態</label><select id="pred_er" onchange="calcPREDICT()"><option value="unk" selected>未知</option><option value="pos">ER 陽性</option><option value="neg">ER 陰性</option></select></div>
             <div class="calc-field"><label>PR 狀態</label><select id="pred_pr" onchange="calcPREDICT()"><option value="unk" selected>未知</option><option value="pos">PR 陽性</option><option value="neg">PR 陰性</option></select></div>
             <div class="calc-field"><label>HER2 狀態</label><select id="pred_her2" onchange="calcPREDICT()"><option value="neg" selected>HER2 陰性</option><option value="pos">HER2 陽性</option><option value="unk">未知</option></select></div>
             <div class="calc-field"><label>Ki-67</label><select id="pred_ki67" onchange="calcPREDICT()"><option value="unk" selected>未測 / 未知</option><option value="pos">≥10% (陽性)</option><option value="neg">&lt;10% (陰性)</option></select></div>
@@ -1815,7 +1883,7 @@ const data = await res.json();</code></pre>
         <section class="function-menu-section">
           <h3>更新紀錄 / 版本</h3>
           <div class="function-menu-kv"><b>App version</b><span id="menuAppVersion">v1.8</span></div>
-          <div class="function-menu-kv"><b>Release date</b><span id="menuReleaseDate">2026-06-04</span></div>
+          <div class="function-menu-kv"><b>Release date</b><span id="menuReleaseDate">2026-06-06</span></div>
           <div class="function-menu-kv"><b>Price data</b><span id="menuPriceData">讀取中</span></div>
           <div class="function-release-list" id="functionReleaseList"></div>
           <button class="function-menu-action" type="button" onclick="showSettings();closeFunctionMenu()">設定 / 功能開關</button>
@@ -1898,6 +1966,7 @@ const data = await res.json();</code></pre>
         <option value="計算機 - RCB">計算機 - RCB</option>
         <option value="計算機 - Gail">計算機 - Gail</option>
         <option value="病人 Workspace">病人 Workspace</option>
+        <option value="AI Agent 對話">AI Agent 對話</option>
         <option value="健保給付反向查詢">健保給付反向查詢</option>
         <option value="設定 / 功能開關">設定 / 功能開關</option>
         <option value="其他 / 整體">其他 / 整體</option>
@@ -1957,7 +2026,7 @@ const data = await res.json();</code></pre>
 
   <footer class="site-footer">
     <span>本網站由台大癌醫黃祥瑋醫師維護，資料僅供臨床討論與費用估算參考。</span>
-    <button id="offlineDownloadBtn" type="button" onclick="downloadOfflineCopy()">下載離線版 2026-06-04</button>
+    <button id="offlineDownloadBtn" type="button" onclick="downloadOfflineCopy()">下載離線版 2026-06-06</button>
   </footer>
 </div><!-- /container -->
 
@@ -1981,10 +2050,11 @@ const data = await res.json();</code></pre>
 <script src="assets/js/modules/patient-context-adapter.js?v=20260606a"></script>
 <script src="assets/js/modules/disease-module-loader.js?v=20260606a"></script>
 <script src="assets/js/modules/agent-adapter.js?v=20260606a"></script>
-<script src="assets/js/modules/agent-panel-state.js?v=20260606a"></script>
+<script src="assets/js/modules/agent-panel-state.js?v=20260606b"></script>
+<script src="assets/js/modules/recording-service-client.js?v=20260608a"></script>
 <script src="assets/js/modules/benchmark-loader.js?v=20260606a"></script>
 <script src="assets/js/modules/benchmark-browser.js?v=20260606a"></script>
-<script src="assets/js/legacy-app.js?v=20260605bk"></script>
+<script src="assets/js/legacy-app.js?v=20260606b"></script>
 
 <!-- AJCC prognostic lookup table: pre-computed breast prognostic stage entries -->
 <!-- Source: breast_cancer_tools/data/ajcc_staging_9_reference_lookup.json (Taiwan VGH reference) -->

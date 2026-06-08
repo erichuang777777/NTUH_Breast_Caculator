@@ -16,3 +16,8 @@ venv/
 *.sqlite-journal
 *.tmp
 /tmp/
+CLAUDE.md
+*review_diff*.txt
+NTUH_catastrophic_apply.txt
+ntuh_dashboard_modal_B.html
+data/patches/applied_log.jsonl

@@ -528,8 +528,8 @@ def _agent_system_context(message, patient):
             titles = "、".join(str(item.get("title") or "") for item in context["support_resources"][:5])
             context["answer_hints"].append(f"Support resource answer must mention exact resource titles: {titles}.")
 
-    terms = _agent_drug_terms(message, effective_patient)
     if "drug_indication" in context["question_intents"] or "price" in context["question_intents"]:
+        terms = _agent_drug_terms(message, effective_patient)
         text_for_names = str(message or "").lower()
         try:
             c_names = get_db()
@@ -559,15 +559,26 @@ def _agent_system_context(message, patient):
             external_tokens = re.findall(r"\b[a-z][a-z0-9_-]{3,}\b", text_for_names)
             stop = {"breast", "cancer", "price", "drug", "cost", "line", "stage", "guideline", "latest", "official", "patient"}
             terms = [t for t in external_tokens if t not in stop][:8]
-    if not terms:
-        return context
+    else:
+        terms = []
+    msg_l = str(message or "").lower()
     text_l = f"{message} {json.dumps(effective_patient, ensure_ascii=False)}".lower()
-    if ("her2" in text_l or "her-2" in text_l) and ("ln" in text_l or "node" in text_l or "淋巴" in text_l or "轉移" in text_l or "n1" in text_l or "n2" in text_l or "n3" in text_l):
+    her2_positive = str(effective_patient.get("her2") or "").strip() == "+"
+    node_stage = str(effective_patient.get("cN") or effective_patient.get("pN") or effective_patient.get("N") or "").lower()
+    try:
+        node_positive = float(effective_patient.get("nodes_pos") or 0) > 0
+    except Exception:
+        node_positive = False
+    node_positive = node_positive or any(node_stage.startswith(x) for x in ("n1", "n2", "n3"))
+    explicit_perjeta_query = any(k in msg_l for k in ("perjeta", "pertuzumab", "phesgo"))
+    if explicit_perjeta_query or (her2_positive and node_positive):
         context["answer_hints"].append("HER2 positive + LN positive query: system should include Pertuzumab/Perjeta when drug_matches contains Perjeta/Pertuzumab/Phesgo; do not answer that Perjeta has no data.")
     if ("tnbc" in text_l or "三陰" in text_l or (effective_patient.get("er") == "-" and effective_patient.get("pr") == "-" and effective_patient.get("her2") == "-")):
         context["answer_hints"].append("TNBC query: for early/neoadjuvant M0 disease, prioritize KEYNOTE-522/KN522 style treatment if Pembrolizumab/Keytruda is present: pembrolizumab + paclitaxel/carboplatin followed by anthracycline/cyclophosphamide, then adjuvant pembrolizumab per local policy. Do not lead with 5-FU unless the user specifically asks about 5-FU.")
     if any(k in text_l for k in ["keynote-522", "kn522", "17 次", "17劑"]) and any(k in text_l for k in ["keytruda", "pembrolizumab", "pembro"]):
         context["answer_hints"].append("KN522 Keytruda benchmark pricing: use website benchmark calculation 54,267 x 17 = 922,539 元 for pembrolizumab only; do not multiply by 2 vials in this benchmark answer.")
+    if not terms:
+        return context
 
     clauses = []
     params = []
