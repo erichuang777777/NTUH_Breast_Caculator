@@ -3358,6 +3358,8 @@ class Handler(BaseHTTPRequestHandler):
             self._trials(params)
         elif path == '/api/agent-prompt':
             self._json(200, {'ok': True, 'version': '2026-06-06', 'prompt': AGENT_SYSTEM_PROMPT})
+        elif path == '/api/agent-status':
+            self._agent_status()
         elif path == '/api/health':
             self._json(200, {'ok': True, 'runtime': 'local-python', 'mode': 'read-write'})
         elif path in ('/manifest.webmanifest', '/sw.js', '/offline.html') or path.startswith(('/assets/', '/data/', '/icons/', '/docs/', '/.well-known/')):
@@ -3873,6 +3875,47 @@ class Handler(BaseHTTPRequestHandler):
                 "detail": str(e),
                 "model": OLLAMA_MODEL,
                 "ollama_host": OLLAMA_HOST
+            })
+
+    def _agent_status(self):
+        try:
+            req = urllib.request.Request(
+                f"{OLLAMA_HOST}/api/tags",
+                headers={"Content-Type": "application/json"},
+                method="GET",
+            )
+            with urllib.request.urlopen(req, timeout=min(12, max(1, OLLAMA_TIMEOUT_SECONDS))) as resp:
+                raw = json.loads(resp.read().decode("utf-8"))
+            models = raw.get("models") if isinstance(raw, dict) else []
+            if not isinstance(models, list):
+                models = []
+            model_names = {
+                str((m or {}).get("name") or (m or {}).get("model") or "")
+                for m in models
+                if isinstance(m, dict)
+            }
+            self._json(200, {
+                "ok": True,
+                "configured": True,
+                "connected": True,
+                "status": "connected",
+                "message": "Local Ollama connected.",
+                "model": OLLAMA_MODEL,
+                "model_available": OLLAMA_MODEL in model_names if model_names else None,
+                "model_count": len(models),
+                "ollama_host": OLLAMA_HOST,
+                "runtime": "local-ollama"
+            })
+        except Exception as e:
+            self._json(502, {
+                "ok": False,
+                "configured": True,
+                "connected": False,
+                "status": "local_unavailable",
+                "message": str(e),
+                "model": OLLAMA_MODEL,
+                "ollama_host": OLLAMA_HOST,
+                "runtime": "local-ollama"
             })
 
     def _json(self, code, data, headers=None):

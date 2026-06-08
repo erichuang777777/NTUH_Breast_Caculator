@@ -2895,6 +2895,8 @@ const DASHBOARD_AGENT_COLLAPSED_KEY = 'nhi_dashboard_agent_collapsed';
 const DASHBOARD_AGENT_API_CONFIG_KEY = 'nhi_dashboard_agent_api_config';
 const DASHBOARD_AGENT_HISTORY_KEY = 'nhi_dashboard_agent_history_v1';
 const DASHBOARD_AGENT_CONTEXT_LIMIT = 8192;
+let _dashboardAgentStatus = { state:'checking', label:'檢查中', detail:'正在檢查 Agent API 連線' };
+let _dashboardAgentStatusCheckedAt = 0;
 function dashboardAgentDefaultApiConfig(){
     if(window.OncoBreastAgentAdapter) return window.OncoBreastAgentAdapter.defaultConfig(location);
     const protocol = (location && location.protocol) ? location.protocol : '';
@@ -3103,6 +3105,55 @@ function dashboardAgentContextMeterHtml(extraText=''){
         ${usage.percent >= 70 ? '<button class="dashboard-agent-context-action" type="button" onclick="dashboardAgentClearHistory()">清除對話紀錄</button>' : ''}
     </div>`;
 }
+function dashboardAgentStatusHtml(){
+    const state = (_dashboardAgentStatus && _dashboardAgentStatus.state) || 'checking';
+    const label = (_dashboardAgentStatus && _dashboardAgentStatus.label) || '檢查中';
+    const detail = (_dashboardAgentStatus && _dashboardAgentStatus.detail) || '正在檢查 Agent API 連線';
+    return `<button type="button" id="dashboardAgentStatus" class="dashboard-agent-status ${esc(state)}" onclick="dashboardAgentRefreshStatus(true)" title="${esc(detail)}">
+        <i aria-hidden="true"></i><span>${esc(label)}</span>
+    </button>`;
+}
+function dashboardAgentSetStatus(state, label, detail){
+    _dashboardAgentStatus = { state, label, detail };
+    const el = document.getElementById('dashboardAgentStatus');
+    if(el){
+        el.className = `dashboard-agent-status ${state}`;
+        el.title = detail || label || '';
+        el.innerHTML = `<i aria-hidden="true"></i><span>${esc(label || '')}</span>`;
+    }
+}
+async function dashboardAgentRefreshStatus(force=false){
+    const now = Date.now();
+    if(!force && _dashboardAgentStatusCheckedAt && now - _dashboardAgentStatusCheckedAt < 60000) return;
+    _dashboardAgentStatusCheckedAt = now;
+    const cfg = getDashboardAgentApiConfig();
+    if(!cfg.enabled || !cfg.endpoint){
+        dashboardAgentSetStatus('off', '未啟用', 'Agent API endpoint 未啟用');
+        return;
+    }
+    const statusUrl = cfg.endpoint.replace(/\/agent(?:\?.*)?$/, '/agent-status');
+    dashboardAgentSetStatus('checking', '檢查中', '正在檢查 Agent API 連線');
+    try {
+        const res = await fetch(statusUrl, {
+            method: 'GET',
+            headers: { 'x-client-app':'oncobreast-copilot', ...(cfg.headers || {}) }
+        });
+        const data = await res.json().catch(() => ({}));
+        if(res.ok && data.connected){
+            const isLocal = data.runtime === 'local-ollama' || /^https?:\/\/(127\.0\.0\.1|localhost)(:|\/|$)/.test(String(data.ollama_host || ''));
+            const runtimeLabel = isLocal ? 'Local OK' : 'Cloud OK';
+            const sourceText = isLocal ? '本機 Ollama 已連線' : 'Ollama Cloud 已連線';
+            const modelText = data.model ? `${sourceText}；模型：${data.model}` : sourceText;
+            dashboardAgentSetStatus('ok', runtimeLabel, modelText);
+        } else if(data.status === 'missing_key' || !data.configured){
+            dashboardAgentSetStatus('warn', '未設 Key', data.message || 'Netlify 尚未設定 OLLAMA_API_KEY');
+        } else {
+            dashboardAgentSetStatus('error', '未連線', data.message || `Agent status HTTP ${res.status}`);
+        }
+    } catch(e){
+        dashboardAgentSetStatus('error', '未連線', e.message || '無法檢查 Agent API 狀態');
+    }
+}
 function dashboardAgentRefreshContextMeter(extraText=''){
     const el = document.getElementById('dashboardAgentContextMeter');
     if(el) el.outerHTML = `<div id="dashboardAgentContextMeter">${dashboardAgentContextMeterHtml(extraText)}</div>`;
@@ -3247,7 +3298,7 @@ function renderDashboardAgentPanel(){
     return `<aside class="dashboard-agent-panel">
         <div class="dashboard-agent-head">
             <div>
-                <span>AI Agent</span>
+                <span>AI Agent ${dashboardAgentStatusHtml()}</span>
                 <b>Patient context copilot</b>
             </div>
             <div class="dashboard-agent-head-actions">
@@ -3612,6 +3663,7 @@ function renderModalDashboardOverview(){
         </section>
         <section class="patient-tool-grid patient-journey-tools">${toolCards}</section>`;
     overview.innerHTML = `<div class="modal-dashboard-main">${mainHtml}</div>${renderDashboardAgentPanel()}`;
+    setTimeout(() => dashboardAgentRefreshStatus(false), 0);
 }
 function removeModalDashboardOverview(){
     const overview = document.getElementById('modalDashboardOverview');

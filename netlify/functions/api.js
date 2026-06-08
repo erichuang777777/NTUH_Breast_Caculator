@@ -198,6 +198,66 @@ async function callOllamaAgent(body) {
   }
 }
 
+async function checkOllamaStatus() {
+  const apiKey = process.env.OLLAMA_API_KEY || '';
+  if (!apiKey) {
+    return {
+      ok: false,
+      configured: false,
+      connected: false,
+      status: 'missing_key',
+      message: 'OLLAMA_API_KEY is not configured on Netlify.',
+      model: OLLAMA_MODEL,
+      runtime: 'ollama-cloud',
+    };
+  }
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), Math.min(Math.max(1000, OLLAMA_TIMEOUT_MS), 12000));
+  try {
+    const res = await fetch(`${OLLAMA_HOST}/api/tags`, {
+      method: 'GET',
+      headers: { authorization: `Bearer ${apiKey}` },
+      signal: controller.signal,
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      return {
+        ok: false,
+        configured: true,
+        connected: false,
+        status: 'cloud_error',
+        message: data.error || data.message || `Ollama Cloud returned HTTP ${res.status}`,
+        model: OLLAMA_MODEL,
+        runtime: 'ollama-cloud',
+      };
+    }
+    const models = Array.isArray(data.models) ? data.models : [];
+    return {
+      ok: true,
+      configured: true,
+      connected: true,
+      status: 'connected',
+      message: 'Ollama Cloud connected.',
+      model: OLLAMA_MODEL,
+      model_available: models.some(m => String(m.name || m.model || '') === OLLAMA_MODEL),
+      model_count: models.length,
+      runtime: 'ollama-cloud',
+    };
+  } catch (err) {
+    return {
+      ok: false,
+      configured: true,
+      connected: false,
+      status: err.name === 'AbortError' ? 'timeout' : 'network_error',
+      message: err.name === 'AbortError' ? 'Ollama Cloud status check timed out.' : err.message,
+      model: OLLAMA_MODEL,
+      runtime: 'ollama-cloud',
+    };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function githubFeedbackRequest(pathname, options = {}) {
   const token = process.env.FEEDBACK_GITHUB_TOKEN || '';
   const headers = {
@@ -299,6 +359,10 @@ exports.handler = async function handler(event) {
     }
 
     if (method === 'GET' && p === '/agent-prompt') return json(200, { ok: true, version: '2026-06-06', prompt: AGENT_SYSTEM_PROMPT });
+    if (method === 'GET' && p === '/agent-status') {
+      const result = await checkOllamaStatus();
+      return json(result.ok ? 200 : (result.configured ? 502 : 503), result);
+    }
     if (method === 'GET' && p === '/config') return json(200, readJson('config'));
     if (method === 'GET' && p === '/stats') return json(200, readJson('stats'));
     if (method === 'GET' && p === '/feedback') {
