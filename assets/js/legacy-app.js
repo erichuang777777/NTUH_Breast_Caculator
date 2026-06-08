@@ -2293,17 +2293,6 @@ function dashboardPhaseFocus(ctx){
     };
     return map[phase] || base;
 }
-function dashboardPhaseFocusHtml(ctx){
-    const focus = dashboardPhaseFocus(ctx);
-    return `<section class="patient-phase-focus focus-${esc(focus.group)}">
-        <div>
-            <span>${esc(focus.label)}</span>
-            <strong>${esc(focus.title)}</strong>
-            <p>${esc(focus.detail)}</p>
-        </div>
-        <div class="patient-phase-actions">${(focus.actions || []).map(x => `<b>${esc(x)}</b>`).join('')}</div>
-    </section>`;
-}
 function dashboardToolGroupsHtml(cardById, ctx){
     const focus = dashboardPhaseFocus(ctx);
     const groups = [
@@ -3795,6 +3784,7 @@ function renderModalDashboardOverview(){
         }
     });
     const toolGroups = dashboardToolGroupsHtml(cardById, ctx);
+    const focus = dashboardPhaseFocus(ctx);
     const compact = dashboardCompactContextParts(ctx);
     const pills = [
         dashboardContextPill('分期', compact.stageOverview, ctx.stage.T && ctx.stage.N && ctx.stage.M ? 'ok' : 'warn'),
@@ -3807,7 +3797,10 @@ function renderModalDashboardOverview(){
     const mainHtml = `
         <section class="patient-context-bar">
             <div class="patient-context-title">
-                <strong>共用設定檔</strong>
+                <div>
+                    <strong>共用設定檔</strong>
+                    <span class="patient-context-focus">${esc(focus.label)}：${esc(focus.title)}。${esc(focus.detail)}</span>
+                </div>
                 <button type="button" class="patient-context-inform-btn" onclick="generatePatientTreatmentPlan()">病人說明單</button>
             </div>
             <div class="patient-context-actions">
@@ -3827,7 +3820,6 @@ function renderModalDashboardOverview(){
             </div>
         </section>
         <section class="patient-context-pills">${pills}<button type="button" class="patient-context-copy" onclick="copyDashboardCompactContextSummary(this)" title="複製病歷摘要" aria-label="複製病歷摘要">⧉</button></section>
-        ${dashboardPhaseFocusHtml(ctx)}
         <section class="patient-journey-panel patient-journey-main">
             <div class="patient-panel-head">
                 <span>Evidence Block</span>

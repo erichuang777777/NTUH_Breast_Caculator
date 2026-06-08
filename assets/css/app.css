@@ -1607,7 +1607,7 @@ body.mobile-device-shell .ws-context-pill-row {
     height: calc(100vh - 74px);
     overflow: hidden;
     display: grid;
-    grid-template-rows: auto auto auto minmax(112px, auto) minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(112px, auto) minmax(0, 1fr);
     gap: 10px;
     align-items: start;
   }
@@ -1632,12 +1632,22 @@ body.mobile-device-shell .ws-context-pill-row {
     align-items: center;
     gap: .55rem;
     min-width: 0;
+    flex: 1 1 auto;
+  }
+  .patient-context-title > div {
+    min-width: 0;
   }
   .patient-context-bar span {
     display: block;
     margin-top: .16rem;
     color: var(--text-muted);
     font-size: .82rem;
+  }
+  .patient-context-focus {
+    max-width: 58vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .patient-context-bar button {
     flex: 0 0 auto;
@@ -1657,54 +1667,6 @@ body.mobile-device-shell .ws-context-pill-row {
     background: #fff7ed;
     color: #9a3412;
     font-size: .78rem;
-  }
-  .patient-phase-focus {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: .75rem;
-    align-items: center;
-    border: 1px solid #d8e3ee;
-    border-left: 4px solid #0f766e;
-    border-radius: 8px;
-    background: #fff;
-    padding: .55rem .7rem;
-  }
-  .patient-phase-focus span {
-    display: block;
-    color: #0f766e;
-    font-size: .68rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: .03em;
-  }
-  .patient-phase-focus strong {
-    display: block;
-    margin-top: .05rem;
-    color: #122132;
-    font-size: .95rem;
-    line-height: 1.22;
-  }
-  .patient-phase-focus p {
-    margin: .1rem 0 0;
-    color: #64748b;
-    font-size: .74rem;
-    line-height: 1.35;
-  }
-  .patient-phase-actions {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: .32rem;
-  }
-  .patient-phase-actions b {
-    border: 1px solid #b8d6ca;
-    border-radius: 999px;
-    background: #f0fdfa;
-    color: #0f766e;
-    padding: .18rem .48rem;
-    font-size: .68rem;
-    font-weight: 900;
-    white-space: nowrap;
   }
   .patient-context-actions {
     flex: 0 0 auto;
@@ -2735,6 +2697,26 @@ body.mobile-device-shell .ws-context-pill-row {
     }
   }
   @media (max-width: 760px) {
+    .patient-context-bar {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+    .patient-context-title {
+      width: 100%;
+      justify-content: space-between;
+    }
+    .patient-context-focus {
+      max-width: 100%;
+      display: -webkit-box !important;
+      overflow: hidden;
+      white-space: normal;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+    .patient-context-actions {
+      width: 100%;
+      justify-content: flex-end;
+    }
     .patient-tool-group-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
