@@ -3457,7 +3457,7 @@ function renderModalDashboardOverview(){
     const icdText = ctx.icd ? dashboardJoin([ctx.icd.subtitle, ctx.icd.ntuhNo ? `重卡 ${ctx.icd.ntuhNo}` : '', ctx.icd.code]) : '';
     const geneText = dashboardGeneMutationText(ctx.p);
     const responseText = dashboardPostNacResponse(ctx.p);
-    const axillaText = dashboardAxillaSummary(ctx.p);
+    const cNText = ctx.p.cN || (ctx.stage && ctx.stage.N) || '';
     const stageOverview = dashboardJoin([
         stageMain,
         ctx.p.size ? `Size ${ctx.p.size}mm` : '',
@@ -3467,7 +3467,7 @@ function renderModalDashboardOverview(){
     const pills = [
         dashboardContextPill('分期', stageOverview, ctx.stage.T && ctx.stage.N && ctx.stage.M ? 'ok' : 'warn'),
         dashboardContextPill('亞型', ctx.subtype, ctx.subtype ? 'ok' : 'warn'),
-        axillaText ? dashboardContextPill('Axilla', axillaText, 'ok') : '',
+        cNText ? dashboardContextPill('cN', cNText, 'ok') : '',
         responseText ? dashboardContextPill('Post-NAC', responseText, responseText === 'pCR' ? 'ok' : 'warn') : '',
         dashboardContextPill('Gene', geneText, geneText ? 'ok' : 'warn'),
         dashboardContextPill('重卡', icdText, ctx.icd ? 'ok' : 'muted')
@@ -4508,13 +4508,15 @@ function setPatientField(key, value){
     if(key === 'axillary_surgery') value = normalizeAxillarySurgeryValue(value);
     _patient[key] = value;
     const nodeSplitChanged = ['sln_pos','sln_total','aln_pos','aln_total'].includes(key);
+    const nodeTotalChanged = key === 'nodes_pos';
     if(nodeSplitChanged){
         normalizeWorkspaceNodeFields();
         normalizeWorkspaceStage();
     }
+    if(nodeTotalChanged) normalizeWorkspaceNodeStageFromPositiveCount();
     if(['nodes_pos','nodes_total','cT','cN','cM','pT','pN','pM','T','N','M'].includes(key)) normalizeWorkspaceStage();
     savePatient();
-    if(nodeSplitChanged) syncWorkspaceInputs(['nodes_pos','nodes_total','pN','T','N','M']);
+    if(nodeSplitChanged || nodeTotalChanged) syncWorkspaceInputs(['nodes_pos','nodes_total','pN','T','N','M']);
     refreshTouchPickers();
     refreshTouchPresets();
     refreshWorkspaceDerived();
@@ -4860,6 +4862,15 @@ function normalizeWorkspaceNodeFields(){
         _patient.axillary_surgery = normalizeAxillarySurgeryValue(parts);
     }
 }
+function normalizeWorkspaceNodeStageFromPositiveCount(){
+    const raw = String(_patient.nodes_pos == null ? '' : _patient.nodes_pos).trim();
+    if(raw === '') return;
+    const n = Number(raw);
+    if(!Number.isFinite(n)) return;
+    const current = String(_patient.pN || '').trim();
+    if(current && current !== 'Nx') return;
+    _patient.pN = pathologyNodeStageFromCount(n, '');
+}
 function validateWorkspacePostOpNodes(p){
     p = p || {};
     const warnings = [];
@@ -4941,8 +4952,32 @@ function refreshWorkspaceDerived(){
     // Molecular subtype is shown only in the AJCC v8 prognostic card.
     const subtypeEl = document.getElementById('ws_d_subtype');
     if(subtypeEl) subtypeEl.textContent = deriveWorkspaceSubtype(p) || '—';
+    syncWorkspacePostNacVisibility();
+    renderWorkspaceHomeSummary(p);
     renderWorkspaceStageSummary(p);
     renderWorkspacePatientContext();
+}
+function renderWorkspaceHomeSummary(p){
+    const el = document.getElementById('wsHomeSummaryPanel');
+    if(!el) return;
+    p = p || {};
+    const lines = patientCenterSummaryLines(p).filter(line => String(line || '').trim());
+    const hasSummary = lines.length > 0;
+    const subtype = deriveWorkspaceSubtype(p) || '';
+    el.innerHTML = `
+      <div class="ws-home-summary-head">
+        <div>
+          <span>首頁摘要</span>
+          <strong>${esc(subtype || '待補亞型')}</strong>
+        </div>
+        <div class="ws-home-summary-actions">
+          <button class="ws-btn ws-btn-primary" type="button" onclick="showPatientCenter()">診間 Copilot</button>
+          <button class="ws-btn" type="button" ${hasSummary ? '' : 'disabled'} onclick="copyWorkspaceCommonVariableSummary()">複製摘要</button>
+        </div>
+      </div>
+      <div class="ws-home-summary-lines">
+        ${hasSummary ? lines.map(line => `<div>${esc(line)}</div>`).join('') : '<div class="muted">待補病人資料</div>'}
+      </div>`;
 }
 function _stageBucket(anat, M){
     if(M==='M1') return 'metastatic';
@@ -5259,11 +5294,11 @@ function deriveWorkspaceSubtype(p){
     const hrPos = er === '+' || pr === '+';
     const hrNeg = er === '-' && pr === '-';
     if((!er && !pr) || !p.her2) return null;
-    if(p.her2==='+') return hrPos ? 'HR+/HER2+ (Luminal B-like)' : (hrNeg ? 'HR-/HER2+' : 'HER2+');
+    if(p.her2==='+') return hrPos ? 'HR+/HER2+ (Luminal B)' : (hrNeg ? 'HR-/HER2+' : 'HER2+');
     if(p.her2==='low') return hrPos ? 'HR+/HER2-low' : (hrNeg ? 'TNBC (HER2-low)' : 'HER2-low');
     if(hrPos){
         const kiSign = workspaceKi67CutoffSign(p.ki67, 20);
-        return kiSign === '+' ? 'HR+/HER2- (Luminal B-like)' : 'HR+/HER2- (Luminal A-like)';
+        return kiSign === '+' ? 'HR+/HER2- (Luminal B)' : 'HR+/HER2- (Luminal A)';
     }
     return hrNeg ? 'TNBC (Triple Negative)' : 'HER2-';
 }
@@ -5551,17 +5586,8 @@ function renderWorkspaceStageSummary(p){
     if(!el) return;
     const st = getWorkspaceStageForDisplay(p);
     if(st.T && st.N && st.M) p = { ...p, T: st.T, N: st.N, M: st.M, stageKind: st.kind };
-    const commonSummary = patientCenterOneLineSummary(p);
-    const copyRow = `
-      <div class="ws-stage-copy-row">
-        <div class="ws-stage-copy-main">
-          <span class="ws-stage-copy-label">病人整合摘要</span>
-          <strong>${esc(commonSummary || '待補病人資料')}</strong>
-        </div>
-        <button class="ws-btn" type="button" ${commonSummary ? '' : 'disabled'} onclick="copyWorkspaceCommonVariableSummary()">複製</button>
-      </div>`;
     if(!p.T || !p.N || !p.M){
-        el.innerHTML = '<div class="ws-empty">請先填入 T / N / M，完成後會自動顯示 AJCC 第八版解剖期別。</div>' + copyRow;
+        el.innerHTML = '<div class="ws-empty">請先填入 T / N / M，完成後會自動顯示 AJCC 第八版解剖期別。</div>';
         return;
     }
     let anat = '—';
@@ -5586,8 +5612,7 @@ function renderWorkspaceStageSummary(p){
         <div class="ws-stage-label">AJCC v8 預後期別</div>
         <div class="ws-stage-value">${prog ? 'Stage ' + prog : '—'}</div>
         <div class="ws-stage-sub">${progText}${subtypeText ? '　' + subtypeText : ''}</div>
-      </div>
-      ${copyRow}`;
+      </div>`;
 }
 
 function deriveCrossSectionSupport(p){
@@ -6553,7 +6578,21 @@ function patientCenterTnmString(p){
     const prefix = st.kind === 'pTNM' ? 'p' : (st.kind === 'ypTNM' ? 'yp' : (st.kind === 'cTNM' ? 'c' : ''));
     return `${prefix}${st.T}${st.N}${st.M}`.replace(/\s+/g, '');
 }
-function patientCenterOneLineSummary(p){
+function patientCenterClinicalTnmString(p){
+    p = p || {};
+    if(p.cT && p.cN && p.cM) return `c${p.cT}${p.cN}${p.cM}`.replace(/\s+/g, '');
+    return patientCenterTnmString(p);
+}
+function patientCenterPostOpTnmString(p){
+    p = p || {};
+    if(!p.pT && !p.pN) return '';
+    const prefix = String(p.post_nac_prefix || '') === 'yes' ? 'yp' : 'p';
+    const t = p.pT || '';
+    const n = p.pN || '';
+    const m = p.pM || p.cM || '';
+    return `${prefix}${t}${n}${m}`.replace(/\s+/g, '');
+}
+function patientCenterClinicalSummaryLine(p){
     p = p || {};
     const side = ({R:"R't", L:"L't", B:'Bilateral'}[p.side] || '').trim();
     const diagnosis = `${side ? side + ' ' : ''}breast ca`;
@@ -6572,10 +6611,45 @@ function patientCenterOneLineSummary(p){
     if(fish) parts.push(`FISH:${fish}`);
     const ki67 = patientCenterPercentOrSign(p.ki67);
     if(ki67) parts.push(`Ki67:${ki67}`);
-    const tnm = patientCenterTnmString(p);
-    const stage = patientCenterStageBundle(p).anatomic;
+    const tnm = patientCenterClinicalTnmString(p);
+    const clinicalStagePatient = (p.cT && p.cN && p.cM) ? { ...p, T:p.cT, N:p.cN, M:p.cM, stageKind:'cTNM' } : p;
+    let stage = '';
+    try { stage = clinicalStagePatient.T && clinicalStagePatient.N && clinicalStagePatient.M ? (_ajccAnatomic(clinicalStagePatient.T, clinicalStagePatient.N, clinicalStagePatient.M) || '') : ''; } catch(e){}
     const stageLine = [tnm, stage ? `stage ${stage}` : ''].filter(Boolean).join(', ');
     return `${parts.join(', ')}${stageLine ? `. ${stageLine}` : ''}`;
+}
+function patientCenterPostOpSummaryLine(p){
+    p = p || {};
+    const hasPostValue = k => p[k] !== undefined && p[k] !== null && String(p[k]).trim() !== '';
+    const hasPostOp = ['pT','pN','breast_surgery','axillary_surgery','nodes_pos','nodes_total','sln_pos','sln_total','aln_pos','aln_total','pni','lvi','margin_involved','post_nac_response']
+        .some(hasPostValue);
+    if(!hasPostOp) return '';
+    const parts = [];
+    const surgery = [p.breast_surgery || '', axillarySurgeryParts(p.axillary_surgery).join('+')].filter(Boolean).join(' + ');
+    if(surgery) parts.push(surgery);
+    const tnm = patientCenterPostOpTnmString(p);
+    if(tnm) parts.push(tnm);
+    const totalPos = hasPostValue('nodes_pos') ? p.nodes_pos : '';
+    const totalNodes = hasPostValue('nodes_total') ? p.nodes_total : '';
+    if(totalPos !== '' && totalNodes !== '') parts.push(`LN ${totalPos}/${totalNodes}`);
+    else if(totalPos !== '') parts.push(`LN+${totalPos}`);
+    if(hasPostValue('sln_pos') || hasPostValue('sln_total')) parts.push(`SLN ${p.sln_pos || '?'}/${p.sln_total || '?'}`);
+    if(hasPostValue('aln_pos') || hasPostValue('aln_total')) parts.push(`ALN ${p.aln_pos || '?'}/${p.aln_total || '?'}`);
+    if(p.pni === 'present') parts.push('PNI+');
+    if(p.pni === 'absent') parts.push('PNI-');
+    if(p.lvi === 'present') parts.push('LVI+');
+    if(p.lvi === 'absent') parts.push('LVI-');
+    if(p.margin_involved === 'yes') parts.push('margin involved');
+    if(p.margin_involved === 'no') parts.push('margin uninvolved');
+    if(String(p.post_nac_prefix || '') === 'yes' && p.post_nac_response) parts.push(`Post-NAC ${p.post_nac_response}`);
+    return parts.length ? `Post-op: ${parts.join(', ')}` : '';
+}
+function patientCenterSummaryLines(p){
+    const lines = [patientCenterClinicalSummaryLine(p), patientCenterPostOpSummaryLine(p)].filter(Boolean);
+    return lines.length ? lines : [''];
+}
+function patientCenterOneLineSummary(p){
+    return patientCenterSummaryLines(p).join('\n');
 }
 function patientCenterAdminChecklistItems(p, bundle){
     p = p || {};
@@ -8913,6 +8987,7 @@ function syncWsStageMGroup(field, chipId){
     });
 }
 function syncWsPostSimpleChips(){
+    syncWorkspacePostNacVisibility();
     const simple = [
         ['breast_surgery', 'wsPostBreastSurgeryChips'],
         ['reconstruction_surgery', 'wsPostReconstructionChips'],
@@ -8926,7 +9001,13 @@ function syncWsPostSimpleChips(){
         btn.classList.toggle('active', !!field && btn.dataset.value === String((_patient && _patient[field]) || ''));
     });
     const nac = document.getElementById('wsPostNacChip');
-    if(nac) nac.classList.toggle('active', isWorkspacePostNacPathology(_patient || {}));
+    if(nac) nac.classList.toggle('active', String(((_patient || {}).post_nac_prefix) || '') === 'yes');
+}
+function syncWorkspacePostNacVisibility(){
+    const show = String(((_patient || {}).post_nac_prefix) || '') === 'yes';
+    document.querySelectorAll('.ws-post-nac-only').forEach(el => {
+        el.hidden = !show;
+    });
 }
 function syncWsAxillarySurgeryChips(){
     const parts = axillarySurgeryParts((_patient || {}).axillary_surgery);
@@ -8942,11 +9023,14 @@ function toggleWsAxillarySurgery(value){
     syncWsAxillarySurgeryChips();
 }
 function toggleWsPostNacPrefix(){
-    const next = isWorkspacePostNacPathology(_patient || {}) ? '' : 'yes';
+    const next = String(((_patient || {}).post_nac_prefix) || '') === 'yes' ? '' : 'yes';
     _patient.post_nac_prefix = next;
     if(next === 'yes' && !_patient.phase) _patient.phase = 'post_neoadjuvant_residual';
+    if(next !== 'yes') _patient.post_nac_response = '';
     const phase = document.getElementById('ws_phase');
     if(phase && _patient.phase) phase.value = _patient.phase;
+    const postNac = document.getElementById('ws_post_nac_response');
+    if(postNac && next !== 'yes') postNac.value = '';
     normalizeWorkspaceStage();
     savePatient();
     refreshWorkspaceDerived();

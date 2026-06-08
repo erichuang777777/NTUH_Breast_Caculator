@@ -1020,6 +1020,15 @@
         </div>
         <div class="ws-post-aux-grid">
           <div class="ws-post-aux-block">
+            <div class="ws-q-blocklabel">PNI / LVI</div>
+            <div class="ws-q-row4" id="wsPostPniLviChips">
+              <button class="ws-qchip" data-field="pni" data-value="present" onclick="setWsQuickSimpleField('pni','present')">PNI+</button>
+              <button class="ws-qchip" data-field="pni" data-value="absent" onclick="setWsQuickSimpleField('pni','absent')">PNI-</button>
+              <button class="ws-qchip" data-field="lvi" data-value="present" onclick="setWsQuickSimpleField('lvi','present')">LVI+</button>
+              <button class="ws-qchip" data-field="lvi" data-value="absent" onclick="setWsQuickSimpleField('lvi','absent')">LVI-</button>
+            </div>
+          </div>
+          <div class="ws-post-aux-block">
             <div class="ws-q-blocklabel">乳房手術</div>
             <div class="ws-q-row2" id="wsPostBreastSurgeryChips">
               <button class="ws-qchip" data-value="BCS" onclick="setWsQuickSimpleField('breast_surgery','BCS')">BCS</button>
@@ -1044,22 +1053,13 @@
             </div>
           </div>
           <div class="ws-post-aux-block">
-            <div class="ws-q-blocklabel">PNI / LVI</div>
-            <div class="ws-q-row4" id="wsPostPniLviChips">
-              <button class="ws-qchip" data-field="pni" data-value="present" onclick="setWsQuickSimpleField('pni','present')">PNI+</button>
-              <button class="ws-qchip" data-field="pni" data-value="absent" onclick="setWsQuickSimpleField('pni','absent')">PNI-</button>
-              <button class="ws-qchip" data-field="lvi" data-value="present" onclick="setWsQuickSimpleField('lvi','present')">LVI+</button>
-              <button class="ws-qchip" data-field="lvi" data-value="absent" onclick="setWsQuickSimpleField('lvi','absent')">LVI-</button>
-            </div>
-          </div>
-          <div class="ws-post-aux-block">
             <div class="ws-q-blocklabel">Margin</div>
             <div class="ws-q-row2" id="wsPostMarginChips">
               <button class="ws-qchip" data-value="yes" onclick="setWsQuickSimpleField('margin_involved','yes')">Involved</button>
               <button class="ws-qchip" data-value="no" onclick="setWsQuickSimpleField('margin_involved','no')">Uninvolved</button>
             </div>
           </div>
-          <div class="ws-post-aux-block">
+          <div class="ws-post-aux-block ws-post-nac-only" hidden>
             <div class="ws-q-blocklabel">Post-NAC response</div>
             <div class="ws-q-row3" id="wsPostNacResponseChips">
               <button class="ws-qchip" data-value="pCR" onclick="setWsQuickSimpleField('post_nac_response','pCR')">pCR</button>
@@ -1081,7 +1081,7 @@
           <div class="ws-field ws-post-select-hidden"><label>PNI</label><select id="ws_pni" onchange="setPatientField('pni',this.value)"><option value="">—</option><option value="absent">Absent</option><option value="present">Present</option></select></div>
           <div class="ws-field ws-post-select-hidden"><label>LVI</label><select id="ws_lvi" onchange="setPatientField('lvi',this.value)"><option value="">—</option><option value="absent">Absent</option><option value="present">Present</option></select></div>
           <div class="ws-field ws-post-select-hidden"><label title="Margin involved">Margin</label><select id="ws_margin_involved" onchange="setPatientField('margin_involved',this.value)"><option value="">—</option><option value="yes">Involved</option><option value="no">Uninvolved</option></select></div>
-          <div class="ws-field ws-post-select-hidden"><label>Post-NAC</label><select id="ws_post_nac_response" onchange="setPatientField('post_nac_response',this.value)"><option value="">—</option><option value="pCR">pCR</option><option value="residual ca">residual ca</option><option value="DCIS only">DCIS only</option></select></div>
+          <div class="ws-field ws-post-select-hidden ws-post-nac-only" hidden><label>Post-NAC</label><select id="ws_post_nac_response" onchange="setPatientField('post_nac_response',this.value)"><option value="">—</option><option value="pCR">pCR</option><option value="residual ca">residual ca</option><option value="DCIS only">DCIS only</option></select></div>
           <div class="ws-field ws-quick-backed-field ws-post-select-hidden"><label>pT</label><select id="ws_pT" onchange="setPatientField('pT',this.value)"><option value="Tx">Tx</option><option value="Tis">Tis</option><option value="T0">T0</option><option value="T1mi">T1mi</option><option value="T1a">T1a</option><option value="T1b">T1b</option><option value="T1c">T1c</option><option value="T2">T2</option><option value="T3">T3</option><option value="T4">T4</option></select></div>
           <div class="ws-field ws-quick-backed-field ws-post-select-hidden"><label>pN</label><select id="ws_pN" onchange="setPatientField('pN',this.value)"><option value="Nx">Nx</option><option value="N0">N0</option><option value="N0(i-)">N0(i-)</option><option value="N0(i+)">N0(i+)</option><option value="N1mi">N1mi</option><option value="N1a">N1a</option><option value="N1b">N1b</option><option value="N1c">N1c</option><option value="N2a">N2a</option><option value="N2b">N2b</option><option value="N3a">N3a</option><option value="N3b">N3b</option><option value="N3c">N3c</option></select></div>
         </div>
@@ -1092,6 +1092,7 @@
      <div class="ws-result-col">
       <div class="ws-step-label">Patient Context</div>
       <div class="ws-section">
+        <div id="wsHomeSummaryPanel" class="ws-home-summary-panel"></div>
         <div id="wsContextPanel" class="ws-context-panel"></div>
       </div>
 
