@@ -1227,7 +1227,7 @@
     <div class="page-body">
 
       <div class="calc-tabs">
-        <button class="calc-tab active" data-tab="predict" onclick="switchCalcTab('predict')">PREDICT v2.3/v3.0</button>
+        <button class="calc-tab active" data-tab="predict" onclick="switchCalcTab('predict')">PREDICT 3.0</button>
         <button class="calc-tab" data-tab="cts5" onclick="switchCalcTab('cts5')">CTS5</button>
         <button class="calc-tab" data-tab="pepi" onclick="switchCalcTab('pepi')">PEPI</button>
         <button class="calc-tab" data-tab="npi" onclick="switchCalcTab('npi')">NPI</button>
@@ -1244,15 +1244,12 @@
       <div class="calc-panel active" id="calcPanel-predict">
         <div class="calc-card">
           <div class="calc-section-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem">
-            <span>PREDICT v2.3 / v3.0 — 乳癌術後存活率 + 治療獲益</span>
+            <span>PREDICT 3.0 — 乳癌術後存活率 + 治療獲益</span>
           </div>
           <div style="font-size:.8rem;color:var(--text-muted);margin-bottom:.7rem;line-height:1.55">
             估算術後 5 / 10 / 15 年整體存活率，及各種輔助治療的<strong>增量獲益</strong>。
             <div style="margin-top:.4rem;padding:.6rem .8rem;background:#f0fdf4;border:2px solid #16a34a;border-radius:6px;font-size:.78rem;line-height:1.55;color:#14532d">
-              <strong>✅ 已通過 R 自動化驗證</strong>（2,595 cases，最大誤差 &lt; 0.02%）<br>
-              <strong>本站顯示版本</strong>：同時顯示 PREDICT v2.3 與 v3.0；v2.3 systemic therapy 核心係數比照 <a href="https://github.com/cran/nhs.predict/blob/master/R/predict.os.R" target="_blank" style="color:#0369a1">cran/nhs.predict</a> R 原始碼，已與 R 演算法<strong>數學等價</strong>驗證。<br>
-              <strong>驗證細節</strong>：見 <code>tests/predict_validation_auto.html</code>（R-產生 snapshot + 自動比對 2,595 cases）。<br>
-              <strong>v3.0</strong>：已依 PREDICTv3 R package 移植完整公式；仍需用官方網站逐例做 full validation。
+              <strong>PREDICT 3.0</strong>：已依 PREDICTv3 R package 移植完整公式；正式臨床採用前仍需以官方網站逐例 validation。
             </div>
           </div>
 
@@ -1275,7 +1272,7 @@
           <div style="font-weight:700;font-size:.82rem;color:#0e7490;margin:.85rem 0 .4rem">輔助治療選項</div>
           <div class="calc-form">
             <div class="calc-field"><label>內分泌治療 (僅 ER+)</label><select id="pred_endo" onchange="calcPREDICT()"><option value="0" selected>無</option><option value="5">5 年</option><option value="10">10 年（延長）</option></select></div>
-            <div class="calc-field"><label>化學治療（PREDICT v3）</label><select id="pred_chemo" onchange="calcPREDICT()"><option value="0" selected>無化療</option><option value="2">第 2 代：anthracycline-based（含 CMF）</option><option value="3">第 3 代：anthracycline + taxane</option></select></div>
+            <div class="calc-field"><label>化學治療</label><select id="pred_chemo" onchange="calcPREDICT()"><option value="0" selected>無化療</option><option value="2">第 2 代：anthracycline-based（含 CMF）</option><option value="3">第 3 代：anthracycline + taxane</option></select></div>
             <div class="calc-field"><label>Trastuzumab (HER2+)</label><select id="pred_trast" onchange="calcPREDICT()"><option value="0" selected>無</option><option value="1">使用</option></select></div>
             <div class="calc-field"><label>Bisphosphonates (停經後)</label><select id="pred_bis" onchange="calcPREDICT()"><option value="0" selected>無</option><option value="1">使用</option></select></div>
             <div class="calc-field"><label>Radiotherapy</label><select id="pred_rt" onchange="calcPREDICT()"><option value="0" selected>無放療</option><option value="1">使用放療</option></select></div>
@@ -1285,15 +1282,15 @@
           <div id="pred_result"></div>
 
           <div class="calc-cite">
-            <strong>本站顯示版本</strong>：PREDICT v2.3 / v3.0 並列<br>
-            <strong>係數來源</strong>：v2.3 依 <a href="https://github.com/cran/nhs.predict" target="_blank">cran/nhs.predict</a> R package；v3.0 依 <a href="https://github.com/pengpclab/PREDICTv3" target="_blank">PREDICTv3 R package</a> 與 <a href="https://breast.v3.predict.cam/predict-mathematics-PP.pdf" target="_blank">PREDICT v3.0 mathematics PDF</a><br>
+            <strong>本站顯示版本</strong>：PREDICT 3.0<br>
+            <strong>係數來源</strong>：<a href="https://github.com/pengpclab/PREDICTv3" target="_blank">PREDICTv3 R package</a> 與 <a href="https://breast.v3.predict.cam/predict-mathematics-PP.pdf" target="_blank">PREDICT 3.0 mathematics PDF</a><br>
             <strong>論文引用</strong>：
             <ul style="margin:.3rem 0 0 1.2rem;padding:0">
               <li>Candido dos Reis FJ, et al. <em>An updated PREDICT breast cancer prognostication and treatment benefit prediction model with independent validation</em>. Breast Cancer Res. 2017;19:58.</li>
               <li>Wishart GC, et al. <em>PREDICT: a new UK prognostic model</em>. Breast Cancer Res. 2010;12:R1.</li>
               <li>v3 顯示介面加入 diagnosis year、PR、smoking、bisphosphonate、Ki67、radiotherapy / heart dose 欄位</li>
             </ul>
-            <strong style="color:#b45309">注意</strong>：v3 公式已移植；正式臨床採用前仍需以官方 PREDICT 輸出做逐例 validation。
+            <strong style="color:#b45309">注意</strong>：PREDICT 3.0 公式已移植；正式臨床採用前仍需以官方 PREDICT 輸出做逐例 validation。
           </div>
         </div>
       </div>
@@ -1634,7 +1631,7 @@
           <div class="calc-section-title">官方 / 外連工具（版權所限，僅提供連結）</div>
           <div class="calc-extlinks">
             <a class="calc-extlink" href="https://breast.predict.nhs.uk/" target="_blank" rel="noopener">
-              <div class="calc-extlink-name">PREDICT v3 (UK NHS)</div>
+              <div class="calc-extlink-name">PREDICT 3.0 (UK NHS)</div>
               <div class="calc-extlink-desc">5/10/15 年存活率 + 治療效益（chemo, endocrine, trastuzumab, bisphosphonate）。Cambridge / NHS 官方。</div>
             </a>
             <a class="calc-extlink" href="https://ibis.ikonopedia.com/" target="_blank" rel="noopener">
@@ -1656,10 +1653,6 @@
             <a class="calc-extlink" href="https://nomograms.mskcc.org/breast/ductalcarcinomainsiturecurrencepage.aspx" target="_blank" rel="noopener">
               <div class="calc-extlink-name">MSK DCIS 復發</div>
               <div class="calc-extlink-desc">DCIS 術後復發風險（決定 RT / endocrine），8 變數 nomogram。</div>
-            </a>
-            <a class="calc-extlink" href="https://breast.predict.nhs.uk/" target="_blank" rel="noopener" style="border:2px solid #b45309">
-              <div class="calc-extlink-name" style="color:#b45309">⚡ PREDICT v4.0（最新版，含 RT）</div>
-              <div class="calc-extlink-desc">Grootes 2024 npj Breast Cancer 更新版，加入放射線治療獲益+傷害。本站尚未 port（論文 paywall）。</div>
             </a>
             <a class="calc-extlink" href="https://www.mskcc.org/nomograms/breast" target="_blank" rel="noopener">
               <div class="calc-extlink-name">MSK 完整 Nomogram 列表</div>

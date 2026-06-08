@@ -128,6 +128,7 @@ normalizeStaticDrugCatalog();
 let breastDrugs=[], hemeDrugs=[];
 let activeFilters={};
 let compareList=[];
+let _pageSwitchTimer = null;
 const SITE_LANGUAGE_KEY = 'onco_breast_site_language';
 const SITE_LANGUAGE_META = {
     zh: { html:'zh-TW', menu:'功能選單', sub:'Patient care, treatment support, and NHI reference' },
@@ -166,8 +167,8 @@ const SITE_I18N_EXACT = {
     '院內重卡編號 / ICD 查詢 — 重大傷病卡申請': {en:'Hospital catastrophic illness code / ICD lookup — major illness application', id:'Kode penyakit berat rumah sakit / ICD — pengajuan penyakit berat', ja:'院内重大傷病コード / ICD 検索 — 重大傷病申請'},
     '臨床試驗搜尋': {en:'Clinical Trial Search', id:'Pencarian Uji Klinis', ja:'臨床試験検索'},
     'Patient care copilot': {en:'Patient care copilot', id:'Kopilot perawatan pasien', ja:'患者ケア Copilot'},
-    '病患照護支持': {en:'Patient Support Resources', id:'Sumber Dukungan Pasien', ja:'患者支援リソース'},
-    '病患照護支持摘要': {en:'Patient support summary', id:'Ringkasan dukungan pasien', ja:'患者支援サマリー'},
+    '病患補助': {en:'Patient Support Resources', id:'Sumber Dukungan Pasien', ja:'患者支援リソース'},
+    '病患補助摘要': {en:'Patient support summary', id:'Ringkasan dukungan pasien', ja:'患者支援サマリー'},
     '風險分數 / PREDICT': {en:'Risk scores / PREDICT', id:'Skor risiko / PREDICT', ja:'リスクスコア / PREDICT'},
     '分期與亞型': {en:'Stage and subtype', id:'Stadium dan subtipe', ja:'病期とサブタイプ'},
     '共同變數 patient_context.v1': {en:'Shared variables patient_context.v1', id:'Variabel bersama patient_context.v1', ja:'共通変数 patient_context.v1'},
@@ -1534,7 +1535,7 @@ function dashboardWidgetCardMeta(widget){
         icdPage: { icon:'📋', title:'重卡編號', metric:'院內碼 / ICD', desc:'院內重卡編號、院內診斷碼與 ICD-10-CM 對照' },
         surgeryPage: { icon:'🧾', title:'手術醫材', metric:'自費清單', desc:'乳癌手術自費項目勾選、總價與匯出' },
         trialsPage: { icon:'🔎', title:'臨床試驗', metric:'ClinicalTrials', desc:'台灣乳癌臨床試驗查詢與條件摘要' },
-        calcPage: { icon:'📈', title:'PREDICT v2/v3', metric:'OS / Benefit', desc:'乳癌術後整體存活率與輔助治療獲益，並連動 Workspace 變數' },
+        calcPage: { icon:'📈', title:'PREDICT 3.0', metric:'OS / Benefit', desc:'乳癌術後整體存活率與輔助治療獲益，並連動 Workspace 變數' },
         riskPage: { icon:'📊', title:'其他風險分數', metric:'Risk scores', desc:'CTS5、NPI、PEPI、Magee、Oncotype RS、RCB、Gail 等風險與預後摘要' },
         rcbPage: { icon:'🧾', title:'RCB', metric:'Residual disease', desc:'術前治療後殘餘癌負荷與 RCB class' },
         ihc4Page: { icon:'🧬', title:'IHC4', metric:'IHC recurrence', desc:'ER、PR、HER2、Ki-67 連動 Workspace 的 IHC4 復發風險分數' },
@@ -1615,7 +1616,7 @@ function dashboardPredictScoreLine(pred, version){
             <span class="predict-gain">${esc(gain)}</span>
         </span>`;
     }).join('');
-    return `<span class="modal-dashboard-line modal-dashboard-line-plain modal-dashboard-predict-line"><span class="modal-dashboard-predict-version">${isV2 ? 'v2.3' : 'v3.0'}</span><span class="modal-dashboard-predict-grid">${cells}</span></span>`;
+    return `<span class="modal-dashboard-line modal-dashboard-line-plain modal-dashboard-predict-line"><span class="modal-dashboard-predict-version">3.0</span><span class="modal-dashboard-predict-grid">${cells}</span></span>`;
 }
 function dashboardPredictScoreCell(pred, version, idx){
     const isV2 = version === 'v2';
@@ -1634,12 +1635,10 @@ function dashboardPredictScoreBlock(pred){
     const years = pred.years.slice(0, 3);
     const header = years.map(year => `<span class="modal-dashboard-predict-head">${esc(year)}y</span>`).join('');
     const v3 = years.map((year, idx) => dashboardPredictScoreCell(pred, 'v3', idx)).join('');
-    const v2 = years.map((year, idx) => dashboardPredictScoreCell(pred, 'v2', idx)).join('');
     return `<span class="modal-dashboard-line modal-dashboard-line-plain modal-dashboard-predict-block">
         <span class="modal-dashboard-predict-table">
             <span class="modal-dashboard-predict-version-spacer"></span>${header}
-            <span class="modal-dashboard-predict-version">v3.0</span>${v3}
-            <span class="modal-dashboard-predict-version">v2.3</span>${v2}
+            <span class="modal-dashboard-predict-version">3.0</span>${v3}
         </span>
     </span>`;
 }
@@ -1955,10 +1954,21 @@ function nccnPagesText(meta){
     const pages = (meta && meta.page && meta.page.pdf_pages) || (meta && meta.viz && meta.viz.pdf_pages) || [];
     return pages && pages.length ? 'PDF p.' + pages.join(', ') : 'page loading';
 }
+function isNccnBoilerplateText(text){
+    return /all recommendations are category 2A unless otherwise indicated/i.test(String(text || ''));
+}
+function cleanNccnDisplayText(text){
+    return String(text || '')
+        .replace(/note:\s*all recommendations are category 2A unless otherwise indicated\.?/ig, '')
+        .replace(/all recommendations are category 2A unless otherwise indicated\.?/ig, '')
+        .replace(/\s{2,}/g, ' ')
+        .trim();
+}
 function renderNccnCitationBox(citation){
     ensureNccnDataLoaded();
     const meta = getNccnNodeMeta(citation.id);
-    const title = (meta.page && meta.page.title) || (meta.viz && meta.viz.title) || citation.label;
+    const rawTitle = (meta.page && meta.page.title) || (meta.viz && meta.viz.title) || citation.label;
+    const title = isNccnBoilerplateText(rawTitle) ? citation.label : (cleanNccnDisplayText(rawTitle) || citation.label);
     const loaded = !!(meta.page || meta.viz);
     const refs = meta.viz && Array.isArray(meta.viz.cross_refs) && meta.viz.cross_refs.length
         ? `<span class="nccn-crossrefs"><b>Related nodes</b>${meta.viz.cross_refs.slice(0, 6).map(esc).join(' · ')}</span>`
@@ -2023,12 +2033,16 @@ function ensureInternalOncoWikiModal(){
 }
 function renderInternalOncoWikiBody(nodeId){
     const meta = getNccnNodeMeta(nodeId);
-    const title = (meta.page && meta.page.title) || (meta.viz && meta.viz.title) || nodeId;
+    const rawTitle = (meta.page && meta.page.title) || (meta.viz && meta.viz.title) || nodeId;
+    const title = isNccnBoilerplateText(rawTitle) ? nodeId : (cleanNccnDisplayText(rawTitle) || nodeId);
     const footnotes = (meta.page && meta.page.footnotes) || (meta.viz && meta.viz.footnotes) || {};
-    const footnoteHtml = Object.keys(footnotes).slice(0, 5).map(key =>
-        `<li><b>${esc(key)}</b><span>${esc(String(footnotes[key]).slice(0, 420))}</span></li>`
-    ).join('');
-    const mermaid = meta.viz && meta.viz.mermaid_text ? String(meta.viz.mermaid_text).slice(0, 1800) : '';
+    const footnoteHtml = Object.keys(footnotes).map(key => {
+        const text = cleanNccnDisplayText(footnotes[key]);
+        if(!text) return '';
+        return `<li><b>${esc(key)}</b><span>${esc(text.slice(0, 420))}</span></li>`;
+    }).filter(Boolean).slice(0, 5).join('');
+    const mermaidRaw = meta.viz && meta.viz.mermaid_text ? cleanNccnDisplayText(meta.viz.mermaid_text) : '';
+    const mermaid = mermaidRaw ? mermaidRaw.slice(0, 1800) : '';
     const refs = meta.viz && Array.isArray(meta.viz.cross_refs) ? meta.viz.cross_refs : [];
     return `<div class="internal-oncowiki-meta">
         <span>${esc(NCCN_GUIDELINE_VERSION)}</span>
@@ -2065,7 +2079,7 @@ function ensureDashboardSupportModal(){
     overlay.innerHTML = `<div class="dashboard-support-panel">
         <div class="dashboard-support-head">
             <div>
-                <strong>病患照護支持</strong>
+                <strong>病患補助</strong>
                 <span>社福、重大傷病、勞保、基金會、贈藥與保險理賠資源</span>
             </div>
             <button type="button" onclick="closeDashboardSupportModal()" aria-label="關閉">×</button>
@@ -2187,7 +2201,7 @@ function dashboardSupportToolCard(ctx){
     ].join('');
     return `<button type="button" class="modal-dashboard-card patient-tool-card card-supportResources binding-optional" style="--tool-span:1" onclick="openDashboardSupportModal()">
         <span class="modal-dashboard-card-head">
-            <span class="modal-dashboard-card-title-wrap"><span class="modal-dashboard-card-icon">🤝</span><strong class="modal-dashboard-card-title">病患照護支持</strong><span class="modal-dashboard-status yellow" title="需窗口核對"></span></span>
+            <span class="modal-dashboard-card-title-wrap"><span class="modal-dashboard-card-icon">🤝</span><strong class="modal-dashboard-card-title">病患補助</strong><span class="modal-dashboard-status yellow" title="需窗口核對"></span></span>
             <span class="modal-dashboard-card-action">展開 ›</span>
         </span>
         <span class="modal-dashboard-summary summary-supportResources">${lines}</span>
@@ -2744,7 +2758,7 @@ function dashboardWidgetSummary(widget){
         const matched = dashboardBreastMatchesFromWorkspace(p);
         const lines = [
             patientTags.length ? dashboardPlainLine(patientTags.join(' / ')) : '',
-            matched.hasFilters ? dashboardPlainLine(`符合 ${matched.matched} / ${matched.total} 筆｜健保價 ${matched.matchedNhi} 筆`) : dashboardPlainLine('待補分期/受體')
+            matched.hasFilters ? dashboardPlainLine(`符合健保給付 ${matched.matchedNhi} 筆`) : dashboardPlainLine('待補分期/受體')
         ].filter(Boolean);
         return { status: dashboardStatus(matched.hasFilters), metric: '', lines };
     }
@@ -3088,7 +3102,7 @@ const DASHBOARD_AGENT_TOOLS = [
     { id:'inpatientPage', label:'常用配方與劑量', aliases:['配方','劑量','化療','標靶','regimen'] },
     { id:'icdPage', label:'重卡/ICD', aliases:['重卡','icd','重大傷病'] },
     { id:'trialsPage', label:'臨床試驗', aliases:['臨床試驗','trial','招募'] },
-    { id:'calcPage', label:'PREDICT', aliases:['predict','v3','v2'] },
+    { id:'calcPage', label:'PREDICT 3.0', aliases:['predict','v3'] },
     { id:'ihc4Page', label:'IHC4', aliases:['ihc4'] },
     { id:'cts5Page', label:'CTS5', aliases:['cts5'] },
     { id:'pepiPage', label:'PEPI', aliases:['pepi'] },
@@ -3534,12 +3548,17 @@ function renderModalDashboardOverview(){
     }
     const ctx = dashboardPatientContext();
     const journey = dashboardJourneyState(ctx);
-    const toolIds = ['breastPage','inpatientPage','icdPage','trialsPage','calcPage','ihc4Page','riskPage'];
+    const toolIds = ['breastPage','inpatientPage','icdPage','trialsPage','recordingPage','supportResources','calcPage','ihc4Page','riskPage'];
     const toolCards = toolIds
-        .map(id => DASHBOARD_WIDGETS.find(w => w.id === id))
-        .filter(w => w && isDashboardWidgetAvailable(w) && visible[w.id] !== false)
-        .map(w => dashboardOpenToolCard(w, safeDashboardWidgetSummary(w)))
-        .join('') + dashboardRecordingToolCard() + dashboardSupportToolCard(dashboardPatientContext());
+        .map(id => {
+            if(id === 'recordingPage') return dashboardRecordingToolCard();
+            if(id === 'supportResources') return dashboardSupportToolCard(ctx);
+            const widget = DASHBOARD_WIDGETS.find(w => w.id === id);
+            if(!widget || !isDashboardWidgetAvailable(widget) || visible[widget.id] === false) return '';
+            return dashboardOpenToolCard(widget, safeDashboardWidgetSummary(widget));
+        })
+        .filter(Boolean)
+        .join('');
     const compact = dashboardCompactContextParts(ctx);
     const pills = [
         dashboardContextPill('分期', compact.stageOverview, ctx.stage.T && ctx.stage.N && ctx.stage.M ? 'ok' : 'warn'),
@@ -3689,7 +3708,16 @@ function closeDashboardWidgetModal(deactivate=true){
     document.body.classList.remove('modal-dashboard-open');
     if(document.body.classList.contains('modal-dashboard-mode')) renderModalDashboardOverview();
 }
+function beginAppPageSwitch(){
+    if(!document.body) return;
+    document.body.classList.add('page-switching');
+    clearTimeout(_pageSwitchTimer);
+    _pageSwitchTimer = setTimeout(() => {
+        if(document.body) document.body.classList.remove('page-switching');
+    }, 180);
+}
 function leaveDesktopDashboard(){
+    beginAppPageSwitch();
     closeDashboardWidgetModal(true);
     closeDashboardSupportModal();
     closeDashboardLayoutDesigner();
@@ -3720,12 +3748,14 @@ function initDashboardBreastPanel(){
     const sync = () => {
         syncBreastFiltersFromWorkspace();
         renderBreast(breastDrugs);
-        syncTableToCards('breastBody', 'breastList', 'breastInfo');
     };
     if(!breastDrugs.length){
+        breastDrugs = _STATIC_DRUGS.filter(d => d.specialty_id === 'oncology_breast');
+        sync();
         cachedFetch('/api/drugs?category=oncology_breast')
             .then(r=>r.json())
-            .then(d=>{ breastDrugs=d; sync(); });
+            .then(d=>{ if(Array.isArray(d) && d.length) breastDrugs=d; sync(); })
+            .catch(()=>sync());
     } else {
         sync();
     }
@@ -4744,7 +4774,7 @@ const PATIENT_CONTEXT_FIELD_META = {
 const PATIENT_CONTEXT_MODULES = [
     {id:'nccn', label:'NCCN Journey', required:['cT','cN','cM','er','her2','phase'], optional:['pr','brca','pik3ca','oncotype_rs','civic_variant']},
     {id:'nhi', label:'健保藥物', required:['cT','cN','cM','er','pr','her2'], optional:['menopause','brca','pik3ca','esr1','nodes_pos','oncotype_rs','civic_variant']},
-    {id:'predict', label:'PREDICT v2.3/v3.0', required:['age','size','nodes_pos','grade','er','her2'], optional:['ki67','menopause','oncotype_rs']},
+    {id:'predict', label:'PREDICT 3.0', required:['age','size','nodes_pos','grade','er','her2'], optional:['ki67','menopause','oncotype_rs']},
     {id:'inpatient', label:'常用配方與劑量', required:['height','weight'], optional:['age','scr']},
     {id:'tumor_board', label:'Tumor Board', required:['age','cT','cN','cM','er','pr','her2','phase'], optional:['ecog','brca','pdl1','prior','nodes_pos','margin_involved','pni','lvi','oncotype_rs','civic_variant']}
 ];
@@ -5366,6 +5396,14 @@ function selectIcdZone(side, zone){
         el.classList.toggle('selected', el.dataset.side === side && el.dataset.zone === zone);
     });
     renderIcdSelection(side, zone);
+    if(typeof _patient !== 'undefined' && _patient){
+        _patient.side = side;
+        _patient.quadrant = zone;
+        if(typeof savePatient === 'function') savePatient();
+        if(typeof syncWorkspaceInputs === 'function') syncWorkspaceInputs(['side','quadrant']);
+        if(typeof refreshWorkspaceDerived === 'function') refreshWorkspaceDerived();
+        if(document.body && document.body.classList.contains('modal-dashboard-mode') && typeof renderModalDashboardOverview === 'function') renderModalDashboardOverview();
+    }
 }
 function initIcdPage(){
     const zones = ['UO','UI','LO','LI','nipple','central','overlapping'];
@@ -5938,7 +5976,7 @@ function refreshDashboardResults(){
     if(dcisOnly){
         const dcisMsg = 'DCIS only 不適用 invasive breast cancer risk score';
         [
-            ['predict', 'PREDICT v2.3/v3.0', '術後整體存活率估算'],
+            ['predict', 'PREDICT 3.0', '術後整體存活率估算'],
             ['cts5', 'CTS5', '內分泌治療後晚期遠端復發風險'],
             ['pepi', 'PEPI', '術前內分泌治療後病理風險分數'],
             ['npi', 'NPI', 'Nottingham Prognostic Index'],
@@ -5998,17 +6036,17 @@ function refreshDashboardResults(){
     }
 
     // 3) PREDICT
+    const predictYear = Number.isFinite(Number(p.diagnosis_year)) && Number(p.diagnosis_year) >= 2000 && Number(p.diagnosis_year) <= 2030
+        ? Number(p.diagnosis_year)
+        : new Date().getFullYear();
+    const predictMode = p.predict_mode || 'other';
     if(p.tumor_kind === 'dcis'){
         cards.push(_dashCard({
-            id:'predict', title:'PREDICT v2.3/v3.0', desc:'術後整體存活率估算',
+            id:'predict', title:'PREDICT 3.0', desc:'術後整體存活率估算',
             missing:'DCIS only 不適用 invasive breast cancer PREDICT',
             tab:'predict'
         }));
-    } else if(p.age && p.size && p.nodes_pos!=='' && gradeNum && erSign && p.her2 && predictYear && predictMode){
-        const r2 = calcPredictPure({
-            age:+p.age, size_mm:+p.size, nodes_pos:+p.nodes_pos, grade: gradeNum,
-            er: erSign, her2: p.her2, ki67Pct: p.ki67 ? workspaceKi67Number(p.ki67) : NaN, mode: predictMode
-        });
+    } else if(p.age && p.size && p.nodes_pos!=='' && gradeNum && erSign && p.her2){
         const r3 = _predictV3Survival({
             year: predictYear,
             age:+p.age,
@@ -6023,19 +6061,19 @@ function refreshDashboardResults(){
             nodes:+p.nodes_pos,
             radio:0, heartGy:0, horm:0, gen:0, traz:0, bis:0
         });
-        if(r2 || r3){
-            const s5 = r3 ? r3.baselinePct[4] : r2.surv[0];
-            const s10 = r3 ? r3.baselinePct[9] : r2.surv[1];
+        if(r3){
+            const s5 = r3.baselinePct[4];
+            const s10 = r3.baselinePct[9];
             cards.push(_dashCard({
-                id:'predict', title:'PREDICT v2.3/v3.0', desc:'術後整體存活率與輔助治療獲益估算',
+                id:'predict', title:'PREDICT 3.0', desc:'術後整體存活率與輔助治療獲益估算',
                 value: '5y OS '+s5.toFixed(1)+'%',
-                subtitle: 'v3 baseline · 5y '+s5.toFixed(1)+'% · 10y '+s10.toFixed(1)+'%',
-                extra: r2 ? ('v2 PI = '+r2.pi.toFixed(2)) : 'v3 complete formula',
+                subtitle: '3.0 baseline · 5y '+s5.toFixed(1)+'% · 10y '+s10.toFixed(1)+'%',
+                extra: '完整 PREDICT 3.0 formula',
                 cls: s5>=90?'low':(s5>=80?'med':'high'),
                 tab:'predict'
             }));
         } else {
-            cards.push(_dashCard({ id:'predict', title:'PREDICT v2.3/v3.0', desc:'術後整體存活率估算', missing:'資料超出模型範圍 (age 25-85, size≥1mm)' }));
+        cards.push(_dashCard({ id:'predict', title:'PREDICT 3.0', desc:'術後整體存活率估算', missing:'資料超出模型範圍 (age 25-85, size≥1mm)' }));
         }
     } else {
         const missingPredict = [];
@@ -6045,7 +6083,7 @@ function refreshDashboardResults(){
         if(!gradeNum) missingPredict.push('Grade');
         if(!erSign) missingPredict.push('ER');
         if(!p.her2) missingPredict.push('HER2');
-        cards.push(_dashCard({ id:'predict', title:'PREDICT v2.3/v3.0', desc:'術後整體存活率估算', missing:'需 ' + missingPredict.join('/') }));
+        cards.push(_dashCard({ id:'predict', title:'PREDICT 3.0', desc:'術後整體存活率估算', missing:'需 ' + missingPredict.join('/') }));
     }
 
     // 4) NPI
@@ -7986,7 +8024,7 @@ function calcPREDICT(){
     if(!el) return;
     const dcisOnly = typeof _patient !== 'undefined' && isWorkspaceDcisOnly(_patient);
     if(dcisOnly){
-        el.innerHTML = '<div class="calc-result"><div class="calc-result-label">DCIS only</div><div class="calc-result-detail">PREDICT v2.3/v3.0 是 invasive breast cancer 術後模型；DCIS only 不應用此模型計算存活率或治療獲益。</div></div>';
+        el.innerHTML = '<div class="calc-result"><div class="calc-result-label">DCIS only</div><div class="calc-result-detail">PREDICT 3.0 是 invasive breast cancer 術後模型；DCIS only 不應用此模型計算存活率或治療獲益。</div></div>';
         return;
     }
     const workspaceSide = (typeof _patient !== 'undefined' && _patient && _patient.side) ? _patient.side : '';
@@ -8165,10 +8203,8 @@ function calcPREDICT(){
         pushV3Stage(`Radiotherapy (${heartDose.toFixed(1)} Gy heart dose)`, v3StageState, '#be185d');
     }
     const compareRows = [
-        {name:'PREDICT v2.3 baseline', note:'v2.3 baseline；不含 year / PR / smoking / RT harms', surv:baseCompare.sAll, base:baseCompare.sAll, color:''},
-        {name:'PREDICT v2.3 all selected', note:'systemic benefit；不含 RT / treatment harms', surv:v2Compare.sAll, base:baseCompare.sAll, color:'#475569'},
-        {name:'PREDICT v3.0 baseline', note:'完整 v3.0 baseline：year、PR、smoking、RT population rescaling', surv:v3BaseModel ? v3BaseModel.treated : baseCompare.sAll, base:v3BaseModel ? v3BaseModel.treated : baseCompare.sAll, color:'#0f766e'},
-        {name:'PREDICT v3.0 all selected', note:'完整 v3.0：RT benefit、heart dose、chemo/RT non-breast mortality harms', surv:v3AllModel ? v3AllModel.treated : v2Compare.sAll, base:v3BaseModel ? v3BaseModel.treated : baseCompare.sAll, color:'#be185d'}
+        {name:'PREDICT 3.0 baseline', note:'完整 3.0 baseline：year、PR、smoking、RT population rescaling', surv:v3BaseModel ? v3BaseModel.treated : baseCompare.sAll, base:v3BaseModel ? v3BaseModel.treated : baseCompare.sAll, color:'#0f766e'},
+        {name:'PREDICT 3.0 all selected', note:'完整 3.0：RT benefit、heart dose、chemo/RT non-breast mortality harms', surv:v3AllModel ? v3AllModel.treated : (v3BaseModel ? v3BaseModel.treated : baseCompare.sAll), base:v3BaseModel ? v3BaseModel.treated : baseCompare.sAll, color:'#be185d'}
     ];
     const inputRows = [
         ['Year of diagnosis', year || '—'],
@@ -8235,7 +8271,7 @@ function calcPREDICT(){
     html += '</tbody></table></div>';
 
     html += '<div class="predict-table-wrap"><table class="predict-result-table predict-version-table">';
-    html += '<thead><tr><th style="text-align:left;padding:.5rem .6rem;border-bottom:2px solid var(--border);background:#f8fafc">版本</th>';
+    html += '<thead><tr><th style="text-align:left;padding:.5rem .6rem;border-bottom:2px solid var(--border);background:#f8fafc">PREDICT 3.0</th>';
     years.forEach(y => { html += `<th style="text-align:center;padding:.5rem .6rem;border-bottom:2px solid var(--border);background:#f8fafc">${y} 年 OS</th>`; });
     html += '<th style="text-align:left;padding:.5rem .6rem;border-bottom:2px solid var(--border);background:#f8fafc">差異定義</th></tr></thead><tbody>';
     compareRows.forEach((row, i) => {
@@ -8253,7 +8289,7 @@ function calcPREDICT(){
     html += '</tbody></table></div>';
 
     html += '<div class="predict-table-wrap"><table class="predict-result-table predict-stage-table">';
-    html += '<thead><tr><th style="text-align:left;padding:.5rem .6rem;border-bottom:2px solid var(--border);background:#f8fafc">v3.0 治療累加階段</th>';
+    html += '<thead><tr><th style="text-align:left;padding:.5rem .6rem;border-bottom:2px solid var(--border);background:#f8fafc">PREDICT 3.0 治療累加階段</th>';
     years.forEach(y => { html += `<th style="text-align:center;padding:.5rem .6rem;border-bottom:2px solid var(--border);background:#f8fafc">${y} 年存活率</th>`; });
     html += '</tr></thead><tbody>';
     stagesData.forEach((s, i) => {
@@ -8310,10 +8346,10 @@ function calcPREDICT(){
         </div>`;
     }
     if(bis === 1 && menopause !== 'post'){
-        html += '<div class="calc-result-detail" style="margin-top:.45rem;color:#92400e">Bisphosphonates 在 PREDICT v3 僅套用停經後變數；目前停經狀態不是「已停經」，本次未計入。</div>';
+        html += '<div class="calc-result-detail" style="margin-top:.45rem;color:#92400e">Bisphosphonates 在 PREDICT 3.0 僅套用停經後變數；目前停經狀態不是「已停經」，本次未計入。</div>';
     }
     if(rt === 1){
-        html += `<div class="calc-result-detail" style="margin-top:.45rem;color:#7f1d1d">PREDICT v3.0 radiotherapy：BC mortality HR 0.82；non-breast mortality HR 1.02/Gy，目前 heart mean dose = ${heartDose.toFixed(1)} Gy。</div>`;
+        html += `<div class="calc-result-detail" style="margin-top:.45rem;color:#7f1d1d">PREDICT 3.0 radiotherapy：BC mortality HR 0.82；non-breast mortality HR 1.02/Gy，目前 heart mean dose = ${heartDose.toFixed(1)} Gy。</div>`;
     }
     html += '</div>';
     el.innerHTML = html;
@@ -8593,7 +8629,7 @@ const APP_RELEASE_NOTES = [
     { version:'v1.8', date:'2026-06-04', items:[
         '新增 patient context bundle export/import/reset 與 Patient treatment plan。',
         '新增 Netlify read-only API endpoints 與 in-app API Guide。',
-        '補上 PREDICT v2.3/v3.0、IHC4、CTS5、PEPI、Oncotype RS 工作區卡片。'
+        '補上 PREDICT 3.0、IHC4、CTS5、PEPI、Oncotype RS 工作區卡片。'
     ]},
     { version:'v1.7', date:'2026-05-29', items:[
         'Patient care copilot dashboard 初版：Evidence Block、藥物、重卡、試驗與風險工具整合。',
@@ -8606,8 +8642,7 @@ const SITE_REFERENCE_SOURCES = [
     { title:'癌症希望基金會資源補助', url:'https://www.ecancer.org.tw/service/resource_grant_qa?cat=6', note:'營養、交通、住宿、照顧人力、義乳胸衣等補助與轉介方式。' },
     { title:'台灣癌症臨床研究發展基金會乳癌補助', url:'https://www.tccf.org.tw/free/2026BreastCare.html', note:'2026 乳癌義乳胸衣與專款補助公開資訊。' },
     { title:'台灣癌症資源網補助查詢', url:'https://www.crm.org.tw/inquiry/subsidy/', note:'癌症相關政府、醫院與民間資源媒合入口。' },
-    { title:'PREDICT Breast v3 mathematics', url:'https://breast.v3.predict.cam/predict-mathematics-PP.pdf', note:'PREDICT v3.0 數學模型參考。' },
-    { title:'PREDICT v2.3 R package', url:'https://github.com/cran/nhs.predict', note:'PREDICT v2.3 系統性治療核心公式參考。' },
+    { title:'PREDICT 3.0 mathematics', url:'https://breast.v3.predict.cam/predict-mathematics-PP.pdf', note:'PREDICT 3.0 數學模型參考。' },
     { title:'ClinicalTrials.gov API v2', url:'https://clinicaltrials.gov/data-api/about-api', note:'臨床試驗搜尋資料來源。' },
     { title:'CIViC', url:'https://civicdb.org/', note:'基因變異臨床詮釋資料來源，預計月更/手動匯入。' },
     { title:'NCCN Breast Cancer Guidelines', url:'https://www.nccn.org/guidelines/category_1', note:'內部展示僅放 citation/evidence block，不放全文。' }
@@ -8693,7 +8728,7 @@ function renderSettings(){
         {key:'calc_hscore', label:'  └ H-score', stable:true},
         {key:'calc_rcb', label:'  └ RCB (Residual Cancer Burden)', stable:true},
         {key:'calc_ln', label:'  └ LN 預測', stable:true},
-        {key:'predict', label:'  └ PREDICT v2.3/v3.0', stable:true, note:'v2.3 核心已通過 R nhs.predict 2595-case 驗證；v3.0 公式已依 PREDICTv3 R package 移植，待官方逐例驗證'},
+        {key:'predict', label:'  └ PREDICT 3.0', stable:true, note:'PREDICT 3.0 公式已依 PREDICTv3 R package 移植，待官方逐例驗證'},
         {key:'ajccPrognostic', label:'AJCC v8 預後期別 (Clinical/Pathologic)', stable:false, note:'正式分期請對照 AJCC 第八版手冊 Table 48.2'},
         {key:'calc_ihc4', label:'  └ IHC4', stable:true},
         {key:'calc_gail', label:'  └ Gail Model（首頁：一般乳癌發生風險）', stable:true}
@@ -9967,9 +10002,14 @@ function switchBreastTab(tab){
     if(tab==='drugs'){
         document.getElementById('tabDrugs').classList.add('active');
         document.getElementById('tabDrugsContent').classList.add('active');
-        if(!breastDrugs.length){
-            cachedFetch('/api/drugs?category=oncology_breast').then(r=>r.json()).then(d=>{breastDrugs=d;renderBreast(breastDrugs)});
-        }
+    if(!breastDrugs.length){
+        breastDrugs = _STATIC_DRUGS.filter(d=>d.specialty_id==='oncology_breast');
+        renderBreast(breastDrugs);
+        cachedFetch('/api/drugs?category=oncology_breast')
+            .then(r=>r.json())
+            .then(d=>{ if(Array.isArray(d) && d.length) breastDrugs=d; renderBreast(breastDrugs); })
+            .catch(()=>renderBreast(breastDrugs));
+    }
     } else {
         document.getElementById('tabRegimen').classList.add('active');
         document.getElementById('tabRegimenContent').classList.add('active');
@@ -10097,6 +10137,7 @@ function filterBreast(){
     const q=(document.getElementById('breastSearch').value||'');
     const parsed = parseBreastClinicalSearch(q);
     const effectiveFilters = {...activeFilters, ...parsed.filters};
+    if(!breastDrugs.length) breastDrugs = _STATIC_DRUGS.filter(d=>d.specialty_id==='oncology_breast');
     let list=breastDrugs;
     if(parsed.text)list=list.filter(d=>drugSearchText(d).includes(parsed.text));
     renderBreast(list, effectiveFilters);
@@ -10120,8 +10161,47 @@ function lineLabel(n){
     if(n<=2) return '<span class="badge" style="background:#d1fae5;color:#065f46">第'+n+'線</span>';
     return '<span class="badge" style="background:#fef3c7;color:#92400e">第'+n+'線</span>';
 }
+function syncTableToCards(tbodyId, listId){
+    const tbody = document.getElementById(tbodyId);
+    const list = document.getElementById(listId);
+    if(!tbody || !list) return;
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    list.innerHTML = '';
+    if(!rows.length){
+        list.innerHTML = '<div class="empty">沒有找到藥物</div>';
+        return;
+    }
+    rows.forEach(row => {
+        if(row.querySelector('.empty')){
+            const div = document.createElement('div');
+            div.className = 'empty';
+            div.innerHTML = row.textContent || '沒有找到藥物';
+            list.appendChild(div);
+            return;
+        }
+        const cells = row.children;
+        const card = document.createElement('div');
+        card.className = 'drug-item';
+        const click = row.getAttribute('onclick');
+        if(click) card.setAttribute('onclick', click);
+        if(row.style && row.style.opacity) card.style.opacity = row.style.opacity;
+        const left = document.createElement('div');
+        left.className = 'drug-item-left';
+        left.innerHTML = `<div class="drug-name-main">${cells[1] ? cells[1].innerHTML : ''}</div>
+            <div class="drug-tags">${cells[2] ? cells[2].innerHTML : ''}${cells[6] ? cells[6].innerHTML : ''}</div>`;
+        const right = document.createElement('div');
+        right.className = 'drug-item-right';
+        right.innerHTML = `<div>${cells[0] ? cells[0].innerHTML : ''}${cells[3] ? cells[3].innerHTML : ''}${cells[4] ? cells[4].innerHTML : ''}</div>
+            <div>${cells[5] ? cells[5].innerHTML : ''}</div>
+            <div onclick="event.stopPropagation()">${cells[7] ? cells[7].innerHTML : ''}</div>`;
+        card.appendChild(left);
+        card.appendChild(right);
+        list.appendChild(card);
+    });
+}
 
 function renderBreast(list, filtersOverride){
+    list = Array.isArray(list) && list.length ? list : _STATIC_DRUGS.filter(d=>d.specialty_id==='oncology_breast');
     const filters = filtersOverride || activeFilters;
     const hasF=Object.keys(filters).length>0;
     let matched=0,unmatched=0,matchedNhi=0,totalNhi=0;
@@ -10157,11 +10237,12 @@ function renderBreast(list, filtersOverride){
         sorted.sort((a,b)=>(b.ok?1:0)-(a.ok?1:0));
         const sortedRows=sorted.map(x=>rows[x.i]);
         document.getElementById('breastBody').innerHTML=sortedRows.join('');
-        document.getElementById('breastInfo').textContent=`共 ${list.length} 筆｜符合條件 ${matched} 筆｜符合且有健保價 ${matchedNhi} 筆｜不符合 ${unmatched} 筆（不符合者仍可自費使用）`;
+        document.getElementById('breastInfo').textContent=`共 ${list.length} 筆｜符合健保給付 ${matchedNhi} 筆｜不符合 ${unmatched} 筆（不符合者仍可自費使用）`;
     } else {
         document.getElementById('breastBody').innerHTML=rows.join('')||'<tr><td colspan="8"><div class="empty">沒有找到藥物</div></td></tr>';
         document.getElementById('breastInfo').textContent=`共 ${list.length} 筆｜有健保價 ${totalNhi} 筆`;
     }
+    syncTableToCards('breastBody', 'breastList');
 }
 
 function renderHeme(list){
@@ -10202,6 +10283,7 @@ function renderHeme(list){
         document.getElementById('hemeBody').innerHTML=rows.join('')||'<tr><td colspan="8"><div class="empty">沒有找到藥物</div></td></tr>';
         document.getElementById('hemeInfo').textContent=`共 ${list.length} 筆`;
     }
+    syncTableToCards('hemeBody', 'hemeList');
 }
 
 function renderTagBadges(tags,type){

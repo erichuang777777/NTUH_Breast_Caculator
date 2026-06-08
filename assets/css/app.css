@@ -58,6 +58,13 @@ body {
   font-size: 15px;
 }
 
+body.page-switching *,
+body.page-switching *::before,
+body.page-switching *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
 /* ── Offline Bar ── */
 #offlineBar {
   display: none;
