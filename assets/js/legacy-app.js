@@ -6592,6 +6592,17 @@ function patientCenterPostOpTnmString(p){
     const m = p.pM || p.cM || '';
     return `${prefix}${t}${n}${m}`.replace(/\s+/g, '');
 }
+function patientCenterBreastSurgerySummaryLabel(value){
+    const s = String(value || '').trim();
+    if(s === 'BCS') return 'BCT';
+    return s;
+}
+function patientCenterSurgerySummaryText(p){
+    p = p || {};
+    const breast = patientCenterBreastSurgerySummaryLabel(p.breast_surgery);
+    const axilla = axillarySurgeryParts(p.axillary_surgery).join('+');
+    return [breast, axilla].filter(Boolean).join('+');
+}
 function patientCenterClinicalSummaryLine(p){
     p = p || {};
     const side = ({R:"R't", L:"L't", B:'Bilateral'}[p.side] || '').trim();
@@ -6625,7 +6636,7 @@ function patientCenterPostOpSummaryLine(p){
         .some(hasPostValue);
     if(!hasPostOp) return '';
     const parts = [];
-    const surgery = [p.breast_surgery || '', axillarySurgeryParts(p.axillary_surgery).join('+')].filter(Boolean).join(' + ');
+    const surgery = patientCenterSurgerySummaryText(p);
     if(surgery) parts.push(surgery);
     const tnm = patientCenterPostOpTnmString(p);
     if(tnm) parts.push(tnm);
@@ -6641,11 +6652,20 @@ function patientCenterPostOpSummaryLine(p){
     if(p.lvi === 'absent') parts.push('LVI-');
     if(p.margin_involved === 'yes') parts.push('margin involved');
     if(p.margin_involved === 'no') parts.push('margin uninvolved');
-    if(String(p.post_nac_prefix || '') === 'yes' && p.post_nac_response) parts.push(`Post-NAC ${p.post_nac_response}`);
     return parts.length ? `Post-op: ${parts.join(', ')}` : '';
 }
+function patientCenterPostNacSummaryLine(p){
+    p = p || {};
+    if(String(p.post_nac_prefix || '') !== 'yes' || !p.post_nac_response) return '';
+    const response = dashboardPostNacResponse(p) || p.post_nac_response;
+    return `Post-NAC ${response}`;
+}
 function patientCenterSummaryLines(p){
-    const lines = [patientCenterClinicalSummaryLine(p), patientCenterPostOpSummaryLine(p)].filter(Boolean);
+    const lines = [
+        patientCenterClinicalSummaryLine(p),
+        patientCenterPostOpSummaryLine(p),
+        patientCenterPostNacSummaryLine(p)
+    ].filter(Boolean);
     return lines.length ? lines : [''];
 }
 function patientCenterOneLineSummary(p){
