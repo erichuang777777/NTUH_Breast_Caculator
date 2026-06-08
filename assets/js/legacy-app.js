@@ -4770,6 +4770,7 @@ function renderWorkspacePatientContext(){
         <div class="ws-context-head">
             <div><strong>共同變數 patient_context.v1</strong><span>核心缺 ${coreMissing} 項；常用欄位 ${commonFilled}/${PATIENT_CONTEXT_COMMON_FIELDS.length}</span></div>
             <div class="ws-context-head-actions">
+                <button type="button" class="icon-copy-btn" title="複製共同設定檔" aria-label="複製共同設定檔" onclick="copyPatientContextProfile()"><span aria-hidden="true">⧉</span></button>
                 <button type="button" onclick="generatePatientTreatmentPlan()">病人說明單</button>
                 <button type="button" onclick="exportPatientWorkspace()">匯出 JSON</button>
                 <button type="button" onclick="importPatientWorkspace()">匯入</button>
@@ -4972,7 +4973,7 @@ function renderWorkspaceHomeSummary(p){
         </div>
         <div class="ws-home-summary-actions">
           <button class="ws-btn ws-btn-primary" type="button" onclick="showPatientCenter()">診間 Copilot</button>
-          <button class="ws-btn" type="button" ${hasSummary ? '' : 'disabled'} onclick="copyWorkspaceCommonVariableSummary()">複製摘要</button>
+          <button class="ws-btn icon-copy-btn" type="button" title="複製首頁摘要" aria-label="複製首頁摘要" ${hasSummary ? '' : 'disabled'} onclick="copyWorkspaceCommonVariableSummary()"><span aria-hidden="true">⧉</span></button>
         </div>
       </div>
       <div class="ws-home-summary-lines">
@@ -6580,8 +6581,8 @@ function patientCenterTnmString(p){
 }
 function patientCenterClinicalTnmString(p){
     p = p || {};
-    if(p.cT && p.cN && p.cM) return `c${p.cT}${p.cN}${p.cM}`.replace(/\s+/g, '');
-    return patientCenterTnmString(p);
+    const parts = [p.cT || '', p.cN || '', p.cM || ''].filter(Boolean);
+    return parts.length ? `c${parts.join('')}`.replace(/\s+/g, '') : '';
 }
 function patientCenterPostOpTnmString(p){
     p = p || {};
@@ -6623,7 +6624,7 @@ function patientCenterClinicalSummaryLine(p){
     const ki67 = patientCenterPercentOrSign(p.ki67);
     if(ki67) parts.push(`Ki67:${ki67}`);
     const tnm = patientCenterClinicalTnmString(p);
-    const clinicalStagePatient = (p.cT && p.cN && p.cM) ? { ...p, T:p.cT, N:p.cN, M:p.cM, stageKind:'cTNM' } : p;
+    const clinicalStagePatient = (p.cT && p.cN && p.cM) ? { ...p, T:p.cT, N:p.cN, M:p.cM, stageKind:'cTNM' } : {};
     let stage = '';
     try { stage = clinicalStagePatient.T && clinicalStagePatient.N && clinicalStagePatient.M ? (_ajccAnatomic(clinicalStagePatient.T, clinicalStagePatient.N, clinicalStagePatient.M) || '') : ''; } catch(e){}
     const stageLine = [tnm, stage ? `stage ${stage}` : ''].filter(Boolean).join(', ');
@@ -6638,8 +6639,6 @@ function patientCenterPostOpSummaryLine(p){
     const parts = [];
     const surgery = patientCenterSurgerySummaryText(p);
     if(surgery) parts.push(surgery);
-    const tnm = patientCenterPostOpTnmString(p);
-    if(tnm) parts.push(tnm);
     const totalPos = hasPostValue('nodes_pos') ? p.nodes_pos : '';
     const totalNodes = hasPostValue('nodes_total') ? p.nodes_total : '';
     if(totalPos !== '' && totalNodes !== '') parts.push(`LN ${totalPos}/${totalNodes}`);
@@ -6647,11 +6646,11 @@ function patientCenterPostOpSummaryLine(p){
     if(hasPostValue('sln_pos') || hasPostValue('sln_total')) parts.push(`SLN ${p.sln_pos || '?'}/${p.sln_total || '?'}`);
     if(hasPostValue('aln_pos') || hasPostValue('aln_total')) parts.push(`ALN ${p.aln_pos || '?'}/${p.aln_total || '?'}`);
     if(p.pni === 'present') parts.push('PNI+');
-    if(p.pni === 'absent') parts.push('PNI-');
     if(p.lvi === 'present') parts.push('LVI+');
-    if(p.lvi === 'absent') parts.push('LVI-');
     if(p.margin_involved === 'yes') parts.push('margin involved');
     if(p.margin_involved === 'no') parts.push('margin uninvolved');
+    const tnm = patientCenterPostOpTnmString(p);
+    if(tnm) parts.push(tnm);
     return parts.length ? `Post-op: ${parts.join(', ')}` : '';
 }
 function patientCenterPostNacSummaryLine(p){
@@ -6786,6 +6785,14 @@ function copyPatientCenterOneLineSummary(){
 }
 function copyWorkspaceCommonVariableSummary(){
     copyTextToClipboard(patientCenterOneLineSummary(_patient || {}), '已複製病人整合摘要。');
+}
+function copyPatientContextProfile(){
+    const payload = {
+        schema: 'patient_context.v1',
+        generated_at: new Date().toISOString(),
+        patient_context: { ...(_patient || {}) }
+    };
+    copyTextToClipboard(JSON.stringify(payload, null, 2), '已複製共同設定檔。');
 }
 function copyTumorBoardStructuredData(){
     copyTextToClipboard(JSON.stringify(patientCenterTumorBoardStructuredData(), null, 2), '已複製 Tumor Board JSON。');

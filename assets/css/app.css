@@ -3599,11 +3599,14 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
 .ws-home-summary-head strong { display: block; font-size: .92rem; color: #0f172a; line-height: 1.3; overflow-wrap: anywhere; }
 .ws-home-summary-actions { display: flex; flex-wrap: wrap; gap: .35rem; justify-content: flex-end; }
 .ws-home-summary-actions .ws-btn { padding: .38rem .68rem; font-size: .78rem; }
+.ws-home-summary-actions .icon-copy-btn { flex: 0 0 auto; }
 .ws-home-summary-actions .ws-btn:disabled { opacity: .45; cursor: not-allowed; }
 .ws-home-summary-lines { display: grid; gap: .3rem; font-size: .83rem; color: var(--text); line-height: 1.45; overflow-wrap: anywhere; }
 .ws-home-summary-lines .muted { color: var(--text-faint); }
 .ws-actions { display: flex; gap: .5rem; flex-wrap: wrap; padding: .85rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); position: sticky; bottom: 0; z-index: 10; box-shadow: 0 -2px 12px rgba(0,0,0,.04); }
 .ws-btn { padding: .5rem 1rem; border-radius: var(--r-sm); border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: .85rem; font-weight: 600; cursor: pointer; transition: .15s; font-family: inherit; }
+.icon-copy-btn { width: 2.25rem; min-width: 2.25rem; height: 2.25rem; padding: 0 !important; display: inline-grid; place-items: center; line-height: 1; font-size: 1rem; }
+.icon-copy-btn span { transform: translateY(-.02rem); }
 .ws-btn-primary { background: #ec4899; color: white; border-color: #ec4899; }
 .ws-btn-primary:hover { background: #db2777; }
 .ws-btn-danger { color: #b91c1c; }
