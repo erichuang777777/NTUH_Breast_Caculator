@@ -3696,7 +3696,7 @@ function openDashboardWidgetModal(id){
     overlay.classList.add('open');
     document.body.classList.add('modal-dashboard-open');
 }
-function closeDashboardWidgetModal(deactivate=true){
+function closeDashboardWidgetModal(deactivate=true, rerenderOverview=true){
     const overlay = document.getElementById('dashboardWidgetModal');
     const body = document.getElementById('dashboardWidgetModalBody');
     const page = body ? body.querySelector('.dept-page') : null;
@@ -3709,7 +3709,7 @@ function closeDashboardWidgetModal(deactivate=true){
     }
     if(overlay) overlay.classList.remove('open');
     document.body.classList.remove('modal-dashboard-open');
-    if(document.body.classList.contains('modal-dashboard-mode')) renderModalDashboardOverview();
+    if(rerenderOverview && document.body.classList.contains('modal-dashboard-mode')) renderModalDashboardOverview();
 }
 function beginAppPageSwitch(){
     if(!document.body) return;
@@ -3721,7 +3721,7 @@ function beginAppPageSwitch(){
 }
 function leaveDesktopDashboard(){
     beginAppPageSwitch();
-    closeDashboardWidgetModal(true);
+    closeDashboardWidgetModal(true, false);
     closeDashboardSupportModal();
     closeDashboardLayoutDesigner();
     removeModalDashboardOverview();
