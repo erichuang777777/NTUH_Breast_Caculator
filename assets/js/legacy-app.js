@@ -172,7 +172,7 @@ const SITE_I18N_EXACT = {
     '病患補助摘要': {en:'Patient support summary', id:'Ringkasan dukungan pasien', ja:'患者支援サマリー'},
     '風險分數 / PREDICT': {en:'Risk scores / PREDICT', id:'Skor risiko / PREDICT', ja:'リスクスコア / PREDICT'},
     '分期與亞型': {en:'Stage and subtype', id:'Stadium dan subtipe', ja:'病期とサブタイプ'},
-    '共同變數 patient_context.v1': {en:'Shared variables patient_context.v1', id:'Variabel bersama patient_context.v1', ja:'共通変数 patient_context.v1'},
+    '共用設定檔': {en:'Shared patient profile', id:'Profil pasien bersama', ja:'共用患者プロファイル'},
     '病人說明單': {en:'Patient handout', id:'Lembar penjelasan pasien', ja:'患者説明書'},
     '匯出 JSON': {en:'Export JSON', id:'Ekspor JSON', ja:'JSON 出力'},
     '匯入': {en:'Import', id:'Impor', ja:'インポート'},
@@ -768,6 +768,11 @@ function getLayoutMode(){
 function setDevicePreviewMode(mode){
     setLayoutMode(mode, false);
 }
+function setLayoutModeOverride(mode){
+    const next = normalizeLayoutMode(mode);
+    if(next === 'auto') return setLayoutMode('auto');
+    setLayoutMode(getLayoutMode() === next ? 'auto' : next);
+}
 function setLayoutMode(mode, apply=true){
     const next = normalizeLayoutMode(mode);
     try {
@@ -848,6 +853,7 @@ function updateViewModeToggle(){
         const mode = getLayoutMode();
         document.querySelectorAll('#layoutModeSwitch [data-layout-mode]').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.layoutMode === mode);
+            btn.setAttribute('aria-pressed', btn.dataset.layoutMode === mode ? 'true' : 'false');
         });
     } catch(e){}
 }
@@ -3574,7 +3580,7 @@ function renderModalDashboardOverview(){
     const mainHtml = `
         <section class="patient-context-bar">
             <div>
-                <strong>共用設定檔 patient_context.v1</strong>
+                <strong>共用設定檔</strong>
             </div>
             <div class="patient-context-actions">
                 <select id="dashboardPhaseSelect" onchange="setPatientField('phase', this.value)" aria-label="治療階段">
@@ -4907,7 +4913,7 @@ function renderWorkspacePatientContext(){
     const commonFilled = PATIENT_CONTEXT_COMMON_FIELDS.filter(hasPatientContextValue).length;
     el.innerHTML = `
         <div class="ws-context-head">
-            <div><strong>共同變數 patient_context.v1</strong><span>核心缺 ${coreMissing} 項；常用欄位 ${commonFilled}/${PATIENT_CONTEXT_COMMON_FIELDS.length}</span></div>
+            <div><strong>共用設定檔</strong><span>核心缺 ${coreMissing} 項；常用欄位 ${commonFilled}/${PATIENT_CONTEXT_COMMON_FIELDS.length}</span></div>
             <div class="ws-context-head-actions">
                 <button type="button" class="icon-copy-btn" title="複製共同設定檔" aria-label="複製共同設定檔" onclick="copyPatientContextProfile(this)"><span aria-hidden="true">⧉</span></button>
                 <button type="button" onclick="exportPatientWorkspace()">匯出 JSON</button>

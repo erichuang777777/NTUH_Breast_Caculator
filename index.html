@@ -17,8 +17,12 @@
 <div id="offlineBar" title="受限功能：臨床試驗資料、AI Agent 外部連線、藥價 PDF 更新。藥物查詢與計算機仍可使用。">離線模式 — 使用快取資料，部分功能可能受限</div>
 
 <header class="header">
-  <div>
-    <div class="header-title">Oncobreast copilot</div>
+  <div class="header-brand">
+    <div class="header-title-row">
+      <div class="header-title">Oncobreast copilot</div>
+      <span class="header-release-pill" id="headerReleaseDate">v1.9 · 2026-06-06</span>
+    </div>
+    <div class="header-badge" id="priceBadge">藥價公告 115/03/23｜生效 115/04/01｜資料更新 2026/06/04</div>
   </div>
   <div class="header-right">
     <button class="clinical-notice" type="button" aria-label="本工具僅供醫療人員使用，不構成醫療建議" title="本工具僅供醫療人員使用，不構成醫療建議">
@@ -27,14 +31,6 @@
         <span class="clinical-notice-line"><strong>本工具僅供醫療人員使用</strong>，作為臨床查詢與試算輔助。不構成醫療建議；實際診療、健保給付與用藥決策請以醫師判斷、病人狀況及官方公告為準。</span>
       </span>
     </button>
-    <div class="header-menu-wrap">
-      <button class="header-menu-link header-menu-toggle" id="headerFunctionMenuToggle" type="button" onclick="openFunctionMenu()" aria-controls="functionMenuModal" aria-expanded="false" title="功能選單">
-        <span class="hamburger-icon" aria-hidden="true"><i></i><i></i><i></i></span>
-        <span class="header-menu-label">功能選單</span>
-      </button>
-      <span class="header-release-pill" id="headerReleaseDate">v1.9 · 2026-06-06</span>
-    </div>
-    <button class="header-api-link" type="button" onclick="showApiGuide()">API Docs</button>
     <select class="site-language-switch" id="siteLanguageSwitch" onchange="setSiteLanguage(this.value)" aria-label="Language">
       <option value="zh">繁中</option>
       <option value="en">EN</option>
@@ -42,11 +38,15 @@
       <option value="ja">日本語</option>
     </select>
     <div class="layout-mode-switch" id="layoutModeSwitch" aria-label="介面模式">
-      <button type="button" data-layout-mode="auto" onclick="setLayoutMode('auto')">Auto</button>
-      <button type="button" data-layout-mode="mobile" onclick="setLayoutMode('mobile')">Mobile</button>
-      <button type="button" data-layout-mode="desktop" onclick="setLayoutMode('desktop')">Desktop</button>
+      <button type="button" data-layout-mode="mobile" onclick="setLayoutModeOverride('mobile')" title="手動切換到 Mobile；再點一次回到自動">Mobile</button>
+      <button type="button" data-layout-mode="desktop" onclick="setLayoutModeOverride('desktop')" title="手動切換到 Desktop；再點一次回到自動">Desktop</button>
     </div>
-    <div class="header-badge" id="priceBadge">藥價公告 115/03/23｜生效 115/04/01｜資料更新 2026/06/04</div>
+    <div class="header-menu-wrap">
+      <button class="header-menu-link header-menu-toggle" id="headerFunctionMenuToggle" type="button" onclick="openFunctionMenu()" aria-controls="functionMenuModal" aria-expanded="false" title="功能選單">
+        <span class="hamburger-icon" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="header-menu-label">功能選單</span>
+      </button>
+    </div>
   </div>
 </header>
 
