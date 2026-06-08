@@ -1765,10 +1765,10 @@ function dashboardAxillaSummary(p){
     if(totalPos !== '' && totalNodes !== '') parts.push(`LN ${totalPos}/${totalNodes}`);
     else if(totalPos !== '') parts.push(`LN+ ${totalPos}`);
     if(p.sln_pos !== '' || p.sln_total !== ''){
-        parts.push(`SLN ${p.sln_pos || '?'}/${p.sln_total || '?'}`);
+        parts.push(`SLNB ${p.sln_pos || '?'}/${p.sln_total || '?'}`);
     }
     if(p.aln_pos !== '' || p.aln_total !== ''){
-        parts.push(`ALN ${p.aln_pos || '?'}/${p.aln_total || '?'}`);
+        parts.push(`ALND ${p.aln_pos || '?'}/${p.aln_total || '?'}`);
     }
     if(p.pN) parts.push(p.pN);
     if(p.pni === 'present') parts.push('PNI+');
@@ -1868,7 +1868,7 @@ function dashboardGeneMutationText(p){
     else if(p.pik3ca === 'wt') items.push('PIK3CA WT');
     if(p.pdl1 === '+') items.push('PD-L1+');
     else if(p.pdl1 === '-') items.push('PD-L1-');
-    return items.length ? items.join('｜') : '';
+    return items.length ? items.join('｜') : '-';
 }
 const NCCN_INTERNAL_MODE = true;
 const NCCN_GUIDELINE_VERSION = 'Breast Cancer v2.2026';
@@ -4384,7 +4384,7 @@ function renderWorkspacePathologyParse(result, applied){
     const labels = {
         side:'側別', quadrant:'位置', size:'Tumor size mm', grade:'Grade',
         er:'ER', pr:'PR', her2:'HER2', ki67:'Ki-67', nodes_pos:'LN+', nodes_total:'LN total',
-        sln_pos:'SLN+', sln_total:'SLN total', aln_pos:'ALN+', aln_total:'ALN total',
+        sln_pos:'SLNB+', sln_total:'SLNB total', aln_pos:'ALND+', aln_total:'ALND total',
         pni:'PNI', lvi:'LVI', margin_involved:'Margin', post_nac_response:'Post-NAC',
         breast_surgery:'乳房手術', axillary_surgery:'腋下手術',
         cT:'cT', cN:'cN', cM:'cM', pT:'pT', pN:'pN', pM:'pM'
@@ -4656,7 +4656,9 @@ function hasPatientValue(key){
     return v !== undefined && v !== null && String(v).trim() !== '';
 }
 const PATIENT_CONTEXT_CORE_FIELDS = ['age','clinical_tnm','size','tumor_kind','grade','er','pr','her2'];
-const PATIENT_CONTEXT_COMMON_FIELDS = ['menopause','ecog','dm','htn','cad','ki67','oncotype_rs','nodes_pos','nodes_total','sln_pos','sln_total','aln_pos','aln_total','pni','lvi','margin_involved','post_nac_response','mets_bone','mets_liver','mets_brain','mets_lung','brca','pdl1','pik3ca','esr1','civic_variant','height','weight','scr'];
+const PATIENT_CONTEXT_COMMON_FIELDS = ['menopause','ecog','dm','htn','cad','ki67','oncotype_rs','sln_pos','sln_total','aln_pos','aln_total','nodes_pos','nodes_total','pni','lvi','margin_involved','post_nac_response','mets_bone','mets_liver','mets_brain','mets_lung','brca','pdl1','pik3ca','esr1','civic_variant','height','weight','scr'];
+const PATIENT_CONTEXT_DEFAULT_NO_FIELDS = new Set(['dm','htn','cad','mets_bone','mets_liver','mets_brain','mets_lung']);
+const PATIENT_CONTEXT_DEFAULT_GENE_FIELDS = new Set(['brca','pdl1','tp53','pik3ca','esr1']);
 const PATIENT_CONTEXT_FIELD_META = {
     age:{label:'年齡', input:'ws_age'},
     clinical_tnm:{label:'分期', input:'ws_cT'},
@@ -4684,10 +4686,10 @@ const PATIENT_CONTEXT_FIELD_META = {
     oncotype_rs:{label:'Oncotype RS', input:'ws_oncotype_rs'},
     nodes_pos:{label:'LN+', input:'ws_nodes_pos'},
     nodes_total:{label:'LN total', input:'ws_nodes_total'},
-    sln_pos:{label:'SLN+', input:'ws_sln_pos'},
-    sln_total:{label:'SLN total', input:'ws_sln_total'},
-    aln_pos:{label:'ALN+', input:'ws_aln_pos'},
-    aln_total:{label:'ALN total', input:'ws_aln_total'},
+    sln_pos:{label:'SLNB+', input:'ws_sln_pos'},
+    sln_total:{label:'SLNB total', input:'ws_sln_total'},
+    aln_pos:{label:'ALND+', input:'ws_aln_pos'},
+    aln_total:{label:'ALND total', input:'ws_aln_total'},
     pni:{label:'PNI', input:'ws_pni'},
     lvi:{label:'LVI', input:'ws_lvi'},
     margin_involved:{label:'Margin', input:'ws_margin_involved'},
@@ -4733,33 +4735,38 @@ function getPatientContextValue(key){
 }
 function hasPatientContextValue(key){
     const v = getPatientContextValue(key);
+    if((PATIENT_CONTEXT_DEFAULT_NO_FIELDS.has(key) || PATIENT_CONTEXT_DEFAULT_GENE_FIELDS.has(key)) && String(v == null ? '' : v).trim() === '') return true;
     return v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim() !== 'x';
 }
 function patientContextDisplayValue(key){
-    const v = getPatientContextValue(key);
+    let v = getPatientContextValue(key);
+    const raw = String(v == null ? '' : v).trim();
     if(!hasPatientContextValue(key)) return '待補';
+    if(raw === '' && PATIENT_CONTEXT_DEFAULT_NO_FIELDS.has(key)) v = 'no';
+    if(raw === '' && PATIENT_CONTEXT_DEFAULT_GENE_FIELDS.has(key)) v = 'neg';
     if(key === 'axillary_surgery') return axillarySurgeryParts(v).join(' + ') || '待補';
     const maps = {
         phase:{initial:'初診',neoadjuvant:'術前',adjuvant:'術後',post_neoadjuvant_residual:'Post-NAC',advanced:'局晚',locoregional:'局部復發',metastatic:'轉移1L',metastatic_2L:'轉移後線',followup:'追蹤'},
         menopause:{pre:'未停經',post:'已停經'},
         sex:{F:'女',M:'男'},
         her2:{'+':'陽性','-':'陰性',low:'HER2-low'},
-        brca:{wt:'WT',mut:'BRCA+',brca1:'BRCA1+',brca2:'BRCA2+','+':'BRCA+'},
-        pdl1:{'+':'陽性','-':'陰性'},
-        pik3ca:{mut:'Mut',wt:'WT'},
-        esr1:{mut:'Mut',wt:'WT'},
+        brca:{neg:'-',wt:'WT',mut:'BRCA+',brca1:'BRCA1+',brca2:'BRCA2+','+':'BRCA+'},
+        pdl1:{neg:'-','+':'陽性','-':'陰性'},
+        tp53:{neg:'-',mut:'Mut',wt:'WT'},
+        pik3ca:{neg:'-',mut:'Mut',wt:'WT'},
+        esr1:{neg:'-',mut:'Mut',wt:'WT'},
         pni:{present:'PNI+',absent:'PNI-'},
         lvi:{present:'LVI+',absent:'LVI-'},
         margin_involved:{no:'Uninvolved',yes:'Involved'},
         axillary_surgery:{SLNB:'SLNB',ALND:'ALND',TAD:'TAD'},
         tumor_kind:{invasive:'Invasive',dcis:'DCIS only'},
-        dm:{yes:'DM'},
-        htn:{yes:'HTN'},
-        cad:{yes:'CAD'},
-        mets_bone:{yes:'Bone'},
-        mets_liver:{yes:'Liver'},
-        mets_brain:{yes:'Brain'},
-        mets_lung:{yes:'Lung'}
+        dm:{yes:'DM',no:'無'},
+        htn:{yes:'HTN',no:'無'},
+        cad:{yes:'CAD',no:'無'},
+        mets_bone:{yes:'Bone',no:'無'},
+        mets_liver:{yes:'Liver',no:'無'},
+        mets_brain:{yes:'Brain',no:'無'},
+        mets_lung:{yes:'Lung',no:'無'}
     };
     const shown = (maps[key] && maps[key][v]) || v;
     const suffix = (PATIENT_CONTEXT_FIELD_META[key] || {}).suffix || '';
@@ -4918,8 +4925,8 @@ function normalizeWorkspaceNodeFields(){
     if(!hasSplitNodes) return;
     const pos = (Number.isFinite(slnPos) ? slnPos : 0) + (Number.isFinite(alnPos) ? alnPos : 0);
     const total = (Number.isFinite(slnTotal) ? slnTotal : 0) + (Number.isFinite(alnTotal) ? alnTotal : 0);
-    _patient.nodes_pos = String(pos);
-    if(total > 0) _patient.nodes_total = String(total);
+    if(Number.isFinite(slnPos) || Number.isFinite(alnPos)) _patient.nodes_pos = String(pos);
+    if(Number.isFinite(slnTotal) || Number.isFinite(alnTotal)) _patient.nodes_total = String(total);
     if(!_patient.pN){
         _patient.pN = pathologyNodeStageFromCount(pos, '');
     }
@@ -4950,20 +4957,20 @@ function validateWorkspacePostOpNodes(p){
     const alnPos = num('aln_pos');
     const alnTotal = num('aln_total');
     const add = text => { if(text && !warnings.includes(text)) warnings.push(text); };
-    if(Number.isFinite(slnPos) && Number.isFinite(slnTotal) && slnPos > slnTotal) add(`SLN+ (${slnPos}) 不可大於 SLN total (${slnTotal})`);
-    if(Number.isFinite(alnPos) && Number.isFinite(alnTotal) && alnPos > alnTotal) add(`ALN+ (${alnPos}) 不可大於 ALN total (${alnTotal})`);
+    if(Number.isFinite(slnPos) && Number.isFinite(slnTotal) && slnPos > slnTotal) add(`SLNB+ (${slnPos}) 不可大於 SLNB total (${slnTotal})`);
+    if(Number.isFinite(alnPos) && Number.isFinite(alnTotal) && alnPos > alnTotal) add(`ALND+ (${alnPos}) 不可大於 ALND total (${alnTotal})`);
     if(Number.isFinite(nodesPos) && Number.isFinite(nodesTotal) && nodesPos > nodesTotal) add(`LN+ (${nodesPos}) 不可大於 LN total (${nodesTotal})`);
-    if(Number.isFinite(nodesPos) && Number.isFinite(slnPos) && slnPos > nodesPos) add(`SLN+ (${slnPos}) 不可大於總 LN+ (${nodesPos})`);
-    if(Number.isFinite(nodesPos) && Number.isFinite(alnPos) && alnPos > nodesPos) add(`ALN+ (${alnPos}) 不可大於總 LN+ (${nodesPos})`);
+    if(Number.isFinite(nodesPos) && Number.isFinite(slnPos) && slnPos > nodesPos) add(`SLNB+ (${slnPos}) 不可大於總 LN+ (${nodesPos})`);
+    if(Number.isFinite(nodesPos) && Number.isFinite(alnPos) && alnPos > nodesPos) add(`ALND+ (${alnPos}) 不可大於總 LN+ (${nodesPos})`);
     const hasAnySplitPos = Number.isFinite(slnPos) || Number.isFinite(alnPos);
     if(hasAnySplitPos && Number.isFinite(nodesPos)){
         const splitSum = (Number.isFinite(slnPos) ? slnPos : 0) + (Number.isFinite(alnPos) ? alnPos : 0);
-        if(splitSum !== nodesPos) add(`SLN+ + ALN+ = ${splitSum}，與總 LN+ (${nodesPos}) 不一致`);
+        if(splitSum !== nodesPos) add(`SLNB+ + ALND+ = ${splitSum}，與總 LN+ (${nodesPos}) 不一致`);
     }
     const hasAnySplitTotal = Number.isFinite(slnTotal) || Number.isFinite(alnTotal);
     if(hasAnySplitTotal && Number.isFinite(nodesTotal)){
         const splitTotal = (Number.isFinite(slnTotal) ? slnTotal : 0) + (Number.isFinite(alnTotal) ? alnTotal : 0);
-        if(splitTotal > nodesTotal) add(`SLN total + ALN total = ${splitTotal}，不可大於 LN total (${nodesTotal})`);
+        if(splitTotal > nodesTotal) add(`SLNB total + ALND total = ${splitTotal}，不可大於 LN total (${nodesTotal})`);
     }
     if(Number.isFinite(nodesPos) && p.pN){
         const expected = pathologyNodeGroupFromCount(nodesPos);
@@ -6726,8 +6733,8 @@ function patientCenterPostOpSummaryLine(p, options={}){
     const totalNodes = hasPostValue('nodes_total') ? p.nodes_total : '';
     if(totalPos !== '' && totalNodes !== '') parts.push(`LN ${totalPos}/${totalNodes}`);
     else if(totalPos !== '') parts.push(`LN+${totalPos}`);
-    if(hasPostValue('sln_pos') || hasPostValue('sln_total')) parts.push(`SLN ${p.sln_pos || '?'}/${p.sln_total || '?'}`);
-    if(hasPostValue('aln_pos') || hasPostValue('aln_total')) parts.push(`ALN ${p.aln_pos || '?'}/${p.aln_total || '?'}`);
+    if(hasPostValue('sln_pos') || hasPostValue('sln_total')) parts.push(`SLNB ${p.sln_pos || '?'}/${p.sln_total || '?'}`);
+    if(hasPostValue('aln_pos') || hasPostValue('aln_total')) parts.push(`ALND ${p.aln_pos || '?'}/${p.aln_total || '?'}`);
     if(!forCopy && p.pni === 'present') parts.push('PNI+');
     if(!forCopy && p.lvi === 'present') parts.push('LVI+');
     if(p.margin_involved === 'yes') parts.push('margin involved');
