@@ -3147,7 +3147,7 @@ async function dashboardAgentRefreshStatus(force=false){
         const data = await res.json().catch(() => ({}));
         if(res.ok && data.connected){
             const isLocal = data.runtime === 'local-ollama' || /^https?:\/\/(127\.0\.0\.1|localhost)(:|\/|$)/.test(String(data.ollama_host || ''));
-            const runtimeLabel = isLocal ? 'Local OK' : 'Cloud OK';
+            const runtimeLabel = isLocal ? 'Local' : 'Cloud';
             const sourceText = isLocal ? '本機 Ollama 已連線' : 'Ollama Cloud 已連線';
             const modelText = data.model ? `${sourceText}；模型：${data.model}` : sourceText;
             if(data.model_available === false){
