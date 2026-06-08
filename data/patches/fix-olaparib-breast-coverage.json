@@ -1,0 +1,60 @@
+{
+  "issue": "local-2026-06-09",
+  "title": "Fix olaparib breast coverage metadata",
+  "source": "Existing NHI breast coverage text in nhi_drug_coverage.db plus NTUH 2024/12/05 formulation price",
+  "operations": [
+    {
+      "type": "drug_update",
+      "drug_id": 1753,
+      "reason": "Olaparib row had a thyroid medullary carcinoma indication copied from Vandetanib; replace with breast-specific BRCA/TNBC NHI coverage metadata.",
+      "source": "coverage_rules rows 79/101 breast cancer paragraph for olaparib; drug_formulations id 39 for Lynparza price",
+      "changes": {
+        "trade_names": "Lynparza",
+        "indication": "三陰性乳癌(olaparib)：olaparib單獨使用於曾接受前導性、術後輔助性或轉移性化療，且具germline BRCA 1/2致病性或疑似致病性突變之三陰性(荷爾蒙接受體及HER2受體皆為陰性)轉移性乳癌病人。(109/11/1、111/8/1、112/1/1)",
+        "clinical_tags": {
+          "her2": "negative",
+          "er_pr": "negative",
+          "tnbc": true,
+          "brca": true
+        },
+        "stage": "metastatic",
+        "nhi_price": 1206,
+        "price_unit": "150mg/tab",
+        "dosage_info": {
+          "type": "oral",
+          "dose_fixed": 300,
+          "unit": "mg",
+          "freq": "bid",
+          "note": "300mg BID（每次2錠150mg）"
+        }
+      }
+    },
+    {
+      "type": "coverage_rule_update",
+      "coverage_rule_id": 81,
+      "reason": "Olaparib coverage rule had thyroid medullary carcinoma review text copied from Vandetanib; replace with breast-specific prior authorization text.",
+      "source": "coverage_rules rows 79/101 breast cancer paragraph for olaparib",
+      "changes": {
+        "therapy_line": 1,
+        "condition": "olaparib單獨使用於曾接受前導性、術後輔助性或轉移性化療，且具germline BRCA 1/2致病性或疑似致病性突變之三陰性(荷爾蒙接受體及HER2受體皆為陰性)轉移性乳癌病人。(109/11/1、111/8/1、112/1/1)",
+        "prior_auth_required": 1
+      }
+    },
+    {
+      "type": "drug_update",
+      "drug_id": 1752,
+      "reason": "Niraparib trade_names was incorrectly populated with olaparib, polluting olaparib search results.",
+      "changes": {
+        "trade_names": "Zejula"
+      }
+    },
+    {
+      "type": "drug_update",
+      "drug_id": 1766,
+      "reason": "Talazoparib trade_names was incorrectly populated with olaparib, polluting olaparib search results.",
+      "changes": {
+        "trade_names": "Talzenna"
+      }
+    }
+  ]
+}

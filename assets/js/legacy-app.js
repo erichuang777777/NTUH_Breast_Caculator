@@ -2971,6 +2971,7 @@ const DASHBOARD_AGENT_COLLAPSED_KEY = 'nhi_dashboard_agent_collapsed';
 const DASHBOARD_AGENT_API_CONFIG_KEY = 'nhi_dashboard_agent_api_config';
 const DASHBOARD_AGENT_HISTORY_KEY = 'nhi_dashboard_agent_history_v1';
 const DASHBOARD_AGENT_CONTEXT_LIMIT = 8192;
+const DASHBOARD_AGENT_MODEL_OPTIONS = ['gpt-oss:120b', 'gemma4:31B'];
 let _dashboardAgentStatus = { state:'checking', label:'檢查中', detail:'正在檢查 Agent API 連線' };
 let _dashboardAgentStatusCheckedAt = 0;
 let _dashboardAgentSpeechRecognition = null;
@@ -3014,11 +3015,12 @@ function toggleDashboardAgentCollapsed(){
 function getDashboardAgentApiConfig(){
     const fallback = dashboardAgentDefaultApiConfig();
     if(window.OncoBreastAgentAdapter){
-        return window.OncoBreastAgentAdapter.readConfig({
+        const cfg = window.OncoBreastAgentAdapter.readConfig({
             storageKey: DASHBOARD_AGENT_API_CONFIG_KEY,
             fallback,
             onError: e => console.warn('Failed to read dashboard agent API config', e)
         });
+        return { ...cfg, model: dashboardAgentNormalizeModel(cfg && cfg.model) };
     }
     try {
         const raw = localStorage.getItem(DASHBOARD_AGENT_API_CONFIG_KEY);
@@ -3031,7 +3033,7 @@ function getDashboardAgentApiConfig(){
         return {
             enabled: !!saved.enabled,
             endpoint,
-            model: String(saved.model || fallback.model || '').trim(),
+            model: dashboardAgentNormalizeModel(saved.model || fallback.model || ''),
             headers: saved.headers && typeof saved.headers === 'object' ? saved.headers : {}
         };
     } catch(e){
@@ -3039,7 +3041,7 @@ function getDashboardAgentApiConfig(){
     }
 }
 function setDashboardAgentApiConfig(endpoint, enabled=true, headers={}, model=''){
-    const cfg = { enabled: !!enabled, endpoint: String(endpoint || '').trim(), model: String(model || '').trim(), headers: headers || {} };
+    const cfg = { enabled: !!enabled, endpoint: String(endpoint || '').trim(), model: dashboardAgentNormalizeModel(model), headers: headers || {} };
     if(window.OncoBreastAgentAdapter){
         return window.OncoBreastAgentAdapter.writeConfig(cfg, {
             storageKey: DASHBOARD_AGENT_API_CONFIG_KEY,
@@ -3051,7 +3053,15 @@ function setDashboardAgentApiConfig(endpoint, enabled=true, headers={}, model=''
 }
 function dashboardAgentModelValue(){
     const cfg = getDashboardAgentApiConfig();
-    return String(cfg.model || '').trim();
+    return dashboardAgentNormalizeModel(cfg.model || '');
+}
+function dashboardAgentNormalizeModel(value){
+    const raw = String(value || '').trim();
+    if(!raw) return '';
+    if(raw.toLowerCase() === 'gemma4:31b-cloud') return 'gemma4:31B';
+    if(raw.toLowerCase() === 'gemma4:31b') return 'gemma4:31B';
+    if(raw.toLowerCase() === 'gptoss120b') return 'gpt-oss:120b';
+    return raw;
 }
 function dashboardAgentSetModel(value){
     const cfg = getDashboardAgentApiConfig();
@@ -3220,13 +3230,11 @@ function dashboardAgentUpdateModelOptions(models, selected){
     if(!list) return;
     const values = [];
     const add = value => {
-        const v = String(value || '').trim();
+        const v = dashboardAgentNormalizeModel(value);
         if(v && !values.includes(v)) values.push(v);
     };
-    add(selected);
-    (models || []).forEach(add);
-    add('gpt-oss:120b');
-    add('gemma4:31b-cloud');
+    DASHBOARD_AGENT_MODEL_OPTIONS.forEach(add);
+    if(DASHBOARD_AGENT_MODEL_OPTIONS.includes(dashboardAgentNormalizeModel(selected))) add(selected);
     list.innerHTML = values.slice(0, 40).map(v => `<option value="${esc(v)}"></option>`).join('');
 }
 async function dashboardAgentRefreshStatus(force=false){
@@ -3494,7 +3502,7 @@ function renderDashboardAgentPanel(){
                     <input id="dashboardAgentModelInput" list="dashboardAgentModelList" value="${esc(agentModel)}" placeholder="server default" autocomplete="off" onchange="dashboardAgentSetModel(this.value)" onkeydown="if(event.key==='Enter'){event.preventDefault();dashboardAgentSetModel(this.value);this.blur();}">
                     <datalist id="dashboardAgentModelList">
                         <option value="gpt-oss:120b"></option>
-                        <option value="gemma4:31b-cloud"></option>
+                        <option value="gemma4:31B"></option>
                     </datalist>
                 </label>
             </div>
