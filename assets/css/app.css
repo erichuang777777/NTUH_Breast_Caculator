@@ -2156,13 +2156,17 @@ body.mobile-device-shell .ws-context-pill-row {
     }
     body.modal-dashboard-mode .dashboard-agent-panel {
       position: static;
-      height: min(34vh, 360px);
-      max-height: min(34vh, 360px);
+      height: min(52vh, 620px);
+      min-height: 420px;
+      max-height: min(52vh, 620px);
+      overflow: hidden;
+      grid-template-rows: auto auto minmax(0, 1fr) auto auto auto;
     }
     body.modal-dashboard-mode .dashboard-agent-panel.collapsed {
       width: 100%;
       min-width: 0;
       max-width: none;
+      min-height: 0;
       height: 44px;
       max-height: 44px;
       padding: .28rem;
@@ -2191,6 +2195,16 @@ body.mobile-device-shell .ws-context-pill-row {
     body.modal-dashboard-mode .patient-tool-card {
       grid-column: span 1 !important;
     }
+    body.modal-dashboard-mode .dashboard-agent-thread {
+      min-height: 0;
+      overflow-y: auto;
+      padding-bottom: .1rem;
+    }
+    body.modal-dashboard-mode .dashboard-agent-input textarea {
+      min-height: 64px;
+      max-height: 96px;
+      resize: none;
+    }
   }
   .dashboard-agent-head {
     display: flex;
@@ -2200,6 +2214,42 @@ body.mobile-device-shell .ws-context-pill-row {
     min-width: 0;
     border-bottom: 1px solid #e2e8f0;
     padding-bottom: .55rem;
+  }
+  .dashboard-agent-title {
+    display: grid;
+    gap: .34rem;
+    min-width: 0;
+  }
+  .dashboard-agent-title > span {
+    display: flex;
+    align-items: center;
+    gap: .35rem;
+    min-width: 0;
+    flex-wrap: wrap;
+    font-weight: 900;
+  }
+  .dashboard-agent-model {
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+    min-width: 0;
+    color: #64748b;
+    font-size: .7rem;
+    font-weight: 800;
+  }
+  .dashboard-agent-model input {
+    width: min(168px, 45vw);
+    min-width: 92px;
+    height: 26px;
+    border: 1px solid #d8e3ee;
+    border-radius: 5px;
+    background: #fff;
+    color: #24364b;
+    font-family: inherit;
+    font-size: .72rem;
+    font-weight: 750;
+    padding: .12rem .38rem;
+    box-sizing: border-box;
   }
   .dashboard-agent-head-actions {
     flex: 0 0 auto;
@@ -2445,7 +2495,7 @@ body.mobile-device-shell .ws-context-pill-row {
     background: #e11d48;
   }
   .dashboard-agent-thread {
-    min-height: 260px;
+    min-height: 0;
     overflow-y: auto;
     display: flex;
     flex-direction: column;

@@ -127,6 +127,15 @@ def _parse_agent_json_text(text):
     return {"reply": content, "tool_id": ""}
 
 
+def _normalize_ollama_model(value):
+    raw = str(value or "").strip()
+    if not raw:
+        return OLLAMA_MODEL
+    if re.match(r"^[A-Za-z0-9._:/+\-]{1,120}$", raw):
+        return raw
+    return OLLAMA_MODEL
+
+
 def _i18n_cache_path(lang):
     safe = re.sub(r"[^a-z]", "", str(lang or "").lower()) or "en"
     return I18N_CACHE_DIR / f"{safe}.json"
@@ -3808,6 +3817,7 @@ class Handler(BaseHTTPRequestHandler):
         message = str(payload.get('message') or '').strip()
         if not message:
             return self._json(400, {'error': 'message required'})
+        selected_model = _normalize_ollama_model(payload.get('preferred_model') or payload.get('model') or (payload.get('client') or {}).get('model'))
 
         tools = payload.get('tool_registry') or []
         allowed_tools = {str(t.get('id')) for t in tools if isinstance(t, dict) and t.get('id')}
@@ -3821,10 +3831,10 @@ class Handler(BaseHTTPRequestHandler):
             "tool_registry": tools,
             "system_context": system_context,
             "client": payload.get('client') or {},
-            "preferred_model": OLLAMA_MODEL,
+            "preferred_model": selected_model,
         }
         ollama_payload = {
-            "model": OLLAMA_MODEL,
+            "model": selected_model,
             "stream": False,
             "format": "json",
             "messages": [
@@ -3865,7 +3875,7 @@ class Handler(BaseHTTPRequestHandler):
                 "patient_patch": patient_patch,
                 "citations": answer.get("citations") if isinstance(answer.get("citations"), list) else system_context.get("citations", [])[:4],
                 "called_tools": system_context.get("called_tools", []),
-                "model": OLLAMA_MODEL,
+                "model": selected_model,
                 "runtime": "local-ollama"
             })
         except Exception as e:
@@ -3873,11 +3883,13 @@ class Handler(BaseHTTPRequestHandler):
                 "ok": False,
                 "error": "Ollama agent unavailable",
                 "detail": str(e),
-                "model": OLLAMA_MODEL,
+                "model": selected_model,
                 "ollama_host": OLLAMA_HOST
             })
 
     def _agent_status(self):
+        query = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+        selected_model = _normalize_ollama_model((query.get('model') or [''])[0])
         try:
             req = urllib.request.Request(
                 f"{OLLAMA_HOST}/api/tags",
@@ -3889,20 +3901,21 @@ class Handler(BaseHTTPRequestHandler):
             models = raw.get("models") if isinstance(raw, dict) else []
             if not isinstance(models, list):
                 models = []
-            model_names = {
+            model_names = [
                 str((m or {}).get("name") or (m or {}).get("model") or "")
                 for m in models
                 if isinstance(m, dict)
-            }
+            ]
             self._json(200, {
                 "ok": True,
                 "configured": True,
                 "connected": True,
                 "status": "connected",
                 "message": "Local Ollama connected.",
-                "model": OLLAMA_MODEL,
-                "model_available": OLLAMA_MODEL in model_names if model_names else None,
+                "model": selected_model,
+                "model_available": selected_model in model_names if model_names else None,
                 "model_count": len(models),
+                "models": model_names[:50],
                 "ollama_host": OLLAMA_HOST,
                 "runtime": "local-ollama"
             })
@@ -3913,7 +3926,7 @@ class Handler(BaseHTTPRequestHandler):
                 "connected": False,
                 "status": "local_unavailable",
                 "message": str(e),
-                "model": OLLAMA_MODEL,
+                "model": selected_model,
                 "ollama_host": OLLAMA_HOST,
                 "runtime": "local-ollama"
             })

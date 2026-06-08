@@ -12,6 +12,7 @@
     return {
       enabled: hasHttpApi,
       endpoint: hasHttpApi ? '/api/agent' : '',
+      model: '',
       headers: hasHttpApi ? { 'x-client-app': isLocal ? 'oncobreast-local-ollama-demo' : 'oncobreast-copilot' } : {}
     };
   }
@@ -21,6 +22,7 @@
     const storage = opts.storage || global.localStorage;
     const key = opts.storageKey || DEFAULT_CONFIG_KEY;
     const fallback = opts.fallback || defaultConfig(opts.location || global.location);
+    const loc = opts.location || global.location || {};
     try {
       const raw = storage && storage.getItem ? storage.getItem(key) : '';
       if(!raw) return fallback;
@@ -31,6 +33,7 @@
       return {
         enabled: !!saved.enabled,
         endpoint,
+        model: String(saved.model || fallback.model || '').trim(),
         headers: saved.headers && typeof saved.headers === 'object' ? saved.headers : {}
       };
     } catch(e){
@@ -46,6 +49,7 @@
     const cfg = {
       enabled: !!(config && config.enabled),
       endpoint: String((config && config.endpoint) || '').trim(),
+      model: String((config && config.model) || '').trim(),
       headers: config && config.headers && typeof config.headers === 'object' ? config.headers : {}
     };
     try {
@@ -73,6 +77,7 @@
         phase_label: ctx.phaseLabel || ''
       },
       report_text: opts.reportText || '',
+      preferred_model: opts.model || opts.preferred_model || '',
       tool_registry: toolRegistry(opts.tools || []),
       client: {
         app: opts.app || 'OncoBreast Calculator',

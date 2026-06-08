@@ -2981,7 +2981,7 @@ function dashboardAgentDefaultApiConfig(){
     const host = (location && location.hostname) ? location.hostname : '';
     const hasHttpApi = protocol === 'http:' || protocol === 'https:';
     const isLocal = host === '127.0.0.1' || host === 'localhost';
-    return { enabled: hasHttpApi, endpoint: hasHttpApi ? '/api/agent' : '', headers: hasHttpApi ? { 'x-client-app': isLocal ? 'oncobreast-local-ollama-demo' : 'oncobreast-copilot' } : {} };
+    return { enabled: hasHttpApi, endpoint: hasHttpApi ? '/api/agent' : '', model:'', headers: hasHttpApi ? { 'x-client-app': isLocal ? 'oncobreast-local-ollama-demo' : 'oncobreast-copilot' } : {} };
 }
 function getDashboardAgentPosition(){
     try {
@@ -3031,14 +3031,15 @@ function getDashboardAgentApiConfig(){
         return {
             enabled: !!saved.enabled,
             endpoint,
+            model: String(saved.model || fallback.model || '').trim(),
             headers: saved.headers && typeof saved.headers === 'object' ? saved.headers : {}
         };
     } catch(e){
         return fallback;
     }
 }
-function setDashboardAgentApiConfig(endpoint, enabled=true, headers={}){
-    const cfg = { enabled: !!enabled, endpoint: String(endpoint || '').trim(), headers: headers || {} };
+function setDashboardAgentApiConfig(endpoint, enabled=true, headers={}, model=''){
+    const cfg = { enabled: !!enabled, endpoint: String(endpoint || '').trim(), model: String(model || '').trim(), headers: headers || {} };
     if(window.OncoBreastAgentAdapter){
         return window.OncoBreastAgentAdapter.writeConfig(cfg, {
             storageKey: DASHBOARD_AGENT_API_CONFIG_KEY,
@@ -3047,6 +3048,16 @@ function setDashboardAgentApiConfig(endpoint, enabled=true, headers={}){
     }
     try { localStorage.setItem(DASHBOARD_AGENT_API_CONFIG_KEY, JSON.stringify(cfg)); } catch(e){}
     return cfg;
+}
+function dashboardAgentModelValue(){
+    const cfg = getDashboardAgentApiConfig();
+    return String(cfg.model || '').trim();
+}
+function dashboardAgentSetModel(value){
+    const cfg = getDashboardAgentApiConfig();
+    setDashboardAgentApiConfig(cfg.endpoint, cfg.enabled, cfg.headers || {}, value);
+    _dashboardAgentStatusCheckedAt = 0;
+    dashboardAgentRefreshStatus(true);
 }
 let _dashboardAgentReportText = '';
 let _dashboardAgentPatchSeq = 0;
@@ -3204,6 +3215,20 @@ function dashboardAgentSetStatus(state, label, detail){
         el.innerHTML = `<i aria-hidden="true"></i><span>${esc(label || '')}</span>`;
     }
 }
+function dashboardAgentUpdateModelOptions(models, selected){
+    const list = document.getElementById('dashboardAgentModelList');
+    if(!list) return;
+    const values = [];
+    const add = value => {
+        const v = String(value || '').trim();
+        if(v && !values.includes(v)) values.push(v);
+    };
+    add(selected);
+    (models || []).forEach(add);
+    add('gpt-oss:120b');
+    add('gemma4:31b-cloud');
+    list.innerHTML = values.slice(0, 40).map(v => `<option value="${esc(v)}"></option>`).join('');
+}
 async function dashboardAgentRefreshStatus(force=false){
     const now = Date.now();
     if(!force && _dashboardAgentStatusCheckedAt && now - _dashboardAgentStatusCheckedAt < 60000) return;
@@ -3213,7 +3238,9 @@ async function dashboardAgentRefreshStatus(force=false){
         dashboardAgentSetStatus('off', '未啟用', 'Agent API endpoint 未啟用');
         return;
     }
-    const statusUrl = cfg.endpoint.replace(/\/agent(?:\?.*)?$/, '/agent-status');
+    const statusBase = cfg.endpoint.replace(/\/agent(?:\?.*)?$/, '/agent-status');
+    const model = String(cfg.model || '').trim();
+    const statusUrl = model ? `${statusBase}${statusBase.includes('?') ? '&' : '?'}model=${encodeURIComponent(model)}` : statusBase;
     dashboardAgentSetStatus('checking', '檢查中', '正在檢查 Agent API 連線');
     try {
         const res = await fetch(statusUrl, {
@@ -3222,14 +3249,17 @@ async function dashboardAgentRefreshStatus(force=false){
         });
         const data = await res.json().catch(() => ({}));
         if(res.ok && data.connected){
+            dashboardAgentUpdateModelOptions(data.models || [], data.model || model);
             const isLocal = data.runtime === 'local-ollama' || /^https?:\/\/(127\.0\.0\.1|localhost)(:|\/|$)/.test(String(data.ollama_host || ''));
             const runtimeLabel = isLocal ? 'Local' : 'Cloud';
             const sourceText = isLocal ? '本機 Ollama 已連線' : 'Ollama Cloud 已連線';
             const modelText = data.model ? `${sourceText}；模型：${data.model}` : sourceText;
-            if(data.model_available === false){
+            const checkedModels = Number(data.model_count || 0) > 0;
+            if(data.model_available === false && checkedModels){
                 dashboardAgentSetStatus('warn', isLocal ? 'Local 模型?' : 'Cloud 模型?', `${modelText}；但狀態檢查沒有在可用模型清單看到這個 model`);
             } else {
-                dashboardAgentSetStatus('ok', runtimeLabel, modelText);
+                const detail = data.model_available === null ? `${modelText}；模型清單未提供，送出訊息時會以此模型嘗試呼叫` : modelText;
+                dashboardAgentSetStatus('ok', runtimeLabel, detail);
             }
         } else if(data.status === 'missing_key' || !data.configured){
             dashboardAgentSetStatus('warn', '未設 Key', data.message || 'Netlify 尚未設定 OLLAMA_API_KEY');
@@ -3447,6 +3477,7 @@ function dashboardAgentToggleMic(){
 function renderDashboardAgentPanel(){
     const pos = getDashboardAgentPosition();
     const collapsed = getDashboardAgentCollapsed();
+    const agentModel = dashboardAgentModelValue();
     if(collapsed){
         return `<aside class="dashboard-agent-panel collapsed" aria-label="AI Agent collapsed">
             <button type="button" class="dashboard-agent-rail-open" onclick="setDashboardAgentCollapsed(false)" title="開啟 AI Agent">
@@ -3456,8 +3487,16 @@ function renderDashboardAgentPanel(){
     }
     return `<aside class="dashboard-agent-panel">
         <div class="dashboard-agent-head">
-            <div>
+            <div class="dashboard-agent-title">
                 <span>AI Agent ${dashboardAgentStatusHtml()}</span>
+                <label class="dashboard-agent-model" title="留空使用伺服器預設 OLLAMA_MODEL">
+                    <span>Model</span>
+                    <input id="dashboardAgentModelInput" list="dashboardAgentModelList" value="${esc(agentModel)}" placeholder="server default" autocomplete="off" onchange="dashboardAgentSetModel(this.value)" onkeydown="if(event.key==='Enter'){event.preventDefault();dashboardAgentSetModel(this.value);this.blur();}">
+                    <datalist id="dashboardAgentModelList">
+                        <option value="gpt-oss:120b"></option>
+                        <option value="gemma4:31b-cloud"></option>
+                    </datalist>
+                </label>
             </div>
             <div class="dashboard-agent-head-actions">
                 <div class="dashboard-agent-position">
@@ -3644,6 +3683,7 @@ async function dashboardAgentTryExternal(text){
                 context: ctx,
                 reportText: _dashboardAgentReportText || '',
                 tools: DASHBOARD_AGENT_TOOLS,
+                model: cfg.model || '',
                 version: typeof APP_VERSION !== 'undefined' ? APP_VERSION : ''
             })
             : {
@@ -3651,6 +3691,7 @@ async function dashboardAgentTryExternal(text){
                 patient_context: ctx.p || {},
                 derived: { stage: ctx.stage || {}, subtype: ctx.subtype || '', missing: ctx.missing || [], phase_label: ctx.phaseLabel || '' },
                 report_text: _dashboardAgentReportText || '',
+                preferred_model: cfg.model || '',
                 tool_registry: DASHBOARD_AGENT_TOOLS.map(t => ({ id:t.id, label:t.label, aliases:t.aliases || [] })),
                 client: { app:'Oncobreast copilot', version: typeof APP_VERSION !== 'undefined' ? APP_VERSION : '' }
             };
@@ -3666,6 +3707,13 @@ async function dashboardAgentTryExternal(text){
                 return await res.json().catch(() => ({}));
             })();
         if(!data) return '';
+        if(data.runtime && /ollama/i.test(String(data.runtime))){
+            const isLocal = data.runtime === 'local-ollama';
+            const label = isLocal ? 'Local' : 'Cloud';
+            const modelText = data.model ? `${label} Ollama 已回應；模型：${data.model}` : `${label} Ollama 已回應`;
+            dashboardAgentSetStatus('ok', label, modelText);
+        }
+        dashboardAgentUpdateModelOptions([], data.model || cfg.model || '');
         if(data.tool_id && dashboardAgentShouldOpenTool(text)) dashboardAgentRunTool(data.tool_id);
         return data && typeof data === 'object' ? data : String(data.reply || data.message || data.text || '').trim();
     } catch(e){
