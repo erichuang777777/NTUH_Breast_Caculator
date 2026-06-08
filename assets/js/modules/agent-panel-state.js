@@ -74,17 +74,20 @@
     const limit = opts.limit || 8192;
     const maxTurns = opts.maxTurns || 12;
     const overheadTokens = opts.overheadTokens || 1350;
+    const activeHistory = history.length && history[0] && history[0].role === 'agent' ? history.slice(1) : history;
     const patientChars = compactLen(patient) + compactLen(derived);
-    const tokens = overheadTokens
-      + estimateTokens(JSON.stringify(history))
+    const dynamicTokens = estimateTokens(JSON.stringify(activeHistory))
+      + estimateTokens(reportText)
+      + estimateTokens(inputText);
+    const totalTokens = overheadTokens
+      + dynamicTokens
       + estimateTokens(JSON.stringify(patient))
       + estimateTokens(JSON.stringify(derived))
-      + estimateTokens(reportText)
-      + estimateTokens(inputText)
       + estimateTokens(JSON.stringify(tools));
     return {
-      tokens,
-      percent: Math.min(999, Math.round(tokens / limit * 100)),
+      tokens: dynamicTokens,
+      totalTokens,
+      percent: Math.min(999, Math.round(dynamicTokens / limit * 100)),
       limit,
       turns: Math.max(0, history.length - 1),
       maxTurns,
@@ -103,9 +106,9 @@
     const tone = u.percent >= 90 ? 'danger' : (u.percent >= 70 ? 'warn' : 'ok');
     const label = u.percent >= 90 ? '接近上限' : (u.percent >= 70 ? '偏高' : '正常');
     const reportPart = u.chars && u.chars.report ? ` · 報告 ${Math.round(u.chars.report / 100) / 10}k字` : '';
-    return `<div class="dashboard-agent-context-meter ${tone}" title="前端粗估 token：含固定 overhead（system prompt、工具/JSON 包裝）、patient context、工具 registry、對話紀錄與已貼上的報告文字；實際 token 以模型 tokenizer 為準。">
+    return `<div class="dashboard-agent-context-meter ${tone}" title="前端粗估 token：此百分比只計算對話紀錄、目前輸入與已貼上的報告文字；固定 system prompt、工具 registry 與 Patient Context 不列入百分比。實際 token 以模型 tokenizer 為準。">
       <div class="dashboard-agent-context-line">
-        <span>Context est. ${u.tokens.toLocaleString()} / ${u.limit.toLocaleString()}</span>
+        <span>對話 context ${u.tokens.toLocaleString()} / ${u.limit.toLocaleString()}</span>
         <b>${label} ${u.percent}%</b>
       </div>
       <div class="dashboard-agent-context-bar"><i style="width:${Math.min(100, u.percent)}%"></i></div>

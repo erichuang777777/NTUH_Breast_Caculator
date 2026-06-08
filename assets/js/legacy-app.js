@@ -2938,16 +2938,19 @@ function dashboardAgentContextUsage(extraText=''){
     const inputChars = String(extraText || '').length;
     const toolChars = dashboardAgentCompactLen(DASHBOARD_AGENT_TOOLS.map(t => ({id:t.id,label:t.label,aliases:t.aliases || []})));
     const overheadTokens = 1350;
-    const tokens = overheadTokens
-        + dashboardAgentEstimateTokens(JSON.stringify(history))
+    const activeHistory = history.length && history[0] && history[0].role === 'agent' ? history.slice(1) : history;
+    const tokens = dashboardAgentEstimateTokens(JSON.stringify(activeHistory))
+        + dashboardAgentEstimateTokens(_dashboardAgentReportText || '')
+        + dashboardAgentEstimateTokens(extraText || '');
+    const totalTokens = overheadTokens
+        + tokens
         + dashboardAgentEstimateTokens(JSON.stringify((ctx && ctx.p) || {}))
         + dashboardAgentEstimateTokens(JSON.stringify({stage:ctx && ctx.stage, subtype:ctx && ctx.subtype, missing:ctx && ctx.missing}))
-        + dashboardAgentEstimateTokens(_dashboardAgentReportText || '')
-        + dashboardAgentEstimateTokens(extraText || '')
         + dashboardAgentEstimateTokens(JSON.stringify(DASHBOARD_AGENT_TOOLS));
     const percent = Math.min(999, Math.round(tokens / DASHBOARD_AGENT_CONTEXT_LIMIT * 100));
     return {
         tokens,
+        totalTokens,
         percent,
         limit: DASHBOARD_AGENT_CONTEXT_LIMIT,
         turns: Math.max(0, history.length - 1),
@@ -2967,9 +2970,9 @@ function dashboardAgentContextMeterHtml(extraText=''){
     const tone = usage.percent >= 90 ? 'danger' : (usage.percent >= 70 ? 'warn' : 'ok');
     const label = usage.percent >= 90 ? '接近上限' : (usage.percent >= 70 ? '偏高' : '正常');
     const reportPart = usage.chars.report ? ` · 報告 ${Math.round(usage.chars.report / 100) / 10}k字` : '';
-    return `<div class="dashboard-agent-context-meter ${tone}" title="前端粗估 token：含固定 overhead（system prompt、工具/JSON 包裝）、patient context、工具 registry、對話紀錄與已貼上的報告文字；實際 token 以模型 tokenizer 為準。">
+    return `<div class="dashboard-agent-context-meter ${tone}" title="前端粗估 token：此百分比只計算對話紀錄、目前輸入與已貼上的報告文字；固定 system prompt、工具 registry 與 Patient Context 不列入百分比。實際 token 以模型 tokenizer 為準。">
         <div class="dashboard-agent-context-line">
-            <span>Context est. ${usage.tokens.toLocaleString()} / ${usage.limit.toLocaleString()}</span>
+            <span>對話 context ${usage.tokens.toLocaleString()} / ${usage.limit.toLocaleString()}</span>
             <b>${label} ${usage.percent}%</b>
         </div>
         <div class="dashboard-agent-context-bar"><i style="width:${Math.min(100, usage.percent)}%"></i></div>
@@ -3046,13 +3049,17 @@ function dashboardAgentDetectPhi(text){
         { type:'身分證字號', pattern:/\b[A-Z][12]\d{8}\b/i },
         { type:'手機號碼', pattern:/\b09\d{2}[-\s]?\d{3}[-\s]?\d{3}\b/ },
         { type:'電話號碼', pattern:/(?:電話|tel|phone|mobile|手機)[:：\s]*[+()#\-\s\d]{7,}/i },
-        { type:'病歷號 / ID', pattern:/(?:病歷號|病歷|MRN|chart\s*no|patient\s*id|身分證|ID)[:：#\s]*[A-Z0-9\-]{5,}/i },
+        { type:'本院病歷號', pattern:/(?:^|[^\dA-Z])(?:\d{7}|[AHGY]\d{6})(?![\dA-Z])/i },
+        { type:'病歷號 / ID', pattern:/(?:病歷號|病歷|MRN|chart\s*no|patient\s*id|身分證|ID)[:：#\s]*(?:\d{7}|[AHGY]\d{6}|[A-Z0-9\-]{5,})/i },
         { type:'生日 / DOB', pattern:/(?:生日|出生|DOB|date\s*of\s*birth)[:：\s]*(?:\d{2,4}[\/\-年.]\d{1,2}[\/\-月.]\d{1,2}|\d{6,8})/i },
         { type:'姓名', pattern:/(?:姓名|name|patient)[:：\s]*[\u4e00-\u9fff]{2,4}(?!乳|癌|期|歲|陰|陽)/i },
+        { type:'姓名', pattern:/(?:病人|患者|個案|Pt|patient)[:：\s]*[\u4e00-\u9fff]{3}(?!乳|癌|期|歲|陰|陽)/i },
         { type:'地址', pattern:/(?:地址|住址|address)[:：\s]*.{6,}/i },
         { type:'Email', pattern:/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i }
     ];
     tests.forEach(t => { if(t.pattern.test(raw)) add(t.type, t.type); });
+    if(/(?:^|[^\d])\d{7}(?!\d)/.test(raw)) add('本院病歷號', '七碼數字病歷號');
+    if(/(?:^|[^A-Z0-9])[AHGY]\d{6}(?![A-Z0-9])/i.test(raw)) add('本院病歷號', '院區字首病歷號');
     if(/(?:\b\d{7,10}\b)/.test(raw) && /(?:病歷|MRN|chart|patient|個案|case)/i.test(raw)) add('病歷號 / ID', '長數字且鄰近病人識別字');
     if(findings.length >= 2) add('多重 PHI 線索', '同時出現多種識別資訊');
     return { hasPhi: findings.length > 0, findings };
@@ -3062,9 +3069,11 @@ function dashboardAgentRedactPhi(text){
         .replace(/\b[A-Z][12]\d{8}\b/gi, '[已移除身分證字號]')
         .replace(/\b09\d{2}[-\s]?\d{3}[-\s]?\d{3}\b/g, '[已移除手機號碼]')
         .replace(/((?:電話|tel|phone|mobile|手機)[:：\s]*)[+()#\-\s\d]{7,}/gi, '$1[已移除電話]')
-        .replace(/((?:病歷號|病歷|MRN|chart\s*no|patient\s*id|身分證|ID)[:：#\s]*)[A-Z0-9\-]{5,}/gi, '$1[已移除識別碼]')
+        .replace(/((?:病歷號|病歷|MRN|chart\s*no|patient\s*id|身分證|ID)[:：#\s]*)(?:\d{7}|[AHGY]\d{6}|[A-Z0-9\-]{5,})/gi, '$1[已移除識別碼]')
         .replace(/((?:生日|出生|DOB|date\s*of\s*birth)[:：\s]*)(?:\d{2,4}[\/\-年.]\d{1,2}[\/\-月.]\d{1,2}|\d{6,8})/gi, '$1[已移除生日]')
         .replace(/((?:姓名|name|patient)[:：\s]*)[\u4e00-\u9fff]{2,4}(?!乳|癌|期|歲|陰|陽)/gi, '$1[已移除姓名]')
+        .replace(/((?:病人|患者|個案|Pt|patient)[:：\s]*)[\u4e00-\u9fff]{3}(?!乳|癌|期|歲|陰|陽)/gi, '$1[已移除姓名]')
+        .replace(/(^|[^\dA-Z])(?:\d{7}|[AHGY]\d{6})(?![\dA-Z])/gi, '$1[已移除本院病歷號]')
         .replace(/((?:地址|住址|address)[:：\s]*).{6,}/gi, '$1[已移除地址]')
         .replace(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi, '[已移除Email]');
 }
