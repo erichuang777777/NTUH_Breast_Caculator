@@ -2315,7 +2315,6 @@ function buildBreastFiltersFromWorkspace(p){
     if(p.brca && p.brca !== 'wt') filters.brca = 'true';
     if(p.esr1 === 'mut') filters.esr1 = 'true';
     if(p.pik3ca === 'mut' || p.pik3ca === '+') filters.pik3ca = 'true';
-    if(p.menopause) filters.menopause = p.menopause;
     return filters;
 }
 function dashboardBreastMatchesFromWorkspace(p){
@@ -2352,7 +2351,7 @@ function patientContextFilterConflicts(){
         her2:{positive:'HER2 陽性', negative:'HER2 陰性'},
         menopause:{pre:'停經前', post:'停經後'}
     };
-    for(const key of ['stage','er_pr','her2','menopause']){
+    for(const key of ['stage','er_pr','her2']){
         if(activeFilters[key] && expected[key] && activeFilters[key] !== expected[key]){
             conflicts.push(`病人 ${labels[key][expected[key]] || expected[key]}，但篩選為 ${labels[key][activeFilters[key]] || activeFilters[key]}`);
         }
