@@ -2459,37 +2459,15 @@ body.mobile-device-shell .ws-context-pill-row {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: .28rem;
   }
-  .dashboard-agent-upload {
-    display: grid;
-    grid-template-columns: 34px;
-    justify-content: start;
-  }
-  .dashboard-agent-upload input {
+  .dashboard-agent-composer input[type="file"] {
     position: absolute;
     width: 1px;
     height: 1px;
     opacity: 0;
     pointer-events: none;
   }
-  .dashboard-agent-upload label {
-    width: 34px;
-    height: 34px;
-    min-height: 34px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    background: #f8fafc;
-    color: #334155;
-    cursor: pointer;
-  }
-  .dashboard-agent-upload label:hover {
-    border-color: #0f766e;
-    color: #0f766e;
-    background: #f0fdfa;
-  }
-  .dashboard-agent-upload svg,
+  .dashboard-agent-attach-btn svg,
+  .dashboard-agent-send-btn svg,
   .dashboard-agent-mic-btn svg {
     width: 17px;
     height: 17px;
@@ -2500,7 +2478,8 @@ body.mobile-device-shell .ws-context-pill-row {
     stroke-linejoin: round;
   }
   .dashboard-agent-prompts button,
-  .dashboard-agent-input button {
+  .dashboard-agent-input button,
+  .dashboard-agent-attach-btn {
     border: 1px solid #b8d6ca;
     border-radius: 6px;
     background: #f0fdfa;
@@ -2525,14 +2504,15 @@ body.mobile-device-shell .ws-context-pill-row {
   }
   .dashboard-agent-input {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 42px 54px;
     gap: .35rem;
-    align-items: stretch;
   }
-  .dashboard-agent-input.no-mic {
-    grid-template-columns: minmax(0, 1fr) 54px;
+  .dashboard-agent-composer {
+    position: relative;
+    min-width: 0;
   }
   .dashboard-agent-input textarea {
+    display: block;
+    width: 100%;
     min-width: 0;
     min-height: 72px;
     resize: vertical;
@@ -2540,18 +2520,38 @@ body.mobile-device-shell .ws-context-pill-row {
     border-radius: 6px;
     background: #fff;
     color: var(--text);
-    padding: .45rem .55rem;
+    padding: .45rem .55rem 2.55rem;
     font-family: inherit;
     font-size: .82rem;
+    box-sizing: border-box;
   }
-  .dashboard-agent-input button {
-    height: 100%;
+  .dashboard-agent-composer-actions {
+    position: absolute;
+    right: .42rem;
+    bottom: .42rem;
+    display: flex;
+    align-items: center;
+    gap: .28rem;
   }
+  .dashboard-agent-composer-actions button,
+  .dashboard-agent-composer-actions label {
+    width: 32px;
+    height: 32px;
+    min-height: 32px;
+    padding: 0;
+  }
+  .dashboard-agent-composer-actions label,
   .dashboard-agent-mic-btn {
-    padding: .35rem .25rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+  }
+  .dashboard-agent-attach-btn:hover,
+  .dashboard-agent-mic-btn:hover,
+  .dashboard-agent-send-btn:hover {
+    border-color: #0f766e;
+    color: #0f766e;
+    background: #ecfdf5;
   }
   .dashboard-agent-mic-btn.listening {
     border-color: #dc2626;

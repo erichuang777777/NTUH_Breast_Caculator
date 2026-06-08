@@ -3307,7 +3307,10 @@ function dashboardIcon(name){
         right:'<path d="m9 18 6-6-6-6"/>',
         bug:'<path d="m8 2 1.88 1.88"/><path d="M14.12 3.88 16 2"/><path d="M9 7.13v-1a3 3 0 0 1 6 0v1"/><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6Z"/><path d="M12 20v-9"/><path d="M4 13H2"/><path d="M22 13h-2"/><path d="m5 19-1.5 1.5"/><path d="M20.5 20.5 19 19"/>',
         trash:'<path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v5"/><path d="M14 11v5"/>',
-        collapse:'<path d="M4 14h6v6"/><path d="m10 14-7 7"/><path d="M20 10h-6V4"/><path d="m14 10 7-7"/>'
+        collapse:'<path d="M4 14h6v6"/><path d="m10 14-7 7"/><path d="M20 10h-6V4"/><path d="m14 10 7-7"/>',
+        paperclip:'<path d="M21.44 11.05 12 20.49a6 6 0 0 1-8.49-8.49l9.9-9.9a4 4 0 0 1 5.66 5.66l-9.9 9.9a2 2 0 1 1-2.83-2.83l8.49-8.49"/>',
+        mic:'<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/><path d="M8 22h8"/>',
+        send:'<path d="m22 2-7 20-4-9-9-4 20-7Z"/><path d="M22 2 11 13"/>'
     };
     return `<svg viewBox="0 0 24 24" aria-hidden="true">${icons[name] || ''}</svg>`;
 }
@@ -3379,7 +3382,6 @@ function renderDashboardAgentPanel(){
         <div class="dashboard-agent-head">
             <div>
                 <span>AI Agent ${dashboardAgentStatusHtml()}</span>
-                <b>Patient context copilot</b>
             </div>
             <div class="dashboard-agent-head-actions">
                 <div class="dashboard-agent-position">
@@ -3400,16 +3402,16 @@ function renderDashboardAgentPanel(){
             <button type="button" onclick="dashboardAgentAskContext('drug')">可用藥物</button>
             <button type="button" onclick="dashboardAgentAskContext('report')">報告抽取</button>
         </div>
-        <div class="dashboard-agent-upload">
-            <input id="dashboardAgentFile" type="file" accept=".txt,.text,.md,text/plain" onchange="dashboardAgentUploadFile(this.files && this.files[0])">
-            <label for="dashboardAgentFile" title="上傳文字病理報告" aria-label="上傳文字病理報告">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.44 11.05 12 20.49a6 6 0 0 1-8.49-8.49l9.9-9.9a4 4 0 0 1 5.66 5.66l-9.9 9.9a2 2 0 1 1-2.83-2.83l8.49-8.49"/></svg>
-            </label>
-        </div>
         <form class="dashboard-agent-input ${dashboardAgentSpeechSupported() ? '' : 'no-mic'}" onsubmit="event.preventDefault();dashboardAgentSubmit()">
-            <textarea id="dashboardAgentInput" rows="3" placeholder="問問題，或貼上已去識別病理報告文字..." autocomplete="off" oninput="dashboardAgentInputChanged(this.value)" onkeydown="dashboardAgentInputKeydown(event)"></textarea>
-            ${dashboardAgentSpeechSupported() ? '<button type="button" id="dashboardAgentMicBtn" class="dashboard-agent-mic-btn" onclick="dashboardAgentToggleMic()" title="語音輸入" aria-label="語音輸入" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/><path d="M8 22h8"/></svg></button>' : ''}
-            <button type="submit">送出</button>
+            <div class="dashboard-agent-composer">
+                <textarea id="dashboardAgentInput" rows="3" placeholder="問問題，或貼上已去識別病理報告文字..." autocomplete="off" oninput="dashboardAgentInputChanged(this.value)" onkeydown="dashboardAgentInputKeydown(event)"></textarea>
+                <div class="dashboard-agent-composer-actions">
+                    <input id="dashboardAgentFile" type="file" accept=".txt,.text,.md,text/plain" onchange="dashboardAgentUploadFile(this.files && this.files[0])">
+                    <label class="dashboard-agent-attach-btn" for="dashboardAgentFile" title="上傳文字病理報告" aria-label="上傳文字病理報告">${dashboardIcon('paperclip')}</label>
+                    ${dashboardAgentSpeechSupported() ? `<button type="button" id="dashboardAgentMicBtn" class="dashboard-agent-mic-btn" onclick="dashboardAgentToggleMic()" title="語音輸入" aria-label="語音輸入" aria-pressed="false">${dashboardIcon('mic')}</button>` : ''}
+                    <button type="submit" class="dashboard-agent-send-btn" title="送出" aria-label="送出">${dashboardIcon('send')}</button>
+                </div>
+            </div>
             <div id="dashboardAgentPhiWarning" class="dashboard-agent-phi-warning" hidden></div>
         </form>
     </aside>`;
