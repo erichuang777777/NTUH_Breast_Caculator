@@ -245,7 +245,10 @@ async function checkOllamaStatus(modelOverride) {
       };
     }
     const models = Array.isArray(data.models) ? data.models : [];
-    const modelNames = models.map(m => String(m.name || m.model || '').trim()).filter(Boolean);
+    const modelNames = models
+      .map(m => String(m.name || m.model || '').trim())
+      .filter(Boolean)
+      .map(normalizeOllamaModel);
     return {
       ok: true,
       configured: true,

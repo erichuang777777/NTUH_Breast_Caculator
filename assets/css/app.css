@@ -718,6 +718,50 @@ body.mobile-device-shell .ws-context-pill-row {
   }
 }
 
+@media (max-width: 899px){
+  body.device-preview-desktop.modal-dashboard-mode .container {
+    height: calc(100vh - 50px);
+    overflow: hidden;
+  }
+  body.device-preview-desktop.modal-dashboard-mode:not(.modal-dashboard-open) .dept-page.active {
+    display: none !important;
+  }
+  body.device-preview-desktop.modal-dashboard-mode .modal-dashboard-overview.patient-journey-dashboard,
+  body.device-preview-desktop.modal-dashboard-mode .modal-dashboard-overview.patient-journey-dashboard.agent-left,
+  body.device-preview-desktop.modal-dashboard-mode .modal-dashboard-overview.patient-journey-dashboard.agent-right,
+  body.device-preview-desktop.modal-dashboard-mode .modal-dashboard-overview.patient-journey-dashboard.agent-left.agent-collapsed,
+  body.device-preview-desktop.modal-dashboard-mode .modal-dashboard-overview.patient-journey-dashboard.agent-right.agent-collapsed {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    align-content: start;
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    padding: 10px;
+    margin: 0;
+    box-sizing: border-box;
+  }
+  body.device-preview-desktop.modal-dashboard-mode .modal-dashboard-main,
+  body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel {
+    grid-column: 1;
+  }
+  body.device-preview-desktop.modal-dashboard-mode .modal-dashboard-main {
+    grid-row: 1;
+    height: auto;
+    min-height: 0;
+  }
+  body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel {
+    grid-row: 2;
+    position: static;
+    height: min(58vh, 620px);
+    min-height: 380px;
+    max-height: min(58vh, 620px);
+    overflow: hidden;
+  }
+}
+
 .dashboard-controls {
   display: none;
   flex: 0 0 100%;
@@ -4274,6 +4318,7 @@ body.modal-dashboard-mode .patient-desktop-checklist .patient-center-check-actio
 }
 .patient-center-recorder { display: grid; gap: .55rem; }
 .patient-center-recording-status { border: 1px solid #fed7aa; border-radius: var(--r-sm); background: #fff7ed; color: #9a3412; font-size: .82rem; font-weight: 750; padding: .55rem .65rem; }
+.patient-center-recorder .ws-btn.recording { background: #dc2626; border-color: #dc2626; color: white; }
 .patient-center-service-config { border: 1px solid var(--border); border-radius: var(--r-sm); background: var(--bg); padding: .65rem; display: grid; gap: .45rem; }
 .patient-center-service-config label { font-size: .72rem; font-weight: 800; color: var(--text-muted); }
 .patient-center-service-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: .45rem; align-items: center; }

@@ -2,6 +2,22 @@
   'use strict';
 
   const DEFAULT_CONFIG_KEY = 'nhi_dashboard_agent_api_config';
+  const CLOUD_MODEL = 'gpt-oss:120b';
+  const LOCAL_MODEL = 'gemma4:31B';
+
+  function defaultModel(locationLike){
+    const loc = locationLike || global.location || {};
+    const host = loc.hostname || '';
+    return (host === '127.0.0.1' || host === 'localhost') ? LOCAL_MODEL : CLOUD_MODEL;
+  }
+
+  function normalizeModel(value, locationLike){
+    const raw = String(value || '').trim();
+    if(!raw) return defaultModel(locationLike);
+    if(raw.toLowerCase() === 'gemma4:31b-cloud' || raw.toLowerCase() === 'gemma4:31b') return LOCAL_MODEL;
+    if(raw.toLowerCase() === 'gptoss120b') return CLOUD_MODEL;
+    return raw;
+  }
 
   function defaultConfig(locationLike){
     const loc = locationLike || global.location || {};
@@ -12,7 +28,7 @@
     return {
       enabled: hasHttpApi,
       endpoint: hasHttpApi ? '/api/agent' : '',
-      model: '',
+      model: defaultModel(loc),
       headers: hasHttpApi ? { 'x-client-app': isLocal ? 'oncobreast-local-ollama-demo' : 'oncobreast-copilot' } : {}
     };
   }
@@ -33,7 +49,7 @@
       return {
         enabled: !!saved.enabled,
         endpoint,
-        model: String(saved.model || fallback.model || '').trim(),
+        model: normalizeModel(saved.model || fallback.model, loc),
         headers: saved.headers && typeof saved.headers === 'object' ? saved.headers : {}
       };
     } catch(e){
@@ -49,7 +65,7 @@
     const cfg = {
       enabled: !!(config && config.enabled),
       endpoint: String((config && config.endpoint) || '').trim(),
-      model: String((config && config.model) || '').trim(),
+      model: normalizeModel((config && config.model) || '', opts.location || global.location),
       headers: config && config.headers && typeof config.headers === 'object' ? config.headers : {}
     };
     try {

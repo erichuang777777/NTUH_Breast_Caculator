@@ -131,10 +131,10 @@ def check_off_specialty(drugs, rules_by_drug) -> list[Issue]:
         ]
         if hits and not any(term in blob for term in BREAST_TERMS):
             issues.append(Issue(
-                "error",
+                "warning",
                 "off_specialty_breast_row",
                 f"drug:{drug['id']}",
-                f"{drug['generic_name']} appears to be non-breast data in oncology_breast",
+                f"{drug['generic_name']} has non-breast wording in oncology_breast; review if this is supportive/adjuvant data or a misplaced row",
                 ", ".join(hits),
             ))
     return issues

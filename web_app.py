@@ -3901,11 +3901,13 @@ class Handler(BaseHTTPRequestHandler):
             models = raw.get("models") if isinstance(raw, dict) else []
             if not isinstance(models, list):
                 models = []
-            model_names = [
-                str((m or {}).get("name") or (m or {}).get("model") or "")
-                for m in models
-                if isinstance(m, dict)
-            ]
+            model_names = []
+            for m in models:
+                if not isinstance(m, dict):
+                    continue
+                raw_model = str((m or {}).get("name") or (m or {}).get("model") or "").strip()
+                if raw_model:
+                    model_names.append(_normalize_ollama_model(raw_model))
             self._json(200, {
                 "ok": True,
                 "configured": True,

@@ -9,7 +9,7 @@
 <title>Oncobreast copilot</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/app.css?v=20260609e">
+<link rel="stylesheet" href="assets/css/app.css?v=20260609f">
 <link rel="stylesheet" href="assets/css/ajcc-mobile.css?v=20260519a">
 </head>
 <body>
@@ -1175,27 +1175,13 @@
           <div class="journey-list" id="patientCenterAdminHints"></div>
         </div>
         <div class="journey-panel" style="margin-top:1rem">
-          <h3>門診錄音與 AI 摘要</h3>
+          <h3>門診錄音</h3>
           <div class="patient-center-recorder">
             <div id="patientCenterRecordingStatus" class="patient-center-recording-status">尚未錄音</div>
-            <div class="patient-center-service-config">
-              <label for="patientCenterRecordingEndpoint">轉錄服務 API Base URL</label>
-              <div class="patient-center-service-row">
-                <input id="patientCenterRecordingEndpoint" type="url" placeholder="例如：http://localhost:8787/api">
-                <button class="ws-btn" type="button" onclick="savePatientCenterRecordingServiceConfig()">儲存</button>
-                <button class="ws-btn" type="button" onclick="testPatientCenterRecordingService()">測試</button>
-              </div>
-              <div id="patientCenterRecordingServiceStatus" class="patient-center-service-status">尚未設定轉錄服務；可先使用本機錄音下載。</div>
-            </div>
             <div class="journey-actions">
-              <button class="ws-btn ws-btn-primary" onclick="startPatientCenterRecording()">開始錄音</button>
-              <button class="ws-btn" onclick="stopPatientCenterRecording()">停止</button>
-              <button class="ws-btn" onclick="downloadPatientCenterRecording()">下載音檔</button>
-              <button class="ws-btn" onclick="uploadPatientCenterRecording()">上傳到轉錄服務</button>
-              <button class="ws-btn" onclick="processPatientCenterRecording()">產生摘要 / SOAP / Plan</button>
+              <button id="patientCenterRecordingToggle" class="ws-btn ws-btn-primary" onclick="togglePatientCenterRecording()">開始錄音</button>
             </div>
             <div class="patient-center-result" id="patientCenterRecordingResult" hidden></div>
-            <div class="journey-note">錄音前需取得病人與家屬同意。此頁只負責錄音、上傳與顯示結果；音檔儲存、轉錄、SOAP 與 Plan 摘要由你設定的院內或本地服務處理。</div>
           </div>
         </div>
         <div class="journey-panel" style="margin-top:1rem">
@@ -2053,13 +2039,13 @@ const data = await res.json();</code></pre>
 <script src="assets/js/app-config.js?v=20260519a"></script>
 <script src="assets/js/modules/patient-context-adapter.js?v=20260606a"></script>
 <script src="assets/js/modules/disease-module-loader.js?v=20260606a"></script>
-<script src="assets/js/modules/agent-adapter.js?v=20260609a"></script>
+<script src="assets/js/modules/agent-adapter.js?v=20260609b"></script>
 <script src="assets/js/modules/agent-panel-state.js?v=20260606b"></script>
 <script src="assets/js/modules/recording-service-client.js?v=20260608a"></script>
 <script src="assets/js/modules/patient-inform-sheet.js?v=20260609a"></script>
 <script src="assets/js/modules/benchmark-loader.js?v=20260606a"></script>
 <script src="assets/js/modules/benchmark-browser.js?v=20260606a"></script>
-<script src="assets/js/legacy-app.js?v=20260609e"></script>
+<script src="assets/js/legacy-app.js?v=20260609f"></script>
 
 <!-- AJCC prognostic lookup table: pre-computed breast prognostic stage entries -->
 <!-- Source: breast_cancer_tools/data/ajcc_staging_9_reference_lookup.json (Taiwan VGH reference) -->

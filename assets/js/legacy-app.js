@@ -1548,7 +1548,7 @@ function dashboardWidgetCardMeta(widget){
         ihc4Page: { icon:'🧬', title:'IHC4', metric:'IHC recurrence', desc:'ER、PR、HER2、Ki-67 連動 Workspace 的 IHC4 復發風險分數' },
         cts5Page: { icon:'📊', title:'CTS5', metric:'Late DRR', desc:'HR+/HER2- 完成 5 年內分泌治療後的晚期遠端復發風險' },
         pepiPage: { icon:'🧫', title:'PEPI', metric:'Post-NET', desc:'術前內分泌治療後，以病理反應與 Ki-67 估算復發風險' },
-        journeyPage: { icon:'📋', title:'診間 Copilot', metric:'摘要 / 說明 / 錄音', desc:'病人整合摘要、Tumor Board 輸出、病人說明單與門診錄音工作流' }
+        journeyPage: { icon:'📋', title:'診間 Copilot', metric:'摘要 / 說明 / 錄音', desc:'病人整合摘要、Tumor Board 輸出、病人說明與門診錄音' }
     };
     return meta[widget.id] || { icon:'□', title:widget.label, metric:'工具', desc:'' };
 }
@@ -2220,11 +2220,9 @@ function dashboardRecordingToolCard(){
     const hasEncounter = !!_patientCenterEncounterId;
     const status = recording ? 'green' : (hasAudio || hasEncounter ? 'green' : 'yellow');
     const statusText = recording ? '錄音中' : (hasEncounter ? '已建立 encounter' : (hasAudio ? '已錄音' : '未錄音'));
-    const service = getPatientCenterRecordingServiceConfig();
     const lines = [
         `<span class="modal-dashboard-line"><b>狀態</b><span>${esc(statusText)}</span></span>`,
-        `<span class="modal-dashboard-line"><b>轉錄服務</b><span>${esc(service.enabled && service.baseUrl ? '已設定' : '未設定')}</span></span>`,
-        `<span class="modal-dashboard-line"><b>輸出</b><span>摘要 / SOAP / Plan</span></span>`
+        `<span class="modal-dashboard-line"><b>重點</b><span>${esc(_patientCenterLastServiceResult ? '已產生' : '待錄音後產生')}</span></span>`
     ].join('');
     return `<button type="button" class="modal-dashboard-card patient-tool-card card-recordingPage binding-optional" style="--tool-span:1" onclick="showPatientCenter()">
         <span class="modal-dashboard-card-head">
@@ -2287,7 +2285,7 @@ function dashboardPhaseFocus(ctx){
         },
         followup: {
             group:'workflow', label:'追蹤', title:'優先整理門診紀錄',
-            detail:'摘要、錄音、SOAP/Plan 與 Tumor Board 輸出排在前面。',
+            detail:'摘要、病人說明與門診錄音排在前面。',
             actions:['門診錄音','病歷摘要','Agent']
         }
     };
@@ -2972,6 +2970,8 @@ const DASHBOARD_AGENT_API_CONFIG_KEY = 'nhi_dashboard_agent_api_config';
 const DASHBOARD_AGENT_HISTORY_KEY = 'nhi_dashboard_agent_history_v1';
 const DASHBOARD_AGENT_CONTEXT_LIMIT = 8192;
 const DASHBOARD_AGENT_MODEL_OPTIONS = ['gpt-oss:120b', 'gemma4:31B'];
+const DASHBOARD_AGENT_CLOUD_MODEL = 'gpt-oss:120b';
+const DASHBOARD_AGENT_LOCAL_MODEL = 'gemma4:31B';
 let _dashboardAgentStatus = { state:'checking', label:'檢查中', detail:'正在檢查 Agent API 連線' };
 let _dashboardAgentStatusCheckedAt = 0;
 let _dashboardAgentSpeechRecognition = null;
@@ -2982,7 +2982,15 @@ function dashboardAgentDefaultApiConfig(){
     const host = (location && location.hostname) ? location.hostname : '';
     const hasHttpApi = protocol === 'http:' || protocol === 'https:';
     const isLocal = host === '127.0.0.1' || host === 'localhost';
-    return { enabled: hasHttpApi, endpoint: hasHttpApi ? '/api/agent' : '', model:'', headers: hasHttpApi ? { 'x-client-app': isLocal ? 'oncobreast-local-ollama-demo' : 'oncobreast-copilot' } : {} };
+    return { enabled: hasHttpApi, endpoint: hasHttpApi ? '/api/agent' : '', model:dashboardAgentDefaultModel(), headers: hasHttpApi ? { 'x-client-app': isLocal ? 'oncobreast-local-ollama-demo' : 'oncobreast-copilot' } : {} };
+}
+function dashboardAgentDefaultModel(){
+    try {
+        const host = (location && location.hostname) ? location.hostname : '';
+        return (host === '127.0.0.1' || host === 'localhost') ? DASHBOARD_AGENT_LOCAL_MODEL : DASHBOARD_AGENT_CLOUD_MODEL;
+    } catch(e){
+        return DASHBOARD_AGENT_CLOUD_MODEL;
+    }
 }
 function getDashboardAgentPosition(){
     try {
@@ -3041,7 +3049,7 @@ function getDashboardAgentApiConfig(){
     }
 }
 function setDashboardAgentApiConfig(endpoint, enabled=true, headers={}, model=''){
-    const cfg = { enabled: !!enabled, endpoint: String(endpoint || '').trim(), model: dashboardAgentNormalizeModel(model), headers: headers || {} };
+    const cfg = { enabled: !!enabled, endpoint: String(endpoint || '').trim(), model: dashboardAgentNormalizeModel(model || dashboardAgentDefaultModel()), headers: headers || {} };
     if(window.OncoBreastAgentAdapter){
         return window.OncoBreastAgentAdapter.writeConfig(cfg, {
             storageKey: DASHBOARD_AGENT_API_CONFIG_KEY,
@@ -3053,11 +3061,11 @@ function setDashboardAgentApiConfig(endpoint, enabled=true, headers={}, model=''
 }
 function dashboardAgentModelValue(){
     const cfg = getDashboardAgentApiConfig();
-    return dashboardAgentNormalizeModel(cfg.model || '');
+    return dashboardAgentNormalizeModel(cfg.model || dashboardAgentDefaultModel());
 }
 function dashboardAgentNormalizeModel(value){
     const raw = String(value || '').trim();
-    if(!raw) return '';
+    if(!raw) return dashboardAgentDefaultModel();
     if(raw.toLowerCase() === 'gemma4:31b-cloud') return 'gemma4:31B';
     if(raw.toLowerCase() === 'gemma4:31b') return 'gemma4:31B';
     if(raw.toLowerCase() === 'gptoss120b') return 'gpt-oss:120b';
@@ -3263,12 +3271,10 @@ async function dashboardAgentRefreshStatus(force=false){
             const sourceText = isLocal ? '本機 Ollama 已連線' : 'Ollama Cloud 已連線';
             const modelText = data.model ? `${sourceText}；模型：${data.model}` : sourceText;
             const checkedModels = Number(data.model_count || 0) > 0;
-            if(data.model_available === false && checkedModels){
-                dashboardAgentSetStatus('warn', isLocal ? 'Local 模型?' : 'Cloud 模型?', `${modelText}；但狀態檢查沒有在可用模型清單看到這個 model`);
-            } else {
-                const detail = data.model_available === null ? `${modelText}；模型清單未提供，送出訊息時會以此模型嘗試呼叫` : modelText;
-                dashboardAgentSetStatus('ok', runtimeLabel, detail);
-            }
+            const detail = data.model_available === false && checkedModels
+                ? `${modelText}；模型清單未列出此名稱，但連線正常，送出訊息時會以此模型嘗試呼叫`
+                : (data.model_available === null ? `${modelText}；模型清單未提供，送出訊息時會以此模型嘗試呼叫` : modelText);
+            dashboardAgentSetStatus('ok', runtimeLabel, detail);
         } else if(data.status === 'missing_key' || !data.configured){
             dashboardAgentSetStatus('warn', '未設 Key', data.message || 'Netlify 尚未設定 OLLAMA_API_KEY');
         } else {
@@ -3497,9 +3503,9 @@ function renderDashboardAgentPanel(){
         <div class="dashboard-agent-head">
             <div class="dashboard-agent-title">
                 <span>AI Agent ${dashboardAgentStatusHtml()}</span>
-                <label class="dashboard-agent-model" title="留空使用伺服器預設 OLLAMA_MODEL">
+                <label class="dashboard-agent-model" title="預設模型會依環境自動選擇；localhost 使用 gemma4:31B，雲端使用 gpt-oss:120b">
                     <span>Model</span>
-                    <input id="dashboardAgentModelInput" list="dashboardAgentModelList" value="${esc(agentModel)}" placeholder="server default" autocomplete="off" onchange="dashboardAgentSetModel(this.value)" onkeydown="if(event.key==='Enter'){event.preventDefault();dashboardAgentSetModel(this.value);this.blur();}">
+                    <input id="dashboardAgentModelInput" list="dashboardAgentModelList" value="${esc(agentModel)}" placeholder="${esc(dashboardAgentDefaultModel())}" autocomplete="off" onchange="dashboardAgentSetModel(this.value)" onkeydown="if(event.key==='Enter'){event.preventDefault();dashboardAgentSetModel(this.value);this.blur();}">
                     <datalist id="dashboardAgentModelList">
                         <option value="gpt-oss:120b"></option>
                         <option value="gemma4:31B"></option>
@@ -7326,6 +7332,15 @@ let _patientCenterLastServiceResult = null;
 function updatePatientCenterRecordingStatus(text){
     const el = document.getElementById('patientCenterRecordingStatus');
     if(el) el.textContent = text;
+    updatePatientCenterRecordingUi();
+}
+function updatePatientCenterRecordingUi(){
+    const btn = document.getElementById('patientCenterRecordingToggle');
+    if(!btn) return;
+    const recording = _patientCenterRecorder && _patientCenterRecorder.state === 'recording';
+    btn.textContent = recording ? '停止錄音' : '開始錄音';
+    btn.classList.toggle('recording', !!recording);
+    btn.setAttribute('aria-pressed', recording ? 'true' : 'false');
 }
 function patientCenterRecordingServiceDefaultConfig(){
     if(window.OncoBreastRecordingServiceClient) return window.OncoBreastRecordingServiceClient.defaultConfig();
@@ -7377,6 +7392,10 @@ function updatePatientCenterRecordingServiceUi(){
         }
     }
 }
+function togglePatientCenterRecording(){
+    if(_patientCenterRecorder && _patientCenterRecorder.state === 'recording') stopPatientCenterRecording();
+    else startPatientCenterRecording();
+}
 function savePatientCenterRecordingServiceConfig(){
     const input = document.getElementById('patientCenterRecordingEndpoint');
     const baseUrl = input ? input.value : '';
@@ -7426,7 +7445,6 @@ async function startPatientCenterRecording(){
         alert('此瀏覽器不支援本機錄音。');
         return;
     }
-    if(!confirm('開始錄音前，請確認已取得病人與家屬同意。音檔會先暫存在本機瀏覽器；只有按下上傳時才會送到你設定的轉錄服務。')) return;
     let stream = null;
     try {
         stream = await navigator.mediaDevices.getUserMedia({ audio:true });
@@ -7434,6 +7452,11 @@ async function startPatientCenterRecording(){
         _patientCenterRecordingBlob = null;
         _patientCenterLastServiceResult = null;
         _patientCenterEncounterId = '';
+        const resultEl = document.getElementById('patientCenterRecordingResult');
+        if(resultEl){
+            resultEl.hidden = true;
+            resultEl.innerHTML = '';
+        }
         updatePatientCenterRecordingServiceUi();
         const supportedMime = MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ? 'audio/webm;codecs=opus' : '';
         _patientCenterRecordingMime = supportedMime || 'audio/webm';
@@ -7445,10 +7468,11 @@ async function startPatientCenterRecording(){
             _patientCenterRecordingMime = _patientCenterRecorder.mimeType || _patientCenterRecordingMime || 'audio/webm';
             _patientCenterRecordingBlob = new Blob(_patientCenterRecordingChunks, { type:_patientCenterRecordingMime });
             stream.getTracks().forEach(track => track.stop());
-            updatePatientCenterRecordingStatus(`錄音完成，可下載或上傳到轉錄服務（${Math.round(_patientCenterRecordingBlob.size / 1024)} KB）。`);
+            updatePatientCenterRecordingStatus('錄音完成，正在整理重點。');
+            patientCenterAutoProcessRecording();
         };
         _patientCenterRecorder.start();
-        updatePatientCenterRecordingStatus('錄音中。請在說明結束後按「停止」。');
+        updatePatientCenterRecordingStatus('錄音中');
     } catch(err){
         if(stream) stream.getTracks().forEach(track => track.stop());
         updatePatientCenterRecordingStatus('錄音啟動失敗。');
@@ -7457,9 +7481,10 @@ async function startPatientCenterRecording(){
 }
 function stopPatientCenterRecording(){
     if(_patientCenterRecorder && _patientCenterRecorder.state === 'recording'){
+        updatePatientCenterRecordingStatus('停止中');
         _patientCenterRecorder.stop();
     } else {
-        updatePatientCenterRecordingStatus('目前沒有進行中的錄音。');
+        updatePatientCenterRecordingStatus('尚未錄音');
     }
 }
 function downloadPatientCenterRecording(){
@@ -7483,10 +7508,8 @@ function renderPatientCenterRecordingResult(data){
     if(!el) return;
     el.hidden = false;
     const summary = result.summary || {};
-    const soap = result.soap || result.soap_note || '';
     const plan = result.plan || (summary && summary.plan) || '';
-    const transcript = result.transcript || '';
-    const status = result.status || 'received';
+    const keyPoints = result.key_points || result.highlights || summary.key_points || summary.highlights || summary.patient_summary || summary.patient || summary;
     const hasValue = value => {
         if(!value) return false;
         if(Array.isArray(value)) return value.length > 0;
@@ -7498,15 +7521,13 @@ function renderPatientCenterRecordingResult(data){
         const text = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
         return `<section><h4>${_journeyEsc(title)}</h4><pre>${_journeyEsc(text)}</pre></section>`;
     };
+    const content = `${block('Plan', plan)}${block('重點', keyPoints)}` ||
+        '<section><pre>重點整理中</pre></section>';
     el.innerHTML = `
         <div class="patient-center-result-head">
-          <b>轉錄服務結果</b>
-          <span>${_journeyEsc(status)}${_patientCenterEncounterId ? `｜${_journeyEsc(_patientCenterEncounterId)}` : ''}</span>
+          <b>錄後重點</b>
         </div>
-        ${block('Plan draft', plan)}
-        ${block('SOAP draft', soap)}
-        ${block('病人摘要', summary.patient_summary || summary.patient || summary)}
-        ${block('逐字稿', transcript)}
+        ${content}
     `;
 }
 async function patientCenterEnsureEncounter(cfg){
@@ -7524,22 +7545,22 @@ async function patientCenterEnsureEncounter(cfg){
     updatePatientCenterRecordingServiceUi();
     return _patientCenterEncounterId;
 }
-async function uploadPatientCenterRecording(){
+async function uploadPatientCenterRecording(options={}){
+    const silent = !!(options && options.silent);
     if(_patientCenterRecorder && _patientCenterRecorder.state === 'recording'){
-        alert('請先停止錄音，再上傳。');
+        if(!silent) alert('請先停止錄音，再上傳。');
         return;
     }
     if(!_patientCenterRecordingBlob){
-        alert('尚無錄音可上傳。');
+        if(!silent) alert('尚無錄音可上傳。');
         return;
     }
     const cfg = getPatientCenterRecordingServiceConfig();
     if(!cfg.enabled || !cfg.baseUrl){
-        alert('請先設定轉錄服務 API Base URL。');
+        if(!silent) alert('請先設定轉錄服務 API Base URL。');
         return;
     }
-    if(!confirm('即將把錄音上傳到你設定的轉錄服務。請再次確認已取得同意，且該服務可處理 PHI。')) return;
-    updatePatientCenterRecordingStatus('正在建立 encounter 並上傳音檔...');
+    updatePatientCenterRecordingStatus('正在上傳錄音');
     try {
         const encounterId = await patientCenterEnsureEncounter(cfg);
         const data = await window.OncoBreastRecordingServiceClient.uploadAudio(cfg, encounterId, _patientCenterRecordingBlob, {
@@ -7549,41 +7570,58 @@ async function uploadPatientCenterRecording(){
             patient_context_included: true
         });
         renderPatientCenterRecordingResult(data);
-        updatePatientCenterRecordingStatus(`音檔已上傳。Encounter ${encounterId} 可開始轉錄/摘要。`);
+        updatePatientCenterRecordingStatus('錄音已上傳');
+        return data;
     } catch(err){
         updatePatientCenterRecordingStatus('音檔上傳失敗。');
-        alert(`上傳失敗：${err.message || err}`);
+        if(!silent) alert(`上傳失敗：${err.message || err}`);
     }
 }
-async function processPatientCenterRecording(){
+async function processPatientCenterRecording(options={}){
+    const silent = !!(options && options.silent);
     const cfg = getPatientCenterRecordingServiceConfig();
     if(!cfg.enabled || !cfg.baseUrl){
-        alert('請先設定轉錄服務 API Base URL。');
+        if(!silent) alert('請先設定轉錄服務 API Base URL。');
         return;
     }
     if(!_patientCenterEncounterId && _patientCenterRecordingBlob){
-        await uploadPatientCenterRecording();
+        await uploadPatientCenterRecording({ silent });
         if(!_patientCenterEncounterId) return;
     }
     if(!_patientCenterEncounterId){
-        alert('尚未建立 encounter。請先錄音並上傳。');
+        if(!silent) alert('尚未建立 encounter。請先錄音並上傳。');
         return;
     }
-    updatePatientCenterRecordingStatus('正在要求轉錄服務產生摘要 / SOAP / Plan...');
+    updatePatientCenterRecordingStatus('正在產生重點');
     try {
         const payload = {
-            outputs: ['transcript', 'patient_summary', 'soap', 'plan'],
+            outputs: ['transcript', 'key_points', 'plan'],
             patient_context: _patient || {},
             derived: patientCenterDerivedPayload(),
             plan_requires_physician_confirmation: true
         };
         const data = await window.OncoBreastRecordingServiceClient.processEncounter(cfg, _patientCenterEncounterId, payload);
         renderPatientCenterRecordingResult(data);
-        updatePatientCenterRecordingStatus(`已送出處理要求：${data.status || 'processing'}。`);
+        updatePatientCenterRecordingStatus('已送出重點整理');
         if((data.status || '').toLowerCase() !== 'done') patientCenterPollEncounter(cfg, _patientCenterEncounterId);
+        return data;
     } catch(err){
-        updatePatientCenterRecordingStatus('轉錄/摘要處理失敗。');
-        alert(`處理失敗：${err.message || err}`);
+        updatePatientCenterRecordingStatus('重點整理失敗。');
+        if(!silent) alert(`處理失敗：${err.message || err}`);
+    }
+}
+async function patientCenterAutoProcessRecording(){
+    const cfg = getPatientCenterRecordingServiceConfig();
+    if(!cfg.enabled || !cfg.baseUrl || !window.OncoBreastRecordingServiceClient){
+        updatePatientCenterRecordingStatus('錄音完成');
+        return;
+    }
+    try {
+        await uploadPatientCenterRecording({ silent:true });
+        if(_patientCenterEncounterId) await processPatientCenterRecording({ silent:true });
+    } catch(e){
+        console.warn('Recording auto-process failed', e);
+        updatePatientCenterRecordingStatus('錄音完成');
     }
 }
 async function patientCenterPollEncounter(cfg, encounterId){
@@ -7593,7 +7631,7 @@ async function patientCenterPollEncounter(cfg, encounterId){
             const data = await window.OncoBreastRecordingServiceClient.getEncounter(cfg, encounterId);
             renderPatientCenterRecordingResult(data);
             const status = String(data.status || '').toLowerCase();
-            updatePatientCenterRecordingStatus(`轉錄服務狀態：${data.status || 'processing'}。`);
+            updatePatientCenterRecordingStatus(status === 'done' ? '重點已完成' : '正在產生重點');
             if(status === 'done' || status === 'failed' || status === 'error') return;
         } catch(e){
             console.warn('Recording service polling failed', e);
