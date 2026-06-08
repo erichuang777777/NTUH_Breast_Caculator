@@ -42,7 +42,8 @@
 
   function gradeLabel(g){
     const s = String(g || '').trim().toLowerCase();
-    return ({'1':'I','2':'II','3':'III',i:'I',ii:'II',iii:'III'}[s] || '');
+    const roman = ({'1':'I','2':'II','3':'III',i:'I',ii:'II',iii:'III'}[s] || '');
+    return roman ? `Gr${roman}` : '';
   }
 
   function sizeCm(size){
@@ -101,6 +102,39 @@
     </div>`;
   }
 
+  function binaryMarkerBar(label, status, detail){
+    const normalized = String(status || '').trim().toLowerCase();
+    const positive = ['+','pos','positive','3+'].includes(normalized);
+    const negative = ['-','neg','negative','0','1+','low'].includes(normalized);
+    const labelText = positive ? '陽性' : (negative ? '陰性' : '');
+    const detailText = detail ? `｜${detail}` : '';
+    const displayText = labelText ? `${labelText}${detailText}` : detail;
+    return `<div class="bio-row binary ${positive ? 'positive' : (negative ? 'negative' : '')}">
+      <div class="bio-head"><b>${esc(label)}</b><span>${display(displayText, '待補')}</span></div>
+      <div class="binary-track"><i class="neg">陰性</i><i class="pos">陽性</i><b class="marker"></b></div>
+    </div>`;
+  }
+
+  function her2BinaryStatus(p){
+    p = p || {};
+    if(p.her2 === '+') return '+';
+    if(p.her2 === '-' || p.her2 === 'low') return '-';
+    if(p.her2_fish === '+') return '+';
+    if(p.her2_fish === '-') return '-';
+    const ihc = String(p.her2_ihc || '').trim();
+    if(ihc === '3+' || ihc === '3') return '+';
+    if(['0','1','1+'].includes(ihc)) return '-';
+    return '';
+  }
+
+  function her2Detail(p){
+    p = p || {};
+    const parts = [];
+    if(p.her2_ihc) parts.push(`IHC ${p.her2_ihc}`);
+    if(p.her2_fish) parts.push(`FISH ${p.her2_fish === '+' ? 'positive' : (p.her2_fish === '-' ? 'negative' : p.her2_fish)}`);
+    return parts.join(' / ');
+  }
+
   function gradeMeter(grade){
     const g = Number(String(grade || '').replace(/[^\d]/g, ''));
     return `<div class="grade-meter">${[1,2,3].map(n => `<span class="${g === n ? 'active' : ''}">G${n}</span>`).join('')}</div>`;
@@ -153,8 +187,8 @@
     const predict = payload.predict || {};
     const today = payload.date || new Date().toLocaleDateString('zh-TW');
     const subtype = derived.subtype || '';
-    const her2 = p.her2_ihc || (p.her2 === '+' ? 'positive' : (p.her2 === '-' ? 'negative' : p.her2 || ''));
-    const fish = p.her2_fish ? `FISH ${p.her2_fish === '+' ? 'positive' : (p.her2_fish === '-' ? 'negative' : p.her2_fish)}` : '';
+    const her2Status = her2BinaryStatus(p);
+    const her2Text = her2Detail(p);
     const chemoItems = regimen.selected ? [
       regimen.name,
       regimen.schedule,
@@ -188,9 +222,10 @@
         .section h2{margin:0 0 3mm;color:#0f766e;font-size:13px}
         .grid2{display:grid;grid-template-columns:1fr 1fr;gap:5mm}
         .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4mm}
-        .kpi{display:grid;gap:1mm}.kpi b{font-size:18px;color:#172033}.kpi span{font-size:9px;color:#64748b;font-weight:800;text-transform:uppercase}
+        .kpi{display:grid;grid-template-rows:8mm 4mm;align-items:end;gap:1mm}.kpi b{display:flex;align-items:flex-end;min-height:8mm;font-size:18px;line-height:1;color:#172033}.kpi span{font-size:9px;line-height:1;color:#64748b;font-weight:800;text-transform:uppercase}
         .stage-ladder{display:grid;grid-template-columns:repeat(4,1fr);gap:2mm;margin-top:2mm}.stage-step{height:10mm;border-radius:5mm;background:#e2e8f0;display:grid;place-items:center;font-weight:900;color:#64748b}.stage-step.active{background:#0f766e;color:#fff}
         .bio-row{margin-bottom:2.5mm}.bio-head{display:flex;justify-content:space-between;font-weight:900}.bio-head b{color:#334155}.bio-head span{color:#0f766e}.bio-track{height:5mm;background:#e2e8f0;border-radius:5mm;overflow:hidden}.bio-track i{display:block;height:100%;background:#0f766e;border-radius:5mm}.bio-row.hot .bio-track i{background:#be185d}
+        .binary-track{position:relative;display:grid;grid-template-columns:1fr 1fr;height:6mm;border-radius:999px;background:#e2e8f0;overflow:hidden;color:#64748b;font-size:8px;font-weight:900}.binary-track i{position:relative;z-index:2;display:grid;place-items:center;font-style:normal}.binary-track .marker{position:absolute;top:0;bottom:0;width:50%;border-radius:999px;background:#94a3b8;transition:left .15s ease}.bio-row.binary:not(.positive):not(.negative) .marker{display:none}.bio-row.binary.negative .marker{left:0;background:#64748b}.bio-row.binary.positive .marker{left:50%;background:#be185d}.bio-row.binary.negative .neg,.bio-row.binary.positive .pos{color:#fff}
         .grade-meter{display:grid;grid-template-columns:repeat(3,1fr);gap:2mm}.grade-meter span{border-radius:6px;background:#e2e8f0;text-align:center;padding:2mm 0;font-weight:900;color:#64748b}.grade-meter span.active{background:#f59e0b;color:#fff}
         .badge-line{display:flex;gap:2mm;flex-wrap:wrap;margin-top:2mm}.badge{border:1px solid #cbd5e1;border-radius:999px;padding:1.2mm 2.5mm;font-weight:900;color:#334155;background:#f8fafc}
         .predict-visual{display:grid;grid-template-columns:33mm 1fr;gap:5mm;align-items:center}.ring{width:28mm;height:28mm;border-radius:50%;background:conic-gradient(#0f766e var(--pct),#e2e8f0 0);display:grid;place-items:center}.ring span{width:20mm;height:20mm;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:13px;font-weight:900;color:#0f766e}.predict-main b{display:block;text-align:center;font-size:9px;margin-top:1mm}.benefit-track{height:6mm;background:#e2e8f0;border-radius:999px;overflow:hidden;margin:2mm 0}.benefit-track i{display:block;height:100%;background:#be185d}.predict-benefit span{color:#64748b;font-weight:800}.predict-benefit b{font-size:15px;color:#be185d}
@@ -218,7 +253,6 @@
 
         <section class="grid3">
           <div class="section">
-            <h2>Stage</h2>
             ${stageLadder(stage.anatomic)}
             <div class="badge-line"><span class="badge">${display(stage.tnm, 'TNM 待補')}</span><span class="badge">${stage.prognostic ? `預後 ${esc(stage.prognostic)}` : '預後待補'}</span></div>
           </div>
@@ -241,8 +275,8 @@
             <h2>受體 / 生物標記</h2>
             ${biomarkerBar('ER', p.er)}
             ${biomarkerBar('PR', p.pr)}
+            ${binaryMarkerBar('HER2', her2Status, her2Text)}
             ${biomarkerBar('Ki-67', p.ki67, {tone:'hot'})}
-            <div class="badge-line"><span class="badge">HER2 ${display(her2, '待補')}</span>${fish ? `<span class="badge">${esc(fish)}</span>` : ''}</div>
           </div>
           <div class="section">
             <h2>預計藥物治療</h2>
