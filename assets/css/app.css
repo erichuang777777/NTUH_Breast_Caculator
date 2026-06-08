@@ -1796,7 +1796,34 @@ body.mobile-device-shell .ws-context-pill-row {
     cursor: default;
   }
   .patient-tool-card.card-patientInform .modal-dashboard-summary {
+    grid-template-rows: repeat(3, minmax(0, auto));
+    gap: .18rem;
     min-height: 0;
+    max-height: 70px;
+    margin-top: .38rem;
+  }
+  .patient-tool-card.card-patientInform .modal-dashboard-line {
+    align-items: flex-start;
+    min-height: 0;
+    gap: .34rem;
+    font-size: .72rem;
+    line-height: 1.22;
+  }
+  .patient-tool-card.card-patientInform .modal-dashboard-line b {
+    flex: 0 0 2.4rem;
+    font-size: .62rem;
+    line-height: 1.22;
+    padding-top: .04rem;
+  }
+  .patient-tool-card.card-patientInform .modal-dashboard-line span {
+    display: -webkit-box;
+    overflow: hidden;
+    line-height: 1.22;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
+  .patient-tool-card.card-patientInform .modal-dashboard-line:first-child span {
+    -webkit-line-clamp: 2;
   }
   .patient-tool-card.card-patientInform .patient-desktop-care-actions {
     margin-top: .34rem;
