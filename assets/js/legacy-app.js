@@ -129,6 +129,7 @@ let breastDrugs=[], hemeDrugs=[];
 let activeFilters={};
 let compareList=[];
 let _pageSwitchTimer = null;
+let _breastFilterMode = 'manual';
 const SITE_LANGUAGE_KEY = 'onco_breast_site_language';
 const SITE_LANGUAGE_META = {
     zh: { html:'zh-TW', menu:'功能選單', sub:'Patient care, treatment support, and NHI reference' },
@@ -2326,6 +2327,7 @@ function dashboardBreastMatchesFromWorkspace(p){
 }
 function syncBreastFiltersFromWorkspace(){
     const p = typeof _patient !== 'undefined' ? _patient : {};
+    _breastFilterMode = 'patient';
     activeFilters = buildBreastFiltersFromWorkspace(p);
     document.querySelectorAll('#breastPage .filter-chip').forEach(chip => {
         chip.classList.toggle('active', activeFilters[chip.dataset.f] === chip.dataset.v);
@@ -2342,6 +2344,7 @@ function syncBreastFilterChips(){
     if(tnbc) tnbc.style.display = activeFilters.tnbc === 'true' ? 'inline-block' : 'none';
 }
 function patientContextFilterConflicts(){
+    if(_breastFilterMode !== 'patient') return [];
     const p = typeof _patient !== 'undefined' ? _patient : {};
     const expected = buildBreastFiltersFromWorkspace(p);
     const conflicts = [];
@@ -2386,6 +2389,7 @@ function updatePatientFilterStatus(message){
 }
 function applyPatientContextToFilters(){
     const p = typeof _patient !== 'undefined' ? _patient : {};
+    _breastFilterMode = 'patient';
     activeFilters = buildBreastFiltersFromWorkspace(p);
     const nodePositive = Number(p.nodes_pos || 0) > 0 || /^N[1-3]/i.test(String(p.cN || p.pN || ''));
     if(nodePositive) activeFilters.ln = 'true';
@@ -3743,10 +3747,10 @@ function initDashboardBreastPanel(){
     document.querySelectorAll('#breastPage .tab-content').forEach(c=>c.classList.remove('active'));
     document.getElementById('tabDrugs').classList.add('active');
     document.getElementById('tabDrugsContent').classList.add('active');
-    syncBreastFiltersFromWorkspace();
     const sync = () => {
-        syncBreastFiltersFromWorkspace();
+        syncBreastFilterChips();
         renderBreast(breastDrugs);
+        updatePatientFilterStatus(_breastFilterMode === 'patient' ? '已依 Patient Context 套用篩選。' : '');
     };
     if(!breastDrugs.length){
         breastDrugs = _STATIC_DRUGS.filter(d => d.specialty_id === 'oncology_breast');
@@ -10017,10 +10021,16 @@ function switchBreastTab(tab){
 }
 // ── Filters ──
 function toggleChip(el){
+    const wasPatientMode = _breastFilterMode === 'patient';
     const f=el.dataset.f, v=el.dataset.v;
     const wasActive=el.classList.contains('active');
+    _breastFilterMode = 'manual';
+    if(wasPatientMode){
+        activeFilters = {};
+        document.querySelectorAll('#breastPage .filter-chip').forEach(c=>c.classList.remove('active'));
+    }
     document.querySelectorAll(`.filter-chip[data-f="${f}"]`).forEach(c=>{if(c!==el)c.classList.remove('active');});
-    el.classList.toggle('active');
+    el.classList.toggle('active', !wasActive);
     if(!wasActive){activeFilters[f]=v}
     else{delete activeFilters[f]}
     // TNBC auto-detection
@@ -10034,7 +10044,7 @@ function toggleChip(el){
     }
     // Determine which page
     if(document.getElementById('breastPage').classList.contains('active'))filterBreast();
-    updatePatientFilterStatus('');
+    updatePatientFilterStatus(wasPatientMode ? '已切換為手動篩選，不再同步 Patient Context。' : '');
 }
 
 function parseBreastClinicalSearch(raw){
@@ -10144,6 +10154,7 @@ function filterBreast(){
 }
 function resetBreastFilters(){
     document.getElementById('breastSearch').value='';
+    _breastFilterMode = 'manual';
     activeFilters={};
     document.querySelectorAll('#breastPage .filter-chip').forEach(c=>c.classList.remove('active'));
     renderBreast(breastDrugs);
