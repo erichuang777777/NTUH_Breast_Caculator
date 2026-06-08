@@ -1664,6 +1664,21 @@ body.mobile-device-shell .ws-context-pill-row {
   .patient-context-pill.ok { border-color: #bbf7d0; background: #f0fdf4; color: #166534; }
   .patient-context-pill.warn { border-color: #fde68a; background: #fffbeb; color: #92400e; }
   .patient-context-pill.muted { color: #64748b; }
+  .patient-context-copy {
+    flex: 0 0 auto;
+    width: 30px;
+    height: 30px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    background: #fff;
+    color: #0f172a;
+    font-weight: 900;
+    cursor: pointer;
+  }
+  .patient-context-copy:hover {
+    border-color: #0f766e;
+    color: #0f766e;
+  }
   .patient-journey-panel {
     border: 1px solid #d8e3ee;
     border-radius: 8px;
@@ -3316,10 +3331,15 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
   min-height: 50px;
   padding: .24rem;
 }
+.ws-gene-section .ws-oncotype-field {
+  width: clamp(124px, 10vw, 150px);
+}
 .ws-gene-section .ws-field label {
   font-size: .66rem;
   letter-spacing: 0;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .ws-gene-section .ws-field input,
 .ws-gene-section .ws-field select {
@@ -3327,6 +3347,28 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
   padding-left: .32rem;
   padding-right: .32rem;
   font-size: .78rem;
+}
+.ws-gene-section .ws-gene-select-hidden {
+  display: none !important;
+}
+.ws-gene-chip-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .18rem;
+  width: 100%;
+}
+.ws-gene-chip-row .ws-qchip {
+  width: 100%;
+  min-width: 0;
+  padding: .36rem .12rem;
+  text-align: center;
+  font-size: .72rem;
+}
+.ws-breast-surgery-refine {
+  margin-top: .32rem;
+}
+.ws-breast-surgery-refine:not(.show) {
+  display: none;
 }
 .ws-post-tnm-toolbar {
   display: flex;
@@ -4660,6 +4702,11 @@ body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-gene-sec
   width: clamp(82px, 7vw, 112px);
   min-width: 82px;
   grid-template-rows: minmax(22px, auto) 30px;
+}
+body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-gene-section .ws-oncotype-field,
+#wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-gene-section .ws-oncotype-field {
+  width: clamp(124px, 10vw, 150px);
+  min-width: 124px;
 }
 body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-post-tnm-grid,
 #wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-post-tnm-grid {

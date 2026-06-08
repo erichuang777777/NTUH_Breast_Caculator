@@ -725,12 +725,12 @@
       <!-- Quick / Full mode tab switcher -->
       <div class="ws-tab-switcher">
         <div class="ws-tab-card active" id="wsTabQuick" onclick="setWsQuickMode('quick')">
-          <div class="ws-tab-title">📱 快速模式</div>
+          <div class="ws-tab-title">Clinical stage</div>
           <div class="ws-tab-sub">cT / cN / ER / PR / HER2 / Grade</div>
         </div>
         <div class="ws-tab-card" id="wsTabFull" onclick="setWsQuickMode('full')">
-          <div class="ws-tab-title">📋 完整模式</div>
-          <div class="ws-tab-sub">完整欄位・癌症登記格式</div>
+          <div class="ws-tab-title">Pathology stage</div>
+          <div class="ws-tab-sub">pT / pN / surgery / pathology</div>
         </div>
       </div>
 
@@ -958,12 +958,12 @@
           <div class="ws-field ws-quick-backed-field"><label>cT</label><select id="ws_cT" onchange="setPatientField('cT',this.value)"><option value="Tx">Tx</option><option value="Tis">Tis</option><option value="T0">T0</option><option value="T1mi">T1mi</option><option value="T1a">T1a</option><option value="T1b">T1b</option><option value="T1c">T1c</option><option value="T2">T2</option><option value="T3">T3</option><option value="T4">T4</option></select></div>
           <div class="ws-field ws-quick-backed-field"><label>cN</label><select id="ws_cN" onchange="setPatientField('cN',this.value)"><option value="Nx">Nx</option><option value="N0">N0</option><option value="N0(i-)">N0(i-)</option><option value="N0(i+)">N0(i+)</option><option value="N1mi">N1mi</option><option value="N1a">N1a</option><option value="N1b">N1b</option><option value="N1c">N1c</option><option value="N2a">N2a</option><option value="N2b">N2b</option><option value="N3a">N3a</option><option value="N3b">N3b</option><option value="N3c">N3c</option></select></div>
           <div class="ws-field ws-quick-backed-field"><label>cM</label><select id="ws_cM" onchange="setPatientField('cM',this.value)"><option value="">Mx</option><option value="M0">M0</option><option value="M1">M1</option></select></div>
-          <div class="ws-field"><label>BRCA</label><select id="ws_brca" onchange="setPatientField('brca',this.value)"><option value="">未檢驗</option><option value="wt">wild-type</option><option value="brca1">BRCA1+</option><option value="brca2">BRCA2+</option></select></div>
-          <div class="ws-field"><label>PD-L1</label><select id="ws_pdl1" onchange="setPatientField('pdl1',this.value)"><option value="">未檢驗</option><option value="+">陽性</option><option value="-">陰性</option></select></div>
-          <div class="ws-field"><label>TP53</label><select id="ws_tp53" onchange="setPatientField('tp53',this.value)"><option value="">未檢驗</option><option value="mut">mutation</option><option value="wt">wild-type</option></select></div>
-          <div class="ws-field"><label>ESR1</label><select id="ws_esr1" onchange="setPatientField('esr1',this.value)"><option value="">未檢驗</option><option value="mut">mutation</option><option value="wt">wild-type</option></select></div>
-          <div class="ws-field"><label>PIK3CA</label><select id="ws_pik3ca" onchange="setPatientField('pik3ca',this.value)"><option value="">未檢驗</option><option value="mut">mutation</option><option value="wt">wild-type</option></select></div>
-          <div class="ws-field"><label>RS</label><input type="number" id="ws_oncotype_rs" min="0" max="100" step="1" placeholder="0-100" oninput="setPatientField('oncotype_rs',this.value)"></div>
+          <div class="ws-field ws-gene-chip-field"><label>BRCA</label><select id="ws_brca" class="ws-gene-select-hidden" onchange="setPatientField('brca',this.value)"><option value="">未檢測</option><option value="mut">BRCA+</option><option value="wt">wild-type</option><option value="brca1">BRCA1+</option><option value="brca2">BRCA2+</option></select><div class="ws-gene-chip-row" id="wsGene_brca"><button type="button" class="ws-qchip" data-state="neg" onclick="setWsGeneField('brca','neg')" title="未檢測">-</button><button type="button" class="ws-qchip" data-state="pos" onclick="setWsGeneField('brca','pos')" title="BRCA positive">+</button><button type="button" class="ws-qchip" data-state="wt" onclick="setWsGeneField('brca','wt')" title="wild-type">WT</button></div></div>
+          <div class="ws-field ws-gene-chip-field"><label>PD-L1</label><select id="ws_pdl1" class="ws-gene-select-hidden" onchange="setPatientField('pdl1',this.value)"><option value="">未檢測</option><option value="+">陽性</option><option value="-">陰性</option></select><div class="ws-gene-chip-row" id="wsGene_pdl1"><button type="button" class="ws-qchip" data-state="neg" onclick="setWsGeneField('pdl1','neg')" title="未檢測">-</button><button type="button" class="ws-qchip" data-state="pos" onclick="setWsGeneField('pdl1','pos')" title="陽性">+</button><button type="button" class="ws-qchip" data-state="wt" onclick="setWsGeneField('pdl1','wt')" title="陰性 / 未達標">WT</button></div></div>
+          <div class="ws-field ws-gene-chip-field"><label>TP53</label><select id="ws_tp53" class="ws-gene-select-hidden" onchange="setPatientField('tp53',this.value)"><option value="">未檢測</option><option value="mut">mutation</option><option value="wt">wild-type</option></select><div class="ws-gene-chip-row" id="wsGene_tp53"><button type="button" class="ws-qchip" data-state="neg" onclick="setWsGeneField('tp53','neg')" title="未檢測">-</button><button type="button" class="ws-qchip" data-state="pos" onclick="setWsGeneField('tp53','pos')" title="mutation">+</button><button type="button" class="ws-qchip" data-state="wt" onclick="setWsGeneField('tp53','wt')" title="wild-type">WT</button></div></div>
+          <div class="ws-field ws-gene-chip-field"><label>ESR1</label><select id="ws_esr1" class="ws-gene-select-hidden" onchange="setPatientField('esr1',this.value)"><option value="">未檢測</option><option value="mut">mutation</option><option value="wt">wild-type</option></select><div class="ws-gene-chip-row" id="wsGene_esr1"><button type="button" class="ws-qchip" data-state="neg" onclick="setWsGeneField('esr1','neg')" title="未檢測">-</button><button type="button" class="ws-qchip" data-state="pos" onclick="setWsGeneField('esr1','pos')" title="mutation">+</button><button type="button" class="ws-qchip" data-state="wt" onclick="setWsGeneField('esr1','wt')" title="wild-type">WT</button></div></div>
+          <div class="ws-field ws-gene-chip-field"><label>PIK3CA</label><select id="ws_pik3ca" class="ws-gene-select-hidden" onchange="setPatientField('pik3ca',this.value)"><option value="">未檢測</option><option value="mut">mutation</option><option value="wt">wild-type</option></select><div class="ws-gene-chip-row" id="wsGene_pik3ca"><button type="button" class="ws-qchip" data-state="neg" onclick="setWsGeneField('pik3ca','neg')" title="未檢測">-</button><button type="button" class="ws-qchip" data-state="pos" onclick="setWsGeneField('pik3ca','pos')" title="mutation">+</button><button type="button" class="ws-qchip" data-state="wt" onclick="setWsGeneField('pik3ca','wt')" title="wild-type">WT</button></div></div>
+          <div class="ws-field ws-oncotype-field"><label>Oncotype RS score</label><input type="number" id="ws_oncotype_rs" min="0" max="100" step="1" placeholder="0-100" oninput="setPatientField('oncotype_rs',this.value)"></div>
           <div class="ws-field"><label>CIViC</label><input type="text" id="ws_civic_variant" placeholder="PIK3CA H1047R" oninput="setPatientField('civic_variant',this.value)"></div>
         </div>
       </div>
@@ -1033,6 +1033,9 @@
             <div class="ws-q-row2" id="wsPostBreastSurgeryChips">
               <button class="ws-qchip" data-value="BCS" onclick="setWsQuickSimpleField('breast_surgery','BCS')">BCS</button>
               <button class="ws-qchip" data-value="SM" onclick="setWsQuickSimpleField('breast_surgery','SM')">SM</button>
+            </div>
+            <div class="ws-q-refine ws-breast-surgery-refine" id="wsPostBreastSurgeryRefine">
+              <button type="button" class="ws-qchip" data-field="nipple_sparing" data-value="yes" onclick="toggleWsNippleSparing()">NS-</button>
             </div>
           </div>
           <div class="ws-post-aux-block">
@@ -1205,7 +1208,7 @@
           <div class="journey-list" id="journeyQuestions"></div>
           <div class="journey-actions">
             <button class="ws-btn ws-btn-primary" onclick="renderPatientJourney()">重新整理</button>
-            <button class="ws-btn" onclick="showWorkspace()">回 Workspace</button>
+            <button class="ws-btn" onclick="returnFromPatientCenter()">返回</button>
             <button class="ws-btn" onclick="patientCenterAskAgentDraft()">請 Agent 草擬說明</button>
           </div>
         </div>

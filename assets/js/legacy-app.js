@@ -952,7 +952,8 @@ const DASHBOARD_WIDGETS = [
     { id:'ihc4Page', flag:'calc_ihc4', label:'IHC4', desktopSpan:1, patientBinding:'preferred', x:20, y:1500, w:620, h:420, cx:20, cy:1260, cw:420, ch:320 },
     { id:'cts5Page', flag:'calc_cts5', label:'CTS5', desktopSpan:1, patientBinding:'preferred', x:660, y:1500, w:620, h:420, cx:460, cy:1260, cw:420, ch:320 },
     { id:'pepiPage', flag:'calc_pepi', label:'PEPI', desktopSpan:1, patientBinding:'preferred', x:1300, y:1500, w:620, h:420, cx:900, cy:1260, cw:420, ch:320 },
-    { id:'surgeryPage', flag:'surgery', label:'手術醫材', desktopSpan:1, patientBinding:'optional', x:20, y:1500, w:640, h:420, cx:20, cy:1260, cw:560, ch:320, defaultVisible:false }
+    { id:'surgeryPage', flag:'surgery', label:'手術醫材', desktopSpan:1, patientBinding:'optional', x:20, y:1500, w:640, h:420, cx:20, cy:1260, cw:560, ch:320, defaultVisible:false },
+    { id:'journeyPage', flag:'workspace', label:'診間 Copilot', desktopSpan:2, patientBinding:'required', x:660, y:1500, w:840, h:560, cx:460, cy:1260, cw:640, ch:420, defaultVisible:false, controlsHidden:true }
 ];
 const DASHBOARD_VISIBLE_KEY = 'nhi_dashboard_widgets_v1';
 const DASHBOARD_LAYOUT_KEY = 'nhi_dashboard_layout_v2';
@@ -1056,6 +1057,7 @@ function renderDashboardControls(){
     const visible = getDashboardVisible();
     const items = DASHBOARD_WIDGETS
         .filter(isDashboardWidgetAvailable)
+        .filter(w => !w.controlsHidden)
         .map(w => `<label class="dashboard-widget-toggle"><input type="checkbox" ${visible[w.id] !== false ? 'checked' : ''} onchange="setDashboardWidgetVisible('${w.id}',this.checked)"> ${w.label}</label>`)
         .join('');
     box.innerHTML = `<span class="dashboard-controls-title">Dashboard 模組</span>${items}
@@ -1514,7 +1516,8 @@ function dashboardWidgetCardMeta(widget){
         rcbPage: { icon:'🧾', title:'RCB', metric:'Residual disease', desc:'術前治療後殘餘癌負荷與 RCB class' },
         ihc4Page: { icon:'🧬', title:'IHC4', metric:'IHC recurrence', desc:'ER、PR、HER2、Ki-67 連動 Workspace 的 IHC4 復發風險分數' },
         cts5Page: { icon:'📊', title:'CTS5', metric:'Late DRR', desc:'HR+/HER2- 完成 5 年內分泌治療後的晚期遠端復發風險' },
-        pepiPage: { icon:'🧫', title:'PEPI', metric:'Post-NET', desc:'術前內分泌治療後，以病理反應與 Ki-67 估算復發風險' }
+        pepiPage: { icon:'🧫', title:'PEPI', metric:'Post-NET', desc:'術前內分泌治療後，以病理反應與 Ki-67 估算復發風險' },
+        journeyPage: { icon:'📋', title:'診間 Copilot', metric:'摘要 / 說明 / 錄音', desc:'病人整合摘要、Tumor Board 輸出、病人說明單與門診錄音工作流' }
     };
     return meta[widget.id] || { icon:'□', title:widget.label, metric:'工具', desc:'' };
 }
@@ -1855,6 +1858,7 @@ function dashboardGeneMutationText(p){
     const items = [];
     if(p.brca === 'brca1') items.push('BRCA1+');
     else if(p.brca === 'brca2') items.push('BRCA2+');
+    else if(isBrcaPositiveValue(p.brca)) items.push('BRCA+');
     else if(p.brca === 'wt') items.push('BRCA WT');
     if(p.tp53 === 'mut') items.push('TP53 mut');
     else if(p.tp53 === 'wt') items.push('TP53 WT');
@@ -2093,6 +2097,41 @@ function dashboardJourneyState(ctx){
 function dashboardContextPill(label, value, tone){
     const shown = dashboardHasValue(value) ? value : '待補';
     return `<span class="patient-context-pill ${tone || ''}"><b>${esc(label)}</b>${esc(shown)}</span>`;
+}
+function dashboardCompactContextParts(ctx){
+    ctx = ctx || dashboardPatientContext();
+    const stageMain = dashboardJoin([
+        ctx.stage && ctx.stage.T && ctx.stage.N && ctx.stage.M ? `${ctx.stage.T}${ctx.stage.N}${ctx.stage.M}` : '',
+        ctx.stage && ctx.stage.anatomic ? `解剖 ${ctx.stage.anatomic}` : '',
+        ctx.stage && ctx.stage.prognostic ? `預後 ${ctx.stage.prognostic}` : ''
+    ]);
+    const icdText = ctx.icd ? dashboardJoin([ctx.icd.subtitle, ctx.icd.ntuhNo ? `重卡 ${ctx.icd.ntuhNo}` : '', ctx.icd.code]) : '';
+    const geneText = dashboardGeneMutationText(ctx.p);
+    const responseText = dashboardPostNacResponse(ctx.p);
+    const cNText = (ctx.p && ctx.p.cN) || (ctx.stage && ctx.stage.N) || '';
+    const stageOverview = dashboardJoin([
+        stageMain,
+        ctx.p && ctx.p.size ? `Size ${ctx.p.size}mm` : '',
+        ctx.p && ctx.p.grade ? `G${ctx.p.grade}` : '',
+        ctx.p && ctx.p.ki67 ? `Ki-67 ${ctx.p.ki67}%` : ''
+    ]);
+    return { stageOverview, icdText, geneText, responseText, cNText };
+}
+function dashboardCompactContextSummaryText(){
+    const ctx = dashboardPatientContext();
+    const parts = dashboardCompactContextParts(ctx);
+    const lines = [
+        parts.stageOverview ? `分期：${parts.stageOverview}` : '',
+        `亞型：${ctx.subtype || '待補'}`,
+        parts.cNText ? `cN：${parts.cNText}` : '',
+        parts.responseText ? `Post-NAC：${parts.responseText}` : '',
+        `Gene：${parts.geneText || '待補'}`,
+        `重卡：${parts.icdText || '待補'}`
+    ].filter(Boolean);
+    return lines.join('\n');
+}
+function copyDashboardCompactContextSummary(){
+    copyTextToClipboard(dashboardCompactContextSummaryText(), '已複製 Patient Context 摘要。');
 }
 function dashboardOpenToolCard(widget, summary, extraClass){
     const m = dashboardWidgetCardMeta(widget);
@@ -3449,28 +3488,14 @@ function renderModalDashboardOverview(){
         .filter(w => w && isDashboardWidgetAvailable(w) && visible[w.id] !== false)
         .map(w => dashboardOpenToolCard(w, safeDashboardWidgetSummary(w)))
         .join('') + dashboardSupportToolCard(dashboardPatientContext());
-    const stageMain = dashboardJoin([
-        ctx.stage.T && ctx.stage.N && ctx.stage.M ? `${ctx.stage.T}${ctx.stage.N}${ctx.stage.M}` : '',
-        ctx.stage.anatomic ? `解剖 ${ctx.stage.anatomic}` : '',
-        ctx.stage.prognostic ? `預後 ${ctx.stage.prognostic}` : ''
-    ]);
-    const icdText = ctx.icd ? dashboardJoin([ctx.icd.subtitle, ctx.icd.ntuhNo ? `重卡 ${ctx.icd.ntuhNo}` : '', ctx.icd.code]) : '';
-    const geneText = dashboardGeneMutationText(ctx.p);
-    const responseText = dashboardPostNacResponse(ctx.p);
-    const cNText = ctx.p.cN || (ctx.stage && ctx.stage.N) || '';
-    const stageOverview = dashboardJoin([
-        stageMain,
-        ctx.p.size ? `Size ${ctx.p.size}mm` : '',
-        ctx.p.grade ? `G${ctx.p.grade}` : '',
-        ctx.p.ki67 ? `Ki-67 ${ctx.p.ki67}%` : ''
-    ]);
+    const compact = dashboardCompactContextParts(ctx);
     const pills = [
-        dashboardContextPill('分期', stageOverview, ctx.stage.T && ctx.stage.N && ctx.stage.M ? 'ok' : 'warn'),
+        dashboardContextPill('分期', compact.stageOverview, ctx.stage.T && ctx.stage.N && ctx.stage.M ? 'ok' : 'warn'),
         dashboardContextPill('亞型', ctx.subtype, ctx.subtype ? 'ok' : 'warn'),
-        cNText ? dashboardContextPill('cN', cNText, 'ok') : '',
-        responseText ? dashboardContextPill('Post-NAC', responseText, responseText === 'pCR' ? 'ok' : 'warn') : '',
-        dashboardContextPill('Gene', geneText, geneText ? 'ok' : 'warn'),
-        dashboardContextPill('重卡', icdText, ctx.icd ? 'ok' : 'muted')
+        compact.cNText ? dashboardContextPill('cN', compact.cNText, 'ok') : '',
+        compact.responseText ? dashboardContextPill('Post-NAC', compact.responseText, compact.responseText === 'pCR' ? 'ok' : 'warn') : '',
+        dashboardContextPill('Gene', compact.geneText, compact.geneText ? 'ok' : 'warn'),
+        dashboardContextPill('重卡', compact.icdText, ctx.icd ? 'ok' : 'muted')
     ].filter(Boolean).join('');
     const mainHtml = `
         <section class="patient-context-bar">
@@ -3491,10 +3516,12 @@ function renderModalDashboardOverview(){
                     <option value="metastatic_2L" ${ctx.p.phase === 'metastatic_2L' ? 'selected' : ''}>轉移性後線</option>
                     <option value="followup" ${ctx.p.phase === 'followup' ? 'selected' : ''}>追蹤</option>
                 </select>
+                <button type="button" onclick="showPatientCenter()">診間 Copilot</button>
+                <button type="button" onclick="generatePatientTreatmentPlan()">病人說明單</button>
                 <button type="button" onclick="openDashboardWidgetModal('wsPage')">編輯分期與亞型</button>
             </div>
         </section>
-        <section class="patient-context-pills">${pills}</section>
+        <section class="patient-context-pills">${pills}<button type="button" class="patient-context-copy" onclick="copyDashboardCompactContextSummary()" title="複製 Patient Context" aria-label="複製 Patient Context">⧉</button></section>
         <section class="patient-journey-panel patient-journey-main">
             <div class="patient-panel-head">
                 <span>Evidence Block</span>
@@ -3568,6 +3595,10 @@ function initDashboardWidgetContent(id){
     if(id === 'icdPage') initIcdPage();
     if(id === 'surgeryPage' && !_surgInited) initSurgeryList();
     if(id === 'wsPage' && !_wsInited){ initWorkspace(); _wsInited=true; }
+    if(id === 'journeyPage'){
+        updatePatientCenterRecordingServiceUi();
+        renderPatientJourney();
+    }
     if(id === 'calcPage'){
         if(!_calcInited){ initCalcPage(); _calcInited=true; }
         switchCalcTab(FEATURE_FLAGS.predict ? 'predict' : 'gail');
@@ -3810,7 +3841,7 @@ const AGENT_SYSTEM_PROMPT_PUBLIC = [
     '若 system_context.answer_hints 有提醒，必須逐條遵守；若提醒要求特定關鍵字或資料庫 title，回答中必須出現。',
     '一般自然語言問題要直接回答，不要自動打開工具。',
     '只有當使用者明確要求「打開、開啟、呼叫、調用、切到、open、show」某個工具時，才從 tool_registry 選 tool_id；其他情況 tool_id 必須是空字串。',
-    'patient_patch 只能使用這些欄位：age, menopause, side, symptoms, ecog, dm, htn, cad, size, tumor_kind, grade, cT, cN, cM, pT, pN, pM, er, pr, her2, her2_ihc, her2_fish, ki67, oncotype_rs, nodes_pos, nodes_total, sln_pos, sln_total, aln_pos, aln_total, pni, lvi, margin_involved, post_nac_response, brca, pdl1, pik3ca, esr1, civic_variant, height, weight, scr, breast_surgery, axillary_surgery。',
+    'patient_patch 只能使用這些欄位：age, menopause, side, symptoms, ecog, dm, htn, cad, size, tumor_kind, grade, cT, cN, cM, pT, pN, pM, er, pr, her2, her2_ihc, her2_fish, ki67, oncotype_rs, nodes_pos, nodes_total, sln_pos, sln_total, aln_pos, aln_total, pni, lvi, margin_involved, post_nac_response, brca, pdl1, pik3ca, esr1, civic_variant, height, weight, scr, breast_surgery, axillary_surgery, nipple_sparing。',
     '若只是回答問題，不需要 patient_patch；若抽取欄位有不確定，reply 要說需要人工確認。',
     '回傳 patient_patch 時，不要說已更新或已寫入；只能說已抓到候選欄位，請使用者確認後套用。',
     '回答不能取代醫師判斷、正式 guideline、院內政策或健保事前審查。',
@@ -3960,6 +3991,11 @@ function showWorkspace(){
     if(!_wsInited){ initWorkspace(); _wsInited=true; }
 }
 function showPatientCenter(){
+    if(isDesktopDashboardViewport() && (document.body.classList.contains('modal-dashboard-mode') || getAppViewMode() === 'dashboard')){
+        if(!document.body.classList.contains('modal-dashboard-mode')) showDesktopDashboard();
+        openDashboardWidgetModal('journeyPage');
+        return;
+    }
     leaveDesktopDashboard();
     document.getElementById('landingPage').style.display='none';
     document.getElementById('breastPage').classList.remove('active');
@@ -3973,6 +4009,14 @@ function showPatientCenter(){
     document.getElementById('journeyPage').classList.add('active');
     updatePatientCenterRecordingServiceUi();
     renderPatientJourney();
+}
+function returnFromPatientCenter(){
+    if(document.body.classList.contains('modal-dashboard-mode') || document.body.classList.contains('desktop-dashboard-mode')){
+        closeDashboardWidgetModal();
+        showDesktopDashboard();
+        return;
+    }
+    showWorkspace();
 }
 function showPatientJourney(){
     showPatientCenter();
@@ -3989,7 +4033,7 @@ const PATIENT_DEFAULTS = {
     mets_bone:'', mets_liver:'', mets_brain:'', mets_lung:'',
     size:'', tumor_kind:'', nodes_total:'', nodes_pos:'', grade:'',
     er:'', pr:'', her2:'', her2_ihc:'', her2_fish:'', ki67:'', brca:'', pdl1:'', tp53:'', esr1:'', pik3ca:'', oncotype_rs:'', civic_variant:'',
-    surgery_type:'', breast_surgery:'', axillary_surgery:'', reconstruction_surgery:'',
+    surgery_type:'', breast_surgery:'', axillary_surgery:'', reconstruction_surgery:'', nipple_sparing:'',
     sln_pos:'', sln_total:'', aln_pos:'', aln_total:'', pni:'', lvi:'', margin_involved:'', post_nac_response:'',
     menopause:'', ecog:'', dm:'', htn:'', cad:'', phase:'', prior:'',
     h_p0:'', h_p1:'', h_p2:'', h_p3:'',
@@ -3998,6 +4042,9 @@ const PATIENT_DEFAULTS = {
     gail_biopsy:'0', gail_atypia:'0', gail_race:'asian'
 };
 const AXILLARY_SURGERY_OPTIONS = ['SLNB', 'TAD', 'ALND'];
+function isBrcaPositiveValue(value){
+    return ['brca1', 'brca2', 'mut', '+'].includes(String(value || '').toLowerCase());
+}
 function normalizeAxillarySurgeryValue(value){
     const raw = Array.isArray(value) ? value : String(value || '').split(/[,+/｜、\s]+/);
     const out = [];
@@ -4507,6 +4554,8 @@ function refreshTouchPresets(){
 function setPatientField(key, value){
     if(key === 'axillary_surgery') value = normalizeAxillarySurgeryValue(value);
     _patient[key] = value;
+    if(key === 'breast_surgery' && value !== 'SM') _patient.nipple_sparing = '';
+    if(key === 'nipple_sparing' && value === 'yes') _patient.breast_surgery = 'SM';
     const nodeSplitChanged = ['sln_pos','sln_total','aln_pos','aln_total'].includes(key);
     const nodeTotalChanged = key === 'nodes_pos';
     if(nodeSplitChanged){
@@ -4519,6 +4568,7 @@ function setPatientField(key, value){
     if(nodeSplitChanged || nodeTotalChanged) syncWorkspaceInputs(['nodes_pos','nodes_total','pN','T','N','M']);
     refreshTouchPickers();
     refreshTouchPresets();
+    if(typeof syncWsGeneChips === 'function') syncWsGeneChips();
     refreshWorkspaceDerived();
     refreshDashboardResults();
     refreshInitialVisitChecklist();
@@ -4540,6 +4590,7 @@ function syncWorkspaceInputs(keys=Object.keys(PATIENT_DEFAULTS)){
     });
     refreshTouchPickers();
     refreshTouchPresets();
+    if(typeof syncWsGeneChips === 'function') syncWsGeneChips();
 }
 const INITIAL_VISIT_REQUIRED = [
     {key:'age', label:'年齡'},
@@ -4677,7 +4728,7 @@ function patientContextDisplayValue(key){
         menopause:{pre:'未停經',post:'已停經'},
         sex:{F:'女',M:'男'},
         her2:{'+':'陽性','-':'陰性',low:'HER2-low'},
-        brca:{wt:'WT',brca1:'BRCA1+',brca2:'BRCA2+'},
+        brca:{wt:'WT',mut:'BRCA+',brca1:'BRCA1+',brca2:'BRCA2+','+':'BRCA+'},
         pdl1:{'+':'陽性','-':'陰性'},
         pik3ca:{mut:'Mut',wt:'WT'},
         esr1:{mut:'Mut',wt:'WT'},
@@ -4771,7 +4822,6 @@ function renderWorkspacePatientContext(){
             <div><strong>共同變數 patient_context.v1</strong><span>核心缺 ${coreMissing} 項；常用欄位 ${commonFilled}/${PATIENT_CONTEXT_COMMON_FIELDS.length}</span></div>
             <div class="ws-context-head-actions">
                 <button type="button" class="icon-copy-btn" title="複製共同設定檔" aria-label="複製共同設定檔" onclick="copyPatientContextProfile()"><span aria-hidden="true">⧉</span></button>
-                <button type="button" onclick="generatePatientTreatmentPlan()">病人說明單</button>
                 <button type="button" onclick="exportPatientWorkspace()">匯出 JSON</button>
                 <button type="button" onclick="importPatientWorkspace()">匯入</button>
                 <button type="button" class="danger" onclick="clearPatient()">重設病人資訊</button>
@@ -5034,7 +5084,7 @@ function refreshNHIEligibility(){
         }
         // BRCA (for olaparib etc.)
         if(tags.brca){
-            if(p.brca==='brca1'||p.brca==='brca2'){ reasons.push('BRCA 帶因符合'); }
+            if(isBrcaPositiveValue(p.brca)){ reasons.push('BRCA 帶因符合'); }
             else { reasons.push('需 BRCA 突變'); score = 0; }
         }
         const cls = score>=2 ? 'full' : (score===1?'partial':'ineligible');
@@ -5651,7 +5701,7 @@ function deriveCrossSectionSupport(p){
     if(her2Pos && !isM1) candidates.push('Anti-HER2 chemotherapy backbone；依 neoadjuvant/adjuvant 切點決定');
     if(her2Pos && isM1) candidates.push('HER2-directed metastatic sequence 初篩');
     if(her2Low && isM1) candidates.push('HER2-low metastatic ADC candidate 初篩');
-    if(p.brca === 'brca1' || p.brca === 'brca2') candidates.push('gBRCA：PARP inhibitor / platinum / trial candidate');
+    if(isBrcaPositiveValue(p.brca)) candidates.push('gBRCA：PARP inhibitor / platinum / trial candidate');
     if(p.pik3ca === 'mut') candidates.push('PIK3CA mut：alpelisib/AKT pathway option 初篩');
     if(p.esr1 === 'mut') candidates.push('ESR1 mut：oral SERD / endocrine resistance option 初篩');
     if(!candidates.length) candidates.push('請先補齊 setting + receptor，產生治療候選');
@@ -6593,14 +6643,28 @@ function patientCenterPostOpTnmString(p){
     const m = p.pM || p.cM || '';
     return `${prefix}${t}${n}${m}`.replace(/\s+/g, '');
 }
-function patientCenterBreastSurgerySummaryLabel(value){
+function patientCenterPostOpStageLabel(p){
+    p = p || {};
+    const t = p.pT || '';
+    const n = p.pN || '';
+    const m = p.pM || p.cM || '';
+    if(!t || !n || !m) return '';
+    try {
+        const stage = _ajccAnatomic(t, n, m);
+        return stage ? `stage ${stage}` : '';
+    } catch(e){
+        return '';
+    }
+}
+function patientCenterBreastSurgerySummaryLabel(value, p){
     const s = String(value || '').trim();
     if(s === 'BCS') return 'BCT';
+    if(s === 'SM' && String((p || {}).nipple_sparing || '') === 'yes') return 'NS-SM';
     return s;
 }
 function patientCenterSurgerySummaryText(p){
     p = p || {};
-    const breast = patientCenterBreastSurgerySummaryLabel(p.breast_surgery);
+    const breast = patientCenterBreastSurgerySummaryLabel(p.breast_surgery, p);
     const axilla = axillarySurgeryParts(p.axillary_surgery).join('+');
     return [breast, axilla].filter(Boolean).join('+');
 }
@@ -6651,7 +6715,13 @@ function patientCenterPostOpSummaryLine(p){
     if(p.margin_involved === 'no') parts.push('margin uninvolved');
     const tnm = patientCenterPostOpTnmString(p);
     if(tnm) parts.push(tnm);
-    return parts.length ? `Post-op: ${parts.join(', ')}` : '';
+    const stage = patientCenterPostOpStageLabel(p);
+    if(stage) parts.push(stage);
+    if(String(p.post_nac_prefix || '') === 'yes' && p.post_nac_response){
+        const response = dashboardPostNacResponse(p) || p.post_nac_response;
+        parts.push(`post NAC status: ${response}`);
+    }
+    return parts.length ? `s/p ${parts.join(', ')}` : '';
 }
 function patientCenterPostNacSummaryLine(p){
     p = p || {};
@@ -6662,8 +6732,7 @@ function patientCenterPostNacSummaryLine(p){
 function patientCenterSummaryLines(p){
     const lines = [
         patientCenterClinicalSummaryLine(p),
-        patientCenterPostOpSummaryLine(p),
-        patientCenterPostNacSummaryLine(p)
+        patientCenterPostOpSummaryLine(p)
     ].filter(Boolean);
     return lines.length ? lines : [''];
 }
@@ -6700,7 +6769,7 @@ function patientCenterAdminHints(p, bundle){
     if(p.her2 === '+') hints.push('HER2 positive：行政上常需 anti-HER2 給付條件、療程階段與 Echo 基線文件。');
     if(p.ki67) hints.push(`Ki-67 ${patientCenterPercentOrSign(p.ki67)}：可列入病理摘要與部分事審附件核對。`);
     if(Number(p.nodes_pos || 0) > 0 || /^N[1-3]/i.test(String(st.st.N || ''))) hints.push('LN positive：重大傷病/分期摘要與 tumor board 欄位需明確標示 N 分期或陽性顆數。');
-    if(p.brca === 'brca1' || p.brca === 'brca2') hints.push('BRCA positive：Tumor Board 摘要需保留基因報告狀態與檢驗來源。');
+    if(isBrcaPositiveValue(p.brca)) hints.push('BRCA positive：Tumor Board 摘要需保留基因報告狀態與檢驗來源。');
     if(p.side && p.quadrant) hints.push('側別與象限已填：可產生 ICD-10-CM 與院內重卡編號。');
     if(!hints.length) hints.push('目前可先補齊 TNM、ER/PR/HER2、Ki-67、側別/象限，讓摘要與行政清單更完整。');
     return hints;
@@ -7129,7 +7198,7 @@ function patientCenterAskAgentDraft(){
 }
 function _journeyMarker(label, value){
     let dot = 'warn';
-    if(value==='+' || value==='陽性' || value==='brca1' || value==='brca2') dot = 'pos';
+    if(value==='+' || value==='陽性' || isBrcaPositiveValue(value)) dot = 'pos';
     if(value==='-' || value==='陰性' || value==='wt') dot = 'neg';
     const shown = value ? _journeyEsc(value) : '未填';
     return `<span class="journey-marker"><span class="journey-dot ${dot}"></span>${label}: ${shown}</span>`;
@@ -8840,6 +8909,7 @@ function setWsQuickMode(mode, instant=false){
 }
 function syncWsQuickChips(){
     syncWorkspaceGradeLabels();
+    syncWsGeneChips();
     const age = document.getElementById('wsQuickAge');
     const wsAgeEl = document.getElementById('ws_age');
     if(age) age.value = wsAgeEl ? wsAgeEl.value : '';
@@ -8924,6 +8994,39 @@ function syncWsSimpleChips(field, chipId){
     const value = (_patient && _patient[field] !== undefined && _patient[field] !== null && _patient[field] !== '') ? _patient[field] : (el ? el.value : '');
     document.querySelectorAll('#' + chipId + ' .ws-qchip').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.value === String(value));
+    });
+}
+function wsGenePositiveValue(field){
+    return field === 'pdl1' ? '+' : 'mut';
+}
+function wsGeneStoredValue(field, state){
+    if(state === 'neg') return '';
+    if(state === 'wt') return field === 'pdl1' ? '-' : 'wt';
+    return wsGenePositiveValue(field);
+}
+function wsGeneState(field, value){
+    const v = String(value || '').toLowerCase();
+    if(!v) return 'neg';
+    if(field === 'pdl1') return v === '+' ? 'pos' : 'wt';
+    if(v === 'wt') return 'wt';
+    return 'pos';
+}
+function setWsGeneField(field, state){
+    if(!['brca', 'pdl1', 'tp53', 'esr1', 'pik3ca'].includes(field)) return;
+    const value = wsGeneStoredValue(field, state);
+    const el = document.getElementById('ws_' + field);
+    if(el) el.value = value;
+    setPatientField(field, value);
+    syncWsGeneChips();
+}
+function syncWsGeneChips(){
+    ['brca', 'pdl1', 'tp53', 'esr1', 'pik3ca'].forEach(field => {
+        const el = document.getElementById('ws_' + field);
+        const value = (_patient && _patient[field] !== undefined && _patient[field] !== null) ? _patient[field] : (el ? el.value : '');
+        const state = wsGeneState(field, value);
+        document.querySelectorAll('#wsGene_' + field + ' .ws-qchip').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.state === state);
+        });
     });
 }
 function syncWsToggleChips(chipId){
@@ -9022,6 +9125,7 @@ function syncWsPostSimpleChips(){
         ['post_nac_response', 'wsPostNacResponseChips']
     ];
     simple.forEach(([field, id]) => syncWsSimpleChips(field, id));
+    syncWsBreastSurgeryRefine();
     syncWsAxillarySurgeryChips();
     document.querySelectorAll('#wsPostPniLviChips .ws-qchip').forEach(btn => {
         const field = btn.dataset.field || '';
@@ -9029,6 +9133,24 @@ function syncWsPostSimpleChips(){
     });
     const nac = document.getElementById('wsPostNacChip');
     if(nac) nac.classList.toggle('active', String(((_patient || {}).post_nac_prefix) || '') === 'yes');
+}
+function syncWsBreastSurgeryRefine(){
+    const refine = document.getElementById('wsPostBreastSurgeryRefine');
+    const isSm = String(((_patient || {}).breast_surgery) || '') === 'SM';
+    if(refine) refine.classList.toggle('show', isSm);
+    document.querySelectorAll('#wsPostBreastSurgeryRefine .ws-qchip').forEach(btn => {
+        btn.classList.toggle('active', isSm && String(((_patient || {}).nipple_sparing) || '') === 'yes');
+    });
+}
+function toggleWsNippleSparing(){
+    const next = String(((_patient || {}).nipple_sparing) || '') === 'yes' ? '' : 'yes';
+    if(String(((_patient || {}).breast_surgery) || '') !== 'SM'){
+        _patient.breast_surgery = 'SM';
+        const breastEl = document.getElementById('ws_breast_surgery');
+        if(breastEl) breastEl.value = 'SM';
+    }
+    setPatientField('nipple_sparing', next);
+    syncWsPostSimpleChips();
 }
 function syncWorkspacePostNacVisibility(){
     const show = String(((_patient || {}).post_nac_prefix) || '') === 'yes';
