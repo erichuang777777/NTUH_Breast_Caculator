@@ -1942,13 +1942,13 @@ const data = await res.json();</code></pre>
     </div>
   </div>
 
-  <button class="report-btn" onclick="openIssueReport()" title="回報問題 → GitHub Issue">&#128027; 回報問題</button>
+  <button class="report-btn" onclick="openIssueReport()" title="回報問題">回報問題</button>
 
   <!-- Issue Report Modal -->
   <div class="issue-modal" id="issueReportModal" onclick="if(event.target===this)closeIssueReport()">
     <div class="issue-card">
-      <h2>&#128027; 回報問題或錯誤 <button class="close-x" onclick="closeIssueReport()" style="background:transparent;border:0;font-size:1.4rem;cursor:pointer;color:var(--text-muted);width:auto;padding:0 .3rem">&times;</button></h2>
-      <div style="font-size:.85rem;color:var(--text-muted);margin-bottom:.4rem;line-height:1.5">填完後會開啟 GitHub Issues 預填頁面。GitHub 需要登入且 repository 開啟 Issues；若無法送出，可先複製內容再由維護者代貼。</div>
+      <h2>回報問題或錯誤 <button class="close-x" onclick="closeIssueReport()" style="background:transparent;border:0;font-size:1.4rem;cursor:pointer;color:var(--text-muted);width:auto;padding:0 .3rem">&times;</button></h2>
+      <div style="font-size:.85rem;color:var(--text-muted);margin-bottom:.4rem;line-height:1.5">填寫後可直接複製、用 Email 傳送，或在院內設定回報 API 後一鍵送出。GitHub 只保留給熟悉開發流程的使用者。</div>
 
       <label for="issue_module">哪個模組有問題？</label>
       <select id="issue_module">
@@ -1994,14 +1994,23 @@ const data = await res.json();</code></pre>
       <label><input type="checkbox" id="issue_include_state" checked style="width:auto;margin-right:.4rem"> 附上目前 Workspace 與設定狀態（協助除錯）</label>
 
       <div class="issue-info">
-        &#9432; 你的回報會送到 <strong>GitHub 公開專案</strong>，請<strong>不要包含病人 PHI（姓名、病歷號、生日等）</strong>。<br>
-        GitHub 不支援純前端匿名建立 issue；這裡使用預填 URL，由使用者登入後提交。系統會自動加上瀏覽器版本、模組名稱、版本號與勾選的 Workspace 內容。
+        &#9432; 請<strong>不要包含病人 PHI（姓名、病歷號、生日等）</strong>。系統會自動加上瀏覽器版本、模組名稱、版本號；若勾選 Workspace 狀態，會先移除 MRN/姓名。
+      </div>
+
+      <div class="issue-board">
+        <div class="issue-board-head">
+          <strong>近期留言</strong>
+          <button type="button" onclick="loadFeedbackBoard()">重新整理</button>
+        </div>
+        <div class="issue-board-list" id="feedbackBoardList">尚未載入</div>
       </div>
 
       <div class="issue-buttons">
         <button onclick="closeIssueReport()">取消</button>
         <button onclick="copyIssueReport()">複製內容</button>
-        <button class="primary" onclick="submitIssue()">&rarr; 送到 GitHub</button>
+        <button onclick="emailIssueReport()">用 Email 傳送</button>
+        <button onclick="submitGitHubIssue()">GitHub</button>
+        <button class="primary" onclick="submitIssue()">送出 / 複製</button>
       </div>
     </div>
   </div>

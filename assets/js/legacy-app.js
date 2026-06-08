@@ -49,6 +49,29 @@ function drugSearchText(d){
         d.aliases, key, (DRUG_ALIAS_MAP[key] || []).join(' ')
     ].filter(Boolean).join(' ').toLowerCase();
 }
+function drugClinicalTags(d){
+    const raw = typeof d.clinical_tags === 'string' ? JSON.parse(d.clinical_tags || '{}') : (d.clinical_tags || {});
+    const tags = {...raw};
+    const text = [d.indication, d.conditions].filter(Boolean).join(' ').toLowerCase();
+    if(!tags.her2){
+        if(/her[-\s]?2[^|。；;，,]{0,18}(?:陰性|negative)/i.test(text) || /her[-\s]?2\s*檢測為陰性/i.test(text)){
+            tags.her2 = 'negative';
+        } else if(/her[-\s]?2[^|。；;，,]{0,18}(?:陽性|positive)/i.test(text)){
+            tags.her2 = 'positive';
+        }
+    }
+    if(!tags.er_pr){
+        if(/(?:荷爾蒙|雌激素|estrogen|er\s*或\s*pr|er\/pr)[^|。；;，,]{0,24}(?:陽性|positive|＞|>)/i.test(text)){
+            tags.er_pr = 'positive';
+        } else if(/(?:荷爾蒙|雌激素|estrogen|er\s*或\s*pr|er\/pr)[^|。；;，,]{0,24}(?:陰性|negative)/i.test(text)){
+            tags.er_pr = 'negative';
+        }
+    }
+    return tags;
+}
+function drugHasNhiPrice(d){
+    return Number(d && d.nhi_price) > 0;
+}
 
 function normalizeStaticDrugCatalog(){
     const hasCarboplatin = _STATIC_DRUGS.some(d =>
@@ -947,11 +970,11 @@ const DASHBOARD_WIDGETS = [
     { id:'inpatientPage', flag:'inpatient', label:'常用配方與劑量', desktopSpan:1, patientBinding:'preferred', x:640, y:580, w:600, h:460, cx:460, cy:500, cw:420, ch:340 },
     { id:'trialsPage', flag:'trials', label:'臨床試驗', desktopSpan:1, patientBinding:'optional', x:1260, y:580, w:640, h:460, cx:900, cy:500, cw:420, ch:340 },
     { id:'calcPage', flag:'calc_gail', label:'乳癌計算機', desktopSpan:2, patientBinding:'preferred', x:20, y:1060, w:1880, h:420, cx:20, cy:880, cw:1260, ch:360 },
-    { id:'riskPage', flag:'calculator', label:'NPI / Magee / Oncotype RS / Gail', desktopSpan:1, patientBinding:'preferred', x:20, y:1500, w:620, h:420, cx:20, cy:1260, cw:420, ch:320 },
+    { id:'riskPage', flag:'calculator', label:'其他風險分數', desktopSpan:1, patientBinding:'preferred', x:20, y:1500, w:620, h:420, cx:20, cy:1260, cw:420, ch:320 },
     { id:'rcbPage', flag:'calc_rcb', label:'RCB', desktopSpan:1, patientBinding:'preferred', x:660, y:1500, w:620, h:420, cx:460, cy:1260, cw:420, ch:320 },
     { id:'ihc4Page', flag:'calc_ihc4', label:'IHC4', desktopSpan:1, patientBinding:'preferred', x:20, y:1500, w:620, h:420, cx:20, cy:1260, cw:420, ch:320 },
     { id:'cts5Page', flag:'calc_cts5', label:'CTS5', desktopSpan:1, patientBinding:'preferred', x:660, y:1500, w:620, h:420, cx:460, cy:1260, cw:420, ch:320 },
-    { id:'pepiPage', flag:'calc_pepi', label:'PEPI', desktopSpan:1, patientBinding:'preferred', x:1300, y:1500, w:620, h:420, cx:900, cy:1260, cw:420, ch:320 },
+    { id:'pepiPage', flag:'calc_pepi', label:'PEPI', desktopSpan:1, patientBinding:'preferred', x:1300, y:1500, w:620, h:420, cx:900, cy:1260, cw:420, ch:320, defaultVisible:false, controlsHidden:true },
     { id:'surgeryPage', flag:'surgery', label:'手術醫材', desktopSpan:1, patientBinding:'optional', x:20, y:1500, w:640, h:420, cx:20, cy:1260, cw:560, ch:320, defaultVisible:false },
     { id:'journeyPage', flag:'workspace', label:'診間 Copilot', desktopSpan:2, patientBinding:'required', x:660, y:1500, w:840, h:560, cx:460, cy:1260, cw:640, ch:420, defaultVisible:false, controlsHidden:true }
 ];
@@ -1512,7 +1535,7 @@ function dashboardWidgetCardMeta(widget){
         surgeryPage: { icon:'🧾', title:'手術醫材', metric:'自費清單', desc:'乳癌手術自費項目勾選、總價與匯出' },
         trialsPage: { icon:'🔎', title:'臨床試驗', metric:'ClinicalTrials', desc:'台灣乳癌臨床試驗查詢與條件摘要' },
         calcPage: { icon:'📈', title:'PREDICT v2/v3', metric:'OS / Benefit', desc:'乳癌術後整體存活率與輔助治療獲益，並連動 Workspace 變數' },
-        riskPage: { icon:'📊', title:'NPI / Magee / Oncotype RS / Gail', metric:'Risk scores', desc:'NPI、Magee、Oncotype RS、Gail 等風險與預後摘要' },
+        riskPage: { icon:'📊', title:'其他風險分數', metric:'Risk scores', desc:'CTS5、NPI、PEPI、Magee、Oncotype RS、RCB、Gail 等風險與預後摘要' },
         rcbPage: { icon:'🧾', title:'RCB', metric:'Residual disease', desc:'術前治療後殘餘癌負荷與 RCB class' },
         ihc4Page: { icon:'🧬', title:'IHC4', metric:'IHC recurrence', desc:'ER、PR、HER2、Ki-67 連動 Workspace 的 IHC4 復發風險分數' },
         cts5Page: { icon:'📊', title:'CTS5', metric:'Late DRR', desc:'HR+/HER2- 完成 5 年內分泌治療後的晚期遠端復發風險' },
@@ -1720,14 +1743,14 @@ function dashboardJoin(parts){
 }
 function dashboardStageText(){
     const p = typeof _patient !== 'undefined' ? _patient : {};
-    const st = getWorkspaceStage(p);
-    const T = p.T || st.T;
-    const N = p.N || st.N;
-    const M = p.M || st.M;
+    const T = p.cT || '';
+    const N = p.cN || '';
+    const M = p.cM || '';
     if(T && N && M){
         let anat = '';
         try { anat = _ajccAnatomic(T, N, M) || ''; } catch(e){}
-        const progCalc = calcWorkspaceAjccPrognostic({ ...p, T, N, M });
+        let progCalc = {};
+        try { progCalc = calcWorkspaceAjccPrognostic({ ...p, T, N, M }) || {}; } catch(e){}
         const stages = [
             anat && anat !== '?' ? `解剖 ${anat}` : '',
             progCalc.stage ? `預後 ${progCalc.stage}` : ''
@@ -1807,10 +1830,9 @@ function dashboardPatientBsaCrcl(p){
 }
 function dashboardStageBundle(p){
     p = p || {};
-    const st = getWorkspaceStage(p);
-    const T = p.T || st.T;
-    const N = p.N || st.N;
-    const M = p.M || st.M;
+    const T = p.cT || '';
+    const N = p.cN || '';
+    const M = p.cM || '';
     let anatomic = '';
     let prognostic = '';
     if(T && N && M){
@@ -1820,7 +1842,7 @@ function dashboardStageBundle(p){
             prognostic = prog && prog.stage ? prog.stage : '';
         } catch(e){}
     }
-    return { T, N, M, kind:st.kind, anatomic, prognostic };
+    return { T, N, M, kind:'cTNM', anatomic, prognostic };
 }
 function dashboardPhaseLabel(phase){
     const labels = {
@@ -2286,8 +2308,8 @@ function dashboardBreastMatchesFromWorkspace(p){
     const filters = buildBreastFiltersFromWorkspace(p);
     const hasFilters = Object.keys(filters).length > 0;
     const source = breastDrugs.length ? breastDrugs : _STATIC_DRUGS.filter(d => d.specialty_id === 'oncology_breast');
-    const matched = hasFilters ? source.filter(d => matchesFilters(d, filters)).length : 0;
-    return { filters, hasFilters, total: source.length, matched };
+    const stats = breastDrugMatchStats(source, filters);
+    return { filters, hasFilters, total: source.length, matched: stats.matched, matchedNhi: stats.matchedNhi, totalNhi: stats.totalNhi };
 }
 function syncBreastFiltersFromWorkspace(){
     const p = typeof _patient !== 'undefined' ? _patient : {};
@@ -2447,9 +2469,8 @@ function dashboardPredictSurvivalSummary(p, erSign, age, size, nodes, grade, ki6
     const isERpos = erSign === '+';
     const her2tok = p.her2 === '+' ? 'pos' : ((p.her2 === '-' || p.her2 === 'low') ? 'neg' : 'unk');
     const ki67tok = typeof ki67 === 'number' && !Number.isNaN(ki67) ? (ki67 >= 10 ? 'pos' : 'neg') : 'unk';
-    const mode = readDashboardSelectValue('pred_mode', p.predict_mode || '');
-    const year = readDashboardSelectNumber('pred_year', p.diagnosis_year || '');
-    if(!['symp','screen','other'].includes(mode)) return null;
+    const mode = readDashboardSelectValue('pred_mode', p.predict_mode || '') || 'other';
+    const year = readDashboardSelectNumber('pred_year', p.diagnosis_year || new Date().getFullYear());
     if(!Number.isFinite(Number(year)) || Number(year) < 2000 || Number(year) > 2030) return null;
     const smoker = readDashboardSelectValue('pred_smoker', p.smoker || 'unk');
     const prFromForm = readDashboardSelectValue('pred_pr', '');
@@ -2561,8 +2582,8 @@ function dashboardPredictInputFromForm(p){
             ...(p || {}),
             pr: prSign || (p && p.pr) || '',
             her2: her2,
-            predict_mode: readDashboardSelectValue('pred_mode', (p && p.predict_mode) || ''),
-            diagnosis_year: readDashboardSelectNumber('pred_year', (p && p.diagnosis_year) || ''),
+            predict_mode: readDashboardSelectValue('pred_mode', (p && p.predict_mode) || '') || 'other',
+            diagnosis_year: readDashboardSelectNumber('pred_year', (p && p.diagnosis_year) || new Date().getFullYear()),
             smoker: readDashboardSelectValue('pred_smoker', (p && p.smoker) || 'unk'),
             menopause: readDashboardSelectValue('pred_menopause', (p && p.menopause) || '')
         },
@@ -2723,7 +2744,7 @@ function dashboardWidgetSummary(widget){
         const matched = dashboardBreastMatchesFromWorkspace(p);
         const lines = [
             patientTags.length ? dashboardPlainLine(patientTags.join(' / ')) : '',
-            matched.hasFilters ? dashboardPlainLine(`符合 ${matched.matched} / ${matched.total} 筆`) : dashboardPlainLine('待補分期/受體')
+            matched.hasFilters ? dashboardPlainLine(`符合 ${matched.matched} / ${matched.total} 筆｜健保價 ${matched.matchedNhi} 筆`) : dashboardPlainLine('待補分期/受體')
         ].filter(Boolean);
         return { status: dashboardStatus(matched.hasFilters), metric: '', lines };
     }
@@ -2796,7 +2817,7 @@ function dashboardWidgetSummary(widget){
         return { status: dashboardStatus(s.status), metric: '', lines: s.lines.map(dashboardPlainLine).filter(Boolean) };
     }
     if(widget.id === 'riskPage'){
-        const scores = dashboardCalcScoreSummary(p).filter(score => !/^PREDICT\b/i.test(score) && !/^RCB\b/i.test(score));
+        const scores = dashboardCalcScoreSummary(p).filter(score => !/^(PREDICT|IHC4)\b/i.test(score));
         const lines = scores.length ? scores.slice(0, 3) : ['需補足 size / N / Grade / biomarker'];
         return { status: dashboardStatus(scores.length > 0), metric: '', lines: lines.map(dashboardPlainLine).filter(Boolean) };
     }
@@ -2805,7 +2826,6 @@ function dashboardWidgetSummary(widget){
         return { status: dashboardStatus(s.status), metric: '', lines: s.lines.map(dashboardPlainLine).filter(Boolean) };
     }
     if(widget.id === 'calcPage'){
-        const scores = dashboardCalcScoreSummary(p);
         const source = dashboardCalcPredictionSource(p);
         const pred = source ? dashboardPredictSurvivalSummary(
             source.p,
@@ -2823,9 +2843,17 @@ function dashboardWidgetSummary(widget){
                 dashboardPlainLine(`Tx ${dashboardPredictTxLabel(pred)}`),
             ].filter(Boolean);
         } else {
-            lines = scores.slice(0, 3).map(dashboardPlainLine).filter(Boolean);
+            const st = getWorkspaceStage(p);
+            const missing = [];
+            if(!Number.isFinite(Number(p.age)) || Number(p.age) <= 0) missing.push('age');
+            if(!Number.isFinite(Number(p.size)) || Number(p.size) <= 0) missing.push('size');
+            if(p.nodes_pos === '' && predictNodeCountFromStage(st.N) === '') missing.push('LN+ / N');
+            if(!Number.isFinite(Number(p.grade)) || Number(p.grade) <= 0) missing.push('Grade');
+            if(!_markerSign(p.er)) missing.push('ER');
+            if(!p.her2) missing.push('HER2');
+            lines = [dashboardPlainLine(missing.length ? `PREDICT 需 ${missing.join(' / ')}` : 'PREDICT 資料不足')].filter(Boolean);
         }
-        return { status: dashboardStatus(scores.length > 0), metric: '', lines };
+        return { status: dashboardStatus(!!pred), metric: '', lines };
     }
     return { status: 'yellow', metric: '', lines: [] };
 }
@@ -3109,8 +3137,13 @@ function dashboardAgentContextQuestion(kind){
 function dashboardAgentAskContext(kind){
     dashboardAgentAsk(dashboardAgentContextQuestion(kind));
 }
+function dashboardAgentPhiScanText(text){
+    return String(text || '')
+        .replace(/[\[［【(（]\s*(?:已移除|已遮蔽|已去識別|去識別|redacted|removed)[^\]］】)）]*[\]］】)）]/gi, '[REDACTED]')
+        .replace(/(?:已移除|已遮蔽|已去識別|去識別)(?:姓名|病歷號|身分證字號|手機號碼|電話|生日|地址|Email|識別碼)/gi, '[REDACTED]');
+}
 function dashboardAgentDetectPhi(text){
-    const raw = String(text || '');
+    const raw = dashboardAgentPhiScanText(text);
     const findings = [];
     const add = (type, detail) => {
         if(!findings.some(f => f.type === type && f.detail === detail)) findings.push({ type, detail });
@@ -3122,8 +3155,8 @@ function dashboardAgentDetectPhi(text){
         { type:'本院病歷號', pattern:/(?:^|[^\dA-Z])(?:\d{7}|[AHGY]\d{6})(?![\dA-Z])/i },
         { type:'病歷號 / ID', pattern:/(?:病歷號|病歷|MRN|chart\s*no|patient\s*id|身分證|ID)[:：#\s]*(?:\d{7}|[AHGY]\d{6}|[A-Z0-9\-]{5,})/i },
         { type:'生日 / DOB', pattern:/(?:生日|出生|DOB|date\s*of\s*birth)[:：\s]*(?:\d{2,4}[\/\-年.]\d{1,2}[\/\-月.]\d{1,2}|\d{6,8})/i },
-        { type:'姓名', pattern:/(?:姓名|name|patient)[:：\s]*[\u4e00-\u9fff]{2,4}(?!乳|癌|期|歲|陰|陽)/i },
-        { type:'姓名', pattern:/(?:病人|患者|個案|Pt|patient)[:：\s]*[\u4e00-\u9fff]{3}(?!乳|癌|期|歲|陰|陽)/i },
+        { type:'姓名', pattern:/(?:姓名|name)[:：\s]+(?!已移除|已遮蔽|已去識別|去識別)[\u4e00-\u9fff]{2,4}(?!乳|癌|期|歲|陰|陽)/i },
+        { type:'姓名', pattern:/(?:病人|患者|個案|Pt|patient)[:：\s]+(?!已移除|已遮蔽|已去識別|去識別)[\u4e00-\u9fff]{3}(?!乳|癌|期|歲|陰|陽)/i },
         { type:'地址', pattern:/(?:地址|住址|address)[:：\s]*.{6,}/i },
         { type:'Email', pattern:/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i }
     ];
@@ -3141,8 +3174,8 @@ function dashboardAgentRedactPhi(text){
         .replace(/((?:電話|tel|phone|mobile|手機)[:：\s]*)[+()#\-\s\d]{7,}/gi, '$1[已移除電話]')
         .replace(/((?:病歷號|病歷|MRN|chart\s*no|patient\s*id|身分證|ID)[:：#\s]*)(?:\d{7}|[AHGY]\d{6}|[A-Z0-9\-]{5,})/gi, '$1[已移除識別碼]')
         .replace(/((?:生日|出生|DOB|date\s*of\s*birth)[:：\s]*)(?:\d{2,4}[\/\-年.]\d{1,2}[\/\-月.]\d{1,2}|\d{6,8})/gi, '$1[已移除生日]')
-        .replace(/((?:姓名|name|patient)[:：\s]*)[\u4e00-\u9fff]{2,4}(?!乳|癌|期|歲|陰|陽)/gi, '$1[已移除姓名]')
-        .replace(/((?:病人|患者|個案|Pt|patient)[:：\s]*)[\u4e00-\u9fff]{3}(?!乳|癌|期|歲|陰|陽)/gi, '$1[已移除姓名]')
+        .replace(/((?:姓名|name)[:：\s]+)(?!已移除|已遮蔽|已去識別|去識別)[\u4e00-\u9fff]{2,4}(?!乳|癌|期|歲|陰|陽)/gi, '$1[已移除姓名]')
+        .replace(/((?:病人|患者|個案|Pt|patient)[:：\s]+)(?!已移除|已遮蔽|已去識別|去識別)[\u4e00-\u9fff]{3}(?!乳|癌|期|歲|陰|陽)/gi, '$1[已移除姓名]')
         .replace(/(^|[^\dA-Z])(?:\d{7}|[AHGY]\d{6})(?![\dA-Z])/gi, '$1[已移除本院病歷號]')
         .replace(/((?:地址|住址|address)[:：\s]*).{6,}/gi, '$1[已移除地址]')
         .replace(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi, '[已移除Email]');
@@ -3501,9 +3534,8 @@ function renderModalDashboardOverview(){
     }
     const ctx = dashboardPatientContext();
     const journey = dashboardJourneyState(ctx);
-    const patientBundle = patientWorkspaceStructuredData();
-    const toolIds = ['breastPage','inpatientPage','icdPage','trialsPage','calcPage','riskPage','rcbPage','ihc4Page','cts5Page','pepiPage'];
-    const toolCards = renderDesktopPatientCareCard(patientBundle) + toolIds
+    const toolIds = ['breastPage','inpatientPage','icdPage','trialsPage','calcPage','ihc4Page','riskPage'];
+    const toolCards = toolIds
         .map(id => DASHBOARD_WIDGETS.find(w => w.id === id))
         .filter(w => w && isDashboardWidgetAvailable(w) && visible[w.id] !== false)
         .map(w => dashboardOpenToolCard(w, safeDashboardWidgetSummary(w)))
@@ -5966,8 +5998,6 @@ function refreshDashboardResults(){
     }
 
     // 3) PREDICT
-    const predictYear = p.diagnosis_year || '';
-    const predictMode = p.predict_mode || '';
     if(p.tumor_kind === 'dcis'){
         cards.push(_dashCard({
             id:'predict', title:'PREDICT v2.3/v3.0', desc:'術後整體存活率估算',
@@ -6015,8 +6045,6 @@ function refreshDashboardResults(){
         if(!gradeNum) missingPredict.push('Grade');
         if(!erSign) missingPredict.push('ER');
         if(!p.her2) missingPredict.push('HER2');
-        if(!predictYear) missingPredict.push('診斷年份');
-        if(!predictMode) missingPredict.push('偵測方式');
         cards.push(_dashCard({ id:'predict', title:'PREDICT v2.3/v3.0', desc:'術後整體存活率估算', missing:'需 ' + missingPredict.join('/') }));
     }
 
@@ -7963,9 +7991,10 @@ function calcPREDICT(){
     }
     const workspaceSide = (typeof _patient !== 'undefined' && _patient && _patient.side) ? _patient.side : '';
     const sideLabel = {R:'Right breast', L:'Left breast', B:'Bilateral'}[workspaceSide] || 'Unknown';
-    const year = _readRequiredNumberInput('pred_year');
+    const yearInput = _readRequiredNumberInput('pred_year');
+    const year = Number.isFinite(yearInput) && yearInput >= 2000 && yearInput <= 2030 ? yearInput : new Date().getFullYear();
     const age = _readRequiredNumberInput('pred_age');
-    const mode = document.getElementById('pred_mode').value;
+    const mode = document.getElementById('pred_mode').value || 'other';
     const smokerEl = document.getElementById('pred_smoker');
     const smoker = smokerEl ? smokerEl.value : 'unk';
     const predMenopauseEl = document.getElementById('pred_menopause');
@@ -7989,9 +8018,7 @@ function calcPREDICT(){
     const useBis = bis === 1 && menopause === 'post';
 
     const missingPredict = [];
-    if(!Number.isFinite(year) || year < 2000 || year > 2030) missingPredict.push('診斷年份');
     if(!Number.isFinite(age) || age < 25 || age > 85) missingPredict.push('年齡 (25-85)');
-    if(!['symp','screen','other'].includes(mode)) missingPredict.push('偵測方式');
     if(!Number.isFinite(size) || size < 1) missingPredict.push('invasive tumor size');
     if(!Number.isFinite(nodes) || nodes < 0) missingPredict.push('陽性淋巴結數或 N 分期');
     if(!Number.isFinite(grade)) missingPredict.push('Grade');
@@ -8705,9 +8732,12 @@ if('serviceWorker' in navigator && window.location.protocol !== 'file:'){
     });
 }
 
-// ── Issue Report (GitHub Issues prefilled URL) ──
+// ── Issue Report ──
 const GITHUB_REPO = 'erichuang777777/NTUH_Breast_Caculator';
 const APP_VERSION = 'v1.9';
+const ISSUE_REPORT_ENDPOINT_KEY = 'oncobreast_issue_report_endpoint';
+const ISSUE_REPORT_EMAIL_KEY = 'oncobreast_issue_report_email';
+const FEEDBACK_BOARD_LOCAL_KEY = 'oncobreast_feedback_board_local_v1';
 
 function openIssueReport(defaults={}){
     const moduleEl = document.getElementById('issue_module');
@@ -8719,6 +8749,7 @@ function openIssueReport(defaults={}){
     if(descEl && defaults.desc !== undefined) descEl.value = defaults.desc;
     if(inputsEl && defaults.inputs !== undefined) inputsEl.value = defaults.inputs;
     document.getElementById('issueReportModal').classList.add('show');
+    loadFeedbackBoard();
 }
 function closeIssueReport(){
     document.getElementById('issueReportModal').classList.remove('show');
@@ -8774,7 +8805,7 @@ function _buildIssueBody(module, type, desc, inputs, includeState){
     }
     return lines.join('\n');
 }
-function submitIssue(){
+function buildIssueReportPayload(){
     const module = document.getElementById('issue_module').value;
     const typeEl = document.getElementById('issue_type');
     const typeText = typeEl.options[typeEl.selectedIndex].text;
@@ -8782,42 +8813,157 @@ function submitIssue(){
     const desc = document.getElementById('issue_desc').value.trim();
     const inputs = document.getElementById('issue_inputs').value.trim();
     const includeState = document.getElementById('issue_include_state').checked;
-    if(!desc){ alert('請至少填「詳細描述」'); return; }
     const title = `[${module}] ${typeText}`;
     const body = _buildIssueBody(module, typeText, desc, inputs, includeState);
+    return { module, typeText, typeVal, desc, inputs, includeState, title, body, text:`${title}\n\n${body}` };
+}
+function requireIssueDescription(payload){
+    if(payload && payload.desc) return true;
+    alert('請至少填「詳細描述」');
+    return false;
+}
+function getIssueReportEndpoint(){
+    try {
+        return String(window.ONCOBREAST_ISSUE_REPORT_ENDPOINT || localStorage.getItem(ISSUE_REPORT_ENDPOINT_KEY) || '/api/feedback').trim();
+    } catch(e){
+        return String(window.ONCOBREAST_ISSUE_REPORT_ENDPOINT || '/api/feedback').trim();
+    }
+}
+function getIssueReportEmail(){
+    try {
+        return String(window.ONCOBREAST_ISSUE_REPORT_EMAIL || localStorage.getItem(ISSUE_REPORT_EMAIL_KEY) || '').trim();
+    } catch(e){
+        return String(window.ONCOBREAST_ISSUE_REPORT_EMAIL || '').trim();
+    }
+}
+async function submitIssue(){
+    const payload = buildIssueReportPayload();
+    if(!requireIssueDescription(payload)) return;
+    const endpoint = getIssueReportEndpoint();
+    if(endpoint){
+        try {
+            const res = await fetch(endpoint, {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({
+                    title: payload.title,
+                    body: payload.body,
+                    module: payload.module,
+                    type: payload.typeVal,
+                    app_version: APP_VERSION,
+                    url: window.location.href,
+                    created_at: new Date().toISOString()
+                })
+            });
+            if(!res.ok) throw new Error(`HTTP ${res.status}`);
+            alert('已送出回報。');
+            await loadFeedbackBoard();
+            closeIssueReport();
+            return;
+        } catch(e){
+            console.warn('Issue report endpoint failed', e);
+            saveFeedbackBoardLocal(payload);
+            renderFeedbackBoard(readFeedbackBoardLocal(), 'local');
+            if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(payload.text).catch(()=>{});
+            alert('留言板後端尚未啟用或送出失敗；已先存在此瀏覽器並嘗試複製內容。');
+            return;
+        }
+    }
+    saveFeedbackBoardLocal(payload);
+    renderFeedbackBoard(readFeedbackBoardLocal(), 'local');
+    copyIssueReport();
+    alert('已先存在此瀏覽器並複製回報內容。');
+}
+function submitGitHubIssue(){
+    const payload = buildIssueReportPayload();
+    if(!requireIssueDescription(payload)) return;
     const baseIssueUrl = `https://github.com/${GITHUB_REPO}/issues/new`;
-    let url = `${baseIssueUrl}?title=${encodeURIComponent(title)}` +
-              `&body=${encodeURIComponent(body)}`;
+    let url = `${baseIssueUrl}?title=${encodeURIComponent(payload.title)}` +
+              `&body=${encodeURIComponent(payload.body)}`;
     // GitHub URL length limit ~8KB; truncate if needed
     if(url.length > 6500){
-        if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(body).catch(()=>{});
-        const truncatedBody = body.substring(0, 2500) + '\n\n...(訊息過長已截斷；完整內容已嘗試複製到剪貼簿，請手動貼上補充)';
+        if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(payload.body).catch(()=>{});
+        const truncatedBody = payload.body.substring(0, 2500) + '\n\n...(訊息過長已截斷；完整內容已嘗試複製到剪貼簿，請手動貼上補充)';
         url = `${baseIssueUrl}` +
-              `?title=${encodeURIComponent(title)}` +
+              `?title=${encodeURIComponent(payload.title)}` +
               `&body=${encodeURIComponent(truncatedBody)}`;
     }
     const opened = window.open(url, '_blank', 'noopener');
     if(!opened){
-        if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(body).catch(()=>{});
+        if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(payload.body).catch(()=>{});
         window.location.href = url;
     }
     closeIssueReport();
 }
+function emailIssueReport(){
+    const payload = buildIssueReportPayload();
+    if(!requireIssueDescription(payload)) return;
+    const email = getIssueReportEmail();
+    const href = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(payload.title)}&body=${encodeURIComponent(payload.body)}`;
+    if(href.length > 1800 && navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(payload.text).catch(()=>{});
+        alert('內容較長，已嘗試複製完整回報內容；Email 可能只帶入部分內容。');
+    }
+    window.location.href = href;
+}
 function copyIssueReport(){
-    const module = document.getElementById('issue_module').value;
-    const typeEl = document.getElementById('issue_type');
-    const typeText = typeEl.options[typeEl.selectedIndex].text;
-    const desc = document.getElementById('issue_desc').value.trim();
-    const inputs = document.getElementById('issue_inputs').value.trim();
-    const includeState = document.getElementById('issue_include_state').checked;
-    const title = `[${module}] ${typeText}`;
-    const body = _buildIssueBody(module, typeText, desc, inputs, includeState);
-    const text = `${title}\n\n${body}`;
+    const payload = buildIssueReportPayload();
+    const text = payload.text;
     if(navigator.clipboard && navigator.clipboard.writeText){
-        navigator.clipboard.writeText(text).then(()=>alert('已複製 issue 內容，可手動貼到 GitHub。')).catch(()=>alert(text));
+        navigator.clipboard.writeText(text).then(()=>alert('已複製回報內容。')).catch(()=>alert(text));
     } else {
         alert(text);
     }
+}
+function readFeedbackBoardLocal(){
+    try {
+        const rows = JSON.parse(localStorage.getItem(FEEDBACK_BOARD_LOCAL_KEY) || '[]');
+        return Array.isArray(rows) ? rows : [];
+    } catch(e){
+        return [];
+    }
+}
+function saveFeedbackBoardLocal(payload){
+    const rows = readFeedbackBoardLocal();
+    rows.unshift({
+        id: 'local-' + Date.now(),
+        title: payload.title,
+        module: payload.module,
+        type: payload.typeText,
+        created_at: new Date().toISOString(),
+        local: true
+    });
+    try { localStorage.setItem(FEEDBACK_BOARD_LOCAL_KEY, JSON.stringify(rows.slice(0, 20))); } catch(e){}
+}
+function renderFeedbackBoard(items, mode){
+    const el = document.getElementById('feedbackBoardList');
+    if(!el) return;
+    const rows = Array.isArray(items) ? items : [];
+    if(!rows.length){
+        el.innerHTML = `<div class="issue-board-empty">${mode === 'remote' ? '目前沒有留言。' : '目前沒有本機留言；後端未啟用時只會顯示本瀏覽器暫存。'}</div>`;
+        return;
+    }
+    el.innerHTML = rows.slice(0, 10).map(item => {
+        const when = item.created_at ? new Date(item.created_at).toLocaleString('zh-TW') : '';
+        const meta = [item.module || '', item.type || '', when, item.local ? '本機暫存' : '站內留言'].filter(Boolean).join(' · ');
+        return `<div class="issue-board-item"><strong>${esc(item.title || '未命名留言')}</strong><span>${esc(meta)}</span></div>`;
+    }).join('');
+}
+async function loadFeedbackBoard(){
+    const el = document.getElementById('feedbackBoardList');
+    if(el) el.innerHTML = '<div class="issue-board-empty">載入中...</div>';
+    try {
+        const res = await fetch('/api/feedback?limit=10', { headers:{'accept':'application/json'} });
+        if(!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        if(data && Array.isArray(data.items)){
+            renderFeedbackBoard(data.items, 'remote');
+            return;
+        }
+    } catch(e){
+        console.warn('Feedback board load failed', e);
+    }
+    renderFeedbackBoard(readFeedbackBoardLocal(), 'local');
 }
 function markCopyConfirmed(trigger){
     const el = trigger || (typeof event !== 'undefined' ? event.currentTarget : null);
@@ -9852,10 +9998,65 @@ function toggleChip(el){
     updatePatientFilterStatus('');
 }
 
+function parseBreastClinicalSearch(raw){
+    const filters = {};
+    const q = String(raw || '').toLowerCase();
+    let text = q;
+    const consume = pattern => { text = text.replace(pattern, ' '); };
+    if(/(?:tnbc|triple\s*negative|三陰)/i.test(q)){
+        filters.er_pr = 'negative';
+        filters.her2 = 'negative';
+        filters.tnbc = 'true';
+        consume(/(?:tnbc|triple\s*negative|三陰(?:性)?(?:乳癌)?)/gi);
+    }
+    if(/(?:\bhr\s*[+＋]|\ber\s*[+＋]|\bpr\s*[+＋]|er\s*\/\s*pr\s*[+＋]|荷爾蒙(?:受體|接受體)?\s*(?:陽性|positive)|雌激素(?:受體|接受體)?\s*(?:陽性|positive))/i.test(q)){
+        filters.er_pr = 'positive';
+        consume(/(?:\bhr\s*[+＋]|\ber\s*[+＋]|\bpr\s*[+＋]|er\s*\/\s*pr\s*[+＋]|荷爾蒙(?:受體|接受體)?\s*(?:陽性|positive)|雌激素(?:受體|接受體)?\s*(?:陽性|positive))/gi);
+    } else if(/(?:\bhr\s*[-－]|\ber\s*[-－]|\bpr\s*[-－]|er\s*\/\s*pr\s*[-－]|荷爾蒙(?:受體|接受體)?\s*(?:陰性|negative)|雌激素(?:受體|接受體)?\s*(?:陰性|negative))/i.test(q)){
+        filters.er_pr = 'negative';
+        consume(/(?:\bhr\s*[-－]|\ber\s*[-－]|\bpr\s*[-－]|er\s*\/\s*pr\s*[-－]|荷爾蒙(?:受體|接受體)?\s*(?:陰性|negative)|雌激素(?:受體|接受體)?\s*(?:陰性|negative))/gi);
+    }
+    if(/(?:her\s*2\s*[+＋]|her[-\s]?2\s*(?:陽性|positive))/i.test(q)){
+        filters.her2 = 'positive';
+        consume(/(?:her\s*2\s*[+＋]|her[-\s]?2\s*(?:陽性|positive))/gi);
+    } else if(/(?:her\s*2\s*[-－]|her[-\s]?2\s*(?:陰性|negative))/i.test(q)){
+        filters.her2 = 'negative';
+        consume(/(?:her\s*2\s*[-－]|her[-\s]?2\s*(?:陰性|negative))/gi);
+    }
+    if(/(?:stage\s*(?:i|ii|1|2)\b|早期|eBC)/i.test(q)){ filters.stage = 'early'; consume(/(?:stage\s*(?:i|ii|1|2)\b|早期|eBC)/gi); }
+    else if(/(?:stage\s*(?:iii|3)\b|局部晚期|locally\s*advanced|LABC)/i.test(q)){ filters.stage = 'advanced'; consume(/(?:stage\s*(?:iii|3)\b|局部晚期|locally\s*advanced|LABC)/gi); }
+    else if(/(?:stage\s*(?:iv|4)\b|轉移|metastatic|mBC)/i.test(q)){ filters.stage = 'metastatic'; consume(/(?:stage\s*(?:iv|4)\b|轉移(?:性)?|metastatic|mBC)/gi); }
+    if(/(?:ln\s*[+＋]|node\s*[+＋]|淋巴結(?:轉移|陽性)|n[1-3])/i.test(q)){ filters.ln = 'true'; consume(/(?:ln\s*[+＋]|node\s*[+＋]|淋巴結(?:轉移|陽性)|n[1-3][a-c]?)/gi); }
+    if(/(?:停經後|post\s*menopause|postmenopausal)/i.test(q)){ filters.menopause = 'post'; consume(/(?:停經後|post\s*menopause|postmenopausal)/gi); }
+    else if(/(?:停經前|pre\s*menopause|premenopausal)/i.test(q)){ filters.menopause = 'pre'; consume(/(?:停經前|pre\s*menopause|premenopausal)/gi); }
+    if(/brca/i.test(q)){ filters.brca = 'true'; consume(/brca(?:1|2)?(?:\s*(?:突變|mut(?:ation)?))?/gi); }
+    if(/pik3ca/i.test(q)){ filters.pik3ca = 'true'; consume(/pik3ca(?:\s*(?:突變|mut(?:ation)?))?/gi); }
+    if(/esr1/i.test(q)){ filters.esr1 = 'true'; consume(/esr1(?:\s*(?:突變|mut(?:ation)?))?/gi); }
+    text = text
+        .replace(/(?:乳癌|breast\s*cancer|藥物|用藥|查詢|可用|適應症|健保|給付)/gi, ' ')
+        .replace(/[\/\\|,，、;；:：()（）\[\]【】]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    return { filters, text };
+}
+function breastDrugMatchStats(list, filters){
+    const hasF = filters && Object.keys(filters).length > 0;
+    const stats = { matched:0, unmatched:0, matchedNhi:0, totalNhi:0 };
+    (list || []).forEach(d => {
+        if(drugHasNhiPrice(d)) stats.totalNhi++;
+        const ok = hasF ? matchesFilters(d, filters) : null;
+        if(ok === true){
+            stats.matched++;
+            if(drugHasNhiPrice(d)) stats.matchedNhi++;
+        } else if(ok === false){
+            stats.unmatched++;
+        }
+    });
+    return stats;
+}
 function matchesFilters(drug, filters){
-    const tags=drug.clinical_tags||{};
+    const tags=drugClinicalTags(drug);
     const stage=drug.stage||'';
-    // HER2 and ER/PR are independent axes — use OR among receptor filters
     const receptorKeys=['her2','er_pr'];
     const receptorFilters=Object.fromEntries(Object.entries(filters).filter(([k])=>receptorKeys.includes(k)));
     const otherFilters=Object.fromEntries(Object.entries(filters).filter(([k])=>!receptorKeys.includes(k)));
@@ -9874,17 +10075,17 @@ function matchesFilters(drug, filters){
             if(!tags[f])return false;
         }
     }
-    // OR logic for receptor filters: patient may be HER2+/ER+ simultaneously
     if(Object.keys(receptorFilters).length>0){
+        let hasReceptorTag=false;
         let match=false;
-        if(receptorFilters.her2!==undefined){
-            const v=receptorFilters.her2;
-            if(tags.her2&&(tags.her2===v||tags.her2==='both'))match=true;
+        for(const [f,v] of Object.entries(receptorFilters)){
+            if(tags[f]){
+                hasReceptorTag=true;
+                if(tags[f]===v||tags[f]==='both')match=true;
+                else return false;
+            }
         }
-        if(receptorFilters.er_pr!==undefined){
-            const v=receptorFilters.er_pr;
-            if(tags.er_pr&&(tags.er_pr===v||tags.er_pr==='both'))match=true;
-        }
+        if(!hasReceptorTag)return false;
         if(!match)return false;
     }
     return true;
@@ -9893,10 +10094,12 @@ function matchesFilters(drug, filters){
 function hasAnyFilter(){return Object.keys(activeFilters).length>0}
 
 function filterBreast(){
-    const q=(document.getElementById('breastSearch').value||'').toLowerCase();
+    const q=(document.getElementById('breastSearch').value||'');
+    const parsed = parseBreastClinicalSearch(q);
+    const effectiveFilters = {...activeFilters, ...parsed.filters};
     let list=breastDrugs;
-    if(q)list=list.filter(d=>drugSearchText(d).includes(q));
-    renderBreast(list);
+    if(parsed.text)list=list.filter(d=>drugSearchText(d).includes(parsed.text));
+    renderBreast(list, effectiveFilters);
     updatePatientFilterStatus(null);
 }
 function resetBreastFilters(){
@@ -9918,14 +10121,16 @@ function lineLabel(n){
     return '<span class="badge" style="background:#fef3c7;color:#92400e">第'+n+'線</span>';
 }
 
-function renderBreast(list){
-    const hasF=hasAnyFilter();
-    let matched=0,unmatched=0;
+function renderBreast(list, filtersOverride){
+    const filters = filtersOverride || activeFilters;
+    const hasF=Object.keys(filters).length>0;
+    let matched=0,unmatched=0,matchedNhi=0,totalNhi=0;
     const rows=list.map((d,i)=>{
-        const tags=typeof d.clinical_tags==='string'?JSON.parse(d.clinical_tags||'{}'):d.clinical_tags||{};
+        const tags=drugClinicalTags(d);
         d._tags=tags;
-        const ok=hasF?matchesFilters(d,activeFilters):null;
-        if(ok===true)matched++; if(ok===false)unmatched++;
+        const ok=hasF?matchesFilters(d,filters):null;
+        if(drugHasNhiPrice(d))totalNhi++;
+        if(ok===true){matched++; if(drugHasNhiPrice(d))matchedNhi++;} if(ok===false)unmatched++;
         const icon=ok===true?'<span class="icon-ok" title="符合健保給付條件">&#10003;</span>'
                    :ok===false?'<span class="icon-pay" title="不符合健保給付，可自費使用">&#36;</span>'
                    :'';
@@ -9948,14 +10153,14 @@ function renderBreast(list){
     });
     // Sort: matched first
     if(hasF){
-        const sorted=list.map((d,i)=>({d,i,ok:matchesFilters(d,activeFilters)}));
+        const sorted=list.map((d,i)=>({d,i,ok:matchesFilters(d,filters)}));
         sorted.sort((a,b)=>(b.ok?1:0)-(a.ok?1:0));
         const sortedRows=sorted.map(x=>rows[x.i]);
         document.getElementById('breastBody').innerHTML=sortedRows.join('');
-        document.getElementById('breastInfo').textContent=`共 ${list.length} 筆｜符合條件 ${matched} 筆｜不符合 ${unmatched} 筆（不符合者仍可自費使用）`;
+        document.getElementById('breastInfo').textContent=`共 ${list.length} 筆｜符合條件 ${matched} 筆｜符合且有健保價 ${matchedNhi} 筆｜不符合 ${unmatched} 筆（不符合者仍可自費使用）`;
     } else {
         document.getElementById('breastBody').innerHTML=rows.join('')||'<tr><td colspan="8"><div class="empty">沒有找到藥物</div></td></tr>';
-        document.getElementById('breastInfo').textContent=`共 ${list.length} 筆`;
+        document.getElementById('breastInfo').textContent=`共 ${list.length} 筆｜有健保價 ${totalNhi} 筆`;
     }
 }
 

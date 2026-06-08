@@ -4,6 +4,8 @@ const { calculateScores, stagingScore } = require('./_shared/calculators');
 
 const API_DIR = path.resolve(__dirname, '../../data/api');
 const I18N_CACHE_DIR = path.resolve(__dirname, '../../data/i18n_cache');
+const FEEDBACK_REPO = process.env.FEEDBACK_GITHUB_REPO || 'erichuang777777/NTUH_Breast_Caculator';
+const FEEDBACK_LABEL = process.env.FEEDBACK_GITHUB_LABEL || 'feedback-board';
 const AGENT_SYSTEM_PROMPT = [
   '你是 OncoBreast Calculator 的臨床工作區 copilot，面向醫師與護理師。',
   '請用繁體中文，回答要精簡、臨床可讀。',
@@ -78,6 +80,81 @@ function bodyJson(event) {
   }
 }
 
+function sanitizeFeedbackText(value, maxLength) {
+  return String(value || '').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '').trim().slice(0, maxLength);
+}
+
+async function githubFeedbackRequest(pathname, options = {}) {
+  const token = process.env.FEEDBACK_GITHUB_TOKEN || '';
+  const headers = {
+    accept: 'application/vnd.github+json',
+    'user-agent': 'oncobreast-copilot-feedback',
+    ...(options.headers || {}),
+  };
+  if (token) headers.authorization = `Bearer ${token}`;
+  return fetch(`https://api.github.com/repos/${FEEDBACK_REPO}${pathname}`, { ...options, headers });
+}
+
+async function listFeedback(limit) {
+  const perPage = Math.max(1, Math.min(Number(limit) || 10, 20));
+  const res = await githubFeedbackRequest(`/issues?state=open&labels=${encodeURIComponent(FEEDBACK_LABEL)}&per_page=${perPage}&sort=created&direction=desc`);
+  if (!res.ok) return { ok: false, status: res.status, items: [] };
+  const rows = await res.json();
+  return {
+    ok: true,
+    mode: 'github-issues',
+    items: (Array.isArray(rows) ? rows : []).map(item => ({
+      id: item.id,
+      number: item.number,
+      title: item.title,
+      module: '',
+      type: '',
+      created_at: item.created_at,
+      url: item.html_url,
+    })),
+  };
+}
+
+async function createFeedback(body) {
+  const token = process.env.FEEDBACK_GITHUB_TOKEN || '';
+  if (!token) return { ok: false, status: 503, error: 'Feedback backend is not configured.' };
+  const title = sanitizeFeedbackText(body.title || '[回報] 未命名', 180);
+  const reportBody = sanitizeFeedbackText(body.body || '', 12000);
+  const module = sanitizeFeedbackText(body.module || '', 80);
+  const type = sanitizeFeedbackText(body.type || '', 40);
+  const footer = [
+    '',
+    '---',
+    `source: Oncobreast copilot feedback board`,
+    module ? `module: ${module}` : '',
+    type ? `type: ${type}` : '',
+    body.app_version ? `app_version: ${sanitizeFeedbackText(body.app_version, 40)}` : '',
+  ].filter(Boolean).join('\n');
+  const res = await githubFeedbackRequest('/issues', {
+    method: 'POST',
+    headers: {'content-type': 'application/json'},
+    body: JSON.stringify({
+      title,
+      body: `${reportBody || '(no body)'}${footer}`,
+      labels: [FEEDBACK_LABEL],
+    }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) return { ok: false, status: res.status, error: data.message || 'Failed to create feedback.' };
+  return {
+    ok: true,
+    item: {
+      id: data.id,
+      number: data.number,
+      title: data.title,
+      module,
+      type,
+      created_at: data.created_at,
+      url: data.html_url,
+    },
+  };
+}
+
 function apiPath(event) {
   const raw = event.path || '';
   const prefix = '/.netlify/functions/api';
@@ -110,6 +187,16 @@ exports.handler = async function handler(event) {
     if (method === 'GET' && p === '/agent-prompt') return json(200, { ok: true, version: '2026-06-06', prompt: AGENT_SYSTEM_PROMPT });
     if (method === 'GET' && p === '/config') return json(200, readJson('config'));
     if (method === 'GET' && p === '/stats') return json(200, readJson('stats'));
+    if (method === 'GET' && p === '/feedback') {
+      const result = await listFeedback(qs.limit);
+      return json(result.ok ? 200 : result.status || 503, result);
+    }
+    if (method === 'POST' && p === '/feedback') {
+      const body = bodyJson(event);
+      if (body === null) return json(400, { ok: false, error: 'Invalid JSON body' });
+      const result = await createFeedback(body);
+      return json(result.ok ? 200 : result.status || 503, result);
+    }
 
     if (method === 'GET' && p === '/drugs') {
       let drugs = readJson('drugs');
