@@ -2897,6 +2897,8 @@ const DASHBOARD_AGENT_HISTORY_KEY = 'nhi_dashboard_agent_history_v1';
 const DASHBOARD_AGENT_CONTEXT_LIMIT = 8192;
 let _dashboardAgentStatus = { state:'checking', label:'檢查中', detail:'正在檢查 Agent API 連線' };
 let _dashboardAgentStatusCheckedAt = 0;
+let _dashboardAgentSpeechRecognition = null;
+let _dashboardAgentSpeechListening = false;
 function dashboardAgentDefaultApiConfig(){
     if(window.OncoBreastAgentAdapter) return window.OncoBreastAgentAdapter.defaultConfig(location);
     const protocol = (location && location.protocol) ? location.protocol : '';
@@ -3144,7 +3146,11 @@ async function dashboardAgentRefreshStatus(force=false){
             const runtimeLabel = isLocal ? 'Local OK' : 'Cloud OK';
             const sourceText = isLocal ? '本機 Ollama 已連線' : 'Ollama Cloud 已連線';
             const modelText = data.model ? `${sourceText}；模型：${data.model}` : sourceText;
-            dashboardAgentSetStatus('ok', runtimeLabel, modelText);
+            if(data.model_available === false){
+                dashboardAgentSetStatus('warn', isLocal ? 'Local 模型?' : 'Cloud 模型?', `${modelText}；但狀態檢查沒有在可用模型清單看到這個 model`);
+            } else {
+                dashboardAgentSetStatus('ok', runtimeLabel, modelText);
+            }
         } else if(data.status === 'missing_key' || !data.configured){
             dashboardAgentSetStatus('warn', '未設 Key', data.message || 'Netlify 尚未設定 OLLAMA_API_KEY');
         } else {
@@ -3285,6 +3291,66 @@ function dashboardAgentRemovePhiFromInput(){
     dashboardAgentInputChanged(input.value);
     input.focus();
 }
+function dashboardAgentSpeechConstructor(){
+    return window.SpeechRecognition || window.webkitSpeechRecognition || null;
+}
+function dashboardAgentSpeechSupported(){
+    return !!dashboardAgentSpeechConstructor();
+}
+function dashboardAgentSetMicListening(listening){
+    _dashboardAgentSpeechListening = !!listening;
+    const btn = document.getElementById('dashboardAgentMicBtn');
+    if(btn){
+        btn.classList.toggle('listening', _dashboardAgentSpeechListening);
+        btn.textContent = _dashboardAgentSpeechListening ? '停止' : '語音';
+        btn.title = _dashboardAgentSpeechListening ? '停止語音輸入' : '語音輸入';
+        btn.setAttribute('aria-pressed', _dashboardAgentSpeechListening ? 'true' : 'false');
+    }
+}
+function dashboardAgentToggleMic(){
+    const SpeechCtor = dashboardAgentSpeechConstructor();
+    const input = document.getElementById('dashboardAgentInput');
+    if(!SpeechCtor || !input){
+        dashboardAgentAddMessage('agent', '這個瀏覽器不支援語音輸入。請改用 Chrome/Edge 或手機系統鍵盤的語音輸入。');
+        return;
+    }
+    if(_dashboardAgentSpeechRecognition && _dashboardAgentSpeechListening){
+        _dashboardAgentSpeechRecognition.stop();
+        dashboardAgentSetMicListening(false);
+        return;
+    }
+    const recognition = new SpeechCtor();
+    _dashboardAgentSpeechRecognition = recognition;
+    recognition.lang = 'zh-TW';
+    recognition.interimResults = true;
+    recognition.continuous = false;
+    const original = input.value || '';
+    recognition.onstart = () => dashboardAgentSetMicListening(true);
+    recognition.onresult = event => {
+        let finalText = '';
+        let interimText = '';
+        for(let i = event.resultIndex; i < event.results.length; i++){
+            const transcript = (event.results[i][0] && event.results[i][0].transcript) || '';
+            if(event.results[i].isFinal) finalText += transcript;
+            else interimText += transcript;
+        }
+        const combined = `${original}${original && (finalText || interimText) ? ' ' : ''}${finalText || interimText}`.trim();
+        input.value = combined;
+        dashboardAgentInputChanged(input.value);
+        input.focus();
+    };
+    recognition.onerror = event => {
+        dashboardAgentSetMicListening(false);
+        const reason = event && event.error ? `（${event.error}）` : '';
+        dashboardAgentAddMessage('agent', `語音輸入無法啟動${reason}。請確認瀏覽器麥克風權限，或使用手機鍵盤內建語音輸入。`);
+    };
+    recognition.onend = () => dashboardAgentSetMicListening(false);
+    try {
+        recognition.start();
+    } catch(e){
+        dashboardAgentSetMicListening(false);
+    }
+}
 function renderDashboardAgentPanel(){
     const pos = getDashboardAgentPosition();
     const collapsed = getDashboardAgentCollapsed();
@@ -3324,8 +3390,9 @@ function renderDashboardAgentPanel(){
             <input id="dashboardAgentFile" type="file" accept=".txt,.text,.md,text/plain" onchange="dashboardAgentUploadFile(this.files && this.files[0])">
             <label for="dashboardAgentFile">上傳文字病理報告</label>
         </div>
-        <form class="dashboard-agent-input" onsubmit="event.preventDefault();dashboardAgentSubmit()">
+        <form class="dashboard-agent-input ${dashboardAgentSpeechSupported() ? '' : 'no-mic'}" onsubmit="event.preventDefault();dashboardAgentSubmit()">
             <textarea id="dashboardAgentInput" rows="3" placeholder="問問題，或貼上已去識別病理報告文字..." autocomplete="off" oninput="dashboardAgentInputChanged(this.value)" onkeydown="dashboardAgentInputKeydown(event)"></textarea>
+            ${dashboardAgentSpeechSupported() ? '<button type="button" id="dashboardAgentMicBtn" class="dashboard-agent-mic-btn" onclick="dashboardAgentToggleMic()" title="語音輸入" aria-label="語音輸入" aria-pressed="false">語音</button>' : ''}
             <button type="submit">送出</button>
             <div id="dashboardAgentPhiWarning" class="dashboard-agent-phi-warning" hidden></div>
         </form>
