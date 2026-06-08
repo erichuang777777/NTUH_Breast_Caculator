@@ -2276,6 +2276,53 @@ body.mobile-device-shell .ws-context-pill-row {
   .dashboard-agent-input button {
     height: 100%;
   }
+  .dashboard-agent-phi-warning {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: .35rem;
+    border: 1px solid #f8d36c;
+    border-left: 4px solid #f59e0b;
+    border-radius: 7px;
+    background: #fffbeb;
+    color: #78350f;
+    padding: .5rem .55rem;
+    font-size: .74rem;
+    line-height: 1.45;
+  }
+  .dashboard-agent-phi-warning[hidden] {
+    display: none;
+  }
+  .dashboard-agent-phi-title {
+    font-weight: 950;
+    color: #92400e;
+  }
+  .dashboard-agent-phi-text {
+    color: #78350f;
+  }
+  .dashboard-agent-phi-text span {
+    display: inline-flex;
+    margin: .08rem .18rem .08rem 0;
+    border: 1px solid #fbbf24;
+    border-radius: 999px;
+    background: #fff7ed;
+    color: #92400e;
+    padding: .05rem .38rem;
+    font-size: .68rem;
+    font-weight: 850;
+  }
+  .dashboard-agent-phi-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .35rem;
+  }
+  .dashboard-agent-phi-actions button {
+    height: auto;
+    min-height: 28px;
+    border-color: #f59e0b;
+    background: #fff;
+    color: #92400e;
+    padding: .2rem .5rem;
+  }
   @media (max-width: 1180px) {
     .patient-tool-grid {
       grid-template-columns: repeat(4, minmax(0, 1fr));

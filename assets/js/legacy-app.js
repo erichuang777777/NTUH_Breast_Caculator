@@ -2844,6 +2844,7 @@ function setDashboardAgentApiConfig(endpoint, enabled=true, headers={}){
 let _dashboardAgentReportText = '';
 let _dashboardAgentPatchSeq = 0;
 const _dashboardAgentPatches = {};
+let _dashboardAgentPhiLastScanText = '';
 function dashboardAgentInitialMessage(){
     return '請先在左側 Patient Context 設定這個病人的年齡、TNM、ER/PR/HER2、Ki-67 等欄位；你也可以在這裡問問題或貼上病理報告，我會協助檢查缺資料並調用可用工具。';
 }
@@ -3035,6 +3036,67 @@ function dashboardAgentContextQuestion(kind){
 function dashboardAgentAskContext(kind){
     dashboardAgentAsk(dashboardAgentContextQuestion(kind));
 }
+function dashboardAgentDetectPhi(text){
+    const raw = String(text || '');
+    const findings = [];
+    const add = (type, detail) => {
+        if(!findings.some(f => f.type === type && f.detail === detail)) findings.push({ type, detail });
+    };
+    const tests = [
+        { type:'身分證字號', pattern:/\b[A-Z][12]\d{8}\b/i },
+        { type:'手機號碼', pattern:/\b09\d{2}[-\s]?\d{3}[-\s]?\d{3}\b/ },
+        { type:'電話號碼', pattern:/(?:電話|tel|phone|mobile|手機)[:：\s]*[+()#\-\s\d]{7,}/i },
+        { type:'病歷號 / ID', pattern:/(?:病歷號|病歷|MRN|chart\s*no|patient\s*id|身分證|ID)[:：#\s]*[A-Z0-9\-]{5,}/i },
+        { type:'生日 / DOB', pattern:/(?:生日|出生|DOB|date\s*of\s*birth)[:：\s]*(?:\d{2,4}[\/\-年.]\d{1,2}[\/\-月.]\d{1,2}|\d{6,8})/i },
+        { type:'姓名', pattern:/(?:姓名|name|patient)[:：\s]*[\u4e00-\u9fff]{2,4}(?!乳|癌|期|歲|陰|陽)/i },
+        { type:'地址', pattern:/(?:地址|住址|address)[:：\s]*.{6,}/i },
+        { type:'Email', pattern:/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i }
+    ];
+    tests.forEach(t => { if(t.pattern.test(raw)) add(t.type, t.type); });
+    if(/(?:\b\d{7,10}\b)/.test(raw) && /(?:病歷|MRN|chart|patient|個案|case)/i.test(raw)) add('病歷號 / ID', '長數字且鄰近病人識別字');
+    if(findings.length >= 2) add('多重 PHI 線索', '同時出現多種識別資訊');
+    return { hasPhi: findings.length > 0, findings };
+}
+function dashboardAgentRedactPhi(text){
+    return String(text || '')
+        .replace(/\b[A-Z][12]\d{8}\b/gi, '[已移除身分證字號]')
+        .replace(/\b09\d{2}[-\s]?\d{3}[-\s]?\d{3}\b/g, '[已移除手機號碼]')
+        .replace(/((?:電話|tel|phone|mobile|手機)[:：\s]*)[+()#\-\s\d]{7,}/gi, '$1[已移除電話]')
+        .replace(/((?:病歷號|病歷|MRN|chart\s*no|patient\s*id|身分證|ID)[:：#\s]*)[A-Z0-9\-]{5,}/gi, '$1[已移除識別碼]')
+        .replace(/((?:生日|出生|DOB|date\s*of\s*birth)[:：\s]*)(?:\d{2,4}[\/\-年.]\d{1,2}[\/\-月.]\d{1,2}|\d{6,8})/gi, '$1[已移除生日]')
+        .replace(/((?:姓名|name|patient)[:：\s]*)[\u4e00-\u9fff]{2,4}(?!乳|癌|期|歲|陰|陽)/gi, '$1[已移除姓名]')
+        .replace(/((?:地址|住址|address)[:：\s]*).{6,}/gi, '$1[已移除地址]')
+        .replace(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi, '[已移除Email]');
+}
+function dashboardAgentRenderPhiWarning(text, force=false){
+    const el = document.getElementById('dashboardAgentPhiWarning');
+    if(!el) return;
+    const result = dashboardAgentDetectPhi(text);
+    if(!result.hasPhi && !force){
+        el.hidden = true;
+        el.innerHTML = '';
+        return;
+    }
+    const tags = result.findings.map(f => `<span>${esc(f.type)}</span>`).join('');
+    el.hidden = false;
+    el.innerHTML = `<div class="dashboard-agent-phi-title">疑似 PHI 偵測</div>
+        <div class="dashboard-agent-phi-text">送出前請移除姓名、病歷號、生日、身分證、電話、地址等識別資訊。偵測到：${tags || '<span>手動確認</span>'}</div>
+        <div class="dashboard-agent-phi-actions">
+            <button type="button" onclick="dashboardAgentRemovePhiFromInput()">自動遮蔽</button>
+            <button type="button" onclick="dashboardAgentSubmit(true)">仍要送出一次</button>
+        </div>`;
+}
+function dashboardAgentInputChanged(text){
+    dashboardAgentRefreshContextMeter(text);
+    dashboardAgentRenderPhiWarning(text);
+}
+function dashboardAgentRemovePhiFromInput(){
+    const input = document.getElementById('dashboardAgentInput');
+    if(!input) return;
+    input.value = dashboardAgentRedactPhi(input.value);
+    dashboardAgentInputChanged(input.value);
+    input.focus();
+}
 function renderDashboardAgentPanel(){
     const pos = getDashboardAgentPosition();
     const collapsed = getDashboardAgentCollapsed();
@@ -3075,8 +3137,9 @@ function renderDashboardAgentPanel(){
             <label for="dashboardAgentFile">上傳文字病理報告</label>
         </div>
         <form class="dashboard-agent-input" onsubmit="event.preventDefault();dashboardAgentSubmit()">
-            <textarea id="dashboardAgentInput" rows="3" placeholder="問問題，或貼上病理報告文字..." autocomplete="off" oninput="dashboardAgentRefreshContextMeter(this.value)" onkeydown="dashboardAgentInputKeydown(event)"></textarea>
+            <textarea id="dashboardAgentInput" rows="3" placeholder="問問題，或貼上已去識別病理報告文字..." autocomplete="off" oninput="dashboardAgentInputChanged(this.value)" onkeydown="dashboardAgentInputKeydown(event)"></textarea>
             <button type="submit">送出</button>
+            <div id="dashboardAgentPhiWarning" class="dashboard-agent-phi-warning" hidden></div>
         </form>
     </aside>`;
 }
@@ -3116,12 +3179,22 @@ function dashboardAgentInputKeydown(event){
     event.preventDefault();
     dashboardAgentSubmit();
 }
-async function dashboardAgentSubmit(){
+async function dashboardAgentSubmit(allowPhi=false){
     const input = document.getElementById('dashboardAgentInput');
     if(!input) return;
     const text = input.value.trim();
     if(!text) return;
+    const phi = dashboardAgentDetectPhi(text);
+    if(phi.hasPhi && !allowPhi){
+        _dashboardAgentPhiLastScanText = text;
+        dashboardAgentRenderPhiWarning(text, true);
+        return;
+    }
+    if(phi.hasPhi && allowPhi && _dashboardAgentPhiLastScanText !== text){
+        _dashboardAgentPhiLastScanText = text;
+    }
     input.value = '';
+    dashboardAgentRenderPhiWarning('');
     dashboardAgentAddMessage('user', text);
     dashboardAgentRefreshContextMeter();
     const pending = dashboardAgentAddMessage('agent', '__loading__', false);
