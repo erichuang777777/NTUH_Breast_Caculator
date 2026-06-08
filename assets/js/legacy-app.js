@@ -2130,8 +2130,8 @@ function dashboardCompactContextSummaryText(){
     ].filter(Boolean);
     return lines.join('\n');
 }
-function copyDashboardCompactContextSummary(){
-    copyTextToClipboard(dashboardCompactContextSummaryText(), '已複製 Patient Context 摘要。');
+function copyDashboardCompactContextSummary(trigger){
+    copyTextToClipboard(patientCenterOneLineSummary(_patient || {}), '', trigger);
 }
 function dashboardOpenToolCard(widget, summary, extraClass){
     const m = dashboardWidgetCardMeta(widget);
@@ -3521,7 +3521,7 @@ function renderModalDashboardOverview(){
                 <button type="button" onclick="openDashboardWidgetModal('wsPage')">編輯分期與亞型</button>
             </div>
         </section>
-        <section class="patient-context-pills">${pills}<button type="button" class="patient-context-copy" onclick="copyDashboardCompactContextSummary()" title="複製 Patient Context" aria-label="複製 Patient Context">⧉</button></section>
+        <section class="patient-context-pills">${pills}<button type="button" class="patient-context-copy" onclick="copyDashboardCompactContextSummary(this)" title="複製病歷摘要" aria-label="複製病歷摘要">⧉</button></section>
         <section class="patient-journey-panel patient-journey-main">
             <div class="patient-panel-head">
                 <span>Evidence Block</span>
@@ -4821,7 +4821,7 @@ function renderWorkspacePatientContext(){
         <div class="ws-context-head">
             <div><strong>共同變數 patient_context.v1</strong><span>核心缺 ${coreMissing} 項；常用欄位 ${commonFilled}/${PATIENT_CONTEXT_COMMON_FIELDS.length}</span></div>
             <div class="ws-context-head-actions">
-                <button type="button" class="icon-copy-btn" title="複製共同設定檔" aria-label="複製共同設定檔" onclick="copyPatientContextProfile()"><span aria-hidden="true">⧉</span></button>
+                <button type="button" class="icon-copy-btn" title="複製共同設定檔" aria-label="複製共同設定檔" onclick="copyPatientContextProfile(this)"><span aria-hidden="true">⧉</span></button>
                 <button type="button" onclick="exportPatientWorkspace()">匯出 JSON</button>
                 <button type="button" onclick="importPatientWorkspace()">匯入</button>
                 <button type="button" class="danger" onclick="clearPatient()">重設病人資訊</button>
@@ -5023,7 +5023,7 @@ function renderWorkspaceHomeSummary(p){
         </div>
         <div class="ws-home-summary-actions">
           <button class="ws-btn ws-btn-primary" type="button" onclick="showPatientCenter()">診間 Copilot</button>
-          <button class="ws-btn icon-copy-btn" type="button" title="複製首頁摘要" aria-label="複製首頁摘要" ${hasSummary ? '' : 'disabled'} onclick="copyWorkspaceCommonVariableSummary()"><span aria-hidden="true">⧉</span></button>
+          <button class="ws-btn icon-copy-btn" type="button" title="複製首頁摘要" aria-label="複製首頁摘要" ${hasSummary ? '' : 'disabled'} onclick="copyWorkspaceCommonVariableSummary(this)"><span aria-hidden="true">⧉</span></button>
         </div>
       </div>
       <div class="ws-home-summary-lines">
@@ -6849,22 +6849,22 @@ function patientCenterTumorBoardStructuredData(){
         patient_context_bundle: bundle
     };
 }
-function copyPatientCenterOneLineSummary(){
-    copyTextToClipboard(patientCenterOneLineSummary(_patient || {}), '已複製病人整合摘要。');
+function copyPatientCenterOneLineSummary(trigger){
+    copyTextToClipboard(patientCenterOneLineSummary(_patient || {}), '', trigger);
 }
-function copyWorkspaceCommonVariableSummary(){
-    copyTextToClipboard(patientCenterOneLineSummary(_patient || {}), '已複製病人整合摘要。');
+function copyWorkspaceCommonVariableSummary(trigger){
+    copyTextToClipboard(patientCenterOneLineSummary(_patient || {}), '', trigger);
 }
-function copyPatientContextProfile(){
+function copyPatientContextProfile(trigger){
     const payload = {
         schema: 'patient_context.v1',
         generated_at: new Date().toISOString(),
         patient_context: { ...(_patient || {}) }
     };
-    copyTextToClipboard(JSON.stringify(payload, null, 2), '已複製共同設定檔。');
+    copyTextToClipboard(JSON.stringify(payload, null, 2), '', trigger);
 }
-function copyTumorBoardStructuredData(){
-    copyTextToClipboard(JSON.stringify(patientCenterTumorBoardStructuredData(), null, 2), '已複製 Tumor Board JSON。');
+function copyTumorBoardStructuredData(trigger){
+    copyTextToClipboard(JSON.stringify(patientCenterTumorBoardStructuredData(), null, 2), '', trigger);
 }
 function downloadTumorBoardStructuredData(){
     downloadJsonFile(patientCenterTumorBoardStructuredData(), `tumor_board_case_${patientWorkspaceFileStem(_patient)}_${new Date().toISOString().slice(0,10)}.json`);
@@ -8740,15 +8740,47 @@ function copyIssueReport(){
         alert(text);
     }
 }
-function copyTextToClipboard(text, successMessage){
+function markCopyConfirmed(trigger){
+    const el = trigger || (typeof event !== 'undefined' ? event.currentTarget : null);
+    if(!el || !el.classList) return;
+    const icon = el.querySelector ? (el.querySelector('[aria-hidden="true"]') || el.querySelector('[data-copy-icon]')) : null;
+    const restoreText = icon ? icon.textContent : (el.tagName === 'BUTTON' && String(el.textContent || '').trim().length <= 3 ? el.textContent : '');
+    el.classList.remove('copy-confirmed');
+    void el.offsetWidth;
+    el.classList.add('copy-confirmed');
+    if(icon) icon.textContent = '✓';
+    else if(restoreText) el.textContent = '✓';
+    window.setTimeout(() => {
+        el.classList.remove('copy-confirmed');
+        if(icon && restoreText) icon.textContent = restoreText;
+        else if(restoreText) el.textContent = restoreText;
+    }, 900);
+}
+function fallbackCopyText(value){
+    const ta = document.createElement('textarea');
+    ta.value = value;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    ta.style.top = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    let ok = false;
+    try { ok = document.execCommand && document.execCommand('copy'); } catch(e){ ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+}
+function copyTextToClipboard(text, successMessage, trigger){
     const value = String(text || '').trim();
     if(!value) return;
     if(navigator.clipboard && navigator.clipboard.writeText){
         navigator.clipboard.writeText(value).then(() => {
-            if(successMessage) alert(successMessage);
-        }).catch(() => alert(value));
+            markCopyConfirmed(trigger);
+        }).catch(() => {
+            if(fallbackCopyText(value)) markCopyConfirmed(trigger);
+        });
     } else {
-        alert(value);
+        if(fallbackCopyText(value)) markCopyConfirmed(trigger);
     }
 }
 document.addEventListener('DOMContentLoaded', () => {

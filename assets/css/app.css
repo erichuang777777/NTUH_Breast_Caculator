@@ -3649,6 +3649,17 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
 .ws-btn { padding: .5rem 1rem; border-radius: var(--r-sm); border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: .85rem; font-weight: 600; cursor: pointer; transition: .15s; font-family: inherit; }
 .icon-copy-btn { width: 2.25rem; min-width: 2.25rem; height: 2.25rem; padding: 0 !important; display: inline-grid; place-items: center; line-height: 1; font-size: 1rem; }
 .icon-copy-btn span { transform: translateY(-.02rem); }
+.copy-confirmed {
+    animation: copy-confirm-pulse .86s ease;
+    border-color: #16a34a !important;
+    background: #dcfce7 !important;
+    color: #166534 !important;
+}
+@keyframes copy-confirm-pulse {
+    0% { transform: scale(1); }
+    35% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+}
 .ws-btn-primary { background: #ec4899; color: white; border-color: #ec4899; }
 .ws-btn-primary:hover { background: #db2777; }
 .ws-btn-danger { color: #b91c1c; }
