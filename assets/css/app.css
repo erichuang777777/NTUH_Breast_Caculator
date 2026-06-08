@@ -2434,12 +2434,13 @@ body.mobile-device-shell .ws-context-pill-row {
   }
   .dashboard-agent-prompts {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: .35rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: .28rem;
   }
   .dashboard-agent-upload {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 34px;
+    justify-content: start;
   }
   .dashboard-agent-upload input {
     position: absolute;
@@ -2449,17 +2450,32 @@ body.mobile-device-shell .ws-context-pill-row {
     pointer-events: none;
   }
   .dashboard-agent-upload label {
-    min-height: 32px;
+    width: 34px;
+    height: 34px;
+    min-height: 34px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px dashed #94a3b8;
+    border: 1px solid #cbd5e1;
     border-radius: 6px;
     background: #f8fafc;
     color: #334155;
-    font-size: .78rem;
-    font-weight: 850;
     cursor: pointer;
+  }
+  .dashboard-agent-upload label:hover {
+    border-color: #0f766e;
+    color: #0f766e;
+    background: #f0fdfa;
+  }
+  .dashboard-agent-upload svg,
+  .dashboard-agent-mic-btn svg {
+    width: 17px;
+    height: 17px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
   .dashboard-agent-prompts button,
   .dashboard-agent-input button {
@@ -2477,13 +2493,13 @@ body.mobile-device-shell .ws-context-pill-row {
     text-overflow: ellipsis;
   }
   .dashboard-agent-prompts button {
-    min-height: 38px;
-    padding: .42rem .55rem;
-    text-align: left;
-    white-space: normal;
-    line-height: 1.35;
-    overflow: visible;
-    text-overflow: clip;
+    min-height: 32px;
+    padding: .35rem .38rem;
+    text-align: center;
+    white-space: nowrap;
+    line-height: 1.1;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .dashboard-agent-input {
     display: grid;
@@ -2511,6 +2527,9 @@ body.mobile-device-shell .ws-context-pill-row {
   }
   .dashboard-agent-mic-btn {
     padding: .35rem .25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
   .dashboard-agent-mic-btn.listening {
     border-color: #dc2626;

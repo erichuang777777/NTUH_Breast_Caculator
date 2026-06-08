@@ -3302,8 +3302,8 @@ function dashboardAgentSetMicListening(listening){
     const btn = document.getElementById('dashboardAgentMicBtn');
     if(btn){
         btn.classList.toggle('listening', _dashboardAgentSpeechListening);
-        btn.textContent = _dashboardAgentSpeechListening ? '停止' : '語音';
         btn.title = _dashboardAgentSpeechListening ? '停止語音輸入' : '語音輸入';
+        btn.setAttribute('aria-label', _dashboardAgentSpeechListening ? '停止語音輸入' : '語音輸入');
         btn.setAttribute('aria-pressed', _dashboardAgentSpeechListening ? 'true' : 'false');
     }
 }
@@ -3382,17 +3382,19 @@ function renderDashboardAgentPanel(){
             ${dashboardAgentHistoryHtml()}
         </div>
         <div class="dashboard-agent-prompts">
-            <button type="button" onclick="dashboardAgentAskContext('stage')">這個病人的分期</button>
-            <button type="button" onclick="dashboardAgentAskContext('drug')">這個病人的可用藥物</button>
-            <button type="button" onclick="dashboardAgentAskContext('report')">我貼上病理報告後可以抽取哪些欄位？</button>
+            <button type="button" onclick="dashboardAgentAskContext('stage')">分期</button>
+            <button type="button" onclick="dashboardAgentAskContext('drug')">可用藥物</button>
+            <button type="button" onclick="dashboardAgentAskContext('report')">報告抽取</button>
         </div>
         <div class="dashboard-agent-upload">
             <input id="dashboardAgentFile" type="file" accept=".txt,.text,.md,text/plain" onchange="dashboardAgentUploadFile(this.files && this.files[0])">
-            <label for="dashboardAgentFile">上傳文字病理報告</label>
+            <label for="dashboardAgentFile" title="上傳文字病理報告" aria-label="上傳文字病理報告">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.44 11.05 12 20.49a6 6 0 0 1-8.49-8.49l9.9-9.9a4 4 0 0 1 5.66 5.66l-9.9 9.9a2 2 0 1 1-2.83-2.83l8.49-8.49"/></svg>
+            </label>
         </div>
         <form class="dashboard-agent-input ${dashboardAgentSpeechSupported() ? '' : 'no-mic'}" onsubmit="event.preventDefault();dashboardAgentSubmit()">
             <textarea id="dashboardAgentInput" rows="3" placeholder="問問題，或貼上已去識別病理報告文字..." autocomplete="off" oninput="dashboardAgentInputChanged(this.value)" onkeydown="dashboardAgentInputKeydown(event)"></textarea>
-            ${dashboardAgentSpeechSupported() ? '<button type="button" id="dashboardAgentMicBtn" class="dashboard-agent-mic-btn" onclick="dashboardAgentToggleMic()" title="語音輸入" aria-label="語音輸入" aria-pressed="false">語音</button>' : ''}
+            ${dashboardAgentSpeechSupported() ? '<button type="button" id="dashboardAgentMicBtn" class="dashboard-agent-mic-btn" onclick="dashboardAgentToggleMic()" title="語音輸入" aria-label="語音輸入" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/><path d="M8 22h8"/></svg></button>' : ''}
             <button type="submit">送出</button>
             <div id="dashboardAgentPhiWarning" class="dashboard-agent-phi-warning" hidden></div>
         </form>
