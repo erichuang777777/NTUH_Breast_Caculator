@@ -6616,77 +6616,59 @@ function patientPlanResourceRows(p){
         return !t.length || t.some(x => timing.includes(x));
     }).slice(0, 8);
 }
+function patientInformPredictPayload(p){
+    p = p || {};
+    if(isWorkspaceDcisOnly(p)) return { status:'not_applicable', message:'DCIS only 不適用 invasive breast cancer PREDICT' };
+    const source = dashboardCalcPredictionSource(p);
+    if(!source) return { status:'missing', message:'需年齡、大小、LN、grade、ER/HER2' };
+    const pred = dashboardPredictSurvivalSummary(
+        source.p,
+        source.erSign,
+        source.age,
+        source.size,
+        source.nodes,
+        source.grade,
+        source.ki67
+    );
+    if(!pred || !Array.isArray(pred.years)) return { status:'missing', message:'PREDICT 資料不足' };
+    const idx = pred.years.indexOf(10);
+    if(idx < 0) return { status:'missing', message:'PREDICT 10 年結果待補' };
+    return {
+        status:'ok',
+        tenYearSurvival: pred.treated[idx],
+        tenYearBenefit: pred.benefit[idx],
+        years: pred.years,
+        treated: pred.treated,
+        benefit: pred.benefit
+    };
+}
+function patientInformMedicationPlans(p){
+    p = p || {};
+    const plans = [];
+    const add = (name, schedule, cost) => {
+        if(name) plans.push({ name, schedule: schedule || '', cost: cost || '' });
+    };
+    if(p.endocrine_plan) add('內分泌治療', p.endocrine_plan, p.endocrine_cost || '');
+    if(p.targeted_plan) add('標靶治療', p.targeted_plan, p.targeted_cost || '');
+    if(p.immunotherapy_plan) add('免疫治療', p.immunotherapy_plan, p.immunotherapy_cost || '');
+    if(p.medication_plan) add('其他藥物治療', p.medication_plan, p.medication_cost || '');
+    return plans;
+}
 function generatePatientTreatmentPlan(){
     const bundle = patientWorkspaceStructuredData();
     const p = bundle.patient_context;
-    const d = bundle.derived;
     const today = new Date().toLocaleDateString('zh-TW');
-    const escHtml = s => String(s==null?'':s).replace(/[<>&]/g, c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));
-    const list = arr => (arr && arr.length) ? `<ul>${arr.map(x=>`<li>${escHtml(x)}</li>`).join('')}</ul>` : '<div class="muted">尚無資料</div>';
-    const kv = (label, value) => `<div class="kv"><b>${escHtml(label)}</b><span>${escHtml(value || '—')}</span></div>`;
     const regimen = patientPlanSelectedRegimenSummary();
-    const missingItems = patientPlanMissingItems(p, d, regimen);
-    const resources = patientPlanResourceRows(p);
-    const stageLine = [d.stage.T,d.stage.N,d.stage.M].filter(Boolean).join(' ');
-    const stageDisplay = [stageLine, d.stage.anatomic ? `解剖 ${d.stage.anatomic}` : '', d.stage.prognostic ? `預後 ${d.stage.prognostic}` : ''].filter(Boolean).join(' / ');
-    const subtype = d.subtype || deriveWorkspaceSubtype(p) || '—';
-    const side = ({L:'左側',R:'右側',B:'雙側'}[p.side] || '—');
-    const therapyCandidates = d.support.candidates && d.support.candidates.length ? d.support.candidates : ['待醫療團隊依完整資料確認'];
-    const resourceHtml = resources.length ? `<ul>${resources.map(item => `<li><strong>${escHtml(item.title)}</strong>：${escHtml(item.scope || item.category || '')}<br><span class="muted">窗口：${escHtml(item.owner || '院內窗口')}；文件：${escHtml((item.required_docs || []).join('、') || '需窗口確認')}</span></li>`).join('')}</ul>` : '<div class="muted">尚無可媒合資源</div>';
-    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>病人治療計畫 ${today}</title>
-    <style>
-      body{font-family:'Microsoft JhengHei','Noto Sans CJK TC',sans-serif;padding:22px;color:#172033;font-size:12px;line-height:1.6}
-      h1{font-size:20px;margin:0;color:#0f766e}
-      h2{font-size:13px;margin:0 0 8px;color:#0f766e;border-bottom:1px solid #dbeafe;padding-bottom:4px}
-      .header{display:flex;justify-content:space-between;gap:12px;border-bottom:2px solid #0f766e;padding-bottom:10px;margin-bottom:12px}
-      .meta{font-size:10px;color:#64748b;text-align:right}
-      .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-      .sec{border:1px solid #e2e8f0;border-radius:6px;padding:10px;page-break-inside:avoid}
-      .kv{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #f1f5f9;padding:2px 0}
-      .kv b{color:#64748b;font-size:10px}.kv span{font-weight:700;text-align:right}
-      ul{margin:.25rem 0 0 1.1rem;padding:0}.muted{color:#64748b}.note{color:#92400e;font-size:10px;margin-top:6px}
-      .wide{grid-column:span 2}.pill{display:inline-block;border:1px solid #cbd5e1;border-radius:999px;padding:2px 7px;margin:2px 3px 2px 0;font-weight:700;color:#334155}
-      .actions{position:fixed;top:10px;right:10px}.actions button{background:#0f766e;color:white;border:0;border-radius:5px;padding:8px 12px;font-family:inherit;cursor:pointer}
-      @media print{body{padding:0}.actions{display:none}.grid{grid-template-columns:repeat(2,1fr)}}
-    </style></head><body>
-      <div class="actions"><button onclick="window.print()">列印 / PDF</button></div>
-      <div class="header">
-        <div><h1>乳癌治療說明單</h1><div class="muted">供病人理解目前分期、腫瘤類型、預計治療與待補資料</div></div>
-        <div class="meta">${today}<br>Patient ID: ${escHtml(bundle.patient_id || '—')}</div>
-      </div>
-      <div class="grid">
-        <div class="sec"><h2>1. 目前分期與亞型</h2>
-          ${kv('分期', stageDisplay)}
-          ${kv('腫瘤側別', side)}
-          ${kv('腫瘤類型', subtype)}
-          ${kv('ER / PR / HER2', [p.er,p.pr,p.her2].filter(Boolean).join(' / '))}
-          ${kv('Ki-67 / Oncotype RS', [p.ki67 ? p.ki67 + '%' : '', p.oncotype_rs ? 'RS ' + p.oncotype_rs : ''].filter(Boolean).join(' / '))}
-        </div>
-        <div class="sec"><h2>2. 預計治療方向</h2>
-          ${kv('目前治療階段', dashboardPhaseLabel(p.phase))}
-          ${kv('已選配方', regimen.name)}
-          ${kv('週期/頻率', regimen.schedule)}
-          <div style="margin-top:6px">${regimen.drugs.map(x => `<span class="pill">${escHtml(x)}</span>`).join('') || '<span class="muted">尚未選擇藥物</span>'}</div>
-          <div class="note">若尚未選擇配方，下方候選方向僅供門診討論用。</div>
-        </div>
-        <div class="sec"><h2>3. 費用與健保/自費</h2>
-          ${kv('估算總藥費', regimen.price)}
-          ${kv('藥價基準', regimen.priceBasis)}
-          ${kv('健保藥價項目', regimen.nhi.join('、') || '待確認')}
-          ${kv('自費/方案待確認', regimen.selfPay.join('、') || '尚無明確自費項目')}
-          <div class="note">實際費用會受劑量、身高體重、腎功能、住院/門診計價、健保事審與院內公告影響。</div>
-        </div>
-        <div class="sec"><h2>4. 還需要補的檢查/資料</h2>${list(missingItems)}</div>
-        <div class="sec wide"><h2>可嘗試申請或詢問的資源</h2>
-          ${resourceHtml}
-          <div class="note">以上為提醒清單，不代表一定符合資格；請由社工、個管師、保險或藥廠方案窗口確認。</div>
-        </div>
-        <div class="sec wide"><h2>門診討論重點</h2>
-          ${list(therapyCandidates.concat(d.support.coverage || []).slice(0, 6))}
-          <div class="note">本說明單不取代醫師診療。治療選擇、健保給付與自費方案以醫師說明、健保署公告及院內流程為準。</div>
-        </div>
-      </div>
-    </body></html>`;
+    const payload = {
+        bundle,
+        regimen,
+        predict: patientInformPredictPayload(p),
+        medications: patientInformMedicationPlans(p),
+        date: today
+    };
+    const html = window.OncoBreastPatientInformSheet
+        ? window.OncoBreastPatientInformSheet.render(payload)
+        : '<!DOCTYPE html><html><body><p>病人說明單模組尚未載入。</p></body></html>';
     const w = window.open('', '_blank');
     if(!w){ alert('請允許彈出視窗以產生 treatment plan'); return; }
     w.document.write(html);
