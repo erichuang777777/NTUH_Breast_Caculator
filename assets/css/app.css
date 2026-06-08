@@ -2222,7 +2222,8 @@ body.mobile-device-shell .ws-context-pill-row {
     padding: .18rem;
   }
   .dashboard-agent-position button {
-    min-width: 30px;
+    width: 28px;
+    min-width: 28px;
     min-height: 26px;
     border: 0;
     border-radius: 5px;
@@ -2232,12 +2233,27 @@ body.mobile-device-shell .ws-context-pill-row {
     font-size: .72rem;
     font-weight: 900;
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .dashboard-agent-position svg,
+  .dashboard-agent-top-btn svg,
+  .dashboard-agent-collapse-btn svg {
+    width: 15px;
+    height: 15px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
   .dashboard-agent-position button.active {
     background: #0f766e;
     color: #fff;
   }
   .dashboard-agent-collapse-btn {
+    width: 30px;
     min-height: 30px;
     border: 1px solid #d8e3ee;
     border-radius: 7px;
@@ -2247,9 +2263,13 @@ body.mobile-device-shell .ws-context-pill-row {
     font-size: .72rem;
     font-weight: 900;
     cursor: pointer;
-    padding: 0 .48rem;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
   .dashboard-agent-top-btn {
+    width: 30px;
     min-height: 30px;
     border: 1px solid #d8e3ee;
     border-radius: 7px;
@@ -2259,8 +2279,10 @@ body.mobile-device-shell .ws-context-pill-row {
     font-size: .72rem;
     font-weight: 900;
     cursor: pointer;
-    padding: 0 .46rem;
-    white-space: nowrap;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
   .dashboard-agent-context-meter {
     display: grid;

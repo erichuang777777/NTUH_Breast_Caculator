@@ -6,11 +6,13 @@
   function defaultConfig(locationLike){
     const loc = locationLike || global.location || {};
     const protocol = loc.protocol || '';
+    const host = loc.hostname || '';
     const hasHttpApi = protocol === 'http:' || protocol === 'https:';
+    const isLocal = host === '127.0.0.1' || host === 'localhost';
     return {
       enabled: hasHttpApi,
       endpoint: hasHttpApi ? '/api/agent' : '',
-      headers: hasHttpApi ? { 'x-client-app':'oncobreast-copilot' } : {}
+      headers: hasHttpApi ? { 'x-client-app': isLocal ? 'oncobreast-local-ollama-demo' : 'oncobreast-copilot' } : {}
     };
   }
 
@@ -25,6 +27,7 @@
       const saved = JSON.parse(raw || '{}');
       const endpoint = String(saved.endpoint || '').trim();
       if(!endpoint && fallback && fallback.endpoint) return fallback;
+      if((loc.hostname === '127.0.0.1' || loc.hostname === 'localhost') && endpoint === '/api/agent') return fallback;
       return {
         enabled: !!saved.enabled,
         endpoint,

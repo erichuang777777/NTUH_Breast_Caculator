@@ -2902,8 +2902,10 @@ let _dashboardAgentSpeechListening = false;
 function dashboardAgentDefaultApiConfig(){
     if(window.OncoBreastAgentAdapter) return window.OncoBreastAgentAdapter.defaultConfig(location);
     const protocol = (location && location.protocol) ? location.protocol : '';
+    const host = (location && location.hostname) ? location.hostname : '';
     const hasHttpApi = protocol === 'http:' || protocol === 'https:';
-    return { enabled: hasHttpApi, endpoint: hasHttpApi ? '/api/agent' : '', headers: hasHttpApi ? { 'x-client-app':'oncobreast-copilot' } : {} };
+    const isLocal = host === '127.0.0.1' || host === 'localhost';
+    return { enabled: hasHttpApi, endpoint: hasHttpApi ? '/api/agent' : '', headers: hasHttpApi ? { 'x-client-app': isLocal ? 'oncobreast-local-ollama-demo' : 'oncobreast-copilot' } : {} };
 }
 function getDashboardAgentPosition(){
     try {
@@ -2948,6 +2950,8 @@ function getDashboardAgentApiConfig(){
         const saved = JSON.parse(raw || '{}');
         const endpoint = String(saved.endpoint || '').trim();
         if(!endpoint && fallback && fallback.endpoint) return fallback;
+        const host = (location && location.hostname) ? location.hostname : '';
+        if((host === '127.0.0.1' || host === 'localhost') && endpoint === '/api/agent') return fallback;
         return {
             enabled: !!saved.enabled,
             endpoint,
@@ -3297,6 +3301,16 @@ function dashboardAgentSpeechConstructor(){
 function dashboardAgentSpeechSupported(){
     return !!dashboardAgentSpeechConstructor();
 }
+function dashboardIcon(name){
+    const icons = {
+        left:'<path d="m15 18-6-6 6-6"/>',
+        right:'<path d="m9 18 6-6-6-6"/>',
+        bug:'<path d="m8 2 1.88 1.88"/><path d="M14.12 3.88 16 2"/><path d="M9 7.13v-1a3 3 0 0 1 6 0v1"/><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6Z"/><path d="M12 20v-9"/><path d="M4 13H2"/><path d="M22 13h-2"/><path d="m5 19-1.5 1.5"/><path d="M20.5 20.5 19 19"/>',
+        trash:'<path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v5"/><path d="M14 11v5"/>',
+        collapse:'<path d="M4 14h6v6"/><path d="m10 14-7 7"/><path d="M20 10h-6V4"/><path d="m14 10 7-7"/>'
+    };
+    return `<svg viewBox="0 0 24 24" aria-hidden="true">${icons[name] || ''}</svg>`;
+}
 function dashboardAgentSetMicListening(listening){
     _dashboardAgentSpeechListening = !!listening;
     const btn = document.getElementById('dashboardAgentMicBtn');
@@ -3369,12 +3383,12 @@ function renderDashboardAgentPanel(){
             </div>
             <div class="dashboard-agent-head-actions">
                 <div class="dashboard-agent-position">
-                    <button type="button" class="${pos === 'left' ? 'active' : ''}" onclick="setDashboardAgentPosition('left')">左</button>
-                    <button type="button" class="${pos === 'right' ? 'active' : ''}" onclick="setDashboardAgentPosition('right')">右</button>
+                    <button type="button" class="${pos === 'left' ? 'active' : ''}" onclick="setDashboardAgentPosition('left')" title="Agent 靠左" aria-label="Agent 靠左">${dashboardIcon('left')}</button>
+                    <button type="button" class="${pos === 'right' ? 'active' : ''}" onclick="setDashboardAgentPosition('right')" title="Agent 靠右" aria-label="Agent 靠右">${dashboardIcon('right')}</button>
                 </div>
-                <button type="button" class="dashboard-agent-top-btn" onclick="openAgentIssueReport()" title="回報 Agent 對話錯誤">回報錯誤</button>
-                <button type="button" class="dashboard-agent-top-btn" onclick="dashboardAgentClearHistory()" title="清除對話紀錄">清對話</button>
-                <button type="button" class="dashboard-agent-collapse-btn" onclick="setDashboardAgentCollapsed(true)" title="縮小 AI Agent">收合</button>
+                <button type="button" class="dashboard-agent-top-btn" onclick="openAgentIssueReport()" title="回報 Agent 對話錯誤" aria-label="回報 Agent 對話錯誤">${dashboardIcon('bug')}</button>
+                <button type="button" class="dashboard-agent-top-btn" onclick="dashboardAgentClearHistory()" title="清除對話紀錄" aria-label="清除對話紀錄">${dashboardIcon('trash')}</button>
+                <button type="button" class="dashboard-agent-collapse-btn" onclick="setDashboardAgentCollapsed(true)" title="縮小 AI Agent" aria-label="縮小 AI Agent">${dashboardIcon('collapse')}</button>
             </div>
         </div>
         <div id="dashboardAgentContextMeter">${dashboardAgentContextMeterHtml()}</div>
