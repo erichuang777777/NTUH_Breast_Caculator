@@ -2234,6 +2234,39 @@ function dashboardRecordingToolCard(){
         <span class="modal-dashboard-summary summary-recordingPage">${lines}</span>
     </button>`;
 }
+function dashboardPatientInformToolCard(ctx){
+    ctx = ctx || dashboardPatientContext();
+    const p = (ctx && ctx.p) || _patient || {};
+    const bundle = patientWorkspaceStructuredData();
+    const regimen = patientPlanSelectedRegimenSummary();
+    const summary = patientCenterClinicalSummaryLine(p) || '請先填寫共用設定檔';
+    const missing = [];
+    if(!p.side || !p.quadrant) missing.push('重卡部位');
+    if(!p.size) missing.push('大小');
+    if(!p.grade) missing.push('Grade');
+    if(!p.er || !p.pr || !p.her2) missing.push('ER/PR/HER2');
+    if(!p.ki67) missing.push('Ki-67');
+    if(!((bundle.derived || {}).stage || {}).anatomic) missing.push('stage');
+    if(!regimen.selected) missing.push('處方');
+    const status = missing.length ? 'yellow' : 'green';
+    const statusText = missing.length ? `缺 ${missing.slice(0, 3).join('、')}${missing.length > 3 ? '…' : ''}` : '可產生';
+    const lines = [
+        `<span class="modal-dashboard-line"><b>摘要</b><span>${esc(summary)}</span></span>`,
+        `<span class="modal-dashboard-line"><b>處方</b><span>${esc(regimen.selected ? regimen.name : '尚未選擇化療配方')}</span></span>`,
+        `<span class="modal-dashboard-line"><b>狀態</b><span>${esc(statusText)}</span></span>`
+    ].join('');
+    return `<section class="modal-dashboard-card patient-tool-card card-patientInform binding-required patient-desktop-care-card" style="--tool-span:1">
+        <span class="modal-dashboard-card-head">
+            <span class="modal-dashboard-card-title-wrap"><span class="modal-dashboard-card-icon">🖨</span><strong class="modal-dashboard-card-title">病人治療說明單</strong><span class="modal-dashboard-status ${status}" title="${esc(statusText)}"></span></span>
+            <span class="modal-dashboard-card-action">${esc(statusText)}</span>
+        </span>
+        <span class="modal-dashboard-summary summary-patientInform">${lines}</span>
+        <div class="patient-desktop-care-actions">
+            <button type="button" onclick="generatePatientTreatmentPlan()">產生 A4 說明單</button>
+            <button type="button" onclick="openDashboardWidgetModal('inpatientPage')">編輯處方</button>
+        </div>
+    </section>`;
+}
 function safeDashboardWidgetSummary(widget){
     try {
         return dashboardWidgetSummary(widget);
@@ -3695,9 +3728,10 @@ function renderModalDashboardOverview(){
     }
     const ctx = dashboardPatientContext();
     const journey = dashboardJourneyState(ctx);
-    const toolIds = ['breastPage','inpatientPage','icdPage','trialsPage','recordingPage','supportResources','calcPage','ihc4Page','riskPage'];
+    const toolIds = ['breastPage','inpatientPage','icdPage','trialsPage','patientInformPage','recordingPage','supportResources','calcPage','ihc4Page','riskPage'];
     const toolCards = toolIds
         .map(id => {
+            if(id === 'patientInformPage') return dashboardPatientInformToolCard(ctx);
             if(id === 'recordingPage') return dashboardRecordingToolCard();
             if(id === 'supportResources') return dashboardSupportToolCard(ctx);
             const widget = DASHBOARD_WIDGETS.find(w => w.id === id);

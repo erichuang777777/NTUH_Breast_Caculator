@@ -1792,6 +1792,19 @@ body.mobile-device-shell .ws-context-pill-row {
     height: 1.72rem;
     padding: 0 !important;
   }
+  .patient-tool-card.card-patientInform {
+    cursor: default;
+  }
+  .patient-tool-card.card-patientInform .modal-dashboard-summary {
+    min-height: 0;
+  }
+  .patient-tool-card.card-patientInform .patient-desktop-care-actions {
+    margin-top: .34rem;
+  }
+  .patient-tool-card.card-patientInform .patient-desktop-care-actions button:first-child {
+    background: #0f766e;
+    color: #fff;
+  }
   .patient-desktop-checklist {
     display: grid;
     gap: .22rem;
