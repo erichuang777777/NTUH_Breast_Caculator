@@ -947,7 +947,7 @@ const DASHBOARD_WIDGETS = [
     { id:'inpatientPage', flag:'inpatient', label:'常用配方與劑量', desktopSpan:1, patientBinding:'preferred', x:640, y:580, w:600, h:460, cx:460, cy:500, cw:420, ch:340 },
     { id:'trialsPage', flag:'trials', label:'臨床試驗', desktopSpan:1, patientBinding:'optional', x:1260, y:580, w:640, h:460, cx:900, cy:500, cw:420, ch:340 },
     { id:'calcPage', flag:'calc_gail', label:'乳癌計算機', desktopSpan:2, patientBinding:'preferred', x:20, y:1060, w:1880, h:420, cx:20, cy:880, cw:1260, ch:360 },
-    { id:'riskPage', flag:'calculator', label:'風險分數', desktopSpan:1, patientBinding:'preferred', x:20, y:1500, w:620, h:420, cx:20, cy:1260, cw:420, ch:320 },
+    { id:'riskPage', flag:'calculator', label:'NPI / Magee / Oncotype RS / Gail', desktopSpan:1, patientBinding:'preferred', x:20, y:1500, w:620, h:420, cx:20, cy:1260, cw:420, ch:320 },
     { id:'rcbPage', flag:'calc_rcb', label:'RCB', desktopSpan:1, patientBinding:'preferred', x:660, y:1500, w:620, h:420, cx:460, cy:1260, cw:420, ch:320 },
     { id:'ihc4Page', flag:'calc_ihc4', label:'IHC4', desktopSpan:1, patientBinding:'preferred', x:20, y:1500, w:620, h:420, cx:20, cy:1260, cw:420, ch:320 },
     { id:'cts5Page', flag:'calc_cts5', label:'CTS5', desktopSpan:1, patientBinding:'preferred', x:660, y:1500, w:620, h:420, cx:460, cy:1260, cw:420, ch:320 },
@@ -1512,7 +1512,7 @@ function dashboardWidgetCardMeta(widget){
         surgeryPage: { icon:'🧾', title:'手術醫材', metric:'自費清單', desc:'乳癌手術自費項目勾選、總價與匯出' },
         trialsPage: { icon:'🔎', title:'臨床試驗', metric:'ClinicalTrials', desc:'台灣乳癌臨床試驗查詢與條件摘要' },
         calcPage: { icon:'📈', title:'PREDICT v2/v3', metric:'OS / Benefit', desc:'乳癌術後整體存活率與輔助治療獲益，並連動 Workspace 變數' },
-        riskPage: { icon:'📊', title:'風險分數', metric:'Risk scores', desc:'NPI、Magee、Oncotype RS、Gail 等風險與預後摘要' },
+        riskPage: { icon:'📊', title:'NPI / Magee / Oncotype RS / Gail', metric:'Risk scores', desc:'NPI、Magee、Oncotype RS、Gail 等風險與預後摘要' },
         rcbPage: { icon:'🧾', title:'RCB', metric:'Residual disease', desc:'術前治療後殘餘癌負荷與 RCB class' },
         ihc4Page: { icon:'🧬', title:'IHC4', metric:'IHC recurrence', desc:'ER、PR、HER2、Ki-67 連動 Workspace 的 IHC4 復發風險分數' },
         cts5Page: { icon:'📊', title:'CTS5', metric:'Late DRR', desc:'HR+/HER2- 完成 5 年內分泌治療後的晚期遠端復發風險' },
@@ -3382,7 +3382,7 @@ async function dashboardAgentTryExternal(text){
                 derived: { stage: ctx.stage || {}, subtype: ctx.subtype || '', missing: ctx.missing || [], phase_label: ctx.phaseLabel || '' },
                 report_text: _dashboardAgentReportText || '',
                 tool_registry: DASHBOARD_AGENT_TOOLS.map(t => ({ id:t.id, label:t.label, aliases:t.aliases || [] })),
-                client: { app:'OncoBreast Calculator', version: typeof APP_VERSION !== 'undefined' ? APP_VERSION : '' }
+                client: { app:'Oncobreast copilot', version: typeof APP_VERSION !== 'undefined' ? APP_VERSION : '' }
             };
         const data = window.OncoBreastAgentAdapter
             ? await window.OncoBreastAgentAdapter.post(cfg, payload)
@@ -3503,7 +3503,7 @@ function renderModalDashboardOverview(){
     const journey = dashboardJourneyState(ctx);
     const patientBundle = patientWorkspaceStructuredData();
     const toolIds = ['breastPage','inpatientPage','icdPage','trialsPage','calcPage','riskPage','rcbPage','ihc4Page','cts5Page','pepiPage'];
-    const toolCards = toolIds
+    const toolCards = renderDesktopPatientCareCard(patientBundle) + toolIds
         .map(id => DASHBOARD_WIDGETS.find(w => w.id === id))
         .filter(w => w && isDashboardWidgetAvailable(w) && visible[w.id] !== false)
         .map(w => dashboardOpenToolCard(w, safeDashboardWidgetSummary(w)))
@@ -3520,8 +3520,7 @@ function renderModalDashboardOverview(){
     const mainHtml = `
         <section class="patient-context-bar">
             <div>
-                <strong>Patient Care Copilot</strong>
-                <span>以共同病人變數定位 NCCN evidence，並串接藥物、重卡、試驗與風險工具。</span>
+                <strong>共用設定檔 patient_context.v1</strong>
             </div>
             <div class="patient-context-actions">
                 <select id="dashboardPhaseSelect" onchange="setPatientField('phase', this.value)" aria-label="治療階段">
@@ -3540,14 +3539,12 @@ function renderModalDashboardOverview(){
             </div>
         </section>
         <section class="patient-context-pills">${pills}<button type="button" class="patient-context-copy" onclick="copyDashboardCompactContextSummary(this)" title="複製病歷摘要" aria-label="複製病歷摘要">⧉</button></section>
-        ${renderDesktopPatientCareCard(patientBundle)}
         <section class="patient-journey-panel patient-journey-main">
             <div class="patient-panel-head">
                 <span>Evidence Block</span>
                 <b>NCCN evidence</b>
             </div>
             <div class="patient-current-node">
-                ${renderGuidelineMatchBlock(ctx, journey)}
                 ${renderNccnCitationBox(journey.citation)}
             </div>
         </section>
@@ -3837,7 +3834,7 @@ async function runApiGuideSmokeTest(){
     return results;
 }
 const AGENT_SYSTEM_PROMPT_PUBLIC = [
-    '你是 OncoBreast Calculator 的臨床工作區 copilot，面向醫師與護理師。',
+    '你是 Oncobreast copilot 的臨床工作區 copilot，面向醫師與護理師。',
     '請用繁體中文，回答要精簡、臨床可讀。',
     '你的主要任務有兩種：1. 使用者給 free text 時，抽取欄位並回傳 patient_patch 供前端寫入；2. 使用者問問題時，優先從 system_context 的本系統資料與計算結果回答。',
     '你只能使用 system_context、網站內資料庫、網站內計算器與使用者提供的文字；不可聲稱已查詢外部網站、最新 guideline、文獻或院外資料。',
@@ -6244,7 +6241,7 @@ function patientWorkspaceStructuredData(){
     return {
         schema: 'onco_breast_patient_context_bundle.v1',
         generated_at: new Date().toISOString(),
-        source_app: 'OncoBreast Calculator',
+        source_app: 'Oncobreast copilot',
         patient_id: p.mrn || '',
         encounter_id: p.initial_visit_date || '',
         patient_context: p,
@@ -6811,7 +6808,7 @@ function patientCenterTumorBoardStructuredData(){
     return {
         schema: 'onco_breast_tumor_board_case.v1',
         generated_at: new Date().toISOString(),
-        source_app: 'OncoBreast Calculator',
+        source_app: 'Oncobreast copilot',
         one_line_summary: patientCenterOneLineSummary(p),
         patient_id: bundle.patient_id || '',
         encounter_id: bundle.encounter_id || '',
@@ -6932,21 +6929,49 @@ function renderPatientCenterChecklist(items){
         </div>`;
     }).join('');
 }
+function renderPatientCenterCompactChecklist(items){
+    const states = patientCenterReadChecklistState();
+    return items.map(item => {
+        const current = states[item.id] || '';
+        const stateLabel = {done:'已確認',na:'不適用',later:'稍後確認'}[current] || (item.autoState === 'ready' ? '資料已具備' : '待確認');
+        return `<div class="patient-center-check-item compact ${item.autoState || 'open'} ${current || ''}">
+            <div class="patient-center-check-main">
+              <strong>${_journeyEsc(item.title)}</strong>
+              <em>${_journeyEsc(stateLabel)}</em>
+            </div>
+            ${patientCenterChecklistStateButtons(item.id, current)}
+        </div>`;
+    }).join('');
+}
 function renderDesktopPatientCareCard(bundle){
     bundle = bundle || patientWorkspaceStructuredData();
     const p = bundle.patient_context || _patient || {};
-    const checklist = renderPatientCenterChecklist(patientCenterAdminChecklistItems(p, bundle));
-    return `<section class="patient-journey-panel patient-desktop-care-card">
-        <div class="patient-panel-head">
-            <span>Patient care checklist</span>
-            <b>門診交付 / 行政核對</b>
-        </div>
+    const states = patientCenterReadChecklistState();
+    const allItems = patientCenterAdminChecklistItems(p, bundle);
+    const activeItems = allItems.filter(item => {
+        const current = states[item.id] || '';
+        return current !== 'done' && current !== 'na' && item.autoState !== 'ready';
+    });
+    const fallbackItems = allItems.filter(item => {
+        const current = states[item.id] || '';
+        return current !== 'done' && current !== 'na';
+    });
+    const displayItems = (activeItems.length ? activeItems : fallbackItems).slice(0, 3);
+    const checklist = renderPatientCenterCompactChecklist(displayItems);
+    const remaining = Math.max(0, fallbackItems.length - displayItems.length);
+    const status = activeItems.length ? `${activeItems.length} 待核對` : (fallbackItems.length ? `${fallbackItems.length} 可複核` : '已完成');
+    return `<section class="modal-dashboard-card patient-tool-card card-patientChecklist binding-required patient-desktop-care-card" style="--tool-span:1">
+        <span class="modal-dashboard-card-head">
+            <span class="modal-dashboard-card-title-wrap"><span class="modal-dashboard-card-icon">☑</span><strong class="modal-dashboard-card-title">行政核對</strong><span class="modal-dashboard-status ${activeItems.length ? 'yellow' : 'green'}" title="${esc(status)}"></span></span>
+            <span class="modal-dashboard-card-action">${esc(status)}</span>
+        </span>
         <div class="patient-desktop-care-body">
             <div class="patient-desktop-care-actions">
                 <button type="button" onclick="generatePatientTreatmentPlan()">病人說明單</button>
                 <button type="button" onclick="printWorkspaceSummary()">列印病歷摘要</button>
             </div>
             <div class="patient-desktop-checklist">${checklist || '<div class="modal-dashboard-placeholder">目前無待核對項目</div>'}</div>
+            ${remaining ? `<small class="patient-desktop-checklist-more">另有 ${remaining} 項在完整清單</small>` : ''}
         </div>
     </section>`;
 }

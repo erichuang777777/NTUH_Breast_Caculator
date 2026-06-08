@@ -987,7 +987,7 @@ body.mobile-device-shell .ws-context-pill-row {
     font-family: inherit;
     align-self: stretch;
     box-shadow: none;
-    transition: border-color .16s, transform .12s;
+    transition: border-color .16s, background .16s;
   }
   .modal-dashboard-card.card-wsPage,
   .modal-dashboard-card.card-icdPage,
@@ -1009,7 +1009,7 @@ body.mobile-device-shell .ws-context-pill-row {
   }
   .modal-dashboard-card:hover {
     border-color: #1a6b4a;
-    transform: translateY(-1px);
+    background: #fbfefc;
   }
   .modal-dashboard-card:hover .expand-hint {
     opacity: 1;
@@ -1709,16 +1709,12 @@ body.mobile-device-shell .ws-context-pill-row {
     grid-row: auto;
   }
   .patient-desktop-care-card {
-    grid-column: 1 / -1;
     min-height: 0;
   }
   .patient-desktop-care-body {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    align-items: start;
-    gap: .55rem;
-    padding: .48rem;
-    background: #f8fafc;
+    gap: .34rem;
+    min-height: 0;
   }
   .patient-desktop-care-summary {
     display: grid;
@@ -1748,16 +1744,16 @@ body.mobile-device-shell .ws-context-pill-row {
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
-    gap: .28rem;
+    gap: .24rem;
   }
   .patient-desktop-care-actions button {
     border: 1px solid #0f766e;
     border-radius: 6px;
     background: #fff;
     color: #0f766e;
-    padding: .26rem .5rem;
+    padding: .18rem .42rem;
     font-family: inherit;
-    font-size: .72rem;
+    font-size: .66rem;
     font-weight: 850;
     cursor: pointer;
   }
@@ -1769,10 +1765,15 @@ body.mobile-device-shell .ws-context-pill-row {
   }
   .patient-desktop-checklist {
     display: grid;
-    gap: .28rem;
-    max-height: 92px;
+    gap: .22rem;
+    max-height: 68px;
     overflow: auto;
     padding-right: .15rem;
+  }
+  .patient-desktop-checklist-more {
+    color: #64748b;
+    font-size: .62rem;
+    font-weight: 750;
   }
   .patient-journey-input,
   .patient-journey-tools {
@@ -1826,10 +1827,10 @@ body.mobile-device-shell .ws-context-pill-row {
   .patient-journey-step.active span { background: #f97316; color: #fff; }
   .patient-current-node {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(210px, .72fr);
+    grid-template-columns: minmax(0, 1fr);
     gap: .45rem;
     padding: 0 .52rem .52rem;
-    max-height: 104px;
+    max-height: 84px;
     overflow: auto;
   }
   .patient-current-node > div,
@@ -3948,6 +3949,14 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
 body.modal-dashboard-mode .patient-desktop-checklist .patient-center-check-item {
   gap: .36rem;
   padding: .34rem .45rem;
+}
+body.modal-dashboard-mode .patient-desktop-checklist .patient-center-check-item.compact {
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: .22rem;
+}
+body.modal-dashboard-mode .patient-desktop-checklist .patient-center-check-item.compact .patient-center-check-actions {
+  justify-content: flex-start;
 }
 body.modal-dashboard-mode .patient-desktop-checklist .patient-center-check-main {
   gap: .05rem;

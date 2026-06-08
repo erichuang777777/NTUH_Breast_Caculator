@@ -1,6 +1,6 @@
 {
-  "name": "NTUH Breast Calculator",
-  "short_name": "BreastCalc",
+  "name": "Oncobreast copilot",
+  "short_name": "Oncobreast",
   "description": "Clinical breast cancer staging, NHI drug lookup, and risk score tools for healthcare professionals.",
   "lang": "zh-TW",
   "start_url": "/",
