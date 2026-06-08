@@ -3481,7 +3481,7 @@ function renderModalDashboardOverview(){
     }
     const ctx = dashboardPatientContext();
     const journey = dashboardJourneyState(ctx);
-    const ws = DASHBOARD_WIDGETS.find(w => w.id === 'wsPage');
+    const patientBundle = patientWorkspaceStructuredData();
     const toolIds = ['breastPage','inpatientPage','icdPage','trialsPage','calcPage','riskPage','rcbPage','ihc4Page','cts5Page','pepiPage'];
     const toolCards = toolIds
         .map(id => DASHBOARD_WIDGETS.find(w => w.id === id))
@@ -3516,12 +3516,11 @@ function renderModalDashboardOverview(){
                     <option value="metastatic_2L" ${ctx.p.phase === 'metastatic_2L' ? 'selected' : ''}>轉移性後線</option>
                     <option value="followup" ${ctx.p.phase === 'followup' ? 'selected' : ''}>追蹤</option>
                 </select>
-                <button type="button" onclick="showPatientCenter()">診間 Copilot</button>
-                <button type="button" onclick="generatePatientTreatmentPlan()">病人說明單</button>
                 <button type="button" onclick="openDashboardWidgetModal('wsPage')">編輯分期與亞型</button>
             </div>
         </section>
         <section class="patient-context-pills">${pills}<button type="button" class="patient-context-copy" onclick="copyDashboardCompactContextSummary(this)" title="複製病歷摘要" aria-label="複製病歷摘要">⧉</button></section>
+        ${renderDesktopPatientCareCard(patientBundle)}
         <section class="patient-journey-panel patient-journey-main">
             <div class="patient-panel-head">
                 <span>Evidence Block</span>
@@ -5022,7 +5021,8 @@ function renderWorkspaceHomeSummary(p){
           <strong>${esc(subtype || '待補亞型')}</strong>
         </div>
         <div class="ws-home-summary-actions">
-          <button class="ws-btn ws-btn-primary" type="button" onclick="showPatientCenter()">診間 Copilot</button>
+          <button class="ws-btn ws-btn-primary" type="button" onclick="generatePatientTreatmentPlan()">病人說明單</button>
+          <button class="ws-btn" type="button" onclick="printWorkspaceSummary()">列印</button>
           <button class="ws-btn icon-copy-btn" type="button" title="複製首頁摘要" aria-label="複製首頁摘要" ${hasSummary ? '' : 'disabled'} onclick="copyWorkspaceCommonVariableSummary(this)"><span aria-hidden="true">⧉</span></button>
         </div>
       </div>
@@ -6562,6 +6562,7 @@ function setPatientCenterChecklistState(id, state){
     else delete states[id];
     patientCenterWriteChecklistState(states);
     renderPatientJourney();
+    if(document.body.classList.contains('modal-dashboard-mode')) renderModalDashboardOverview();
 }
 function patientCenterChecklistStateButtons(id, current){
     const opts = [
@@ -6912,6 +6913,30 @@ function renderPatientCenterChecklist(items){
             ${patientCenterChecklistStateButtons(item.id, current)}
         </div>`;
     }).join('');
+}
+function renderDesktopPatientCareCard(bundle){
+    bundle = bundle || patientWorkspaceStructuredData();
+    const p = bundle.patient_context || _patient || {};
+    const checklist = renderPatientCenterChecklist(patientCenterAdminChecklistItems(p, bundle));
+    const summary = patientCenterCopySummary(p);
+    return `<section class="patient-journey-panel patient-desktop-care-card">
+        <div class="patient-panel-head">
+            <span>Patient care checklist</span>
+            <b>門診交付 / 行政核對</b>
+        </div>
+        <div class="patient-desktop-care-body">
+            <div class="patient-desktop-care-summary">
+                <label>病歷摘要</label>
+                <textarea readonly rows="3">${_journeyEsc(summary)}</textarea>
+                <div class="patient-desktop-care-actions">
+                    <button type="button" class="icon-copy-btn" title="複製病歷摘要" aria-label="複製病歷摘要" onclick="copyWorkspaceCommonVariableSummary(this)"><span aria-hidden="true">⧉</span></button>
+                    <button type="button" onclick="generatePatientTreatmentPlan()">病人說明單</button>
+                    <button type="button" onclick="printWorkspaceSummary()">列印病歷摘要</button>
+                </div>
+            </div>
+            <div class="patient-desktop-checklist">${checklist || '<div class="modal-dashboard-placeholder">目前無待核對項目</div>'}</div>
+        </div>
+    </section>`;
 }
 let _patientCenterRecorder = null;
 let _patientCenterRecordingChunks = [];

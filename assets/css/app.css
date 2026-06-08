@@ -1578,7 +1578,7 @@ body.mobile-device-shell .ws-context-pill-row {
     height: calc(100vh - 74px);
     overflow: hidden;
     display: grid;
-    grid-template-rows: auto auto auto minmax(0, 1fr);
+    grid-template-rows: auto auto auto auto minmax(0, 1fr);
     gap: 10px;
     align-items: start;
   }
@@ -1707,6 +1707,69 @@ body.mobile-device-shell .ws-context-pill-row {
   .patient-journey-main {
     grid-column: 1 / -1;
     grid-row: auto;
+  }
+  .patient-desktop-care-card {
+    grid-column: 1 / -1;
+    min-height: 0;
+  }
+  .patient-desktop-care-body {
+    display: grid;
+    grid-template-columns: minmax(300px, .72fr) minmax(420px, 1.28fr);
+    gap: .7rem;
+    padding: .7rem;
+    background: #f8fafc;
+  }
+  .patient-desktop-care-summary {
+    display: grid;
+    gap: .42rem;
+    min-width: 0;
+  }
+  .patient-desktop-care-summary label {
+    color: #64748b;
+    font-size: .72rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+  }
+  .patient-desktop-care-summary textarea {
+    width: 100%;
+    min-height: 86px;
+    resize: vertical;
+    border: 1px solid #d8e3ee;
+    border-radius: 6px;
+    background: #fff;
+    color: #122132;
+    font: 13px/1.45 Consolas, "SFMono-Regular", monospace;
+    padding: .55rem .65rem;
+  }
+  .patient-desktop-care-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .35rem;
+  }
+  .patient-desktop-care-actions button {
+    border: 1px solid #0f766e;
+    border-radius: 6px;
+    background: #fff;
+    color: #0f766e;
+    padding: .38rem .62rem;
+    font-family: inherit;
+    font-size: .78rem;
+    font-weight: 850;
+    cursor: pointer;
+  }
+  .patient-desktop-care-actions .icon-copy-btn {
+    width: 2rem;
+    min-width: 2rem;
+    height: 2rem;
+    padding: 0 !important;
+  }
+  .patient-desktop-checklist {
+    display: grid;
+    gap: .45rem;
+    max-height: 210px;
+    overflow: auto;
+    padding-right: .15rem;
   }
   .patient-journey-input,
   .patient-journey-tools {
