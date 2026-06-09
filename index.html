@@ -9,7 +9,7 @@
 <title>Oncobreast copilot</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/app.css?v=20260609n">
+<link rel="stylesheet" href="assets/css/app.css?v=20260609o">
 <link rel="stylesheet" href="assets/css/ajcc-mobile.css?v=20260519a">
 </head>
 <body>
@@ -955,7 +955,7 @@
       </div>
 
       <div class="ws-section ws-gene-section">
-        <h3>基因</h3>
+        <div class="ws-gene-heading">基因檢測</div>
         <div class="ws-form">
           <div class="ws-field ws-quick-backed-field"><label>cT</label><select id="ws_cT" onchange="setPatientField('cT',this.value)"><option value="Tx">Tx</option><option value="Tis">Tis</option><option value="T0">T0</option><option value="T1mi">T1mi</option><option value="T1a">T1a</option><option value="T1b">T1b</option><option value="T1c">T1c</option><option value="T2">T2</option><option value="T3">T3</option><option value="T4">T4</option></select></div>
           <div class="ws-field ws-quick-backed-field"><label>cN</label><select id="ws_cN" onchange="setPatientField('cN',this.value)"><option value="Nx">Nx</option><option value="N0">N0</option><option value="N0(i-)">N0(i-)</option><option value="N0(i+)">N0(i+)</option><option value="N1mi">N1mi</option><option value="N1a">N1a</option><option value="N1b">N1b</option><option value="N1c">N1c</option><option value="N2a">N2a</option><option value="N2b">N2b</option><option value="N3a">N3a</option><option value="N3b">N3b</option><option value="N3c">N3c</option></select></div>
@@ -966,7 +966,7 @@
           <div class="ws-field ws-gene-chip-field"><label>ESR1</label><select id="ws_esr1" class="ws-gene-select-hidden" onchange="setPatientField('esr1',this.value)"><option value="">未檢測</option><option value="mut">mutation</option><option value="wt">wild-type</option></select><div class="ws-gene-chip-row" id="wsGene_esr1"><button type="button" class="ws-qchip" data-state="neg" onclick="setWsGeneField('esr1','neg')" title="未檢測">-</button><button type="button" class="ws-qchip" data-state="pos" onclick="setWsGeneField('esr1','pos')" title="mutation">+</button><button type="button" class="ws-qchip" data-state="wt" onclick="setWsGeneField('esr1','wt')" title="wild-type">WT</button></div></div>
           <div class="ws-field ws-gene-chip-field"><label>PIK3CA</label><select id="ws_pik3ca" class="ws-gene-select-hidden" onchange="setPatientField('pik3ca',this.value)"><option value="">未檢測</option><option value="mut">mutation</option><option value="wt">wild-type</option></select><div class="ws-gene-chip-row" id="wsGene_pik3ca"><button type="button" class="ws-qchip" data-state="neg" onclick="setWsGeneField('pik3ca','neg')" title="未檢測">-</button><button type="button" class="ws-qchip" data-state="pos" onclick="setWsGeneField('pik3ca','pos')" title="mutation">+</button><button type="button" class="ws-qchip" data-state="wt" onclick="setWsGeneField('pik3ca','wt')" title="wild-type">WT</button></div></div>
           <div class="ws-field ws-oncotype-field"><label>Oncotype RS score</label><input type="number" id="ws_oncotype_rs" min="0" max="100" step="1" placeholder="0-100" oninput="setPatientField('oncotype_rs',this.value)"></div>
-          <div class="ws-field"><label>CIViC</label><input type="text" id="ws_civic_variant" placeholder="PIK3CA H1047R" oninput="setPatientField('civic_variant',this.value)"></div>
+          <div class="ws-field ws-civic-field"><label>CIViC</label><input type="text" id="ws_civic_variant" placeholder="PIK3CA H1047R" oninput="setPatientField('civic_variant',this.value)"></div>
         </div>
       </div>
 

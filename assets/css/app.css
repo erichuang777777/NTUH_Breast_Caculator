@@ -3952,6 +3952,24 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
 .ws-pathology-parser[hidden] {
   display: none !important;
 }
+.ws-gene-section {
+  display: block;
+  padding-top: .5rem;
+  padding-bottom: .55rem;
+}
+.ws-gene-heading {
+  display: block;
+  width: 100%;
+  margin: 0 0 .26rem;
+  color: #6d28d9;
+  font-size: .68rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  line-height: 1.1;
+  white-space: nowrap;
+  writing-mode: horizontal-tb;
+  text-orientation: mixed;
+}
 .ws-gene-section .ws-quick-backed-field {
   display: none !important;
 }
@@ -3968,6 +3986,10 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
   padding: .18rem;
 }
 .ws-gene-section .ws-oncotype-field {
+  width: 126px;
+  min-width: 0;
+}
+.ws-gene-section .ws-civic-field {
   width: 126px;
   min-width: 0;
 }
@@ -5398,6 +5420,11 @@ body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-gene-sec
 }
 body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-gene-section .ws-oncotype-field,
 #wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-gene-section .ws-oncotype-field {
+  width: 126px;
+  min-width: 0;
+}
+body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-gene-section .ws-civic-field,
+#wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-gene-section .ws-civic-field {
   width: 126px;
   min-width: 0;
 }
@@ -7115,6 +7142,25 @@ body.mobile-device-shell #wsPage.active .ws-gene-section .ws-gene-chip-row .ws-q
 body.mobile-device-shell #wsPage.active .ws-gene-section .ws-form {
   align-items: start !important;
   grid-auto-rows: min-content !important;
+  grid-template-columns: repeat(auto-fit, minmax(78px, max-content)) !important;
+  justify-content: start !important;
+  gap: .22rem !important;
+}
+body.mobile-device-shell #wsPage.active .ws-gene-section {
+  display: block !important;
+}
+body.mobile-device-shell #wsPage.active .ws-gene-heading {
+  display: block !important;
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  white-space: nowrap !important;
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
+}
+body.mobile-device-shell #wsPage.active .ws-gene-section .ws-civic-field,
+body.mobile-device-shell #wsPage.active .ws-gene-section .ws-oncotype-field {
+  width: 126px !important;
 }
 body.mobile-device-shell #wsPage.active .ws-gene-section .ws-quick-backed-field,
 body.mobile-device-shell #wsPage.active #wsInputCol.ws-full-mode .ws-gene-section .ws-quick-backed-field,
