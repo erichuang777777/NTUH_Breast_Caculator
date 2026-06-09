@@ -1652,11 +1652,13 @@ body.mobile-device-shell .ws-context-pill-row {
 .modal-dashboard-main {
     min-width: 0;
     height: calc(100vh - 74px);
-    overflow: hidden;
+    overflow: auto;
+    scrollbar-gutter: stable;
     display: grid;
     grid-template-rows: auto auto minmax(112px, auto) minmax(0, 1fr);
     gap: 10px;
     align-items: start;
+    padding-right: .15rem;
   }
   .patient-context-bar {
     display: flex;
@@ -2054,7 +2056,7 @@ body.mobile-device-shell .ws-context-pill-row {
     gap: .55rem;
     padding: 0;
     min-height: 0;
-    overflow: auto;
+    overflow: visible;
     padding-right: .12rem;
   }
   .patient-tool-group {
@@ -6755,6 +6757,56 @@ body.dark .back-btn:hover { background: #334155; }
 @media (max-width: 900px) {
   .content-layout { grid-template-columns: 1fr; }
   .filter-sidebar { position: static; }
+  body.desktop-dashboard-mode #breastPage .content-layout,
+  body.mobile-device-shell #breastPage .content-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: .75rem;
+    height: auto;
+  }
+  body.desktop-dashboard-mode #breastPage .filter-sidebar,
+  body.mobile-device-shell #breastPage .filter-sidebar {
+    width: 100%;
+    flex-basis: auto;
+    max-height: none;
+    border-right: 0;
+    border-radius: var(--r-lg);
+    overflow: visible;
+  }
+  body.desktop-dashboard-mode #breastPage .content-main,
+  body.mobile-device-shell #breastPage .content-main {
+    overflow: visible;
+  }
+  body.desktop-dashboard-mode #breastPage .drug-list,
+  body.mobile-device-shell #breastPage .drug-list {
+    overflow: visible;
+  }
+  .drug-item {
+    grid-template-columns: minmax(0, 1fr);
+    padding: .82rem .86rem;
+  }
+  .drug-item-left,
+  .drug-item-right {
+    min-width: 0;
+    width: 100%;
+  }
+  .drug-item-right {
+    align-items: flex-start;
+    text-align: left;
+    border-top: 1px solid var(--border);
+    padding-top: .5rem;
+  }
+  .price-display,
+  .drug-item-right .price-tag,
+  .drug-item-right .price-unit {
+    text-align: left;
+  }
+  .drug-tags {
+    max-width: 100%;
+  }
+  .cmp-btn {
+    min-height: 32px;
+  }
   .function-menu-modal {
     right: 10px;
     width: calc(100vw - 20px);

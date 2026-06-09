@@ -2189,7 +2189,8 @@ function dashboardOpenToolCard(widget, summary, extraClass){
     const body = summary.lines.length
         ? `<span class="modal-dashboard-summary summary-${widget.id}">${displayLines.join('')}</span>`
         : `<span class="modal-dashboard-placeholder">點擊展開輸入</span>`;
-    return `<button type="button" class="modal-dashboard-card patient-tool-card card-${widget.id} binding-${binding}${extraClass ? ' ' + extraClass : ''}${summary.lines.length ? '' : ' is-empty'}" style="--tool-span:${span}" data-patient-binding="${esc(binding)}" onclick="openDashboardWidgetModal('${widget.id}')">
+    const action = widget.id === 'inpatientPage' ? 'showInpatient()' : `openDashboardWidgetModal('${widget.id}')`;
+    return `<button type="button" class="modal-dashboard-card patient-tool-card card-${widget.id} binding-${binding}${extraClass ? ' ' + extraClass : ''}${summary.lines.length ? '' : ' is-empty'}" style="--tool-span:${span}" data-patient-binding="${esc(binding)}" onclick="${action}">
         <span class="modal-dashboard-card-head">
             <span class="modal-dashboard-card-title-wrap"><span class="modal-dashboard-card-icon">${m.icon}</span><strong class="modal-dashboard-card-title">${m.title}</strong><span class="modal-dashboard-status ${status}" title="${status === 'green' ? '已填' : '待補'}"></span></span>
             <span class="modal-dashboard-card-action">展開 ›</span>
@@ -3970,6 +3971,10 @@ function initDashboardWidgetContent(id){
     }
 }
 function openDashboardWidgetModal(id){
+    if(id === 'inpatientPage'){
+        showInpatient();
+        return;
+    }
     const widget = DASHBOARD_WIDGETS.find(w => w.id === id);
     const page = document.getElementById(dashboardPageIdForWidget(id));
     if(!widget || !page) return;
@@ -4240,19 +4245,9 @@ async function loadAgentSystemPrompt(){
     } catch(e){}
     el.dataset.loaded = '1';
 }
-function showInpatient(){
-    leaveDesktopDashboard();
-    document.getElementById('landingPage').style.display='none';
-    document.getElementById('breastPage').classList.remove('active');
-    document.getElementById('inpatientPage').classList.add('active');
-    document.getElementById('icdPage').classList.remove('active');
-    document.getElementById('surgeryPage').classList.remove('active');
-    document.getElementById('trialsPage').classList.remove('active');
-    document.getElementById('ajccPage').classList.remove('active');
-    document.getElementById('calcPage').classList.remove('active');
-    document.getElementById('wsPage').classList.remove('active');
-    document.getElementById('journeyPage').classList.remove('active');
-    if(!_inpInited) initInpCalc();
+async function showInpatient(){
+    await showBreast();
+    switchBreastTab('regimen');
 }
 async function showBreast(){
     leaveDesktopDashboard();
