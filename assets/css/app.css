@@ -4606,8 +4606,11 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
 }
 .node-wheel-item.sel {
   color: #0f172a;
-  font-size: 1.34rem;
+  font-size: 1rem;
   font-weight: 900;
+  transform: scale(1.08);
+  transform-origin: center;
+  line-height: 1;
 }
 .node-wheel-mask {
   position: absolute;

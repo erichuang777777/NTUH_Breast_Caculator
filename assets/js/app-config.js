@@ -1,5 +1,5 @@
 window.NHI_APP_CONFIG = {
-  release: '2026-05-19',
+  release: '2026-06-09',
   layout: {
     mobileMaxWidth: 767
   },

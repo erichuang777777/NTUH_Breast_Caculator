@@ -5,10 +5,10 @@ const _STATIC_CONFIG={
     price_announcement_date:'115/03/23',
     price_effective_date:'115/04/01',
     price_source:'健保署公告 PDF',
-    price_badge_text:'藥價公告 115/03/23｜生效 115/04/01｜資料更新 2026/06/04',
+    price_badge_text:'藥價公告 115/03/23｜生效 115/04/01｜資料更新 2026/06/09',
     price_update_schedule:'每月23日抓取健保署公告 PDF；單一藥物更新僅作補查或院內價追蹤'
 };
-const APP_RELEASE_DATE = '2026-06-06';
+const APP_RELEASE_DATE = '2026-06-09';
 const APP_OFFLINE_FILENAME = `NTUH_Breast_Calculator_offline_${APP_RELEASE_DATE}.html`;
 const DRUG_ALIAS_MAP = {
     abemaciclib:['verzenio'],
@@ -7583,15 +7583,15 @@ function patientCenterPostOpStageLabel(p){
         return '';
     }
 }
-function patientCenterBreastSurgerySummaryLabel(value, p){
+function patientCenterBreastSurgerySummaryLabel(value, p, options={}){
     const s = String(value || '').trim();
     if(s === 'BCS') return 'BCT';
-    if(s === 'SM' && String((p || {}).nipple_sparing || '') === 'yes') return 'NS-SM';
+    if(s === 'SM' && String((p || {}).nipple_sparing || '') === 'yes') return options.mode === 'copy' ? 'NS' : 'NS-SM';
     return s;
 }
-function patientCenterSurgerySummaryText(p){
+function patientCenterSurgerySummaryText(p, options={}){
     p = p || {};
-    const breast = patientCenterBreastSurgerySummaryLabel(p.breast_surgery, p);
+    const breast = patientCenterBreastSurgerySummaryLabel(p.breast_surgery, p, options);
     const axilla = axillarySurgeryParts(p.axillary_surgery).join('+');
     return [breast, axilla].filter(Boolean).join('+');
 }
@@ -7629,7 +7629,7 @@ function patientCenterPostOpSummaryLine(p, options={}){
         .some(hasPostValue);
     if(!hasPostOp) return '';
     const parts = [];
-    const surgery = patientCenterSurgerySummaryText(p);
+    const surgery = patientCenterSurgerySummaryText(p, options);
     if(surgery) parts.push(surgery);
     const totalPos = hasPostValue('nodes_pos') ? p.nodes_pos : '';
     const totalNodes = hasPostValue('nodes_total') ? p.nodes_total : '';
@@ -9495,6 +9495,11 @@ function hideSettings(){
     document.getElementById('settingsModal').classList.remove('show');
 }
 const APP_RELEASE_NOTES = [
+    { version:'v2.0', date:'2026-06-09', items:[
+        '藥物價錢、適應症、事前審查條件與常用配方資料已依 2026/06/09 版本重新確認。',
+        '整理 Patient Center、AJCC、藥物查詢、重卡、臨床試驗與 Agent 工作流，保留目前已穩定可用的發布版架構。',
+        '同步更新版本號、離線檔名與快取版本，作為正式 2.0 發布基準。'
+    ]},
     { version:'v1.9', date:'2026-06-06', items:[
         '新增右/左 1/3 AI Agent 側欄、文字病理報告上傳與 rule-based 欄位解析入口。',
         '新增病患照護支持卡：勞保、重大傷病、癌症希望基金會、義乳胸衣、贈藥與保險理賠資料結構。',
@@ -9643,7 +9648,7 @@ if('serviceWorker' in navigator && window.location.protocol !== 'file:'){
 
 // ── Issue Report ──
 const GITHUB_REPO = 'erichuang777777/NTUH_Breast_Caculator';
-const APP_VERSION = 'v1.9';
+const APP_VERSION = 'v2.0';
 const ISSUE_REPORT_ENDPOINT_KEY = 'oncobreast_issue_report_endpoint';
 const ISSUE_REPORT_EMAIL_KEY = 'oncobreast_issue_report_email';
 const FEEDBACK_BOARD_LOCAL_KEY = 'oncobreast_feedback_board_local_v1';
@@ -10116,7 +10121,7 @@ function syncWsQuickChips(){
     });
     syncWsQuickHer2Refine(her2Chip);
     const wsCtEl = document.getElementById('ws_cT');
-    const ctRaw = wsCtEl ? wsCtEl.value : '';
+    const ctRaw = ((wsCtEl ? wsCtEl.value : '') || (_patient && (_patient.cT || _patient.T)) || '').trim();
     const ctChipMap = {'':'Tx',Tx:'Tx',Tis:'Tis',T1mi:'T1',T1a:'T1',T1b:'T1',T1c:'T1',T2:'T2',T3:'T3',T4:'T4'};
     const ctChip = ctChipMap[ctRaw] || '';
     document.querySelectorAll('#wsQuickTChips .ws-qchip').forEach(b=>{
@@ -10128,11 +10133,11 @@ function syncWsQuickChips(){
     if(tRefine){
         tRefine.classList.remove('anchor-t1', 'anchor-t2', 'anchor-t3', 'anchor-t4');
         if(['T1','T2','T3','T4'].includes(ctChip)) tRefine.classList.add('anchor-' + ctChip.toLowerCase());
-        tRefine.classList.toggle('show', tRefine.classList.contains('show') && ctChip === 'T1');
+        tRefine.classList.toggle('show', ctChip === 'T1');
         tRefine.querySelectorAll('.ws-qchip').forEach(b=>b.classList.toggle('active', b.dataset.value===ctRaw));
     }
     const wsCnEl = document.getElementById('ws_cN');
-    const cnRaw = wsCnEl ? wsCnEl.value : '';
+    const cnRaw = ((wsCnEl ? wsCnEl.value : '') || (_patient && (_patient.cN || _patient.N)) || '').trim();
     const cnChipMap = {'':'Nx',Nx:'Nx',N0:'N0','N0(i-)':'N0','N0(i+)':'N0',N1mi:'N1',N1:'N1',N1a:'N1',N1b:'N1',N1c:'N1',N2a:'N2',N2b:'N2',N3a:'N3',N3b:'N3',N3c:'N3'};
     const cnChip = cnChipMap[cnRaw] || '';
     document.querySelectorAll('#wsQuickNChips .ws-qchip').forEach(b=>{
@@ -10144,7 +10149,7 @@ function syncWsQuickChips(){
     if(nRefine){
         nRefine.classList.remove('anchor-n0', 'anchor-n1', 'anchor-n2', 'anchor-n3');
         if(['N0','N1','N2','N3'].includes(cnChip)) nRefine.classList.add('anchor-' + cnChip.toLowerCase());
-        nRefine.classList.toggle('show', nRefine.classList.contains('show') && ['N0','N1','N2','N3'].includes(cnChip));
+        nRefine.classList.toggle('show', ['N0','N1','N2','N3'].includes(cnChip));
         nRefine.querySelectorAll('.ws-qchip').forEach(b=>{
             const sameGroup = !cnChip || b.dataset.group === cnChip;
             b.style.display = sameGroup ? '' : 'none';
@@ -10329,7 +10334,7 @@ function setWsQuickM(value){
 }
 function syncWsStageTGroup(field, chipId, refineId){
     const el = document.getElementById('ws_' + field);
-    const raw = el ? el.value : '';
+    const raw = ((el ? el.value : '') || (_patient && _patient[field]) || '').trim();
     const chipMap = {Tx:'Tx',Tis:'Tis',T0:'T0',T1mi:'T1',T1a:'T1',T1b:'T1',T1c:'T1',T2:'T2',T3:'T3',T4:'T4'};
     const chip = chipMap[raw] || '';
     document.querySelectorAll('#' + chipId + ' .ws-qchip').forEach(btn => {
@@ -10341,13 +10346,13 @@ function syncWsStageTGroup(field, chipId, refineId){
     if(refine){
         refine.classList.remove('anchor-t1', 'anchor-t2', 'anchor-t3', 'anchor-t4');
         if(chip && /^T[1-4]$/.test(chip)) refine.classList.add('anchor-' + chip.toLowerCase());
-        refine.classList.toggle('show', refine.classList.contains('show') && chip === 'T1');
+        refine.classList.toggle('show', chip === 'T1');
         refine.querySelectorAll('.ws-qchip').forEach(btn => btn.classList.toggle('active', btn.dataset.value === raw));
     }
 }
 function syncWsStageNGroup(field, chipId, refineId){
     const el = document.getElementById('ws_' + field);
-    const raw = el ? el.value : '';
+    const raw = ((el ? el.value : '') || (_patient && _patient[field]) || '').trim();
     const chipMap = {Nx:'Nx',N0:'N0','N0(i-)':'N0','N0(i+)':'N0',N1mi:'N1',N1:'N1',N1a:'N1',N1b:'N1',N1c:'N1',N2a:'N2',N2b:'N2',N3a:'N3',N3b:'N3',N3c:'N3'};
     const chip = chipMap[raw] || '';
     document.querySelectorAll('#' + chipId + ' .ws-qchip').forEach(btn => {
@@ -10359,7 +10364,7 @@ function syncWsStageNGroup(field, chipId, refineId){
     if(refine){
         refine.classList.remove('anchor-n0', 'anchor-n1', 'anchor-n2', 'anchor-n3');
         if(['N0','N1','N2','N3'].includes(chip)) refine.classList.add('anchor-' + chip.toLowerCase());
-        refine.classList.toggle('show', refine.classList.contains('show') && ['N0','N1','N2','N3'].includes(chip));
+        refine.classList.toggle('show', ['N0','N1','N2','N3'].includes(chip));
         refine.querySelectorAll('.ws-qchip').forEach(btn => {
             const sameGroup = !chip || btn.dataset.group === chip;
             btn.style.display = sameGroup ? '' : 'none';
@@ -10577,7 +10582,8 @@ function setWsQuickT(t){
     const map = {Tx:'Tx',Tis:'Tis',T1:/^T1/.test(current) ? current : 'T1c',T2:'T2',T3:'T3',T4:'T4'};
     const sel = document.getElementById('ws_cT');
     const next = Object.prototype.hasOwnProperty.call(map, t) ? map[t] : t;
-    if(sel){ sel.value = next; setPatientField('cT', sel.value); }
+    if(sel) sel.value = next;
+    setPatientField('cT', next);
     hideWsQuickRefine('wsQuickNRefine');
     hideWsQuickRefine('wsQuickMRefine');
     syncWsQuickChips();
@@ -10586,7 +10592,8 @@ function setWsQuickT(t){
 }
 function setWsQuickTDetail(t){
     const sel = document.getElementById('ws_cT');
-    if(sel){ sel.value = t; setPatientField('cT', t); }
+    if(sel) sel.value = t;
+    setPatientField('cT', t);
     syncWsQuickChips();
     hideWsQuickRefine('wsQuickTRefine');
 }
@@ -10601,7 +10608,8 @@ function setWsQuickN(n){
     };
     const sel = document.getElementById('ws_cN');
     const next = Object.prototype.hasOwnProperty.call(map, n) ? map[n] : n;
-    if(sel){ sel.value = next; setPatientField('cN', sel.value); }
+    if(sel) sel.value = next;
+    setPatientField('cN', next);
     hideWsQuickRefine('wsQuickTRefine');
     hideWsQuickRefine('wsQuickMRefine');
     syncWsQuickChips();
@@ -10610,7 +10618,8 @@ function setWsQuickN(n){
 }
 function setWsQuickNDetail(n){
     const sel = document.getElementById('ws_cN');
-    if(sel){ sel.value = n; setPatientField('cN', n); }
+    if(sel) sel.value = n;
+    setPatientField('cN', n);
     syncWsQuickChips();
     hideWsQuickRefine('wsQuickNRefine');
 }
