@@ -3004,6 +3004,86 @@ body.mobile-device-shell .ws-context-pill-row {
 .mobile-dashboard-agent-root {
   display: none;
 }
+.mobile-dashboard-agent-root {
+  display: block;
+}
+.mobile-dashboard-agent-root .dashboard-agent-panel {
+  display: none;
+  position: fixed;
+  left: 10px;
+  right: 10px;
+  top: calc(env(safe-area-inset-top, 0px) + 54px);
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
+  z-index: 760;
+  height: auto;
+  max-height: none;
+  min-height: 0;
+  grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+  padding: .68rem;
+  border: 1px solid #d8e3ee;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 22px 60px rgba(15,23,42,.34);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+body.mobile-agent-open .mobile-dashboard-agent-root .dashboard-agent-panel {
+  display: grid;
+}
+body.mobile-agent-open .mobile-dashboard-agent-root .mobile-agent-backdrop {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 750;
+  border: 0;
+  background: rgba(15,23,42,.38);
+  cursor: pointer;
+}
+.mobile-dashboard-agent-root .mobile-dashboard-agent-fab {
+  display: inline-flex;
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 62px);
+  right: 14px;
+  z-index: 740;
+  width: 48px;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(15,118,110,.35);
+  border-radius: 999px;
+  background: #0f766e;
+  color: #fff;
+  box-shadow: 0 12px 30px rgba(15,23,42,.24);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+body.mobile-agent-open .mobile-dashboard-agent-root .mobile-dashboard-agent-fab {
+  display: none;
+}
+.mobile-dashboard-agent-root .mobile-dashboard-agent-fab svg {
+  width: 23px;
+  height: 23px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.mobile-dashboard-agent-root .dashboard-agent-mobile-close {
+  display: inline-flex;
+}
+.mobile-dashboard-agent-root .dashboard-agent-position,
+.mobile-dashboard-agent-root .dashboard-agent-collapse-btn {
+  display: none;
+}
+.mobile-dashboard-agent-root .dashboard-agent-thread {
+  min-height: 0;
+  overflow-y: auto;
+}
+.mobile-dashboard-agent-root .dashboard-agent-input textarea {
+  min-height: 96px;
+  max-height: 24vh;
+}
 @media (max-width: 899px) {
   body.mobile-device-shell.modal-dashboard-mode .modal-dashboard-overview.patient-journey-dashboard,
   body.modal-dashboard-mode .modal-dashboard-overview.patient-journey-dashboard {

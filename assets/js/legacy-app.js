@@ -3172,7 +3172,7 @@ function closeMobileDashboardAgent(){
 function syncMobileDashboardAgentRoot(){
     if(!document.body) return;
     let root = document.getElementById('mobileDashboardAgentRoot');
-    const shouldShow = dashboardAgentUseMobileDrawer() && !document.body.classList.contains('modal-dashboard-mode');
+    const shouldShow = !document.body.classList.contains('modal-dashboard-mode');
     if(!shouldShow){
         if(root) root.remove();
         document.body.classList.remove('mobile-agent-open');
@@ -3184,7 +3184,7 @@ function syncMobileDashboardAgentRoot(){
         root.className = 'mobile-dashboard-agent-root';
         document.body.appendChild(root);
     }
-    root.innerHTML = `${renderDashboardAgentPanel()}${renderMobileDashboardAgentFab()}`;
+    root.innerHTML = `${renderDashboardAgentPanel(true)}${renderMobileDashboardAgentFab()}`;
     setTimeout(() => dashboardAgentRefreshStatus(false), 0);
 }
 document.addEventListener('DOMContentLoaded', () => setTimeout(syncMobileDashboardAgentRoot, 0));
@@ -3660,9 +3660,9 @@ function dashboardAgentToggleMic(){
         dashboardAgentSetMicListening(false);
     }
 }
-function renderDashboardAgentPanel(){
+function renderDashboardAgentPanel(forceDrawer=false){
     const pos = getDashboardAgentPosition();
-    const mobileDrawer = dashboardAgentUseMobileDrawer();
+    const mobileDrawer = !!forceDrawer || dashboardAgentUseMobileDrawer();
     const collapsed = !mobileDrawer && getDashboardAgentCollapsed();
     const agentModel = dashboardAgentModelValue();
     if(collapsed){
