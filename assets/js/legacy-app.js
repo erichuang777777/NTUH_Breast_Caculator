@@ -4861,14 +4861,17 @@ const TOUCH_PRESET_VALUES = {
     ws_er: ['+','-'],
     ws_pr: ['+','-'],
     ws_ki67: [{value:'10', label:'<20'}, {value:'20', label:'20+'}],
-    ws_aln_pos: ['0','1','2','4','10'],
-    ws_aln_total: ['0','10','14','17','20'],
+    ws_sln_pos: ['0','1','2','3','4','5'],
+    ws_sln_total: ['0','1','2','3','4','5'],
+    ws_aln_pos: ['0','1','2','3','4','5'],
+    ws_aln_total: ['0','1','2','3','4','5','10','14','17','20'],
     ws_rcb_d1: ['0','5','10','20','30','50'],
     ws_rcb_d2: ['0','5','10','20','30','50'],
     ws_rcb_finv: ['0','1','10','30','50','80'],
     ws_rcb_ln: ['0','1','2','3','4','10'],
     ws_rcb_dmet: ['0','0.2','2','5','10','20']
 };
+const WORKSPACE_ZERO_DISPLAY_BLANK_IDS = new Set(['ws_sln_pos','ws_sln_total','ws_aln_pos','ws_aln_total','ws_nodes_pos','ws_nodes_total']);
 const TOUCH_SKIP_EMPTY_OPTIONS = new Set(['ws_breast_surgery','ws_reconstruction_surgery']);
 const MOBILE_WHEEL_SELECT_IDS = new Set([
     'ws_cT','ws_cN','ws_pT','ws_pN','ws_phase','ws_brca','ws_reconstruction_surgery',
@@ -4932,6 +4935,7 @@ function enhanceTouchPresetInput(input){
             input.value = input.value === value ? '' : value;
             dispatchCompatEvent(input, 'input');
             dispatchCompatEvent(input, 'change');
+            if(value === '0' && WORKSPACE_ZERO_DISPLAY_BLANK_IDS.has(input.id)) input.value = '';
             refreshTouchPresets();
         });
         box.appendChild(btn);
@@ -5009,10 +5013,11 @@ function syncWorkspaceInputs(keys=Object.keys(PATIENT_DEFAULTS)){
         const el = document.getElementById('ws_'+k);
         if(el){
             const value = _patient[k] || '';
+            const displayValue = value === '0' && WORKSPACE_ZERO_DISPLAY_BLANK_IDS.has(el.id) ? '' : value;
             if(k === 'axillary_surgery' && el.tagName === 'SELECT' && value.includes(',')){
                 el.value = '';
             } else {
-                el.value = value;
+                el.value = displayValue;
             }
         }
     });
@@ -5341,8 +5346,8 @@ function normalizeWorkspaceNodeFields(){
     }
     const pos = (Number.isFinite(slnPos) ? slnPos : 0) + (Number.isFinite(alnPos) ? alnPos : 0);
     const total = (Number.isFinite(slnTotal) ? slnTotal : 0) + (Number.isFinite(alnTotal) ? alnTotal : 0);
-    if(Number.isFinite(slnPos) || Number.isFinite(alnPos)) _patient.nodes_pos = String(pos);
-    if(Number.isFinite(slnTotal) || Number.isFinite(alnTotal)) _patient.nodes_total = String(total);
+    _patient.nodes_pos = String(pos);
+    _patient.nodes_total = String(total);
     if(!_patient.pN){
         _patient.pN = pathologyNodeStageFromCount(pos, '');
     }
