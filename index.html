@@ -9,7 +9,7 @@
 <title>Oncobreast copilot</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/app.css?v=20260609y">
+<link rel="stylesheet" href="assets/css/app.css?v=20260609z">
 <link rel="stylesheet" href="assets/css/ajcc-mobile.css?v=20260519a">
 </head>
 <body>
@@ -724,6 +724,13 @@
 
      <div class="ws-step-label">1. 共用病人變數</div>
      <div class="ws-input-col" id="wsInputCol">
+      <div class="ws-step-label">AJCC 第八版分期</div>
+      <div class="ws-section ws-stage-top-section">
+        <div class="ws-stage-grid" id="wsStageResults">
+          <div class="ws-empty">請先填入 T / N / M</div>
+        </div>
+      </div>
+
       <!-- Quick / Full mode tab switcher -->
       <div class="ws-tab-switcher">
         <div class="ws-tab-card active" id="wsTabQuick" onclick="setWsQuickMode('quick')">
@@ -1140,14 +1147,15 @@
           <div class="ws-node-pair-row ws-node-quad-row">
             <div class="ws-field ws-wheel-field" data-node-wheel-pair="slnb"><label>SLNB+</label><input type="number" id="ws_sln_pos" min="0" max="30" oninput="setPatientField('sln_pos',this.value)"></div>
             <div class="ws-field ws-wheel-field" data-node-wheel-pair="slnb"><label>SLNB total</label><input type="number" id="ws_sln_total" min="0" max="50" oninput="setPatientField('sln_total',this.value)"></div>
-            <div class="ws-field ws-wheel-field" data-node-wheel-pair="alnd"><label>ALND+</label><input type="number" id="ws_aln_pos" min="0" max="50" oninput="setPatientField('aln_pos',this.value)"></div>
-            <div class="ws-field ws-wheel-field" data-node-wheel-pair="alnd"><label>ALND total</label><input type="number" id="ws_aln_total" min="0" max="100" oninput="setPatientField('aln_total',this.value)"></div>
+            <div class="ws-field ws-wheel-field" data-node-wheel-pair="alnd"><label title="含 NSLN 與 TAD/clip node">ALND+</label><input type="number" id="ws_aln_pos" min="0" max="50" oninput="setPatientField('aln_pos',this.value)"></div>
+            <div class="ws-field ws-wheel-field" data-node-wheel-pair="alnd"><label title="含 NSLN 與 TAD/clip node">ALND total</label><input type="number" id="ws_aln_total" min="0" max="100" oninput="setPatientField('aln_total',this.value)"></div>
           </div>
+          <div class="ws-node-help">NSLN (non-sentinel LN) 與 TAD / clip node (targeted axillary dissection) 數量請計入 ALND / ALN。</div>
           <div class="ws-node-pair-row">
             <div class="ws-field ws-calculated-field"><label title="SLNB+ + ALND+">LN+</label><input type="number" id="ws_nodes_pos" min="0" max="80" readonly tabindex="-1" title="自動加總 SLNB+ + ALND+"></div>
             <div class="ws-field ws-calculated-field"><label>LN total</label><input type="number" id="ws_nodes_total" min="0" max="150" readonly tabindex="-1" title="自動加總 SLNB total + ALND total"></div>
           </div>
-          <div class="ws-field ws-node-note-field"><label>LN note</label><input type="text" id="ws_node_note" placeholder="例如：頸部淋巴結、非常規 LN 內容" oninput="setPatientField('node_note',this.value)"></div>
+          <div class="ws-field ws-node-note-field"><label>LN note</label><input type="text" id="ws_node_note" placeholder="例如：頸部淋巴結；NSLN/TAD 已計入 ALND" oninput="setPatientField('node_note',this.value)"></div>
           <div class="ws-field ws-post-select-hidden"><label>PNI</label><select id="ws_pni" onchange="setPatientField('pni',this.value)"><option value="">—</option><option value="absent">Absent</option><option value="present">Present</option></select></div>
           <div class="ws-field ws-post-select-hidden"><label>LVI</label><select id="ws_lvi" onchange="setPatientField('lvi',this.value)"><option value="">—</option><option value="absent">Absent</option><option value="present">Present</option></select></div>
           <div class="ws-field ws-post-select-hidden"><label title="Margin involved">Margin</label><select id="ws_margin_involved" onchange="setPatientField('margin_involved',this.value)"><option value="">—</option><option value="yes">Involved</option><option value="no">Uninvolved</option></select></div>
@@ -1160,13 +1168,6 @@
      </div><!-- /ws-input-col -->
 
      <div class="ws-result-col">
-      <div class="ws-step-label">AJCC 第八版分期</div>
-      <div class="ws-section">
-        <div class="ws-stage-grid" id="wsStageResults">
-          <div class="ws-empty">請先填入 T / N / M</div>
-        </div>
-      </div>
-
       <div class="ws-step-label">Patient Context</div>
       <div class="ws-section">
         <div id="wsHomeSummaryPanel" class="ws-home-summary-panel"></div>
@@ -2099,13 +2100,13 @@ const data = await res.json();</code></pre>
 <script src="assets/js/app-config.js?v=20260519a"></script>
 <script src="assets/js/modules/patient-context-adapter.js?v=20260606a"></script>
 <script src="assets/js/modules/disease-module-loader.js?v=20260606a"></script>
-<script src="assets/js/modules/agent-adapter.js?v=20260609d"></script>
+<script src="assets/js/modules/agent-adapter.js?v=20260609e"></script>
 <script src="assets/js/modules/agent-panel-state.js?v=20260606b"></script>
 <script src="assets/js/modules/recording-service-client.js?v=20260608a"></script>
 <script src="assets/js/modules/patient-inform-sheet.js?v=20260609a"></script>
 <script src="assets/js/modules/benchmark-loader.js?v=20260606a"></script>
 <script src="assets/js/modules/benchmark-browser.js?v=20260606a"></script>
-<script src="assets/js/legacy-app.js?v=20260609v"></script>
+<script src="assets/js/legacy-app.js?v=20260609w"></script>
 
 <!-- AJCC prognostic lookup table: pre-computed breast prognostic stage entries -->
 <!-- Source: breast_cancer_tools/data/ajcc_staging_9_reference_lookup.json (Taiwan VGH reference) -->

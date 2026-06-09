@@ -23,11 +23,15 @@
     const loc = locationLike || global.location || {};
     const protocol = loc.protocol || '';
     const host = loc.hostname || '';
+    const port = String(loc.port || '');
     const hasHttpApi = protocol === 'http:' || protocol === 'https:';
     const isLocal = host === '127.0.0.1' || host === 'localhost';
+    const endpoint = hasHttpApi
+      ? (isLocal && port !== '8080' ? 'http://127.0.0.1:8080/api/agent' : '/api/agent')
+      : '';
     return {
       enabled: hasHttpApi,
-      endpoint: hasHttpApi ? '/api/agent' : '',
+      endpoint,
       model: defaultModel(loc),
       headers: hasHttpApi ? { 'x-client-app': isLocal ? 'oncobreast-local-ollama-demo' : 'oncobreast-copilot' } : {}
     };

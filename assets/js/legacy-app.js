@@ -818,6 +818,7 @@ function updateDeviceShellClass(){
         document.body.classList.toggle('device-preview-desktop', !mobile);
         document.body.dataset.layoutMode = mode;
         document.body.dataset.devicePreview = mode;
+        setTimeout(syncMobileDashboardAgentRoot, 0);
     } catch(e){}
 }
 const APP_VIEW_MODE_KEY = 'nhi_ui_view_mode';
@@ -3107,9 +3108,11 @@ function dashboardAgentDefaultApiConfig(){
     if(window.OncoBreastAgentAdapter) return window.OncoBreastAgentAdapter.defaultConfig(location);
     const protocol = (location && location.protocol) ? location.protocol : '';
     const host = (location && location.hostname) ? location.hostname : '';
+    const port = (location && location.port) ? String(location.port) : '';
     const hasHttpApi = protocol === 'http:' || protocol === 'https:';
     const isLocal = host === '127.0.0.1' || host === 'localhost';
-    return { enabled: hasHttpApi, endpoint: hasHttpApi ? '/api/agent' : '', model:dashboardAgentDefaultModel(), headers: hasHttpApi ? { 'x-client-app': isLocal ? 'oncobreast-local-ollama-demo' : 'oncobreast-copilot' } : {} };
+    const endpoint = hasHttpApi ? (isLocal && port !== '8080' ? 'http://127.0.0.1:8080/api/agent' : '/api/agent') : '';
+    return { enabled: hasHttpApi, endpoint, model:dashboardAgentDefaultModel(), headers: hasHttpApi ? { 'x-client-app': isLocal ? 'oncobreast-local-ollama-demo' : 'oncobreast-copilot' } : {} };
 }
 function dashboardAgentDefaultModel(){
     try {
@@ -3164,6 +3167,24 @@ function openMobileDashboardAgent(){
 }
 function closeMobileDashboardAgent(){
     document.body.classList.remove('mobile-agent-open');
+}
+function syncMobileDashboardAgentRoot(){
+    if(!document.body) return;
+    let root = document.getElementById('mobileDashboardAgentRoot');
+    const shouldShow = dashboardAgentUseMobileDrawer() && !document.body.classList.contains('modal-dashboard-mode');
+    if(!shouldShow){
+        if(root) root.remove();
+        document.body.classList.remove('mobile-agent-open');
+        return;
+    }
+    if(!root){
+        root = document.createElement('div');
+        root.id = 'mobileDashboardAgentRoot';
+        root.className = 'mobile-dashboard-agent-root';
+        document.body.appendChild(root);
+    }
+    root.innerHTML = `${renderDashboardAgentPanel()}${renderMobileDashboardAgentFab()}`;
+    setTimeout(() => dashboardAgentRefreshStatus(false), 0);
 }
 function getDashboardAgentApiConfig(){
     const fallback = dashboardAgentDefaultApiConfig();
@@ -4193,6 +4214,7 @@ function leaveDesktopDashboard(){
         el.style.removeProperty('--dash-h');
         el.style.removeProperty('order');
     });
+    setTimeout(syncMobileDashboardAgentRoot, 0);
 }
 function initDashboardBreastPanel(){
     document.querySelectorAll('#breastPage .inner-tab').forEach(b=>b.classList.remove('active'));
@@ -5164,7 +5186,7 @@ function ensureNodeDualWheelSheet(){
             </div>
           </div>
           <div class="node-wheel-result"><span id="nodeWheelLeftResult">0</span><span aria-hidden="true"> / </span><span id="nodeWheelRightResult">0</span></div>
-          <label class="node-wheel-note"><span>備註</span><input type="text" id="nodeWheelNote" placeholder="例如：頸部淋巴結、非常規 LN 內容"></label>
+          <label class="node-wheel-note"><span>備註</span><input type="text" id="nodeWheelNote" placeholder="例如：頸部淋巴結；NSLN/TAD 已計入 ALND"></label>
         </div>`;
     document.body.appendChild(sheet);
     sheet.addEventListener('click', event => {
