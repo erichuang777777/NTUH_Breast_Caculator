@@ -4896,6 +4896,10 @@ const TOUCH_PRESET_VALUES = {
     ws_rcb_dmet: ['0','0.2','2','5','10','20']
 };
 const WORKSPACE_ZERO_DISPLAY_BLANK_IDS = new Set(['ws_sln_pos','ws_sln_total','ws_aln_pos','ws_aln_total','ws_nodes_pos','ws_nodes_total']);
+const IOS_WHEEL_VALUES = {
+    ws_sln_pos: ['0','1','2','3','4','5'],
+    ws_sln_total: ['0','1','2','3','4','5']
+};
 const TOUCH_SKIP_EMPTY_OPTIONS = new Set(['ws_breast_surgery','ws_reconstruction_surgery']);
 const MOBILE_WHEEL_SELECT_IDS = new Set([
     'ws_cT','ws_cN','ws_pT','ws_pN','ws_phase','ws_brca','ws_reconstruction_surgery',
@@ -4943,6 +4947,7 @@ function enhanceTouchSelect(select){
 function enhanceTouchPresetInput(input){
     if(!input || input.dataset.touchPresetEnhanced === '1') return;
     if(!isMobileAppShell()) return;
+    if(IOS_WHEEL_VALUES[input.id]) return;
     const values = TOUCH_PRESET_VALUES[input.id];
     if(!values) return;
     const box = document.createElement('div');
@@ -4968,8 +4973,79 @@ function enhanceTouchPresetInput(input){
     input.addEventListener('input', refreshTouchPresets);
     input.dataset.touchPresetEnhanced = '1';
 }
+function enhanceIosWheelPicker(wheel){
+    if(!wheel || wheel.dataset.wheelEnhanced === '1') return;
+    const input = document.getElementById(wheel.dataset.for);
+    const values = IOS_WHEEL_VALUES[wheel.dataset.for];
+    if(!input || !values) return;
+    wheel.innerHTML = `<div class="ios-wheel-spacer" aria-hidden="true"></div>${values.map(v => `<button type="button" data-value="${esc(v)}">${esc(v)}</button>`).join('')}<div class="ios-wheel-spacer" aria-hidden="true"></div>`;
+    wheel.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => setIosWheelValue(input, btn.dataset.value, true));
+    });
+    let timer = null;
+    wheel.addEventListener('scroll', () => {
+        clearTimeout(timer);
+        timer = setTimeout(() => snapIosWheelToNearest(wheel, true), 80);
+    }, { passive:true });
+    input.addEventListener('input', refreshIosWheelPickers);
+    wheel.dataset.wheelEnhanced = '1';
+    const field = wheel.closest('.ws-wheel-field');
+    if(field) field.classList.add('wheel-ready');
+}
+function setIosWheelValue(input, value, notify){
+    if(!input) return;
+    const next = String(value || '');
+    input.value = next;
+    if(notify){
+        dispatchCompatEvent(input, 'input');
+        dispatchCompatEvent(input, 'change');
+    }
+    if(next === '0' && WORKSPACE_ZERO_DISPLAY_BLANK_IDS.has(input.id)) input.value = '';
+    refreshIosWheelPickers();
+}
+function snapIosWheelToNearest(wheel, notify){
+    const input = document.getElementById(wheel.dataset.for);
+    const buttons = Array.from(wheel.querySelectorAll('button[data-value]'));
+    if(!input || !buttons.length) return;
+    const center = wheel.scrollTop + wheel.clientHeight / 2;
+    let best = buttons[0];
+    let bestDistance = Infinity;
+    buttons.forEach(btn => {
+        const mid = btn.offsetTop + btn.offsetHeight / 2;
+        const distance = Math.abs(mid - center);
+        if(distance < bestDistance){
+            best = btn;
+            bestDistance = distance;
+        }
+    });
+    setIosWheelValue(input, best.dataset.value, notify);
+}
+function refreshIosWheelPickers(){
+    document.querySelectorAll('.ios-wheel-picker[data-for]').forEach(wheel => {
+        const input = document.getElementById(wheel.dataset.for);
+        if(!input) return;
+        const stored = (_patient && wheel.dataset.for === 'ws_sln_pos') ? _patient.sln_pos
+            : ((_patient && wheel.dataset.for === 'ws_sln_total') ? _patient.sln_total : input.value);
+        const value = String(stored || input.value || '0');
+        const buttons = Array.from(wheel.querySelectorAll('button[data-value]'));
+        buttons.forEach(btn => btn.classList.toggle('active', btn.dataset.value === value));
+        const active = buttons.find(btn => btn.dataset.value === value) || buttons[0];
+        if(active && wheel.dataset.wheelSyncing !== '1'){
+            wheel.dataset.wheelSyncing = '1';
+            requestAnimationFrame(() => {
+                wheel.scrollTop = Math.max(0, active.offsetTop - (wheel.clientHeight - active.offsetHeight) / 2);
+                delete wheel.dataset.wheelSyncing;
+            });
+        }
+    });
+}
 function clearTouchEnhancements(){
     document.querySelectorAll('.touch-picker, .touch-presets').forEach(el => el.remove());
+    document.querySelectorAll('.ios-wheel-picker[data-for]').forEach(el => {
+        el.innerHTML = '';
+        delete el.dataset.wheelEnhanced;
+    });
+    document.querySelectorAll('.ws-wheel-field.wheel-ready').forEach(el => el.classList.remove('wheel-ready'));
     document.querySelectorAll('.touch-select-backup, .mobile-wheel-select').forEach(el => {
         el.classList.remove('touch-select-backup', 'mobile-wheel-select');
         delete el.dataset.touchEnhanced;
@@ -4985,8 +5061,10 @@ function enhanceTouchInputs(){
     }
     document.querySelectorAll('#wsPage select, #ajccPage select:not(.ajcc-hidden-select)').forEach(enhanceTouchSelect);
     Object.keys(TOUCH_PRESET_VALUES).forEach(id => enhanceTouchPresetInput(document.getElementById(id)));
+    document.querySelectorAll('.ios-wheel-picker[data-for]').forEach(enhanceIosWheelPicker);
     refreshTouchPickers();
     refreshTouchPresets();
+    refreshIosWheelPickers();
 }
 function refreshTouchPickers(){
     document.querySelectorAll('.touch-picker').forEach(picker => {
@@ -5047,6 +5125,7 @@ function syncWorkspaceInputs(keys=Object.keys(PATIENT_DEFAULTS)){
     });
     refreshTouchPickers();
     refreshTouchPresets();
+    refreshIosWheelPickers();
     if(typeof syncWsGeneChips === 'function') syncWsGeneChips();
 }
 const INITIAL_VISIT_REQUIRED = [

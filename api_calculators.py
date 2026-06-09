@@ -150,11 +150,28 @@ def ajcc_n_for_calc(n):
     if not n:
         return n
     n = str(n).replace("p", "", 1)
-    return "N0" if n in ("N0i-", "N0i+") else n
+    if n in ("N0i-", "N0i+", "N0(i-)", "N0(i+)"):
+        return "N0"
+    if n.startswith("N1"):
+        return "N1"
+    if n.startswith("N2"):
+        return "N2"
+    if n.startswith("N3"):
+        return "N3"
+    return n
+
+
+def ajcc_t_for_calc(t):
+    if not t:
+        return t
+    t = str(t).replace("p", "", 1)
+    if t.startswith("T1"):
+        return "T1"
+    return t
 
 
 def ajcc_anatomic(t, n, m):
-    t = str(t or "").replace("p", "", 1)
+    t = ajcc_t_for_calc(t)
     n = ajcc_n_for_calc(n)
     m = str(m or "").replace("p", "", 1)
     if not t or not n or not m:

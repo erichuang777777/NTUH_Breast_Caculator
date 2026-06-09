@@ -128,11 +128,23 @@ function nonSln(input) {
 function ajccNForCalc(n) {
   if (!n) return n;
   if (n === 'N0i-' || n === 'N0i+' || n === 'pN0i-' || n === 'pN0i+') return 'N0';
-  return String(n).replace(/^p/, '');
+  const clean = String(n).replace(/^p/, '');
+  if (clean === 'N0(i-)' || clean === 'N0(i+)') return 'N0';
+  if (clean.startsWith('N1')) return 'N1';
+  if (clean.startsWith('N2')) return 'N2';
+  if (clean.startsWith('N3')) return 'N3';
+  return clean;
+}
+
+function ajccTForCalc(t) {
+  if (!t) return t;
+  const clean = String(t).replace(/^p/, '');
+  if (clean.startsWith('T1')) return 'T1';
+  return clean;
 }
 
 function ajccAnatomic(input) {
-  const t = String(input.T || input.t || '').replace(/^p/, '');
+  const t = ajccTForCalc(input.T || input.t);
   const n = ajccNForCalc(input.N || input.n);
   const m = String(input.M || input.m || '').replace(/^p/, '');
   if (!t || !n || !m) return null;

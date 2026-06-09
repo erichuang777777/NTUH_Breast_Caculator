@@ -542,8 +542,8 @@ def _agent_staging_boundary_note(patient):
     m = str(patient.get("pM") or patient.get("cM") or "").strip()
     if not (t and n and m):
         return ""
-    unsupported_t = {"T0", "T1mi", "T1a", "T1b", "T1c"}
-    unsupported_n = {"N0(i-)", "N0(i+)", "N1mi", "N1a", "N1b", "N1c", "N2a", "N2b", "N3a", "N3b", "N3c"}
+    unsupported_t = {"T0"}
+    unsupported_n = set()
     if t in unsupported_t or n in unsupported_n:
         return f"{t}{n}{m} contains AJCC subcategory not supported by this simplified anatomic staging calculator; answer must say 無法判定/不適用 and must not infer a stage."
     if t == "Tis" and n != "N0":

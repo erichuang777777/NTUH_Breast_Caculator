@@ -9,7 +9,7 @@
 <title>Oncobreast copilot</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/app.css?v=20260609r">
+<link rel="stylesheet" href="assets/css/app.css?v=20260609s">
 <link rel="stylesheet" href="assets/css/ajcc-mobile.css?v=20260519a">
 </head>
 <body>
@@ -962,6 +962,7 @@
           <div class="ws-field ws-gene-chip-field"><label>TP53</label><select id="ws_tp53" class="ws-gene-select-hidden" onchange="setPatientField('tp53',this.value)"><option value="">未檢測</option><option value="mut">mutation</option><option value="wt">wild-type</option></select><div class="ws-gene-chip-row" id="wsGene_tp53"><button type="button" class="ws-qchip" data-state="neg" onclick="setWsGeneField('tp53','neg')" title="未檢測">-</button><button type="button" class="ws-qchip" data-state="pos" onclick="setWsGeneField('tp53','pos')" title="mutation">+</button><button type="button" class="ws-qchip" data-state="wt" onclick="setWsGeneField('tp53','wt')" title="wild-type">WT</button></div></div>
           <div class="ws-field ws-gene-chip-field"><label>ESR1</label><select id="ws_esr1" class="ws-gene-select-hidden" onchange="setPatientField('esr1',this.value)"><option value="">未檢測</option><option value="mut">mutation</option><option value="wt">wild-type</option></select><div class="ws-gene-chip-row" id="wsGene_esr1"><button type="button" class="ws-qchip" data-state="neg" onclick="setWsGeneField('esr1','neg')" title="未檢測">-</button><button type="button" class="ws-qchip" data-state="pos" onclick="setWsGeneField('esr1','pos')" title="mutation">+</button><button type="button" class="ws-qchip" data-state="wt" onclick="setWsGeneField('esr1','wt')" title="wild-type">WT</button></div></div>
           <div class="ws-field ws-gene-chip-field"><label>PIK3CA</label><select id="ws_pik3ca" class="ws-gene-select-hidden" onchange="setPatientField('pik3ca',this.value)"><option value="">未檢測</option><option value="mut">mutation</option><option value="wt">wild-type</option></select><div class="ws-gene-chip-row" id="wsGene_pik3ca"><button type="button" class="ws-qchip" data-state="neg" onclick="setWsGeneField('pik3ca','neg')" title="未檢測">-</button><button type="button" class="ws-qchip" data-state="pos" onclick="setWsGeneField('pik3ca','pos')" title="mutation">+</button><button type="button" class="ws-qchip" data-state="wt" onclick="setWsGeneField('pik3ca','wt')" title="wild-type">WT</button></div></div>
+          <div class="ws-gene-row-break" aria-hidden="true"></div>
           <div class="ws-field ws-oncotype-field"><label>Oncotype RS score</label><input type="number" id="ws_oncotype_rs" min="0" max="100" step="1" placeholder="0-100" oninput="setPatientField('oncotype_rs',this.value)"></div>
           <div class="ws-field ws-civic-field"><label>CIViC</label><input type="text" id="ws_civic_variant" placeholder="PIK3CA H1047R" oninput="setPatientField('civic_variant',this.value)"></div>
         </div>
@@ -1074,8 +1075,8 @@
           <div class="ws-field ws-post-select-hidden"><label title="乳房手術">乳房</label><select id="ws_breast_surgery" onchange="setPatientField('breast_surgery',this.value)"><option value="">—</option><option value="BCS">BCS</option><option value="SM">SM</option></select></div>
           <div class="ws-field ws-post-select-hidden"><label title="腋下手術">腋下</label><select id="ws_axillary_surgery" onchange="setPatientField('axillary_surgery',this.value)"><option value="">—</option><option value="SLNB">SLNB</option><option value="TAD">TAD</option><option value="ALND">ALND</option></select></div>
           <div class="ws-field ws-post-select-hidden"><label title="重建術式">重建</label><select id="ws_reconstruction_surgery" onchange="setPatientField('reconstruction_surgery',this.value)"><option value="">—</option><option value="none">無</option><option value="TE">TE</option><option value="implant">Implant</option><option value="autologous">Auto</option></select></div>
-          <div class="ws-field"><label>SLNB+</label><input type="number" id="ws_sln_pos" min="0" max="30" oninput="setPatientField('sln_pos',this.value)"></div>
-          <div class="ws-field"><label>SLNB total</label><input type="number" id="ws_sln_total" min="0" max="50" oninput="setPatientField('sln_total',this.value)"></div>
+          <div class="ws-field ws-wheel-field"><label>SLNB+</label><input type="number" id="ws_sln_pos" min="0" max="30" oninput="setPatientField('sln_pos',this.value)"><div class="ios-wheel-picker" data-for="ws_sln_pos" aria-label="SLNB positive wheel"></div></div>
+          <div class="ws-field ws-wheel-field"><label>SLNB total</label><input type="number" id="ws_sln_total" min="0" max="50" oninput="setPatientField('sln_total',this.value)"><div class="ios-wheel-picker" data-for="ws_sln_total" aria-label="SLNB total wheel"></div></div>
           <div class="ws-field"><label>ALND+</label><input type="number" id="ws_aln_pos" min="0" max="50" oninput="setPatientField('aln_pos',this.value)"></div>
           <div class="ws-field"><label>ALND total</label><input type="number" id="ws_aln_total" min="0" max="100" oninput="setPatientField('aln_total',this.value)"></div>
           <div class="ws-field ws-calculated-field"><label title="SLNB+ + ALND+">LN+</label><input type="number" id="ws_nodes_pos" min="0" max="80" readonly tabindex="-1" title="自動加總 SLNB+ + ALND+"></div>
@@ -2037,7 +2038,7 @@ const data = await res.json();</code></pre>
 <script src="assets/js/modules/patient-inform-sheet.js?v=20260609a"></script>
 <script src="assets/js/modules/benchmark-loader.js?v=20260606a"></script>
 <script src="assets/js/modules/benchmark-browser.js?v=20260606a"></script>
-<script src="assets/js/legacy-app.js?v=20260609p"></script>
+<script src="assets/js/legacy-app.js?v=20260609q"></script>
 
 <!-- AJCC prognostic lookup table: pre-computed breast prognostic stage entries -->
 <!-- Source: breast_cancer_tools/data/ajcc_staging_9_reference_lookup.json (Taiwan VGH reference) -->

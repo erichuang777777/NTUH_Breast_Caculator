@@ -4004,12 +4004,19 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
   display: none !important;
 }
 .ws-gene-section .ws-form {
-  grid-template-columns: repeat(auto-fit, minmax(122px, max-content));
+  display: flex;
+  flex-wrap: wrap;
   justify-content: start;
   align-items: end;
   gap: .22rem;
 }
+.ws-gene-row-break {
+  flex: 0 0 100%;
+  height: 0;
+  min-height: 0;
+}
 .ws-gene-section .ws-field {
+  flex: 0 0 auto;
   width: 78px;
   min-width: 0;
   min-height: 46px;
@@ -4017,6 +4024,7 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
 }
 .ws-gene-section .ws-gene-chip-field {
   display: grid !important;
+  flex: 0 0 122px;
   width: 122px;
   min-height: 32px;
   grid-template-columns: 42px minmax(0, 1fr);
@@ -4025,10 +4033,12 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
   gap: .16rem;
 }
 .ws-gene-section .ws-oncotype-field {
+  flex: 0 0 154px;
   width: 154px;
   min-width: 0;
 }
 .ws-gene-section .ws-civic-field {
+  flex: 0 0 154px;
   width: 154px;
   min-width: 0;
 }
@@ -4132,13 +4142,13 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
   gap: .28rem;
 }
 .ws-post-tnm-grid .ws-q-row7 {
-  grid-template-columns: repeat(7, minmax(36px, 1fr));
+  grid-template-columns: repeat(7, minmax(0, 1fr));
 }
 .ws-post-tnm-grid .ws-q-row6 {
   grid-template-columns: repeat(6, minmax(42px, 1fr));
 }
 .ws-post-tnm-grid .ws-q-row5 {
-  grid-template-columns: repeat(5, minmax(44px, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 .ws-post-tnm-grid .ws-q-row4 {
   grid-template-columns: repeat(4, minmax(50px, 1fr));
@@ -4151,6 +4161,77 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
   font-size: .76rem;
   line-height: 1.08;
   box-sizing: border-box;
+}
+#wsPostPTChips,
+#wsPostPNChips {
+  width: 100%;
+}
+#wsPostPTChips .ws-qchip,
+#wsPostPNChips .ws-qchip {
+  min-height: 1.86rem;
+  padding: .26rem .08rem;
+  font-size: .72rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+.ws-wheel-field.wheel-ready input[type="number"] {
+  position: absolute;
+  width: 1px !important;
+  height: 1px !important;
+  min-height: 1px !important;
+  opacity: 0;
+  pointer-events: none;
+}
+.ios-wheel-picker {
+  position: relative;
+  height: 74px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-snap-type: y mandatory;
+  border: 1px solid #d8e3ee;
+  border-radius: 10px;
+  background:
+    linear-gradient(#fff 0%, rgba(255,255,255,.86) 32%, rgba(255,255,255,0) 50%, rgba(255,255,255,.86) 68%, #fff 100%),
+    #f8fafc;
+  box-shadow: inset 0 0 0 1px rgba(15,23,42,.03);
+  scrollbar-width: none;
+}
+.ios-wheel-picker::-webkit-scrollbar {
+  display: none;
+}
+.ios-wheel-picker::after {
+  content: "";
+  position: sticky;
+  display: block;
+  top: 24px;
+  height: 24px;
+  margin-top: -24px;
+  border-top: 1px solid #bfdbfe;
+  border-bottom: 1px solid #bfdbfe;
+  pointer-events: none;
+}
+.ios-wheel-spacer {
+  height: 25px;
+  scroll-snap-align: center;
+}
+.ios-wheel-picker button {
+  display: block;
+  width: 100%;
+  height: 24px;
+  border: 0;
+  background: transparent;
+  color: #64748b;
+  font-size: .74rem;
+  font-weight: 850;
+  line-height: 24px;
+  text-align: center;
+  scroll-snap-align: center;
+  cursor: pointer;
+}
+.ios-wheel-picker button.active {
+  color: #0f172a;
+  font-size: .88rem;
+  font-weight: 950;
 }
 .ws-post-tnm-grid .ws-q-refine {
   width: 100%;
@@ -7203,6 +7284,20 @@ body.mobile-device-shell #wsPage.active .ws-post-tnm-grid .ws-q-row6,
 body.mobile-device-shell #wsPage.active .ws-post-tnm-grid .ws-q-row5,
 body.mobile-device-shell #wsPage.active .ws-post-tnm-grid .ws-q-row4 {
   grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+body.mobile-device-shell #wsPage.active .ws-post-tnm-grid #wsPostPTChips {
+  grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+  gap: .16rem !important;
+}
+body.mobile-device-shell #wsPage.active .ws-post-tnm-grid #wsPostPNChips {
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: .18rem !important;
+}
+body.mobile-device-shell #wsPage.active .ws-post-tnm-grid #wsPostPTChips .ws-qchip,
+body.mobile-device-shell #wsPage.active .ws-post-tnm-grid #wsPostPNChips .ws-qchip {
+  min-height: 1.72rem !important;
+  padding: .22rem .04rem !important;
+  font-size: .66rem !important;
 }
 body.mobile-device-shell #wsPage.active #wsInputCol.ws-full-mode .ws-gene-section .ws-field,
 body.mobile-device-shell #wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-gene-section .ws-field,
