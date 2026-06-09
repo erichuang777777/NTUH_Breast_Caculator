@@ -718,20 +718,6 @@ async function loadLanding(){
             <div class="count" style="color:#059669">自費項目</div>
             <div class="desc">乳癌手術自費品項 | 勾選計算總價 | 匯出</div>
         </div>`;
-    html += `<div class="dept-card api" onclick="showApiGuide()">
-            ${_moduleBadge(false)}
-            <div style="font-size:2.5rem">&#128736;</div>
-            <h2>API Guide</h2>
-            <div class="count" style="color:#2563eb">Netlify / Agent</div>
-            <div class="desc">公開 read-only API、risk score 計算、staging score、agent 呼叫範例</div>
-        </div>`;
-    html += `<div class="dept-card api" onclick="showBenchmarkGuide()">
-            ${_moduleBadge(false)}
-            <div style="font-size:2.5rem">&#128202;</div>
-            <h2>Agent Benchmark</h2>
-            <div class="count" style="color:#0f766e">100 題 / 答案</div>
-            <div class="desc">瀏覽 agent 題庫、預期工具呼叫與答案判斷規則</div>
-        </div>`;
     document.getElementById('landingCards').innerHTML = html;
 }
 
@@ -3721,7 +3707,13 @@ async function dashboardAgentTryExternal(text){
                 if(!res.ok) return null;
                 return await res.json().catch(() => ({}));
             })();
-        if(!data) return '';
+        if(!data){
+            return { reply:'Agent API 已啟用，但這次沒有回傳可用結果。請確認 /api/agent 與 Ollama 模型可正常回應。', called_tools:['agent-api'] };
+        }
+        if(data.ok === false || data.error){
+            const detail = [data.error, data.detail].filter(Boolean).join('：');
+            return { reply:`Agent API 已連線，但呼叫失敗${detail ? '：' + detail : '。請確認 Ollama 模型與 API 設定。'}`, called_tools:['agent-api'] };
+        }
         if(data.runtime && /ollama/i.test(String(data.runtime))){
             const isLocal = data.runtime === 'local-ollama';
             const label = isLocal ? 'Local' : 'Cloud';
@@ -3730,10 +3722,10 @@ async function dashboardAgentTryExternal(text){
         }
         dashboardAgentUpdateModelOptions([], data.model || cfg.model || '');
         if(data.tool_id && dashboardAgentShouldOpenTool(text)) dashboardAgentRunTool(data.tool_id);
-        return data && typeof data === 'object' ? data : String(data.reply || data.message || data.text || '').trim();
+        return data && typeof data === 'object' ? data : String(data || '').trim();
     } catch(e){
         console.warn('Dashboard agent external API failed', e);
-        return '';
+        return { reply:`Agent API 呼叫發生錯誤：${e && e.message ? e.message : 'unknown error'}。請確認 /api/agent、Ollama host 與模型設定。`, called_tools:['agent-api'] };
     }
 }
 function dashboardAgentPathologySummary(text, sourceLabel){
@@ -4304,7 +4296,11 @@ function showTrials(){
     document.getElementById('calcPage').classList.remove('active');
     document.getElementById('wsPage').classList.remove('active');
     document.getElementById('journeyPage').classList.remove('active');
-    syncTrialsFromWorkspace(false);
+    syncTrialsFromWorkspace(true);
+    const el = document.getElementById('trialResults');
+    if(typeof searchTrials !== 'function' && el){
+        el.innerHTML = '<div style="padding:1rem;color:#ef4444">臨床試驗搜尋模組尚未載入，請重新整理頁面後再試。</div>';
+    }
 }
 function showAJCC(){
     leaveDesktopDashboard();
@@ -8868,6 +8864,8 @@ function loadFeatureFlags(){
         if(saved) FEATURE_FLAGS = { ...FEATURE_FLAGS_DEFAULT, ...JSON.parse(saved) };
         delete FEATURE_FLAGS.nccn;
         FEATURE_FLAGS.inpatient = true;
+        FEATURE_FLAGS.surgery = true;
+        FEATURE_FLAGS.trials = true;
         FEATURE_FLAGS.calc_ihc4 = true;
         FEATURE_FLAGS.calc_gail = true;
     } catch(e){ console.warn('Failed to load feature flags', e); }
@@ -8888,7 +8886,7 @@ function saveFeatureFlags(){
     try { localStorage.setItem(FEATURE_FLAGS_KEY, JSON.stringify(FEATURE_FLAGS)); } catch(e){}
 }
 function setFlag(name, value){
-    if(name === 'inpatient' || name === 'calc_ihc4' || name === 'calc_gail') value = true;
+    if(name === 'inpatient' || name === 'surgery' || name === 'trials' || name === 'calc_ihc4' || name === 'calc_gail') value = true;
     FEATURE_FLAGS[name] = !!value;
     saveFeatureFlags();
     if(typeof loadLanding === 'function') loadLanding();
@@ -8904,6 +8902,8 @@ function setDevMode(enableAll){
     FEATURE_FLAGS.calc_ihc4 = true;
     FEATURE_FLAGS.calc_gail = true;
     FEATURE_FLAGS.inpatient = true;
+    FEATURE_FLAGS.surgery = true;
+    FEATURE_FLAGS.trials = true;
     FEATURE_FLAGS.patientJourney = false;
     delete FEATURE_FLAGS.nccn;
     saveFeatureFlags();

@@ -228,6 +228,116 @@ body.mobile-device-shell .sidebar-actions {
 body.mobile-device-shell .sidebar-actions .btn {
   min-width: 0;
 }
+body.mobile-device-shell #breastPage .content-layout {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: .75rem;
+  height: auto !important;
+  width: 100%;
+}
+body.mobile-device-shell #breastPage .filter-sidebar {
+  display: block !important;
+  width: 100% !important;
+  flex: 0 0 auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+  border-right: 0 !important;
+  border-radius: var(--r-lg);
+}
+body.mobile-device-shell #breastPage .content-main,
+body.mobile-device-shell #breastPage .drug-list {
+  display: block;
+  width: 100%;
+  overflow: visible !important;
+}
+body.mobile-device-shell #breastPage .drug-list {
+  display: flex;
+}
+body.mobile-device-shell #breastPage .filter-section {
+  margin-bottom: .72rem;
+}
+body.mobile-device-shell #breastPage .filter-chips {
+  gap: .32rem;
+}
+body.mobile-device-shell #wsPage.active #wsInputCol.ws-full-mode .ws-gene-section .ws-form,
+body.mobile-device-shell #wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-gene-section .ws-form {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  justify-content: stretch !important;
+  gap: .35rem !important;
+}
+body.mobile-device-shell #wsPage.active #wsInputCol.ws-full-mode .ws-gene-section .ws-field,
+body.mobile-device-shell #wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-gene-section .ws-field {
+  width: auto !important;
+  min-width: 0 !important;
+  min-height: 64px;
+}
+body.mobile-device-shell #wsPage.active #wsInputCol.ws-full-mode .ws-gene-section .ws-oncotype-field,
+body.mobile-device-shell #wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-gene-section .ws-oncotype-field {
+  grid-column: 1 / -1;
+  width: auto !important;
+  min-width: 0 !important;
+}
+body.mobile-device-shell #journeyPage .journey-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: .7rem;
+  width: 100%;
+}
+body.mobile-device-shell #journeyPage .journey-panel {
+  padding: .78rem .82rem;
+  border-radius: 8px;
+  min-width: 0;
+}
+body.mobile-device-shell #journeyPage .journey-panel[style] {
+  margin-top: .7rem !important;
+}
+body.mobile-device-shell #journeyPage .journey-main {
+  font-size: 1.05rem;
+  line-height: 1.3;
+}
+body.mobile-device-shell #journeyPage .journey-sub,
+body.mobile-device-shell #journeyPage .journey-note {
+  font-size: .76rem;
+  line-height: 1.45;
+}
+body.mobile-device-shell #journeyPage .journey-steps {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: .25rem;
+}
+body.mobile-device-shell #journeyPage .journey-step {
+  min-height: 50px;
+  padding: .42rem .2rem;
+  font-size: .62rem;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+body.mobile-device-shell #journeyPage .journey-step .num {
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+  margin-bottom: .18rem;
+}
+body.mobile-device-shell #journeyPage .patient-center-status-board,
+body.mobile-device-shell #journeyPage .journey-facts,
+body.mobile-device-shell #journeyPage .patient-center-print-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+body.mobile-device-shell #journeyPage .patient-center-check-item {
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+body.mobile-device-shell #journeyPage .patient-center-check-actions {
+  justify-content: flex-start;
+}
+body.mobile-device-shell #journeyPage .journey-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: .4rem;
+}
+body.mobile-device-shell #journeyPage .journey-actions .ws-btn,
+body.mobile-device-shell #journeyPage .patient-center-print-grid .ws-btn {
+  width: 100%;
+}
 body.mobile-device-shell .ws-field input,
 body.mobile-device-shell .ws-field select,
 body.mobile-device-shell .calc-field input,

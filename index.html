@@ -9,7 +9,7 @@
 <title>Oncobreast copilot</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/app.css?v=20260609i">
+<link rel="stylesheet" href="assets/css/app.css?v=20260609k">
 <link rel="stylesheet" href="assets/css/ajcc-mobile.css?v=20260519a">
 </head>
 <body>
@@ -1107,15 +1107,6 @@
 
      </div><!-- /ws-result-col -->
 
-      <!-- Action bar -->
-      <div class="ws-actions">
-        <button class="ws-btn ws-btn-primary" onclick="showPatientCenter()">&#128203; 診間 Copilot</button>
-        <button class="ws-btn" onclick="generatePatientTreatmentPlan()">病人治療說明單</button>
-        <button class="ws-btn" onclick="printWorkspaceSummary()">&#128196; 病歷摘要</button>
-        <button class="ws-btn" onclick="exportPatientWorkspace()">&#128190; 匯出結構化 JSON</button>
-        <button class="ws-btn" onclick="importPatientWorkspace()">&#128194; 匯入資料</button>
-      </div>
-
     </div>
   </div><!-- /wsPage -->
 
@@ -1887,6 +1878,7 @@ const data = await res.json();</code></pre>
             <button type="button" onclick="showTrials();closeFunctionMenu()">臨床試驗搜尋</button>
             <button type="button" onclick="showCalc();closeFunctionMenu()">風險分數 / PREDICT</button>
             <button type="button" onclick="showICD();closeFunctionMenu()">重卡與 ICD</button>
+            <button type="button" onclick="showSurgery();closeFunctionMenu()">手術醫材清單</button>
           </div>
           <p class="function-menu-note">每個工具的詳細文件會逐步拆成獨立 Markdown；目前先以內建說明與 citation 區塊呈現。</p>
           <a class="function-menu-action subtle" href="docs/MODULE_BOUNDARIES.md" target="_blank" rel="noopener">開啟模組邊界文件</a>
@@ -2039,13 +2031,13 @@ const data = await res.json();</code></pre>
 <script src="assets/js/app-config.js?v=20260519a"></script>
 <script src="assets/js/modules/patient-context-adapter.js?v=20260606a"></script>
 <script src="assets/js/modules/disease-module-loader.js?v=20260606a"></script>
-<script src="assets/js/modules/agent-adapter.js?v=20260609b"></script>
+<script src="assets/js/modules/agent-adapter.js?v=20260609c"></script>
 <script src="assets/js/modules/agent-panel-state.js?v=20260606b"></script>
 <script src="assets/js/modules/recording-service-client.js?v=20260608a"></script>
 <script src="assets/js/modules/patient-inform-sheet.js?v=20260609a"></script>
 <script src="assets/js/modules/benchmark-loader.js?v=20260606a"></script>
 <script src="assets/js/modules/benchmark-browser.js?v=20260606a"></script>
-<script src="assets/js/legacy-app.js?v=20260609i"></script>
+<script src="assets/js/legacy-app.js?v=20260609k"></script>
 
 <!-- AJCC prognostic lookup table: pre-computed breast prognostic stage entries -->
 <!-- Source: breast_cancer_tools/data/ajcc_staging_9_reference_lookup.json (Taiwan VGH reference) -->
@@ -2054,7 +2046,7 @@ const data = await res.json();</code></pre>
 <script src="assets/js/modules/ajcc/prognostic-lookup.js?v=20260519a"></script>
 <script src="assets/js/modules/ajcc/mobile-panel.js?v=20260519a"></script>
 
-<script src="assets/js/modules/drug-cards.js?v=20260528a"></script>
+<script src="assets/js/modules/drug-cards.js?v=20260609a"></script>
 
 </body>
 </html>

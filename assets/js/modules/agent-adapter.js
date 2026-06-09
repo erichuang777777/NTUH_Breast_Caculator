@@ -116,8 +116,16 @@
       },
       body: JSON.stringify(payload || {})
     });
-    if(!res.ok) return null;
-    return await res.json().catch(() => ({}));
+    const data = await res.json().catch(() => ({}));
+    if(!res.ok) {
+      return {
+        ok: false,
+        status: res.status,
+        error: data.error || data.message || `Agent API HTTP ${res.status}`,
+        detail: data.detail || ''
+      };
+    }
+    return data;
   }
 
   global.OncoBreastAgentAdapter = {
