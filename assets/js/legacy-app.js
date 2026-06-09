@@ -925,10 +925,51 @@ function legacyTouchActivationTarget(target){
     return null;
 }
 let _legacyTouchStart = null;
+let _legacyTouchPassiveOption = null;
+const LEGACY_TOUCH_CLICKABLE_SELECTOR = 'button, [onclick], .btn, .menu-item, nav a, [role="button"], summary';
+function legacyTouchPassiveOption(){
+    if(_legacyTouchPassiveOption !== null) return _legacyTouchPassiveOption;
+    let passiveSupported = false;
+    try {
+        const opts = Object.defineProperty({}, 'passive', {
+            get: function(){ passiveSupported = true; }
+        });
+        window.addEventListener('testPassive', null, opts);
+        window.removeEventListener('testPassive', null, opts);
+    } catch(e){}
+    _legacyTouchPassiveOption = passiveSupported ? { passive:true } : false;
+    return _legacyTouchPassiveOption;
+}
+function primeLegacyTouchableElement(el){
+    if(!el || el.nodeType !== 1 || el.dataset.legacyTouchPrimed === '1') return;
+    el.dataset.legacyTouchPrimed = '1';
+    el.style.cursor = 'pointer';
+    el.addEventListener('touchstart', function(){}, legacyTouchPassiveOption());
+}
+function primeLegacyTouchableTree(root){
+    if(!root || !root.querySelectorAll) return;
+    const nodes = root.querySelectorAll(LEGACY_TOUCH_CLICKABLE_SELECTOR);
+    for(let i = 0; i < nodes.length; i++) primeLegacyTouchableElement(nodes[i]);
+}
 function bindLegacySafariTouchActivation(){
     if(window._nhiLegacyTouchActivationBound) return;
     if(!('ontouchstart' in window) && !(navigator.maxTouchPoints > 0)) return;
     window._nhiLegacyTouchActivationBound = true;
+    primeLegacyTouchableTree(document);
+    if(window.MutationObserver){
+        const observer = new MutationObserver(function(mutations){
+            for(let i = 0; i < mutations.length; i++){
+                const added = mutations[i].addedNodes || [];
+                for(let j = 0; j < added.length; j++){
+                    const node = added[j];
+                    if(!node || node.nodeType !== 1) continue;
+                    if(node.matches && node.matches(LEGACY_TOUCH_CLICKABLE_SELECTOR)) primeLegacyTouchableElement(node);
+                    primeLegacyTouchableTree(node);
+                }
+            }
+        });
+        observer.observe(document.documentElement || document.body, { childList:true, subtree:true });
+    }
     document.addEventListener('touchstart', function(event){
         const touch = event.touches && event.touches.length === 1 ? event.touches[0] : null;
         if(!touch) {

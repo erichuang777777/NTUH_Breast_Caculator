@@ -4373,6 +4373,26 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
   overflow-wrap: normal;
   box-sizing: border-box;
 }
+.ws-node-pair-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .45rem;
+  min-width: 0;
+}
+.ws-form > .ws-node-pair-row {
+  grid-column: 1 / -1;
+}
+.dashboard-mode .ws-input-col .ws-form > .ws-node-pair-row,
+body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-form > .ws-node-pair-row,
+#wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-form > .ws-node-pair-row {
+  flex: 1 1 300px;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: .38rem;
+}
+.ws-node-pair-row .ws-field {
+  min-width: 0;
+}
 @media (max-width: 1100px) {
   .ws-post-biomarker-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -4398,6 +4418,12 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
   .ws-post-aux-grid .ws-q-row3,
   .ws-post-aux-grid .ws-q-row4 {
     grid-template-columns: repeat(auto-fit, minmax(64px, 1fr));
+  }
+  body.mobile-device-shell .ws-form > .ws-node-pair-row,
+  body.mobile-device-shell #wsPage.active .ws-form > .ws-node-pair-row {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: .38rem;
   }
 }
 .ws-pathology-box {
@@ -7531,6 +7557,86 @@ body.mobile-device-shell #wsPage.active #wsInputCol.ws-full-mode .ws-gene-sectio
 body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-gene-section .ws-quick-backed-field,
 #wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-gene-section .ws-quick-backed-field {
   display: none !important;
+}
+
+/* Desktop stage layout: reuse the clearer mobile-style vertical flow. */
+body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-quick-mode .ws-quick-section,
+#wsPage.active.dashboard-mode #wsInputCol.ws-quick-mode .ws-quick-section {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: .55rem !important;
+  width: 100% !important;
+  padding: .58rem !important;
+  border-radius: 8px !important;
+  background: #f8fafc !important;
+}
+body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-quick-mode .ws-q-divline,
+#wsPage.active.dashboard-mode #wsInputCol.ws-quick-mode .ws-q-divline {
+  display: none !important;
+}
+body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-quick-mode .ws-q-infobar,
+#wsPage.active.dashboard-mode #wsInputCol.ws-quick-mode .ws-q-infobar {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: .45rem !important;
+  width: 100% !important;
+}
+body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-quick-mode .ws-q-biogrid,
+#wsPage.active.dashboard-mode #wsInputCol.ws-quick-mode .ws-q-biogrid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: .45rem !important;
+  width: 100% !important;
+}
+body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-quick-mode .ws-q-infofield,
+body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-quick-mode .ws-q-block,
+body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-quick-mode .ws-q-biocol,
+#wsPage.active.dashboard-mode #wsInputCol.ws-quick-mode .ws-q-infofield,
+#wsPage.active.dashboard-mode #wsInputCol.ws-quick-mode .ws-q-block,
+#wsPage.active.dashboard-mode #wsInputCol.ws-quick-mode .ws-q-biocol {
+  grid-column: auto !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+}
+body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-quick-mode .ws-q-ct-card,
+body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-quick-mode .ws-q-cn-card,
+#wsPage.active.dashboard-mode #wsInputCol.ws-quick-mode .ws-q-ct-card,
+#wsPage.active.dashboard-mode #wsInputCol.ws-quick-mode .ws-q-cn-card {
+  display: grid !important;
+}
+body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-post-tnm-grid,
+#wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-post-tnm-grid {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: .55rem !important;
+}
+body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-post-tnm-grid .ws-q-block,
+#wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-post-tnm-grid .ws-q-block {
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
+}
+body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-post-biomarker-grid,
+#wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-post-biomarker-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+body.desktop-dashboard-mode #wsPage.dashboard-widget.active > .page-body {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-rows: auto auto auto !important;
+  gap: .55rem !important;
+  overflow: auto !important;
+}
+body.desktop-dashboard-mode #wsPage.dashboard-widget.active > .page-body > .ws-step-label,
+body.desktop-dashboard-mode #wsPage.dashboard-widget.active > .page-body > .ws-input-col,
+body.desktop-dashboard-mode #wsPage.dashboard-widget.active > .page-body > .ws-result-col {
+  grid-column: 1 !important;
+  grid-row: auto !important;
+  min-width: 0 !important;
+  width: 100% !important;
+}
+body.desktop-dashboard-mode #wsPage.dashboard-widget.active .ws-tab-switcher {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
 }
 
 /* ── Compare & Print ── */
