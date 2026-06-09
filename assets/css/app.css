@@ -3956,23 +3956,23 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
   display: none !important;
 }
 .ws-gene-section .ws-form {
-  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(78px, max-content));
   justify-content: start;
   align-items: end;
-  gap: .28rem;
+  gap: .22rem;
 }
 .ws-gene-section .ws-field {
-  width: auto;
+  width: 78px;
   min-width: 0;
-  min-height: 66px;
-  padding: .24rem;
+  min-height: 46px;
+  padding: .18rem;
 }
 .ws-gene-section .ws-oncotype-field {
-  width: auto;
+  width: 126px;
   min-width: 0;
 }
 .ws-gene-section .ws-field label {
-  font-size: .66rem;
+  font-size: .62rem;
   letter-spacing: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -3988,18 +3988,23 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
 .ws-gene-section .ws-gene-select-hidden {
   display: none !important;
 }
+.ws-gene-section .touch-picker {
+  display: none !important;
+}
 .ws-gene-chip-row {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: .18rem;
+  gap: .12rem;
   width: 100%;
 }
 .ws-gene-chip-row .ws-qchip {
   width: 100%;
   min-width: 0;
-  padding: .36rem .12rem;
+  min-height: 24px;
+  padding: .2rem .06rem;
   text-align: center;
-  font-size: .72rem;
+  font-size: .66rem;
+  line-height: 1;
 }
 .ws-breast-surgery-refine {
   margin-top: .32rem;
@@ -5381,19 +5386,19 @@ body.desktop-dashboard-mode #wsPage.active .ws-section.ws-optional .ws-field sel
 }
 body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-gene-section .ws-form,
 #wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-gene-section .ws-form {
-  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)) !important;
+  grid-template-columns: repeat(auto-fit, minmax(78px, max-content)) !important;
   justify-content: start;
-  gap: .28rem;
+  gap: .22rem;
 }
 body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-gene-section .ws-field,
 #wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-gene-section .ws-field {
-  width: auto;
+  width: 78px;
   min-width: 0;
-  grid-template-rows: minmax(22px, auto) 30px;
+  grid-template-rows: minmax(18px, auto) 24px;
 }
 body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-gene-section .ws-oncotype-field,
 #wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-gene-section .ws-oncotype-field {
-  width: auto;
+  width: 126px;
   min-width: 0;
 }
 body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-post-tnm-grid,
@@ -7085,11 +7090,11 @@ body.mobile-device-shell #wsPage.active #wsInputCol.ws-full-mode .ws-gene-sectio
 body.mobile-device-shell #wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-gene-section .ws-field,
 body.mobile-device-shell #wsPage.active .ws-gene-section .ws-field {
   display: grid !important;
-  grid-template-rows: auto minmax(34px, auto) !important;
+  grid-template-rows: auto minmax(26px, auto) !important;
   align-items: stretch !important;
-  gap: .28rem !important;
-  min-height: 76px !important;
-  padding: .34rem !important;
+  gap: .18rem !important;
+  min-height: 58px !important;
+  padding: .22rem !important;
 }
 body.mobile-device-shell #wsPage.active .ws-gene-section .ws-field label {
   display: block !important;
@@ -7104,8 +7109,12 @@ body.mobile-device-shell #wsPage.active .ws-gene-section .ws-gene-chip-row {
   min-width: 0;
 }
 body.mobile-device-shell #wsPage.active .ws-gene-section .ws-gene-chip-row .ws-qchip {
-  min-height: 32px;
-  padding: .28rem .08rem;
+  min-height: 26px;
+  padding: .2rem .06rem;
+}
+body.mobile-device-shell #wsPage.active .ws-gene-section .ws-form {
+  align-items: start !important;
+  grid-auto-rows: min-content !important;
 }
 body.mobile-device-shell #wsPage.active .ws-gene-section .ws-quick-backed-field,
 body.mobile-device-shell #wsPage.active #wsInputCol.ws-full-mode .ws-gene-section .ws-quick-backed-field,
