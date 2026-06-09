@@ -3084,6 +3084,268 @@ body.mobile-agent-open .mobile-dashboard-agent-root .mobile-dashboard-agent-fab 
   min-height: 96px;
   max-height: 24vh;
 }
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-head,
+.mobile-dashboard-agent-root .dashboard-agent-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: .6rem;
+  min-width: 0;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: .55rem;
+}
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-title,
+.mobile-dashboard-agent-root .dashboard-agent-title {
+  display: grid;
+  gap: .34rem;
+  min-width: 0;
+}
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-title > span,
+.mobile-dashboard-agent-root .dashboard-agent-title > span {
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  min-width: 0;
+  flex-wrap: wrap;
+  font-weight: 900;
+}
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-model,
+.mobile-dashboard-agent-root .dashboard-agent-model {
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+  min-width: 0;
+  color: #64748b;
+  font-size: .7rem;
+  font-weight: 800;
+}
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-model input,
+.mobile-dashboard-agent-root .dashboard-agent-model input {
+  width: min(168px, 45vw);
+  min-width: 92px;
+  height: 26px;
+  border: 1px solid #d8e3ee;
+  border-radius: 5px;
+  background: #fff;
+  color: #24364b;
+  font-family: inherit;
+  font-size: .72rem;
+  font-weight: 750;
+  padding: .12rem .38rem;
+  box-sizing: border-box;
+}
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-head-actions,
+.mobile-dashboard-agent-root .dashboard-agent-head-actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: .32rem;
+  max-width: 235px;
+}
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-status,
+.mobile-dashboard-agent-root .dashboard-agent-status {
+  min-height: 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: .32rem;
+  border: 1px solid #d8e3ee;
+  border-radius: 999px;
+  background: #f8fafc;
+  color: #475569;
+  padding: .12rem .46rem;
+  font-family: inherit;
+  font-size: .66rem;
+  font-weight: 900;
+  line-height: 1;
+  cursor: pointer;
+  vertical-align: middle;
+}
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-status i,
+.mobile-dashboard-agent-root .dashboard-agent-status i {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #94a3b8;
+  box-shadow: 0 0 0 2px rgba(148,163,184,.18);
+}
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-position,
+.mobile-dashboard-agent-root .dashboard-agent-position {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .22rem;
+  border: 1px solid #d8e3ee;
+  border-radius: 7px;
+  background: #f8fafc;
+  padding: .18rem;
+}
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-position button,
+.mobile-dashboard-agent-root .dashboard-agent-position button {
+  width: 28px;
+  min-width: 28px;
+  min-height: 26px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: #64748b;
+  font-family: inherit;
+  font-size: .72rem;
+  font-weight: 900;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-collapse-btn,
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-top-btn,
+.mobile-dashboard-agent-root .dashboard-agent-collapse-btn,
+.mobile-dashboard-agent-root .dashboard-agent-top-btn,
+.mobile-dashboard-agent-root .dashboard-agent-mobile-close {
+  width: 30px;
+  min-height: 30px;
+  border: 1px solid #d8e3ee;
+  border-radius: 7px;
+  background: #fff;
+  color: #334155;
+  font-family: inherit;
+  font-size: .72rem;
+  font-weight: 900;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-position svg,
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-top-btn svg,
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-collapse-btn svg,
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-mobile-close svg,
+.mobile-dashboard-agent-root .dashboard-agent-position svg,
+.mobile-dashboard-agent-root .dashboard-agent-top-btn svg,
+.mobile-dashboard-agent-root .dashboard-agent-collapse-btn svg,
+.mobile-dashboard-agent-root .dashboard-agent-mobile-close svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-context-meter,
+.mobile-dashboard-agent-root .dashboard-agent-context-meter {
+  display: grid;
+  gap: .26rem;
+  border: 1px solid #d8e3ee;
+  border-radius: 7px;
+  background: #f8fafc;
+  padding: .42rem .5rem;
+  color: #334155;
+}
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-thread,
+.mobile-dashboard-agent-root .dashboard-agent-thread {
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: .48rem;
+  padding-right: .15rem;
+}
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-prompts,
+.mobile-dashboard-agent-root .dashboard-agent-prompts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .28rem;
+}
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-prompts button,
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-input button,
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-attach-btn,
+.mobile-dashboard-agent-root .dashboard-agent-prompts button,
+.mobile-dashboard-agent-root .dashboard-agent-input button,
+.mobile-dashboard-agent-root .dashboard-agent-attach-btn {
+  border: 1px solid #b8d6ca;
+  border-radius: 6px;
+  background: #f0fdfa;
+  color: #0f766e;
+  min-height: 32px;
+  font-family: inherit;
+  font-size: .76rem;
+  font-weight: 850;
+  cursor: pointer;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-prompts button,
+.mobile-dashboard-agent-root .dashboard-agent-prompts button {
+  min-height: 32px;
+  padding: .35rem .38rem;
+  text-align: center;
+  white-space: nowrap;
+  line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-input,
+.mobile-dashboard-agent-root .dashboard-agent-input {
+  display: grid;
+  gap: .35rem;
+}
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-composer,
+.mobile-dashboard-agent-root .dashboard-agent-composer {
+  position: relative;
+  min-width: 0;
+}
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-input textarea,
+.mobile-dashboard-agent-root .dashboard-agent-input textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 72px;
+  resize: vertical;
+  border: 1px solid #d8e3ee;
+  border-radius: 6px;
+  background: #fff;
+  color: var(--text);
+  padding: .45rem .55rem 2.55rem;
+  font-family: inherit;
+  font-size: .82rem;
+  box-sizing: border-box;
+}
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-composer-actions,
+.mobile-dashboard-agent-root .dashboard-agent-composer-actions {
+  position: absolute;
+  right: .42rem;
+  bottom: .42rem;
+  display: flex;
+  align-items: center;
+  gap: .28rem;
+}
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-composer-actions button,
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-composer-actions label,
+.mobile-dashboard-agent-root .dashboard-agent-composer-actions button,
+.mobile-dashboard-agent-root .dashboard-agent-composer-actions label {
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
+  padding: 0;
+}
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-attach-btn svg,
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-send-btn svg,
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-mic-btn svg,
+.mobile-dashboard-agent-root .dashboard-agent-attach-btn svg,
+.mobile-dashboard-agent-root .dashboard-agent-send-btn svg,
+.mobile-dashboard-agent-root .dashboard-agent-mic-btn svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 @media (max-width: 899px) {
   body.mobile-device-shell.modal-dashboard-mode .modal-dashboard-overview.patient-journey-dashboard,
   body.modal-dashboard-mode .modal-dashboard-overview.patient-journey-dashboard {
