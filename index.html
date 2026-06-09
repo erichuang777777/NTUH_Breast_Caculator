@@ -9,7 +9,7 @@
 <title>Oncobreast copilot</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/app.css?v=20260609s">
+<link rel="stylesheet" href="assets/css/app.css?v=20260609t">
 <link rel="stylesheet" href="assets/css/ajcc-mobile.css?v=20260519a">
 </head>
 <body>
@@ -1015,6 +1015,68 @@
               <button class="ws-qchip" data-group="N3" data-value="N3a" onclick="setWsQuickPNDetail('N3a')">N3a</button>
               <button class="ws-qchip" data-group="N3" data-value="N3b" onclick="setWsQuickPNDetail('N3b')">N3b</button>
               <button class="ws-qchip" data-group="N3" data-value="N3c" onclick="setWsQuickPNDetail('N3c')">N3c</button>
+            </div>
+          </div>
+        </div>
+        <div class="ws-post-biomarker-grid ws-q-biogrid">
+          <div class="ws-q-block ws-q-grade-card">
+            <div class="ws-q-blocklabel">Grade</div>
+            <div class="ws-q-row3" id="wsPostGradeChips">
+              <button class="ws-qchip" data-value="1" onclick="setWsPostGrade('1')">I</button>
+              <button class="ws-qchip" data-value="2" onclick="setWsPostGrade('2')">II</button>
+              <button class="ws-qchip" data-value="3" onclick="setWsPostGrade('3')">III</button>
+            </div>
+          </div>
+          <div class="ws-q-biocol ws-q-biocol-refinable">
+            <div class="ws-q-blocklabel">ER</div>
+            <div class="ws-q-row2" id="wsPostErChips">
+              <button class="ws-qchip" data-value="+" onclick="setWsPostBio('er','+')">+</button>
+              <button class="ws-qchip" data-value="-" onclick="setWsPostBio('er','-')">−</button>
+            </div>
+            <div class="ws-q-refine ws-q-refine-marker" id="wsPostErRefine">
+              <button class="ws-qchip" data-value="10" title="weak" onclick="setWsPostMarkerLevel('er','10')">W</button>
+              <button class="ws-qchip" data-value="50" title="moderate" onclick="setWsPostMarkerLevel('er','50')">M</button>
+              <button class="ws-qchip" data-value="90" title="strong" onclick="setWsPostMarkerLevel('er','90')">S</button>
+              <input type="number" class="ws-q-refine-input" id="wsPostErPct" min="0" max="100" step="1" placeholder="%" oninput="setWsPostMarkerPercent('er',this.value)">
+            </div>
+          </div>
+          <div class="ws-q-biocol ws-q-biocol-refinable">
+            <div class="ws-q-blocklabel">PR</div>
+            <div class="ws-q-row2" id="wsPostPrChips">
+              <button class="ws-qchip" data-value="+" onclick="setWsPostBio('pr','+')">+</button>
+              <button class="ws-qchip" data-value="-" onclick="setWsPostBio('pr','-')">−</button>
+            </div>
+            <div class="ws-q-refine ws-q-refine-marker" id="wsPostPrRefine">
+              <button class="ws-qchip" data-value="10" title="weak" onclick="setWsPostMarkerLevel('pr','10')">W</button>
+              <button class="ws-qchip" data-value="50" title="moderate" onclick="setWsPostMarkerLevel('pr','50')">M</button>
+              <button class="ws-qchip" data-value="90" title="strong" onclick="setWsPostMarkerLevel('pr','90')">S</button>
+              <input type="number" class="ws-q-refine-input" id="wsPostPrPct" min="0" max="100" step="1" placeholder="%" oninput="setWsPostMarkerPercent('pr',this.value)">
+            </div>
+          </div>
+          <div class="ws-q-biocol ws-q-biocol-refinable">
+            <div class="ws-q-blocklabel">HER2</div>
+            <div class="ws-q-row2" id="wsPostHer2Chips">
+              <button class="ws-qchip" data-value="+" data-label="+" onclick="setWsPostBio('her2','+')">+</button>
+              <button class="ws-qchip" data-value="-" data-label="−" onclick="setWsPostBio('her2','-')">−</button>
+            </div>
+            <div class="ws-q-refine ws-q-refine-marker" id="wsPostHer2Refine">
+              <button class="ws-qchip" data-group="+" data-value="3+" title="HER2 IHC 3+" onclick="setWsPostHer2Detail('3+','')">3+</button>
+              <button class="ws-qchip" data-group="+" data-value="2+/ISH+" title="HER2 IHC 2+ with ISH amplified / positive" onclick="setWsPostHer2Detail('2+','+')">2+/ISH+</button>
+              <button class="ws-qchip" data-group="-" data-value="2+/ISH-" title="HER2 IHC 2+ with ISH negative" onclick="setWsPostHer2Detail('2+','-')">2+/ISH−</button>
+              <button class="ws-qchip" data-group="-" data-value="1+" title="HER2 IHC 1+" onclick="setWsPostHer2Detail('1+','')">1+</button>
+              <button class="ws-qchip" data-group="-" data-value="0+" title="HER2 IHC 0+" onclick="setWsPostHer2Detail('0+','')">0+</button>
+            </div>
+          </div>
+          <div class="ws-q-biocol ws-q-biocol-refinable">
+            <div class="ws-q-blocklabel">Ki-67</div>
+            <div class="ws-q-row2" id="wsPostKi67Chips">
+              <button class="ws-qchip" data-value="+" title="Ki-67 ≥20%" onclick="setWsPostKi67('+')">+</button>
+              <button class="ws-qchip" data-value="-" title="Ki-67 <20%" onclick="setWsPostKi67('-')">−</button>
+            </div>
+            <div class="ws-q-refine ws-q-ki67-refine anchor-pos" id="wsPostKi67Refine">
+              <button class="ws-qchip" data-sign="-" data-value="13" title="Ki-67 <14%" onclick="setWsPostKi67Value('13')">&lt;14%</button>
+              <button class="ws-qchip" data-sign="-" data-value="4" title="Ki-67 <5%" onclick="setWsPostKi67Value('4')">&lt;5%</button>
+              <input type="text" class="ws-q-refine-input" id="wsPostKi67Pct" inputmode="decimal" placeholder="% / range" oninput="setWsPostKi67Value(this.value, true)" onchange="hideWsQuickRefine('wsPostKi67Refine')">
             </div>
           </div>
         </div>
@@ -2038,7 +2100,7 @@ const data = await res.json();</code></pre>
 <script src="assets/js/modules/patient-inform-sheet.js?v=20260609a"></script>
 <script src="assets/js/modules/benchmark-loader.js?v=20260606a"></script>
 <script src="assets/js/modules/benchmark-browser.js?v=20260606a"></script>
-<script src="assets/js/legacy-app.js?v=20260609q"></script>
+<script src="assets/js/legacy-app.js?v=20260609s"></script>
 
 <!-- AJCC prognostic lookup table: pre-computed breast prognostic stage entries -->
 <!-- Source: breast_cancer_tools/data/ajcc_staging_9_reference_lookup.json (Taiwan VGH reference) -->
@@ -2047,7 +2109,7 @@ const data = await res.json();</code></pre>
 <script src="assets/js/modules/ajcc/prognostic-lookup.js?v=20260519a"></script>
 <script src="assets/js/modules/ajcc/mobile-panel.js?v=20260519a"></script>
 
-<script src="assets/js/modules/drug-cards.js?v=20260609c"></script>
+<script src="assets/js/modules/drug-cards.js?v=20260609d"></script>
 
 </body>
 </html>

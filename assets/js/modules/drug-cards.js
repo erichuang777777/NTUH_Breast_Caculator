@@ -111,9 +111,9 @@ function syncTableToCards(tableBodyId, listId, infoId) {
 
   const drugs = ids.map(id => _STATIC_DRUGS.find(d => d.id === id)).filter(Boolean);
   
-  // Update count display
+  // Legacy filterBreast owns the filtered/NHI count. Do not overwrite it here.
   const infoEl = document.getElementById(infoId);
-  if(infoEl) infoEl.textContent = `共 ${drugs.length} 筆藥物`;
+  if(infoEl && !infoEl.textContent.trim()) infoEl.textContent = `共 ${drugs.length} 筆藥物`;
 
   list.innerHTML = drugs.map(d => {
     const stages = d.stage ? d.stage.split(',') : [];

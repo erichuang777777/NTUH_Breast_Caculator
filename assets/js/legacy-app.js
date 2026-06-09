@@ -2280,7 +2280,7 @@ function dashboardPhaseFocus(ctx){
 }
 function dashboardToolGroupsHtml(cardById, ctx){
     const groups = [
-        { id:'diagnosis', title:'診斷與分期', note:'先確認這個病人的正確資料', ids:['icdPage','calcPage','ihc4Page','riskPage'] },
+        { id:'diagnosis', title:'診斷與分期', note:'', ids:['icdPage','calcPage','ihc4Page','riskPage'] },
         { id:'treatment', title:'治療規劃', note:'藥物、處方、費用與病人說明', ids:['breastPage','inpatientPage','trialsPage'] },
         { id:'workflow', title:'門診工作流', note:'摘要、錄音與後續輸出', ids:['recordingPage'] }
     ];
@@ -2288,7 +2288,7 @@ function dashboardToolGroupsHtml(cardById, ctx){
         const cards = group.ids.map(id => cardById[id]).filter(Boolean).join('');
         if(!cards) return '';
         const header = group.id === 'diagnosis'
-            ? `<header><div><strong>${esc(group.title)}</strong><span>${esc(group.note)}</span></div></header>`
+            ? `<header><div><strong>${esc(group.title)}</strong></div></header>`
             : '';
         return `<section class="patient-tool-group ${group.id === 'diagnosis' ? '' : 'patient-tool-group-plain'}">
             ${header}
@@ -2405,6 +2405,12 @@ function syncBreastFiltersFromWorkspace(){
     const tnbc = document.getElementById('tnbcBadge');
     if(tnbc) tnbc.style.display = activeFilters.tnbc === 'true' ? 'inline-block' : 'none';
     updatePatientFilterStatus('已依 Patient Context 套用篩選。');
+}
+function applyWorkspaceFiltersToBreastPage(options={}){
+    const search = document.getElementById('breastSearch');
+    if(options.clearSearch && search) search.value = '';
+    syncBreastFiltersFromWorkspace();
+    filterBreast();
 }
 function syncBreastFilterChips(){
     document.querySelectorAll('#breastPage .filter-chip').forEach(chip => {
@@ -3948,7 +3954,6 @@ function renderModalDashboardOverview(){
             <div class="patient-context-title">
                 <div>
                     <strong>共用設定檔</strong>
-                    <span class="patient-context-focus">診斷與分期：先確認這個病人的正確資料</span>
                 </div>
                 <button type="button" class="patient-context-inform-btn" onclick="generatePatientTreatmentPlan()">病人說明單</button>
             </div>
@@ -4129,9 +4134,7 @@ function initDashboardBreastPanel(){
     document.getElementById('tabDrugs').classList.add('active');
     document.getElementById('tabDrugsContent').classList.add('active');
     const sync = () => {
-        syncBreastFilterChips();
-        renderBreast(breastDrugs);
-        updatePatientFilterStatus(_breastFilterMode === 'patient' ? '已依 Patient Context 套用篩選。' : '');
+        applyWorkspaceFiltersToBreastPage({ clearSearch:true });
     };
     if(!breastDrugs.length){
         breastDrugs = _STATIC_DRUGS.filter(d => d.specialty_id === 'oncology_breast');
@@ -4347,7 +4350,7 @@ async function showBreast(){
     document.getElementById('calcPage').classList.remove('active');
     document.getElementById('wsPage').classList.remove('active');
     document.getElementById('journeyPage').classList.remove('active');
-    activeFilters={};
+    applyWorkspaceFiltersToBreastPage({ clearSearch:true });
     switchBreastTab('drugs');
 }
 function showICD(){
@@ -4489,6 +4492,7 @@ const PATIENT_DEFAULTS = {
     mets_bone:'', mets_liver:'', mets_brain:'', mets_lung:'',
     size:'', tumor_kind:'', nodes_total:'', nodes_pos:'', grade:'',
     er:'', pr:'', her2:'', her2_ihc:'', her2_fish:'', ki67:'', brca:'', pdl1:'', tp53:'', esr1:'', pik3ca:'', oncotype_rs:'', civic_variant:'',
+    p_grade:'', p_er:'', p_pr:'', p_her2:'', p_her2_ihc:'', p_her2_fish:'', p_ki67:'',
     surgery_type:'', breast_surgery:'', axillary_surgery:'', reconstruction_surgery:'', nipple_sparing:'',
     sln_pos:'', sln_total:'', aln_pos:'', aln_total:'', pni:'', lvi:'', margin_involved:'', post_nac_response:'',
     menopause:'', ecog:'', dm:'', htn:'', cad:'', phase:'', prior:'',
@@ -4900,6 +4904,10 @@ const IOS_WHEEL_VALUES = {
     ws_sln_pos: ['0','1','2','3','4','5'],
     ws_sln_total: ['0','1','2','3','4','5']
 };
+function iosWheelRenderValues(values){
+    const base = (values || []).map(v => String(v));
+    return base.concat(base, base);
+}
 const TOUCH_SKIP_EMPTY_OPTIONS = new Set(['ws_breast_surgery','ws_reconstruction_surgery']);
 const MOBILE_WHEEL_SELECT_IDS = new Set([
     'ws_cT','ws_cN','ws_pT','ws_pN','ws_phase','ws_brca','ws_reconstruction_surgery',
@@ -4978,7 +4986,9 @@ function enhanceIosWheelPicker(wheel){
     const input = document.getElementById(wheel.dataset.for);
     const values = IOS_WHEEL_VALUES[wheel.dataset.for];
     if(!input || !values) return;
-    wheel.innerHTML = `<div class="ios-wheel-spacer" aria-hidden="true"></div>${values.map(v => `<button type="button" data-value="${esc(v)}">${esc(v)}</button>`).join('')}<div class="ios-wheel-spacer" aria-hidden="true"></div>`;
+    const rendered = iosWheelRenderValues(values);
+    wheel.dataset.baseCount = String(values.length);
+    wheel.innerHTML = `<div class="ios-wheel-spacer" aria-hidden="true"></div>${rendered.map((v, i) => `<button type="button" data-value="${esc(v)}" data-wheel-index="${i}">${esc(v)}</button>`).join('')}<div class="ios-wheel-spacer" aria-hidden="true"></div>`;
     wheel.querySelectorAll('button').forEach(btn => {
         btn.addEventListener('click', () => setIosWheelValue(input, btn.dataset.value, true));
     });
@@ -5027,9 +5037,12 @@ function refreshIosWheelPickers(){
         const stored = (_patient && wheel.dataset.for === 'ws_sln_pos') ? _patient.sln_pos
             : ((_patient && wheel.dataset.for === 'ws_sln_total') ? _patient.sln_total : input.value);
         const value = String(stored || input.value || '0');
+        const baseCount = Math.max(1, Number(wheel.dataset.baseCount || '1'));
         const buttons = Array.from(wheel.querySelectorAll('button[data-value]'));
         buttons.forEach(btn => btn.classList.toggle('active', btn.dataset.value === value));
-        const active = buttons.find(btn => btn.dataset.value === value) || buttons[0];
+        const active = buttons.find(btn => btn.dataset.value === value && Number(btn.dataset.wheelIndex || '-1') >= baseCount && Number(btn.dataset.wheelIndex || '-1') < baseCount * 2)
+            || buttons.find(btn => btn.dataset.value === value);
+        if(!active) return;
         if(active && wheel.dataset.wheelSyncing !== '1'){
             wheel.dataset.wheelSyncing = '1';
             requestAnimationFrame(() => {
@@ -9761,7 +9774,99 @@ function syncWsQuickChips(){
     }
     syncWsStageTGroup('pT', 'wsPostPTChips', 'wsPostPTRefine');
     syncWsStageNGroup('pN', 'wsPostPNChips', 'wsPostPNRefine');
+    syncWsPostBiomarkerChips();
     syncWsPostSimpleChips();
+}
+function syncWsMarkerRefineBlock(rawValue, refineId, pctId){
+    const refine = document.getElementById(refineId);
+    const pctInput = document.getElementById(pctId);
+    const sign = _markerSign(rawValue);
+    const pct = _markerPct(rawValue);
+    if(refine){
+        refine.classList.remove('anchor-pos', 'anchor-neg');
+        refine.classList.add(sign === '-' ? 'anchor-neg' : 'anchor-pos');
+        refine.classList.toggle('show', refine.classList.contains('show') && sign === '+');
+        refine.querySelectorAll('.ws-qchip').forEach(btn => {
+            const v = Number(btn.dataset.value);
+            btn.classList.toggle('active',
+                pct !== null &&
+                ((v === 10 && pct > 0 && pct <= 10) ||
+                 (v === 50 && pct > 10 && pct <= 50) ||
+                 (v === 90 && pct > 50))
+            );
+        });
+    }
+    if(pctInput) pctInput.value = pct !== null ? String(pct) : '';
+}
+function workspacePostBiomarkerValue(field){
+    const pKey = 'p_' + field;
+    const post = _patient && _patient[pKey];
+    if(post !== undefined && post !== null && String(post).trim() !== '') return post;
+    return (_patient && _patient[field]) || '';
+}
+function workspacePostHer2Context(){
+    return {
+        her2: workspacePostBiomarkerValue('her2'),
+        her2_ihc: workspacePostBiomarkerValue('her2_ihc'),
+        her2_fish: workspacePostBiomarkerValue('her2_fish')
+    };
+}
+function syncWsHer2RefineBlock(anchor, refineId, context){
+    const refine = document.getElementById(refineId);
+    if(!refine) return;
+    const detail = dashboardHer2DetailLabel(context || _patient || {});
+    refine.classList.remove('anchor-pos', 'anchor-neg');
+    refine.classList.toggle('her2-pos-refine', anchor === '+');
+    refine.classList.toggle('her2-neg-refine', anchor === '-');
+    refine.classList.add(anchor === '+' ? 'anchor-pos' : 'anchor-neg');
+    refine.querySelectorAll('.ws-qchip').forEach(btn => {
+        const sameGroup = !anchor || btn.dataset.group === anchor;
+        btn.style.display = sameGroup ? '' : 'none';
+        btn.classList.toggle('active', btn.dataset.value === detail);
+    });
+}
+function syncWsKi67Block(chipId, refineId, pctId, rawOverride){
+    const raw = String(rawOverride !== undefined ? rawOverride : ((document.getElementById('ws_ki67') || {}).value || '')).trim();
+    const n = workspaceKi67Number(raw);
+    const sign = workspaceKi67CutoffSign(raw, 20);
+    const valid = raw !== '' && Number.isFinite(n);
+    document.querySelectorAll('#' + chipId + ' .ws-qchip').forEach(btn => btn.classList.toggle('active', btn.dataset.value === sign));
+    const refine = document.getElementById(refineId);
+    const pct = document.getElementById(pctId);
+    if(pct) pct.value = raw;
+    if(refine){
+        refine.classList.toggle('anchor-neg', sign === '-');
+        refine.classList.toggle('anchor-pos', sign !== '-');
+        refine.querySelectorAll('.ws-qchip[data-sign]').forEach(btn => {
+            btn.style.display = btn.dataset.sign === sign ? '' : 'none';
+            btn.classList.toggle('active', valid && Number(btn.dataset.value) === n);
+        });
+    }
+}
+function syncWsHer2ChipBlock(chipId, refineId, context){
+    const her2Context = context || _patient || {};
+    const her2 = her2Context.her2 || '';
+    const her2Chip = her2 === '+' ? '+' : ((her2 === '-' || her2 === 'low') ? '-' : '');
+    const her2Detail = dashboardHer2DetailLabel(her2Context);
+    document.querySelectorAll('#' + chipId + ' .ws-qchip').forEach(btn => {
+        const base = btn.dataset.label || btn.dataset.value || btn.textContent.trim();
+        const active = btn.dataset.value === her2Chip;
+        btn.textContent = active && her2Detail ? her2Detail : base;
+        btn.classList.toggle('active', active);
+    });
+    syncWsHer2RefineBlock(her2Chip, refineId, her2Context);
+}
+function syncWsPostBiomarkerChips(){
+    const grade = String(workspacePostBiomarkerValue('grade') || '');
+    document.querySelectorAll('#wsPostGradeChips .ws-qchip').forEach(btn => btn.classList.toggle('active', btn.dataset.value === grade));
+    const er = String(workspacePostBiomarkerValue('er') || '').trim();
+    document.querySelectorAll('#wsPostErChips .ws-qchip').forEach(btn => btn.classList.toggle('active', btn.dataset.value === _markerSign(er)));
+    syncWsMarkerRefineBlock(er, 'wsPostErRefine', 'wsPostErPct');
+    const pr = String(workspacePostBiomarkerValue('pr') || '').trim();
+    document.querySelectorAll('#wsPostPrChips .ws-qchip').forEach(btn => btn.classList.toggle('active', btn.dataset.value === _markerSign(pr)));
+    syncWsMarkerRefineBlock(pr, 'wsPostPrRefine', 'wsPostPrPct');
+    syncWsHer2ChipBlock('wsPostHer2Chips', 'wsPostHer2Refine', workspacePostHer2Context());
+    syncWsKi67Block('wsPostKi67Chips', 'wsPostKi67Refine', 'wsPostKi67Pct', workspacePostBiomarkerValue('ki67'));
 }
 function syncWsSimpleChips(field, chipId){
     const el = document.getElementById('ws_' + field);
@@ -10263,11 +10368,64 @@ function setWsQuickBio(field, value){
     }
     if(field === 'her2') showWsQuickRefine('wsQuickHer2Refine');
 }
+function setWsPostGrade(g){
+    setPatientField('p_grade', g);
+    syncWsPostBiomarkerChips();
+}
+function setWsPostBio(field, value){
+    const key = 'p_' + field;
+    const current = workspacePostBiomarkerValue(field);
+    if(field === 'er' || field === 'pr'){
+        if(value === '+' && _markerSign(current) === '+'){
+            setPatientField(key, current);
+        } else {
+            setPatientField(key, value);
+        }
+    }
+    if(field === 'her2'){
+        if(value === '+'){
+            const postCtx = workspacePostHer2Context();
+            const hasPositiveDetail = postCtx.her2_ihc === '3+' || (postCtx.her2_ihc === '2+' && postCtx.her2_fish === '+');
+            if(!hasPositiveDetail){
+                _patient.p_her2_ihc = '3+';
+                _patient.p_her2_fish = '';
+            }
+        } else {
+            const postCtx = workspacePostHer2Context();
+            const hasNegativeDetail = postCtx.her2_fish === '-' || postCtx.her2_ihc === '1+' || postCtx.her2_ihc === '0+';
+            if(!hasNegativeDetail){
+                _patient.p_her2_ihc = '';
+                _patient.p_her2_fish = '-';
+            }
+        }
+        setPatientField('p_her2', value);
+    }
+    syncWsQuickChips();
+    if(field === 'er'){
+        if(value === '+') showWsQuickRefine('wsPostErRefine');
+        else hideWsQuickRefine('wsPostErRefine');
+        hideWsQuickRefine('wsQuickErRefine');
+    }
+    if(field === 'pr'){
+        if(value === '+') showWsQuickRefine('wsPostPrRefine');
+        else hideWsQuickRefine('wsPostPrRefine');
+        hideWsQuickRefine('wsQuickPrRefine');
+    }
+    if(field === 'her2'){
+        showWsQuickRefine('wsPostHer2Refine');
+        hideWsQuickRefine('wsQuickHer2Refine');
+    }
+}
 function setWsQuickMarkerLevel(field, value){
     const el = document.getElementById('ws_' + field);
     if(el){ el.value = value; setPatientField(field, value); }
     syncWsQuickChips();
     hideWsQuickRefine(field === 'er' ? 'wsQuickErRefine' : 'wsQuickPrRefine');
+}
+function setWsPostMarkerLevel(field, value){
+    setPatientField('p_' + field, value);
+    syncWsQuickChips();
+    hideWsQuickRefine(field === 'er' ? 'wsPostErRefine' : 'wsPostPrRefine');
 }
 function setWsQuickMarkerPercent(field, value){
     if(String(value || '').trim() === ''){
@@ -10282,6 +10440,17 @@ function setWsQuickMarkerPercent(field, value){
     if(el){ el.value = String(n); setPatientField(field, String(n)); }
     syncWsQuickChips();
 }
+function setWsPostMarkerPercent(field, value){
+    if(String(value || '').trim() === ''){
+        setPatientField('p_' + field, '');
+        syncWsQuickChips();
+        return;
+    }
+    const n = Math.max(0, Math.min(100, Number(value)));
+    if(Number.isNaN(n)) return;
+    setPatientField('p_' + field, String(n));
+    syncWsQuickChips();
+}
 function setWsQuickHer2Detail(ihc, ish){
     _patient.her2_ihc = ihc || '';
     _patient.her2_fish = ish || '';
@@ -10294,6 +10463,16 @@ function setWsQuickHer2Detail(ihc, ish){
     const refine = document.getElementById('wsQuickHer2Refine');
     if(refine) refine.classList.remove('show');
 }
+function setWsPostHer2Detail(ihc, ish){
+    _patient.p_her2_ihc = ihc || '';
+    _patient.p_her2_fish = ish || '';
+    const her2Value = (ihc === '3+' || ish === '+') ? '+' : '-';
+    setPatientField('p_her2', her2Value);
+    savePatient();
+    syncWsQuickChips();
+    const refine = document.getElementById('wsPostHer2Refine');
+    if(refine) refine.classList.remove('show');
+}
 function setWsQuickGrade(g){
     const sel = document.getElementById('ws_grade');
     if(sel){ sel.value = g; setPatientField('grade', g); }
@@ -10303,6 +10482,25 @@ function setWsQuickKi67(sign){
     const val = sign === '+' ? '20' : '10';
     setWsQuickKi67Value(val, true);
     showWsQuickRefine('wsQuickKi67Refine');
+}
+function setWsPostKi67(sign){
+    const val = sign === '+' ? '20' : '10';
+    setWsPostKi67Value(val, true);
+    showWsQuickRefine('wsPostKi67Refine');
+    hideWsQuickRefine('wsQuickKi67Refine');
+}
+function setWsPostKi67Value(value, keepOpen=false){
+    const raw = String(value || '').trim();
+    if(raw === ''){
+        setPatientField('p_ki67', '');
+        syncWsQuickChips();
+        return;
+    }
+    if(!workspaceKi67Numbers(raw).length) return;
+    const clean = raw.replace(/\s+/g, '').replace(/[％]/g, '%');
+    setPatientField('p_ki67', clean);
+    syncWsQuickChips();
+    if(!keepOpen) hideWsQuickRefine('wsPostKi67Refine');
 }
 document.addEventListener('DOMContentLoaded', ()=>{
     setWsQuickMode('quick', true);
@@ -10486,11 +10684,13 @@ function switchBreastTab(tab){
         document.getElementById('tabDrugsContent').classList.add('active');
     if(!breastDrugs.length){
         breastDrugs = _STATIC_DRUGS.filter(d=>d.specialty_id==='oncology_breast');
-        renderBreast(breastDrugs);
+        filterBreast();
         cachedFetch('/api/drugs?category=oncology_breast')
             .then(r=>r.json())
-            .then(d=>{ if(Array.isArray(d) && d.length) breastDrugs=d; renderBreast(breastDrugs); })
-            .catch(()=>renderBreast(breastDrugs));
+            .then(d=>{ if(Array.isArray(d) && d.length) breastDrugs=d; filterBreast(); })
+            .catch(()=>filterBreast());
+    } else {
+        filterBreast();
     }
     } else {
         document.getElementById('tabRegimen').classList.add('active');

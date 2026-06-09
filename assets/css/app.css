@@ -4174,17 +4174,30 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
   line-height: 1;
   white-space: nowrap;
 }
+.ws-wheel-field.wheel-ready {
+  display: grid;
+  grid-template-columns: minmax(42px, 56px) 48px;
+  column-gap: .28rem;
+  align-items: end;
+}
+.ws-wheel-field.wheel-ready label {
+  grid-column: 1 / -1;
+}
 .ws-wheel-field.wheel-ready input[type="number"] {
-  position: absolute;
-  width: 1px !important;
-  height: 1px !important;
-  min-height: 1px !important;
-  opacity: 0;
-  pointer-events: none;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 2rem !important;
+  height: 2rem !important;
+  text-align: center;
+  padding: .2rem .15rem !important;
+  opacity: 1;
+  pointer-events: auto;
 }
 .ios-wheel-picker {
+  display: none;
   position: relative;
-  height: 74px;
+  width: 48px;
+  height: 58px;
   overflow-y: auto;
   overscroll-behavior: contain;
   scroll-snap-type: y mandatory;
@@ -4196,6 +4209,9 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
   box-shadow: inset 0 0 0 1px rgba(15,23,42,.03);
   scrollbar-width: none;
 }
+.ws-wheel-field.wheel-ready .ios-wheel-picker {
+  display: block;
+}
 .ios-wheel-picker::-webkit-scrollbar {
   display: none;
 }
@@ -4203,27 +4219,27 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
   content: "";
   position: sticky;
   display: block;
-  top: 24px;
-  height: 24px;
-  margin-top: -24px;
+  top: 18px;
+  height: 22px;
+  margin-top: -22px;
   border-top: 1px solid #bfdbfe;
   border-bottom: 1px solid #bfdbfe;
   pointer-events: none;
 }
 .ios-wheel-spacer {
-  height: 25px;
+  height: 18px;
   scroll-snap-align: center;
 }
 .ios-wheel-picker button {
   display: block;
   width: 100%;
-  height: 24px;
+  height: 22px;
   border: 0;
   background: transparent;
   color: #64748b;
   font-size: .74rem;
   font-weight: 850;
-  line-height: 24px;
+  line-height: 22px;
   text-align: center;
   scroll-snap-align: center;
   cursor: pointer;
@@ -4232,6 +4248,60 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
   color: #0f172a;
   font-size: .88rem;
   font-weight: 950;
+}
+.ws-post-biomarker-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: .45rem;
+  margin: .5rem 0 .6rem;
+}
+.ws-post-biomarker-grid .ws-q-block,
+.ws-post-biomarker-grid .ws-q-biocol {
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-left: 4px solid #0ea5e9;
+  border-radius: 8px;
+  background: #fff;
+  padding: .38rem;
+  box-sizing: border-box;
+}
+.ws-post-biomarker-grid .ws-q-grade-card {
+  border-left-color: #ec4899;
+}
+.ws-post-biomarker-grid .ws-q-blocklabel {
+  min-height: 1.05rem;
+  line-height: 1;
+  margin-bottom: .28rem;
+  white-space: nowrap;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.ws-post-biomarker-grid .ws-q-row2,
+.ws-post-biomarker-grid .ws-q-row3 {
+  display: grid;
+  gap: .22rem;
+}
+.ws-post-biomarker-grid .ws-qchip {
+  min-width: 0;
+  width: 100%;
+  min-height: 2rem;
+  padding: .3rem .2rem;
+  font-size: .76rem;
+  line-height: 1;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+.ws-post-biomarker-grid .ws-q-refine {
+  width: 100%;
+  max-width: 100%;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  position: relative;
+  z-index: 2;
+}
+.ws-post-biomarker-grid #wsPostHer2Refine {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.ws-post-biomarker-grid #wsPostKi67Refine {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 .ws-post-tnm-grid .ws-q-refine {
   width: 100%;
@@ -4247,26 +4317,31 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
 }
 .ws-post-aux-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
-  gap: .45rem;
+  grid-template-columns: minmax(0, 1fr);
+  gap: .38rem;
   margin-bottom: .55rem;
 }
 .ws-post-aux-block {
-  min-width: 168px;
+  min-width: 0;
   border: 1px solid var(--border);
   border-left: 4px solid #8b5cf6;
   border-radius: 8px;
   background: #fff;
   padding: .42rem;
   box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  align-items: center;
+  gap: .45rem;
 }
 .ws-post-aux-block .ws-q-blocklabel {
-  min-height: 1.55rem;
+  min-height: 0;
   line-height: 1.15;
   white-space: normal;
   overflow-wrap: anywhere;
   text-transform: none;
   letter-spacing: 0;
+  margin-bottom: 0;
 }
 .ws-post-select-hidden {
   display: none !important;
@@ -4279,13 +4354,13 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
   align-items: stretch;
 }
 .ws-post-aux-grid .ws-q-row2 {
-  grid-template-columns: repeat(2, minmax(64px, 1fr));
+  grid-template-columns: repeat(2, minmax(64px, max-content));
 }
 .ws-post-aux-grid .ws-q-row3 {
-  grid-template-columns: repeat(3, minmax(54px, 1fr));
+  grid-template-columns: repeat(3, minmax(54px, max-content));
 }
 .ws-post-aux-grid .ws-q-row4 {
-  grid-template-columns: repeat(2, minmax(72px, 1fr));
+  grid-template-columns: repeat(4, minmax(64px, max-content));
 }
 .ws-post-aux-grid .ws-qchip {
   min-width: 0;
@@ -4299,8 +4374,11 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
   box-sizing: border-box;
 }
 @media (max-width: 1100px) {
+  .ws-post-biomarker-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .ws-post-aux-grid {
-    grid-template-columns: repeat(auto-fit, minmax(152px, 1fr));
+    grid-template-columns: 1fr;
   }
 }
 @media (max-width: 720px) {
@@ -4310,6 +4388,16 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
   }
   .ws-post-aux-grid {
     grid-template-columns: 1fr;
+  }
+  .ws-post-aux-block {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+    gap: .28rem;
+  }
+  .ws-post-aux-grid .ws-q-row2,
+  .ws-post-aux-grid .ws-q-row3,
+  .ws-post-aux-grid .ws-q-row4 {
+    grid-template-columns: repeat(auto-fit, minmax(64px, 1fr));
   }
 }
 .ws-pathology-box {
@@ -5601,13 +5689,25 @@ body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-post-tnm
 #wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-post-tnm-grid {
   grid-template-columns: minmax(300px, 1fr) minmax(280px, .92fr) !important;
 }
+body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-post-biomarker-grid,
+#wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-post-biomarker-grid {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: .45rem !important;
+}
+body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-post-biomarker-grid .ws-q-grade-card,
+body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-post-biomarker-grid .ws-q-biocol,
+#wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-post-biomarker-grid .ws-q-grade-card,
+#wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-post-biomarker-grid .ws-q-biocol {
+  grid-column: auto !important;
+}
 body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-post-aux-grid,
 #wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-post-aux-grid {
-  grid-template-columns: repeat(auto-fit, minmax(168px, 1fr)) !important;
+  grid-template-columns: minmax(0, 1fr) !important;
 }
 body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-post-aux-block,
 #wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-post-aux-block {
-  min-width: 168px;
+  min-width: 0;
 }
 body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-postop-section,
 #wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-postop-section {
@@ -5623,6 +5723,10 @@ body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-postop-s
   }
   body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-quick-mode .ws-q-block {
     grid-column: span 2;
+  }
+  body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-post-biomarker-grid,
+  #wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-post-biomarker-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
   body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-quick-mode .ws-q-age-card,
   body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-quick-mode .ws-q-ecog-card,
