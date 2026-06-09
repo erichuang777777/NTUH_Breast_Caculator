@@ -4791,8 +4791,6 @@ const TOUCH_PRESET_VALUES = {
     ws_er: ['+','-'],
     ws_pr: ['+','-'],
     ws_ki67: [{value:'10', label:'<20'}, {value:'20', label:'20+'}],
-    ws_nodes_pos: ['0', {value:'4', label:'4+'}],
-    ws_nodes_total: ['0','3','10','14','17'],
     ws_sln_pos: ['0','1','2','3'],
     ws_sln_total: ['1','2','3','4','5'],
     ws_aln_pos: ['0','1','2','4','10'],
@@ -5268,7 +5266,11 @@ function normalizeWorkspaceNodeFields(){
     const alnPos = _patient.aln_pos !== '' ? Number(_patient.aln_pos) : NaN;
     const alnTotal = _patient.aln_total !== '' ? Number(_patient.aln_total) : NaN;
     const hasSplitNodes = Number.isFinite(slnPos) || Number.isFinite(slnTotal) || Number.isFinite(alnPos) || Number.isFinite(alnTotal);
-    if(!hasSplitNodes) return;
+    if(!hasSplitNodes){
+        _patient.nodes_pos = '';
+        _patient.nodes_total = '';
+        return;
+    }
     const pos = (Number.isFinite(slnPos) ? slnPos : 0) + (Number.isFinite(alnPos) ? alnPos : 0);
     const total = (Number.isFinite(slnTotal) ? slnTotal : 0) + (Number.isFinite(alnTotal) ? alnTotal : 0);
     if(Number.isFinite(slnPos) || Number.isFinite(alnPos)) _patient.nodes_pos = String(pos);

@@ -228,6 +228,48 @@ body.mobile-device-shell .sidebar-actions {
 body.mobile-device-shell .sidebar-actions .btn {
   min-width: 0;
 }
+body.mobile-device-shell .dept-page.active,
+body.mobile-device-shell .page-body,
+body.mobile-device-shell .ws-input-col,
+body.mobile-device-shell .ws-result-col,
+body.mobile-device-shell .content-main {
+  min-width: 0;
+  max-width: 100%;
+  overflow: visible;
+}
+body.mobile-device-shell .page-body,
+body.mobile-device-shell #wsPage.active .page-body,
+body.mobile-device-shell .ws-form,
+body.mobile-device-shell .ws-post-tnm-grid,
+body.mobile-device-shell .ws-post-aux-grid,
+body.mobile-device-shell .patient-tool-group-grid,
+body.mobile-device-shell .patient-desktop-care-body,
+body.mobile-device-shell .regimen-cards {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: .55rem;
+}
+body.mobile-device-shell .ws-field,
+body.mobile-device-shell .calc-field,
+body.mobile-device-shell .patient-tool-card,
+body.mobile-device-shell .modal-dashboard-card,
+body.mobile-device-shell .reg-card,
+body.mobile-device-shell .journey-panel {
+  min-width: 0 !important;
+  max-width: 100%;
+}
+body.mobile-device-shell .ws-section,
+body.mobile-device-shell .calc-card,
+body.mobile-device-shell .reg-section {
+  min-width: 0;
+  max-width: 100%;
+  overflow: visible;
+}
+body.mobile-device-shell .sticky,
+body.mobile-device-shell .ws-actions,
+body.mobile-device-shell .surg-total-bar {
+  position: static;
+}
 body.mobile-device-shell #breastPage .content-layout {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) !important;
@@ -337,6 +379,16 @@ body.mobile-device-shell #journeyPage .journey-actions {
 body.mobile-device-shell #journeyPage .journey-actions .ws-btn,
 body.mobile-device-shell #journeyPage .patient-center-print-grid .ws-btn {
   width: 100%;
+}
+.ws-calculated-field input[readonly] {
+  background: #f8fafc;
+  color: #0f766e;
+  font-weight: 850;
+  cursor: default;
+}
+.ws-calculated-field input[readonly]:focus {
+  border-color: var(--border);
+  box-shadow: none;
 }
 body.mobile-device-shell .ws-field input,
 body.mobile-device-shell .ws-field select,
