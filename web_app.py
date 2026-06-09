@@ -2947,7 +2947,8 @@ function calcRegimen(){
   const reg = _selectedRegimen;
   let detailHtml = '';
   let nhiTotal = 0, selfTotal = 0;
-  const gfr = parseFloat(document.getElementById('regGFR')?.value)||80;
+  const gfrInput = document.getElementById('regGFR');
+  const gfr = parseFloat(gfrInput ? gfrInput.value : '') || 80;
 
   reg.phases.forEach((phase, pi) => {
     let phaseNHI = 0, phaseSelf = 0;

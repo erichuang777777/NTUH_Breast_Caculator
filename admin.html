@@ -305,8 +305,8 @@ function setDrugForm(d={}){
   document.getElementById('trade_names').value = d.trade_names || '';
   document.getElementById('specialty_id').value = d.specialty_id || 'oncology_breast';
   document.getElementById('stage').value = d.stage || '';
-  document.getElementById('therapy_line').value = d.therapy_line ?? '';
-  document.getElementById('nhi_price').value = d.nhi_price ?? '';
+  document.getElementById('therapy_line').value = (d.therapy_line == null ? '' : d.therapy_line);
+  document.getElementById('nhi_price').value = (d.nhi_price == null ? '' : d.nhi_price);
   document.getElementById('price_unit').value = d.price_unit || '';
   document.getElementById('prior_auth').value = d.prior_auth ? 'true' : 'false';
   document.getElementById('indication').value = d.indication || '';
@@ -367,7 +367,7 @@ async function deleteDrug(){
 }
 
 function esc(s){
-  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
 checkSession();

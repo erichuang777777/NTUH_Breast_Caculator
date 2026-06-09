@@ -4974,7 +4974,6 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
 }
 .ios-wheel-picker button.active {
   color: #0f172a;
-  font-size: .88rem;
   font-weight: 950;
 }
 .ws-post-biomarker-grid {

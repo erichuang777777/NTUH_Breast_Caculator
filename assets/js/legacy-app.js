@@ -5240,7 +5240,7 @@ function openNodeDualWheelSheet(pairId){
     document.getElementById('nodeWheelLeftLabel').textContent = pair.leftLabel;
     document.getElementById('nodeWheelRightLabel').textContent = pair.rightLabel;
     const noteInput = document.getElementById('nodeWheelNote');
-    if(noteInput) noteInput.value = ((_patient || {}).node_note || document.getElementById('ws_node_note')?.value || '');
+    if(noteInput) noteInput.value = ((_patient || {}).node_note || (document.getElementById('ws_node_note') ? document.getElementById('ws_node_note').value : '') || '');
     buildNodeDualWheel('left', false);
     buildNodeDualWheel('right', false);
     updateNodeDualWheelResult();
@@ -6175,10 +6175,8 @@ function _markerPct(v){
 }
 
 function workspaceKi67Numbers(v){
-    return String(v == null ? '' : v)
-        .match(/\d+(?:\.\d+)?/g)
-        ?.map(Number)
-        .filter(n => Number.isFinite(n) && n >= 0 && n <= 100) || [];
+    const matches = String(v == null ? '' : v).match(/\d+(?:\.\d+)?/g);
+    return (matches ? matches.map(Number) : []).filter(n => Number.isFinite(n) && n >= 0 && n <= 100);
 }
 
 function workspaceKi67Number(v){
