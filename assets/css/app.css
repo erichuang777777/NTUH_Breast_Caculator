@@ -2715,14 +2715,16 @@ body.mobile-device-shell .ws-context-pill-row {
   .dashboard-agent-context-meter.danger .dashboard-agent-context-bar i {
     background: #e11d48;
   }
-  .dashboard-agent-thread {
-    min-height: 0;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: .48rem;
-    padding-right: .15rem;
-  }
+.dashboard-agent-thread {
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: .48rem;
+  padding-right: .15rem;
+  flex: 1 1 auto;
+  overscroll-behavior: contain;
+}
   .dashboard-agent-msg {
     max-width: 92%;
     border-radius: 8px;
@@ -3079,10 +3081,20 @@ body.mobile-agent-open .mobile-dashboard-agent-root .mobile-dashboard-agent-fab 
 .mobile-dashboard-agent-root .dashboard-agent-thread {
   min-height: 0;
   overflow-y: auto;
+  flex: 1 1 auto;
+  overscroll-behavior: contain;
 }
 .mobile-dashboard-agent-root .dashboard-agent-input textarea {
   min-height: 96px;
   max-height: 24vh;
+}
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel.context-collapsed .dashboard-agent-context-meter,
+.mobile-dashboard-agent-root .dashboard-agent-panel.context-collapsed .dashboard-agent-context-meter {
+  display: none;
+}
+body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel.context-collapsed .dashboard-agent-thread,
+.mobile-dashboard-agent-root .dashboard-agent-panel.context-collapsed .dashboard-agent-thread {
+  min-height: 0;
 }
 body.device-preview-desktop.modal-dashboard-mode .dashboard-agent-panel .dashboard-agent-head,
 .mobile-dashboard-agent-root .dashboard-agent-head {
@@ -4870,8 +4882,6 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
   color: #0f172a;
   font-size: 1rem;
   font-weight: 900;
-  transform: scale(1.08);
-  transform-origin: center;
   line-height: 1;
 }
 .node-wheel-mask {

@@ -3095,6 +3095,7 @@ function ensureModalDashboardOverview(){
 }
 const DASHBOARD_AGENT_POSITION_KEY = 'nhi_dashboard_agent_position';
 const DASHBOARD_AGENT_COLLAPSED_KEY = 'nhi_dashboard_agent_collapsed';
+const DASHBOARD_AGENT_CONTEXT_COLLAPSED_KEY = 'nhi_dashboard_agent_context_collapsed';
 const DASHBOARD_AGENT_API_CONFIG_KEY = 'nhi_dashboard_agent_api_config';
 const DASHBOARD_AGENT_HISTORY_KEY = 'nhi_dashboard_agent_history_v1';
 const DASHBOARD_AGENT_CONTEXT_LIMIT = 8192;
@@ -3150,6 +3151,21 @@ function setDashboardAgentCollapsed(collapsed){
 }
 function toggleDashboardAgentCollapsed(){
     setDashboardAgentCollapsed(!getDashboardAgentCollapsed());
+}
+function getDashboardAgentContextCollapsed(){
+    try {
+        const saved = localStorage.getItem(DASHBOARD_AGENT_CONTEXT_COLLAPSED_KEY);
+        return saved == null ? true : saved === '1';
+    } catch(e){
+        return true;
+    }
+}
+function setDashboardAgentContextCollapsed(collapsed){
+    try { localStorage.setItem(DASHBOARD_AGENT_CONTEXT_COLLAPSED_KEY, collapsed ? '1' : '0'); } catch(e){}
+    if(document.body.classList.contains('modal-dashboard-mode')) renderModalDashboardOverview();
+}
+function toggleDashboardAgentContextCollapsed(){
+    setDashboardAgentContextCollapsed(!getDashboardAgentContextCollapsed());
 }
 function dashboardAgentUseMobileDrawer(){
     try {
@@ -3664,6 +3680,7 @@ function renderDashboardAgentPanel(forceDrawer=false){
     const pos = getDashboardAgentPosition();
     const mobileDrawer = !!forceDrawer || dashboardAgentUseMobileDrawer();
     const collapsed = !mobileDrawer && getDashboardAgentCollapsed();
+    const contextCollapsed = getDashboardAgentContextCollapsed();
     const agentModel = dashboardAgentModelValue();
     if(collapsed){
         return `<aside class="dashboard-agent-panel collapsed" aria-label="AI Agent collapsed">
@@ -3672,7 +3689,7 @@ function renderDashboardAgentPanel(forceDrawer=false){
             </button>
         </aside>`;
     }
-    return `<aside class="dashboard-agent-panel">
+    return `<aside class="dashboard-agent-panel ${contextCollapsed ? 'context-collapsed' : ''}">
         <div class="dashboard-agent-head">
             <div class="dashboard-agent-title">
                 <span>AI Agent ${dashboardAgentStatusHtml()}</span>
@@ -3686,6 +3703,7 @@ function renderDashboardAgentPanel(forceDrawer=false){
                 </label>
             </div>
             <div class="dashboard-agent-head-actions">
+                <button type="button" class="dashboard-agent-top-btn" onclick="toggleDashboardAgentContextCollapsed()" title="${contextCollapsed ? '展開對話 context' : '收合對話 context'}" aria-label="${contextCollapsed ? '展開對話 context' : '收合對話 context'}">${dashboardIcon('collapse')}</button>
                 <div class="dashboard-agent-position">
                     <button type="button" class="${pos === 'left' ? 'active' : ''}" onclick="setDashboardAgentPosition('left')" title="Agent 靠左" aria-label="Agent 靠左">${dashboardIcon('left')}</button>
                     <button type="button" class="${pos === 'right' ? 'active' : ''}" onclick="setDashboardAgentPosition('right')" title="Agent 靠右" aria-label="Agent 靠右">${dashboardIcon('right')}</button>
