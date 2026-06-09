@@ -9,7 +9,7 @@
 <title>Oncobreast copilot</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/app.css?v=20260609l">
+<link rel="stylesheet" href="assets/css/app.css?v=20260609m">
 <link rel="stylesheet" href="assets/css/ajcc-mobile.css?v=20260519a">
 </head>
 <body>
@@ -110,8 +110,11 @@
     <div class="tab-content active" id="tabDrugsContent">
       <div class="content-layout">
         <!-- Sidebar Filter -->
-        <aside class="filter-sidebar">
-          <div class="sidebar-title">篩選條件</div>
+        <aside class="filter-sidebar" id="breastFilterSidebar">
+          <div class="sidebar-title">
+            <span>篩選條件</span>
+            <button type="button" class="filter-collapse-btn" id="breastFilterCollapseBtn" onclick="toggleBreastFilterPanel()" aria-expanded="true">收合</button>
+          </div>
           <div class="search-row">
             <input type="text" id="breastSearch" placeholder="搜尋藥物…" autocomplete="off" oninput="filterBreast()">
           </div>
@@ -2037,7 +2040,7 @@ const data = await res.json();</code></pre>
 <script src="assets/js/modules/patient-inform-sheet.js?v=20260609a"></script>
 <script src="assets/js/modules/benchmark-loader.js?v=20260606a"></script>
 <script src="assets/js/modules/benchmark-browser.js?v=20260606a"></script>
-<script src="assets/js/legacy-app.js?v=20260609m"></script>
+<script src="assets/js/legacy-app.js?v=20260609n"></script>
 
 <!-- AJCC prognostic lookup table: pre-computed breast prognostic stage entries -->
 <!-- Source: breast_cancer_tools/data/ajcc_staging_9_reference_lookup.json (Taiwan VGH reference) -->
@@ -2046,7 +2049,7 @@ const data = await res.json();</code></pre>
 <script src="assets/js/modules/ajcc/prognostic-lookup.js?v=20260519a"></script>
 <script src="assets/js/modules/ajcc/mobile-panel.js?v=20260519a"></script>
 
-<script src="assets/js/modules/drug-cards.js?v=20260609a"></script>
+<script src="assets/js/modules/drug-cards.js?v=20260609b"></script>
 
 </body>
 </html>

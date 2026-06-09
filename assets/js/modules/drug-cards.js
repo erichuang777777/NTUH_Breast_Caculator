@@ -1104,7 +1104,7 @@ function printInpRegimen(){
 // ═══════════════════════════════════════════════════════
 //  ICD碼查詢 (ICD Code Lookup for 重大傷病卡)
 // ═══════════════════════════════════════════════════════
-let _icdInited = false;
+let _drugCardsIcdInited = false;
 
 const ICD_ZONES = {
   UO: { label:'外上象限 (Upper-Outer Quadrant)', right:'C50.411', left:'C50.412', ntuhRight:'756', ntuhLeft:'754', hospitalRight:'C50411', hospitalLeft:'C50412', desc:'外上象限為最常見乳癌發生部位' },
@@ -1138,7 +1138,7 @@ const ICD_DCIS_CODES = [
   { code:'D05.00', side:'不明確', desc:'Lobular carcinoma in situ of unspecified breast — 未指定側小葉原位癌' },
 ];
 
-function selectIcdZone(side, zone){
+function drugCardsSelectIcdZone(side, zone){
   document.querySelectorAll('.icd-q').forEach(el=>el.classList.remove('selected'));
   document.querySelectorAll(`.icd-q[data-side="${side}"][data-zone="${zone}"]`).forEach(el=>el.classList.add('selected'));
   const info = ICD_ZONES[zone];
@@ -1178,7 +1178,7 @@ function selectIcdZone(side, zone){
     </div>`;
 }
 
-function icdCopy(code){
+function drugCardsIcdCopy(code){
   const done = () => {
     const el = document.getElementById('icdCopyCode');
     if(el){ el.textContent = code+' ✓'; setTimeout(()=>{ if(el) el.textContent=code; },1500); }
@@ -1190,8 +1190,8 @@ function icdCopy(code){
   }
 }
 
-function initIcdPage(){
-  _icdInited = true;
+function drugCardsInitIcdPage(){
+  _drugCardsIcdInited = true;
   const makeRow = (c) => {
     const ntuh = c.ntuhCode || '';
     const hospital = c.hospitalCode || '';
@@ -1663,6 +1663,29 @@ function printTrialsList(){
   w.document.write(html);
   w.document.close();
 }
+
+Object.assign(window, {
+  initSurgeryList,
+  renderSurgeryList,
+  loadSurgeryItems,
+  loadSurgeryContext,
+  updateSurgeryContext,
+  toggleSurgeryAdmin,
+  renderSurgeryAdmin,
+  clearSurgeryEdit,
+  editSurgeryItem,
+  saveSurgeryEdit,
+  deleteSurgeryItem,
+  resetSurgeryItems,
+  exportSurgeryItems,
+  importSurgeryItems,
+  updateSurgTotal,
+  clearSurgeryChecks,
+  printSurgeryList,
+  searchTrials,
+  exportTrialsCSV,
+  printTrialsList
+});
 
 // ── Init ──
 function initInpCalc(){

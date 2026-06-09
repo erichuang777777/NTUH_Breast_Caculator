@@ -129,6 +129,47 @@ function normalizeOllamaModel(value) {
   return /^[A-Za-z0-9._:/+-]{1,120}$/.test(raw) ? raw : OLLAMA_MODEL;
 }
 
+function ollamaOpenAiBase() {
+  if (/\/v1\/?$/.test(OLLAMA_HOST)) return OLLAMA_HOST.replace(/\/+$/, '');
+  return `${OLLAMA_HOST}/v1`;
+}
+
+function ollamaNativeChatBody(selectedModel, agentContext) {
+  return {
+    model: selectedModel,
+    stream: false,
+    format: 'json',
+    messages: [
+      { role: 'system', content: AGENT_SYSTEM_PROMPT },
+      { role: 'user', content: JSON.stringify(agentContext) },
+    ],
+    options: {
+      temperature: 0.2,
+      num_ctx: 8192,
+    },
+  };
+}
+
+function ollamaOpenAiChatBody(selectedModel, agentContext) {
+  return {
+    model: selectedModel,
+    stream: false,
+    response_format: { type: 'json_object' },
+    messages: [
+      { role: 'system', content: AGENT_SYSTEM_PROMPT },
+      { role: 'user', content: JSON.stringify(agentContext) },
+    ],
+    temperature: 0.2,
+    max_tokens: 2048,
+  };
+}
+
+async function ollamaFetchJson(url, options) {
+  const res = await fetch(url, options);
+  const data = await res.json().catch(() => ({}));
+  return { res, data };
+}
+
 function compactAgentPayload(body) {
   const payload = body || {};
   const patient = payload.patient_context || {};
@@ -159,32 +200,32 @@ async function callOllamaAgent(body) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), Math.max(1000, OLLAMA_TIMEOUT_MS));
   try {
-    const res = await fetch(`${OLLAMA_HOST}/api/chat`, {
+    let runtime = 'ollama-cloud';
+    let { res, data } = await ollamaFetchJson(`${OLLAMA_HOST}/api/chat`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
         authorization: `Bearer ${apiKey}`,
       },
-      body: JSON.stringify({
-        model: selectedModel,
-        stream: false,
-        format: 'json',
-        messages: [
-          { role: 'system', content: AGENT_SYSTEM_PROMPT },
-          { role: 'user', content: JSON.stringify(agentContext) },
-        ],
-        options: {
-          temperature: 0.2,
-          num_ctx: 8192,
-        },
-      }),
+      body: JSON.stringify(ollamaNativeChatBody(selectedModel, agentContext)),
       signal: controller.signal,
     });
-    const data = await res.json().catch(() => ({}));
+    if (res.status === 404) {
+      runtime = 'ollama-cloud-openai';
+      ({ res, data } = await ollamaFetchJson(`${ollamaOpenAiBase()}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify(ollamaOpenAiChatBody(selectedModel, agentContext)),
+        signal: controller.signal,
+      }));
+    }
     if (!res.ok) {
       return { ok: false, status: res.status, error: data.error || data.message || 'Ollama Cloud request failed.' };
     }
-    const content = String(((data.message || {}).content) || '').trim();
+    const content = String(((data.message || {}).content) || (((data.choices || [])[0] || {}).message || {}).content || '').trim();
     const answer = parseAgentJsonText(content);
     let toolId = String(answer.tool_id || '').trim();
     if (toolId && allowedTools.size && !allowedTools.has(toolId)) toolId = '';
@@ -201,7 +242,7 @@ async function callOllamaAgent(body) {
       citations: (Array.isArray(answer.citations) && answer.citations.length ? answer.citations : systemCitations).slice(0, 8),
       called_tools: (calledTools.length ? calledTools : ['ollama-cloud']).slice(0, 8),
       model: selectedModel,
-      runtime: 'ollama-cloud',
+      runtime,
     };
   } catch (err) {
     return { ok: false, status: 502, error: 'Ollama Cloud agent unavailable', detail: err.name === 'AbortError' ? 'timeout' : err.message };
@@ -227,12 +268,20 @@ async function checkOllamaStatus(modelOverride) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), Math.min(Math.max(1000, OLLAMA_TIMEOUT_MS), 12000));
   try {
-    const res = await fetch(`${OLLAMA_HOST}/api/tags`, {
+    let runtime = 'ollama-cloud';
+    let { res, data } = await ollamaFetchJson(`${OLLAMA_HOST}/api/tags`, {
       method: 'GET',
       headers: { authorization: `Bearer ${apiKey}` },
       signal: controller.signal,
     });
-    const data = await res.json().catch(() => ({}));
+    if (res.status === 404) {
+      runtime = 'ollama-cloud-openai';
+      ({ res, data } = await ollamaFetchJson(`${ollamaOpenAiBase()}/models`, {
+        method: 'GET',
+        headers: { authorization: `Bearer ${apiKey}` },
+        signal: controller.signal,
+      }));
+    }
     if (!res.ok) {
       return {
         ok: false,
@@ -241,12 +290,12 @@ async function checkOllamaStatus(modelOverride) {
         status: 'cloud_error',
         message: data.error || data.message || `Ollama Cloud returned HTTP ${res.status}`,
         model: selectedModel,
-        runtime: 'ollama-cloud',
+        runtime,
       };
     }
-    const models = Array.isArray(data.models) ? data.models : [];
+    const models = Array.isArray(data.models) ? data.models : (Array.isArray(data.data) ? data.data : []);
     const modelNames = models
-      .map(m => String(m.name || m.model || '').trim())
+      .map(m => String(m.name || m.model || m.id || '').trim())
       .filter(Boolean)
       .map(normalizeOllamaModel);
     return {
@@ -259,7 +308,7 @@ async function checkOllamaStatus(modelOverride) {
       model_available: modelNames.length ? modelNames.includes(selectedModel) : null,
       model_count: models.length,
       models: modelNames.slice(0, 50),
-      runtime: 'ollama-cloud',
+      runtime,
     };
   } catch (err) {
     return {

@@ -3478,7 +3478,8 @@ body.dark .ajcc-tab-card.active .ajcc-tab-sub { color: #fbbf24; }
 
 /* ── Workspace Quick / Full Mode ── */
 .ws-tab-switcher { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-bottom: 1rem; }
-.ws-tab-card { border: 2px solid var(--border); border-radius: var(--r-md); padding: .75rem 1rem; cursor: pointer; background: var(--surface); text-align: center; transition: border-color .18s, background .18s, box-shadow .18s; user-select: none; }
+.ws-tab-card { border: 2px solid var(--border); border-radius: var(--r-md); padding: .75rem 1rem; cursor: pointer; background: var(--surface); text-align: center; transition: border-color .18s, background .18s, box-shadow .18s; user-select: none; min-width: 0; min-height: 74px; box-sizing: border-box; }
+.ws-tab-card * { min-width: 0; }
 .ws-tab-card:hover { border-color: #0369a1; }
 .ws-tab-card.active { border-color: #0c4a6e; background: #e0f2fe; box-shadow: 0 2px 10px rgba(12,74,110,.15); }
 .ws-tab-title { font-weight: 700; font-size: .92rem; color: var(--text-muted); transition: color .18s; }
@@ -3490,21 +3491,24 @@ body.dark .ws-tab-card.active .ws-tab-title { color: #7dd3fc; }
 body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
 .ws-quick-section { display: none; }
 .ws-input-col.ws-quick-mode .ws-quick-section { display: block; }
-.ws-input-col.ws-quick-mode:not(.ws-full-mode) .ws-section:not(.ws-quick-section) { display: none; }
+.ws-input-col.ws-quick-mode:not(.ws-full-mode) .ws-section:not(.ws-quick-section):not(.ws-gene-section) { display: none; }
+.ws-input-col.ws-full-mode .ws-gene-section {
+  display: none !important;
+}
 .ws-input-col.ws-full-mode .ws-quick-backed-section,
 .ws-input-col.ws-full-mode .ws-quick-backed-field {
   display: none !important;
 }
 @keyframes wsModeFlipOut {
-    0%   { transform: scaleX(1); opacity: 1; }
-    100% { transform: scaleX(0); opacity: 0; }
+    0%   { opacity: 1; }
+    100% { opacity: .35; }
 }
 @keyframes wsModeFlipIn {
-    0%   { transform: scaleX(0); opacity: 0; }
-    100% { transform: scaleX(1); opacity: 1; }
+    0%   { opacity: .35; }
+    100% { opacity: 1; }
 }
-.ws-input-col.ws-flipping-out { animation: wsModeFlipOut 0.15s ease-in forwards; transform-origin: left center; }
-.ws-input-col.ws-flipping-in  { animation: wsModeFlipIn 0.15s ease-out forwards; transform-origin: left center; }
+.ws-input-col.ws-flipping-out { animation: wsModeFlipOut 0.15s ease-in forwards; }
+.ws-input-col.ws-flipping-in  { animation: wsModeFlipIn 0.15s ease-out forwards; }
 @keyframes wsFullSlideIn {
   0% { opacity: 0; transform: translateY(-8px); max-height: 0; }
   100% { opacity: 1; transform: translateY(0); max-height: 900px; }
@@ -3952,18 +3956,20 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
   display: none !important;
 }
 .ws-gene-section .ws-form {
-  grid-template-columns: repeat(auto-fit, minmax(82px, max-content));
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
   justify-content: start;
   align-items: end;
   gap: .28rem;
 }
 .ws-gene-section .ws-field {
-  width: clamp(82px, 7vw, 112px);
-  min-height: 50px;
+  width: auto;
+  min-width: 0;
+  min-height: 66px;
   padding: .24rem;
 }
 .ws-gene-section .ws-oncotype-field {
-  width: clamp(124px, 10vw, 150px);
+  width: auto;
+  min-width: 0;
 }
 .ws-gene-section .ws-field label {
   font-size: .66rem;
@@ -5375,20 +5381,20 @@ body.desktop-dashboard-mode #wsPage.active .ws-section.ws-optional .ws-field sel
 }
 body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-gene-section .ws-form,
 #wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-gene-section .ws-form {
-  grid-template-columns: repeat(auto-fit, minmax(82px, max-content)) !important;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)) !important;
   justify-content: start;
   gap: .28rem;
 }
 body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-gene-section .ws-field,
 #wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-gene-section .ws-field {
-  width: clamp(82px, 7vw, 112px);
-  min-width: 82px;
+  width: auto;
+  min-width: 0;
   grid-template-rows: minmax(22px, auto) 30px;
 }
 body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-gene-section .ws-oncotype-field,
 #wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-gene-section .ws-oncotype-field {
-  width: clamp(124px, 10vw, 150px);
-  min-width: 124px;
+  width: auto;
+  min-width: 0;
 }
 body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-post-tnm-grid,
 #wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-post-tnm-grid {
@@ -5612,12 +5618,40 @@ body.dark .back-btn:hover { background: #334155; }
   top: 70px;
 }
 .sidebar-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
   font-size: .7rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .07em;
   color: var(--text-faint);
   margin-bottom: .9rem;
+}
+.filter-collapse-btn {
+  flex: 0 0 auto;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: .68rem;
+  font-weight: 850;
+  line-height: 1;
+  padding: .28rem .52rem;
+}
+.filter-collapse-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.filter-sidebar.is-collapsed .search-row,
+.filter-sidebar.is-collapsed .filter-section,
+.filter-sidebar.is-collapsed .filter-divider,
+.filter-sidebar.is-collapsed .sidebar-actions,
+.filter-sidebar.is-collapsed .patient-filter-status {
+  display: none !important;
 }
 .search-row {
   display: flex;
@@ -7020,6 +7054,64 @@ body.dark .back-btn:hover { background: #334155; }
   .api-guide-grid { grid-template-columns: 1fr; }
   .function-menu-grid { grid-template-columns: 1fr; }
   .function-tool-docs { grid-template-columns: 1fr; }
+}
+
+/* Mobile shell final overrides: keep pathology-stage cards in a vertical flow. */
+body.mobile-device-shell #wsPage.active #wsInputCol.ws-full-mode .ws-post-tnm-grid,
+body.mobile-device-shell #wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-post-tnm-grid,
+body.mobile-device-shell #wsPage.active .ws-post-tnm-grid {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: .55rem !important;
+}
+body.mobile-device-shell #wsPage.active .ws-post-tnm-grid .ws-q-block {
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+body.mobile-device-shell #wsPage.active .ws-post-tnm-grid .ws-q-blocklabel {
+  display: block;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.25;
+}
+body.mobile-device-shell #wsPage.active .ws-post-tnm-grid .ws-q-row7,
+body.mobile-device-shell #wsPage.active .ws-post-tnm-grid .ws-q-row6,
+body.mobile-device-shell #wsPage.active .ws-post-tnm-grid .ws-q-row5,
+body.mobile-device-shell #wsPage.active .ws-post-tnm-grid .ws-q-row4 {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+body.mobile-device-shell #wsPage.active #wsInputCol.ws-full-mode .ws-gene-section .ws-field,
+body.mobile-device-shell #wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-gene-section .ws-field,
+body.mobile-device-shell #wsPage.active .ws-gene-section .ws-field {
+  display: grid !important;
+  grid-template-rows: auto minmax(34px, auto) !important;
+  align-items: stretch !important;
+  gap: .28rem !important;
+  min-height: 76px !important;
+  padding: .34rem !important;
+}
+body.mobile-device-shell #wsPage.active .ws-gene-section .ws-field label {
+  display: block !important;
+  min-height: 18px !important;
+  line-height: 1.2 !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+body.mobile-device-shell #wsPage.active .ws-gene-section .ws-gene-chip-row {
+  align-self: end;
+  min-width: 0;
+}
+body.mobile-device-shell #wsPage.active .ws-gene-section .ws-gene-chip-row .ws-qchip {
+  min-height: 32px;
+  padding: .28rem .08rem;
+}
+body.mobile-device-shell #wsPage.active .ws-gene-section .ws-quick-backed-field,
+body.mobile-device-shell #wsPage.active #wsInputCol.ws-full-mode .ws-gene-section .ws-quick-backed-field,
+body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-gene-section .ws-quick-backed-field,
+#wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-gene-section .ws-quick-backed-field {
+  display: none !important;
 }
 
 /* ── Compare & Print ── */

@@ -963,7 +963,7 @@ const DASHBOARD_WIDGETS = [
     { id:'breastPage', flag:'breast', label:'乳癌藥物', desktopSpan:1, patientBinding:'optional', x:20, y:580, w:600, h:460, cx:20, cy:500, cw:420, ch:340 },
     { id:'inpatientPage', flag:'inpatient', label:'常用配方與劑量', desktopSpan:1, patientBinding:'preferred', x:640, y:580, w:600, h:460, cx:460, cy:500, cw:420, ch:340 },
     { id:'trialsPage', flag:'trials', label:'臨床試驗', desktopSpan:1, patientBinding:'optional', x:1260, y:580, w:640, h:460, cx:900, cy:500, cw:420, ch:340 },
-    { id:'calcPage', flag:'calc_gail', label:'乳癌計算機', desktopSpan:2, patientBinding:'preferred', x:20, y:1060, w:1880, h:420, cx:20, cy:880, cw:1260, ch:360 },
+    { id:'calcPage', flag:'calc_gail', label:'乳癌計算機', desktopSpan:1, patientBinding:'preferred', x:20, y:1060, w:1880, h:420, cx:20, cy:880, cw:1260, ch:360 },
     { id:'riskPage', flag:'calculator', label:'其他風險分數', desktopSpan:1, patientBinding:'preferred', x:20, y:1500, w:620, h:420, cx:20, cy:1260, cw:420, ch:320 },
     { id:'rcbPage', flag:'calc_rcb', label:'RCB', desktopSpan:1, patientBinding:'preferred', x:660, y:1500, w:620, h:420, cx:460, cy:1260, cw:420, ch:320 },
     { id:'ihc4Page', flag:'calc_ihc4', label:'IHC4', desktopSpan:1, patientBinding:'preferred', x:20, y:1500, w:620, h:420, cx:20, cy:1260, cw:420, ch:320 },
@@ -2515,6 +2515,79 @@ function syncTrialsFromWorkspace(autoSearch){
         try { searchTrials(); } catch(e){}
     }
 }
+function ensureSurgeryListReady(){
+    const list = document.getElementById('surgeryList');
+    if(typeof window.initSurgeryList === 'function'){
+        if(!window._surgInited && typeof _surgInited !== 'undefined' && !_surgInited) window.initSurgeryList();
+        else if(list && !list.children.length && typeof window.renderSurgeryList === 'function') window.renderSurgeryList();
+        return;
+    }
+    if(typeof initSurgeryList === 'function'){
+        if(typeof _surgInited === 'undefined' || !_surgInited) initSurgeryList();
+        else if(list && !list.children.length && typeof renderSurgeryList === 'function') renderSurgeryList();
+        return;
+    }
+    if(list){
+        list.innerHTML = '<div style="padding:1rem;color:#ef4444">手術自費醫材清單模組尚未載入，請重新整理頁面後再試。</div>';
+    }
+}
+window.searchTrials = window.searchTrials || async function(){
+    const keyword = (document.getElementById('trialKeyword') || {}).value || 'breast cancer';
+    const locationText = (document.getElementById('trialLocation') || {}).value || 'Taiwan';
+    const status = (document.getElementById('trialStatus') || {}).value || '';
+    const el = document.getElementById('trialResults');
+    if(!el) return;
+    el.innerHTML = '<div style="color:var(--text-muted);padding:1rem">搜尋中，請稍候…</div>';
+    try {
+        const params = new URLSearchParams({
+            'query.cond': String(keyword).trim() || 'breast cancer',
+            'query.locn': String(locationText).trim() || 'Taiwan',
+            pageSize: '5',
+            format: 'json'
+        });
+        if(status) params.set('filter.overallStatus', status);
+        const resp = await fetch(`https://clinicaltrials.gov/api/v2/studies?${params}`);
+        if(!resp.ok) throw new Error(`ClinicalTrials.gov HTTP ${resp.status}`);
+        const data = await resp.json();
+        const studies = Array.isArray(data.studies) ? data.studies : [];
+        if(!studies.length){
+            el.innerHTML = '<div style="padding:1rem;color:var(--text-muted)">未找到符合條件的試驗。請嘗試修改關鍵字或地點。</div>';
+            return;
+        }
+        const total = data.totalCount || studies.length;
+        const rows = studies.map(study => {
+            const ps = study.protocolSection || {};
+            const id = ps.identificationModule || {};
+            const statusMod = ps.statusModule || {};
+            const design = ps.designModule || {};
+            const sponsor = ps.sponsorCollaboratorsModule || {};
+            const locations = ps.contactsLocationsModule || {};
+            const nctId = id.nctId || '';
+            const title = id.briefTitle || '(no title)';
+            const overallStatus = statusMod.overallStatus || '';
+            const phase = (design.phases || []).join(', ') || 'N/A';
+            const leadSponsor = sponsor.leadSponsor && sponsor.leadSponsor.name ? sponsor.leadSponsor.name : '';
+            const twLocs = (locations.locations || []).filter(loc => loc.country === 'Taiwan');
+            const locs = twLocs.map(loc => `${loc.facility || ''} (${loc.city || ''})`).slice(0, 3).join('、');
+            const badgeLabel = overallStatus === 'RECRUITING' ? '招募中' : (overallStatus === 'ACTIVE_NOT_RECRUITING' ? '進行中' : (overallStatus || '其他'));
+            return `<div class="trial-card">
+                <div style="display:flex;gap:.5rem;align-items:flex-start;flex-wrap:wrap">
+                    <span class="trial-badge ${overallStatus === 'RECRUITING' ? 'recruiting' : 'active'}">${esc(badgeLabel)}</span>
+                    <span class="trial-badge trial-phase">${esc(phase)}</span>
+                </div>
+                <div class="trial-title" style="margin-top:.3rem">${esc(title)}</div>
+                <div class="trial-meta">
+                    <span>&#128196; <a href="https://clinicaltrials.gov/study/${esc(nctId)}" target="_blank" rel="noopener" style="color:#0369a1">${esc(nctId)}</a></span>
+                    ${leadSponsor ? `<span>&#127970; ${esc(leadSponsor)}</span>` : ''}
+                </div>
+                ${locs ? `<div class="trial-locations">&#128205; 台灣試驗中心：${esc(locs)}</div>` : ''}
+            </div>`;
+        }).join('');
+        el.innerHTML = `<div style="font-size:.78rem;color:var(--text-muted);margin-bottom:.6rem">符合條件 ${total} 筆（顯示前 ${studies.length} 筆）</div>${rows}`;
+    } catch(err){
+        el.innerHTML = `<div style="padding:1rem;color:#ef4444">搜尋失敗：${esc(err && err.message ? err.message : 'unknown error')}。請確認網路連線，或稍後再試。</div>`;
+    }
+};
 function syncInpatientInputsFromPatient(){
     const p = typeof _patient !== 'undefined' ? _patient : {};
     const map = [
@@ -3943,7 +4016,7 @@ function initDashboardWidgetContent(id){
         syncInpatientInputsFromPatient();
     }
     if(id === 'icdPage') initIcdPage();
-    if(id === 'surgeryPage' && !_surgInited) initSurgeryList();
+    if(id === 'surgeryPage') ensureSurgeryListReady();
     if(id === 'wsPage' && !_wsInited){ initWorkspace(); _wsInited=true; }
     if(id === 'journeyPage'){
         updatePatientCenterRecordingServiceUi();
@@ -4279,7 +4352,7 @@ function showSurgery(){
     document.getElementById('calcPage').classList.remove('active');
     document.getElementById('wsPage').classList.remove('active');
     document.getElementById('journeyPage').classList.remove('active');
-    if(!_surgInited) initSurgeryList();
+    ensureSurgeryListReady();
 }
 function showTrials(){
     leaveDesktopDashboard();
@@ -4788,8 +4861,6 @@ const TOUCH_PRESET_VALUES = {
     ws_er: ['+','-'],
     ws_pr: ['+','-'],
     ws_ki67: [{value:'10', label:'<20'}, {value:'20', label:'20+'}],
-    ws_sln_pos: ['0','1','2','3'],
-    ws_sln_total: ['1','2','3','4','5'],
     ws_aln_pos: ['0','1','2','4','10'],
     ws_aln_total: ['0','10','14','17','20'],
     ws_rcb_d1: ['0','5','10','20','30','50'],
@@ -10320,6 +10391,17 @@ function switchBreastTab(tab){
     }
 }
 // ── Filters ──
+function toggleBreastFilterPanel(force){
+    const panel = document.getElementById('breastFilterSidebar');
+    const btn = document.getElementById('breastFilterCollapseBtn');
+    if(!panel) return;
+    const next = typeof force === 'boolean' ? force : !panel.classList.contains('is-collapsed');
+    panel.classList.toggle('is-collapsed', next);
+    if(btn){
+        btn.textContent = next ? '展開' : '收合';
+        btn.setAttribute('aria-expanded', next ? 'false' : 'true');
+    }
+}
 function toggleChip(el){
     const wasPatientMode = _breastFilterMode === 'patient';
     const f=el.dataset.f, v=el.dataset.v;
