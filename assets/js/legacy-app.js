@@ -2279,18 +2279,16 @@ function dashboardPhaseFocus(ctx){
     return map[phase] || base;
 }
 function dashboardToolGroupsHtml(cardById, ctx){
-    const focus = dashboardPhaseFocus(ctx);
     const groups = [
         { id:'diagnosis', title:'診斷與分期', note:'先確認這個病人的正確資料', ids:['icdPage','calcPage','ihc4Page','riskPage'] },
         { id:'treatment', title:'治療規劃', note:'藥物、處方、費用與病人說明', ids:['breastPage','inpatientPage','trialsPage'] },
         { id:'workflow', title:'門診工作流', note:'摘要、錄音與後續輸出', ids:['recordingPage'] }
     ];
-    const ordered = groups.slice().sort((a, b) => (a.id === focus.group ? -1 : 0) - (b.id === focus.group ? -1 : 0));
-    return ordered.map(group => {
+    return groups.map(group => {
         const cards = group.ids.map(id => cardById[id]).filter(Boolean).join('');
         if(!cards) return '';
-        return `<section class="patient-tool-group ${group.id === focus.group ? 'active' : ''}">
-            <header><div><strong>${esc(group.title)}</strong><span>${esc(group.note)}</span></div>${group.id === focus.group ? '<em>目前優先</em>' : ''}</header>
+        return `<section class="patient-tool-group">
+            <header><div><strong>${esc(group.title)}</strong><span>${esc(group.note)}</span></div></header>
             <div class="patient-tool-group-grid">${cards}</div>
         </section>`;
     }).filter(Boolean).join('');
@@ -3839,7 +3837,6 @@ function renderModalDashboardOverview(){
         }
     });
     const toolGroups = dashboardToolGroupsHtml(cardById, ctx);
-    const focus = dashboardPhaseFocus(ctx);
     const compact = dashboardCompactContextParts(ctx);
     const pills = [
         dashboardContextPill('分期', compact.stageOverview, ctx.stage.T && ctx.stage.N && ctx.stage.M ? 'ok' : 'warn'),
@@ -3854,7 +3851,7 @@ function renderModalDashboardOverview(){
             <div class="patient-context-title">
                 <div>
                     <strong>共用設定檔</strong>
-                    <span class="patient-context-focus">${esc(focus.label)}：${esc(focus.title)}。${esc(focus.detail)}</span>
+                    <span class="patient-context-focus">固定 Dashboard：分期、藥物、試驗與門診工具整合</span>
                 </div>
                 <button type="button" class="patient-context-inform-btn" onclick="generatePatientTreatmentPlan()">病人說明單</button>
             </div>
