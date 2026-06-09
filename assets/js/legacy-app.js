@@ -864,6 +864,7 @@ function bindResponsiveViewModeGuard(){
         clearTimeout(_viewModeResizeTimer);
         _viewModeResizeTimer = setTimeout(function(){
             updateDeviceShellClass();
+            syncMobileDashboardAgentRoot();
             if(document.body.classList.contains('desktop-dashboard-mode') && !isDesktopDashboardViewport()){
                 showLandingCards();
             } else if(!document.body.classList.contains('desktop-dashboard-mode') && getAppViewMode() === 'dashboard') {
@@ -3186,6 +3187,7 @@ function syncMobileDashboardAgentRoot(){
     root.innerHTML = `${renderDashboardAgentPanel()}${renderMobileDashboardAgentFab()}`;
     setTimeout(() => dashboardAgentRefreshStatus(false), 0);
 }
+document.addEventListener('DOMContentLoaded', () => setTimeout(syncMobileDashboardAgentRoot, 0));
 function getDashboardAgentApiConfig(){
     const fallback = dashboardAgentDefaultApiConfig();
     if(window.OncoBreastAgentAdapter){

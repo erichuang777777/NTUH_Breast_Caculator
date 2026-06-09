@@ -3099,10 +3099,10 @@ body.mobile-device-shell .ws-context-pill-row {
     min-height: 96px;
     max-height: 24vh;
   }
-  body.mobile-device-shell .mobile-dashboard-agent-root {
+  .mobile-dashboard-agent-root {
     display: block;
   }
-  body.mobile-device-shell .mobile-dashboard-agent-root .dashboard-agent-panel {
+  .mobile-dashboard-agent-root .dashboard-agent-panel {
     display: none;
     position: fixed;
     left: 10px;
@@ -3134,7 +3134,7 @@ body.mobile-device-shell .ws-context-pill-row {
     background: rgba(15,23,42,.38);
     cursor: pointer;
   }
-  body.mobile-device-shell .mobile-dashboard-agent-root .mobile-dashboard-agent-fab {
+  .mobile-dashboard-agent-root .mobile-dashboard-agent-fab {
     display: inline-flex;
     position: fixed;
     top: calc(env(safe-area-inset-top, 0px) + 62px);
@@ -3155,7 +3155,7 @@ body.mobile-device-shell .ws-context-pill-row {
   body.mobile-agent-open .mobile-dashboard-agent-root .mobile-dashboard-agent-fab {
     display: none;
   }
-  body.mobile-device-shell .mobile-dashboard-agent-root .mobile-dashboard-agent-fab svg {
+  .mobile-dashboard-agent-root .mobile-dashboard-agent-fab svg {
     width: 23px;
     height: 23px;
     fill: none;
@@ -3164,18 +3164,18 @@ body.mobile-device-shell .ws-context-pill-row {
     stroke-linecap: round;
     stroke-linejoin: round;
   }
-  body.mobile-device-shell .mobile-dashboard-agent-root .dashboard-agent-mobile-close {
+  .mobile-dashboard-agent-root .dashboard-agent-mobile-close {
     display: inline-flex;
   }
-  body.mobile-device-shell .mobile-dashboard-agent-root .dashboard-agent-position,
-  body.mobile-device-shell .mobile-dashboard-agent-root .dashboard-agent-collapse-btn {
+  .mobile-dashboard-agent-root .dashboard-agent-position,
+  .mobile-dashboard-agent-root .dashboard-agent-collapse-btn {
     display: none;
   }
-  body.mobile-device-shell .mobile-dashboard-agent-root .dashboard-agent-thread {
+  .mobile-dashboard-agent-root .dashboard-agent-thread {
     min-height: 0;
     overflow-y: auto;
   }
-  body.mobile-device-shell .mobile-dashboard-agent-root .dashboard-agent-input textarea {
+  .mobile-dashboard-agent-root .dashboard-agent-input textarea {
     min-height: 96px;
     max-height: 24vh;
   }
