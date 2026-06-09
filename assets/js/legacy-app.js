@@ -4943,7 +4943,14 @@ const TOUCH_PRESET_VALUES = {
 const WORKSPACE_ZERO_DISPLAY_BLANK_IDS = new Set(['ws_sln_pos','ws_sln_total','ws_aln_pos','ws_aln_total','ws_nodes_pos','ws_nodes_total']);
 const IOS_WHEEL_VALUES = {
     ws_sln_pos: ['0','1','2','3','4','5'],
-    ws_sln_total: ['0','1','2','3','4','5']
+    ws_sln_total: ['0','1','2','3','4','5'],
+    ws_aln_pos: ['0','1','2','3','4','5'],
+    ws_aln_total: ['0','1','2','3','4','5','10','14','17','20']
+};
+const NODE_DUAL_WHEEL_VALUES = Array.from({length:51}, (_, i) => String(i));
+const NODE_DUAL_WHEEL_PAIRS = {
+    slnb: { title:'SLNB', leftInput:'ws_sln_pos', rightInput:'ws_sln_total', leftLabel:'SLNB+', rightLabel:'SLNB total' },
+    alnd: { title:'ALND', leftInput:'ws_aln_pos', rightInput:'ws_aln_total', leftLabel:'ALND+', rightLabel:'ALND total' }
 };
 function iosWheelRenderValues(values){
     const base = (values || []).map(v => String(v));
@@ -5093,6 +5100,249 @@ function refreshIosWheelPickers(){
         }
     });
 }
+let _nodeDualWheelState = null;
+function nodeWheelNumber(value){
+    const n = Number(value);
+    return Number.isFinite(n) ? Math.max(0, Math.min(NODE_DUAL_WHEEL_VALUES.length - 1, Math.round(n))) : 0;
+}
+function ensureNodeDualWheelSheet(){
+    let sheet = document.getElementById('nodeDualWheelOverlay');
+    if(sheet) return sheet;
+    sheet = document.createElement('div');
+    sheet.id = 'nodeDualWheelOverlay';
+    sheet.className = 'node-wheel-overlay';
+    sheet.hidden = true;
+    sheet.innerHTML = `
+        <div class="node-wheel-sheet" role="dialog" aria-modal="true" aria-labelledby="nodeWheelTitle">
+          <div class="node-wheel-bar">
+            <button type="button" class="node-wheel-action" data-action="reset">重設</button>
+            <strong id="nodeWheelTitle">淋巴結數量</strong>
+            <button type="button" class="node-wheel-action primary" data-action="done">完成</button>
+          </div>
+          <div class="node-wheel-cols">
+            <div class="node-wheel-col">
+              <div class="node-wheel-label" id="nodeWheelLeftLabel">SLNB+</div>
+              <div class="node-wheel-wrap" data-side="left"><div class="node-wheel-list"></div><div class="node-wheel-mask top"></div><div class="node-wheel-mask bottom"></div><div class="node-wheel-selection"></div></div>
+            </div>
+            <div class="node-wheel-divider" aria-hidden="true"></div>
+            <div class="node-wheel-col">
+              <div class="node-wheel-label" id="nodeWheelRightLabel">SLNB total</div>
+              <div class="node-wheel-wrap" data-side="right"><div class="node-wheel-list"></div><div class="node-wheel-mask top"></div><div class="node-wheel-mask bottom"></div><div class="node-wheel-selection"></div></div>
+            </div>
+          </div>
+          <div class="node-wheel-result"><span id="nodeWheelLeftResult">0</span><span aria-hidden="true"> / </span><span id="nodeWheelRightResult">0</span></div>
+        </div>`;
+    document.body.appendChild(sheet);
+    sheet.addEventListener('click', event => {
+        const action = event.target && event.target.dataset ? event.target.dataset.action : '';
+        if(action === 'done') commitNodeDualWheelSheet();
+        else if(action === 'reset') resetNodeDualWheelSheet();
+        else if(event.target === sheet) closeNodeDualWheelSheet();
+    });
+    Array.from(sheet.querySelectorAll('.node-wheel-wrap')).forEach(wrap => attachNodeDualWheelHandlers(wrap));
+    return sheet;
+}
+function openNodeDualWheelSheet(pairId){
+    const pair = NODE_DUAL_WHEEL_PAIRS[pairId];
+    if(!pair) return;
+    const leftInput = document.getElementById(pair.leftInput);
+    const rightInput = document.getElementById(pair.rightInput);
+    if(!leftInput || !rightInput) return;
+    const sheet = ensureNodeDualWheelSheet();
+    _nodeDualWheelState = {
+        pairId,
+        pair,
+        itemHeight:43,
+        mid:2,
+        left:{ idx:nodeWheelNumber(leftInput.value || ((_patient || {})[pair.leftInput.replace(/^ws_/, '')])), offset:0, dragging:false, startY:0, startOffset:0, vel:0, lastY:0, lastT:0 },
+        right:{ idx:nodeWheelNumber(rightInput.value || ((_patient || {})[pair.rightInput.replace(/^ws_/, '')])), offset:0, dragging:false, startY:0, startOffset:0, vel:0, lastY:0, lastT:0 }
+    };
+    document.getElementById('nodeWheelTitle').textContent = pair.title;
+    document.getElementById('nodeWheelLeftLabel').textContent = pair.leftLabel;
+    document.getElementById('nodeWheelRightLabel').textContent = pair.rightLabel;
+    buildNodeDualWheel('left', false);
+    buildNodeDualWheel('right', false);
+    updateNodeDualWheelResult();
+    sheet.hidden = false;
+    sheet.classList.add('show');
+}
+function closeNodeDualWheelSheet(){
+    const sheet = document.getElementById('nodeDualWheelOverlay');
+    if(sheet){
+        sheet.classList.remove('show');
+        sheet.hidden = true;
+    }
+}
+function buildNodeDualWheel(side, animate){
+    const sheet = ensureNodeDualWheelSheet();
+    const wrap = sheet.querySelector(`.node-wheel-wrap[data-side="${side}"]`);
+    const list = wrap ? wrap.querySelector('.node-wheel-list') : null;
+    const state = _nodeDualWheelState && _nodeDualWheelState[side];
+    if(!list || !state) return;
+    if(!list.children.length){
+        list.innerHTML = NODE_DUAL_WHEEL_VALUES.map(v => `<button type="button" class="node-wheel-item" data-value="${esc(v)}">${esc(v)}</button>`).join('');
+        Array.from(list.querySelectorAll('.node-wheel-item')).forEach(btn => {
+            btn.addEventListener('click', () => {
+                const st = _nodeDualWheelState && _nodeDualWheelState[side];
+                if(!st) return;
+                st.idx = nodeWheelNumber(btn.dataset.value);
+                applyNodeDualWheelOffset(side, true);
+                updateNodeDualWheelResult();
+            });
+        });
+    }
+    applyNodeDualWheelOffset(side, animate);
+}
+function applyNodeDualWheelOffset(side, animate){
+    const sheet = ensureNodeDualWheelSheet();
+    const wrap = sheet.querySelector(`.node-wheel-wrap[data-side="${side}"]`);
+    const list = wrap ? wrap.querySelector('.node-wheel-list') : null;
+    const state = _nodeDualWheelState && _nodeDualWheelState[side];
+    if(!list || !state || !_nodeDualWheelState) return;
+    const itemHeight = _nodeDualWheelState.itemHeight;
+    const mid = _nodeDualWheelState.mid;
+    state.offset = -(state.idx * itemHeight) + mid * itemHeight;
+    list.style.transition = animate ? 'transform 0.22s cubic-bezier(.25,.46,.45,.94)' : 'none';
+    list.style.transform = `translateY(${state.offset}px)`;
+    refreshNodeDualWheelItems(side);
+}
+function refreshNodeDualWheelItems(side){
+    const sheet = ensureNodeDualWheelSheet();
+    const wrap = sheet.querySelector(`.node-wheel-wrap[data-side="${side}"]`);
+    const state = _nodeDualWheelState && _nodeDualWheelState[side];
+    if(!wrap || !state) return;
+    Array.from(wrap.querySelectorAll('.node-wheel-item')).forEach((item, idx) => {
+        item.classList.toggle('sel', idx === state.idx);
+    });
+}
+function updateNodeDualWheelResult(){
+    if(!_nodeDualWheelState) return;
+    const left = document.getElementById('nodeWheelLeftResult');
+    const right = document.getElementById('nodeWheelRightResult');
+    if(left) left.textContent = `${_nodeDualWheelState.pair.leftLabel} ${NODE_DUAL_WHEEL_VALUES[_nodeDualWheelState.left.idx]}`;
+    if(right) right.textContent = `${_nodeDualWheelState.pair.rightLabel} ${NODE_DUAL_WHEEL_VALUES[_nodeDualWheelState.right.idx]}`;
+}
+function clampNodeWheelOffset(offset){
+    if(!_nodeDualWheelState) return offset;
+    const max = _nodeDualWheelState.mid * _nodeDualWheelState.itemHeight + _nodeDualWheelState.itemHeight;
+    const min = -((NODE_DUAL_WHEEL_VALUES.length - 1 - _nodeDualWheelState.mid) * _nodeDualWheelState.itemHeight) - _nodeDualWheelState.itemHeight;
+    return Math.max(min, Math.min(max, offset));
+}
+function snapNodeDualWheel(side){
+    const state = _nodeDualWheelState && _nodeDualWheelState[side];
+    if(!state || !_nodeDualWheelState) return;
+    const raw = (-state.offset + _nodeDualWheelState.mid * _nodeDualWheelState.itemHeight) / _nodeDualWheelState.itemHeight;
+    const momentum = Math.max(-4, Math.min(4, Math.round(state.vel / 5)));
+    state.idx = Math.max(0, Math.min(NODE_DUAL_WHEEL_VALUES.length - 1, Math.round(raw) + momentum));
+    applyNodeDualWheelOffset(side, true);
+    updateNodeDualWheelResult();
+}
+function attachNodeDualWheelHandlers(wrap){
+    const side = wrap.dataset.side;
+    function start(y){
+        const state = _nodeDualWheelState && _nodeDualWheelState[side];
+        if(!state) return;
+        state.dragging = true;
+        state.startY = y;
+        state.startOffset = state.offset;
+        state.vel = 0;
+        state.lastY = y;
+        state.lastT = Date.now();
+        const list = wrap.querySelector('.node-wheel-list');
+        if(list) list.style.transition = 'none';
+    }
+    function move(y){
+        const state = _nodeDualWheelState && _nodeDualWheelState[side];
+        if(!state || !state.dragging) return;
+        const now = Date.now();
+        const dt = now - state.lastT;
+        if(dt > 0) state.vel = (y - state.lastY) / dt * 16;
+        state.lastY = y;
+        state.lastT = now;
+        state.offset = clampNodeWheelOffset(state.startOffset + (y - state.startY));
+        const list = wrap.querySelector('.node-wheel-list');
+        if(list) list.style.transform = `translateY(${state.offset}px)`;
+        state.idx = nodeWheelNumber(Math.round((-state.offset + _nodeDualWheelState.mid * _nodeDualWheelState.itemHeight) / _nodeDualWheelState.itemHeight));
+        refreshNodeDualWheelItems(side);
+        updateNodeDualWheelResult();
+    }
+    function end(){
+        const state = _nodeDualWheelState && _nodeDualWheelState[side];
+        if(!state || !state.dragging) return;
+        state.dragging = false;
+        snapNodeDualWheel(side);
+    }
+    wrap.addEventListener('touchstart', event => {
+        const touch = event.touches && event.touches[0];
+        if(touch) start(touch.clientY);
+        event.preventDefault();
+    }, { passive:false });
+    wrap.addEventListener('touchmove', event => {
+        const touch = event.touches && event.touches[0];
+        if(touch) move(touch.clientY);
+        event.preventDefault();
+    }, { passive:false });
+    wrap.addEventListener('touchend', event => {
+        end();
+        if(event.preventDefault) event.preventDefault();
+    }, { passive:false });
+    wrap.addEventListener('mousedown', event => start(event.clientY));
+    window.addEventListener('mousemove', event => move(event.clientY));
+    window.addEventListener('mouseup', end);
+    wrap.addEventListener('wheel', event => {
+        const state = _nodeDualWheelState && _nodeDualWheelState[side];
+        if(!state) return;
+        event.preventDefault();
+        state.idx = Math.max(0, Math.min(NODE_DUAL_WHEEL_VALUES.length - 1, state.idx + (event.deltaY > 0 ? 1 : -1)));
+        applyNodeDualWheelOffset(side, true);
+        updateNodeDualWheelResult();
+    }, { passive:false });
+}
+function commitNodeDualWheelValue(inputId, value){
+    const input = document.getElementById(inputId);
+    if(!input) return;
+    input.value = String(value);
+    dispatchCompatEvent(input, 'input');
+    dispatchCompatEvent(input, 'change');
+    if(String(value) === '0' && WORKSPACE_ZERO_DISPLAY_BLANK_IDS.has(input.id)) input.value = '';
+}
+function commitNodeDualWheelSheet(){
+    if(!_nodeDualWheelState) return;
+    commitNodeDualWheelValue(_nodeDualWheelState.pair.leftInput, NODE_DUAL_WHEEL_VALUES[_nodeDualWheelState.left.idx]);
+    commitNodeDualWheelValue(_nodeDualWheelState.pair.rightInput, NODE_DUAL_WHEEL_VALUES[_nodeDualWheelState.right.idx]);
+    closeNodeDualWheelSheet();
+}
+function resetNodeDualWheelSheet(){
+    if(!_nodeDualWheelState) return;
+    _nodeDualWheelState.left.idx = 0;
+    _nodeDualWheelState.right.idx = 0;
+    applyNodeDualWheelOffset('left', true);
+    applyNodeDualWheelOffset('right', true);
+    updateNodeDualWheelResult();
+}
+function enhanceNodeDualWheelPairs(){
+    document.querySelectorAll('[data-node-wheel-pair]').forEach(field => {
+        const pairId = field.dataset.nodeWheelPair;
+        const input = field.querySelector('input');
+        if(!NODE_DUAL_WHEEL_PAIRS[pairId] || !input) return;
+        field.classList.add('node-wheel-ready');
+        input.readOnly = true;
+        if(field.dataset.nodeWheelEnhanced === '1') return;
+        field.dataset.nodeWheelEnhanced = '1';
+        field.addEventListener('click', event => {
+            event.preventDefault();
+            openNodeDualWheelSheet(pairId);
+        });
+    });
+}
+function clearNodeDualWheelPairs(){
+    document.querySelectorAll('[data-node-wheel-enhanced]').forEach(field => {
+        const input = field.querySelector('input');
+        if(input) input.readOnly = false;
+        field.classList.remove('node-wheel-ready');
+    });
+    closeNodeDualWheelSheet();
+}
 function clearTouchEnhancements(){
     document.querySelectorAll('.touch-picker, .touch-presets').forEach(el => el.remove());
     document.querySelectorAll('.ios-wheel-picker[data-for]').forEach(el => {
@@ -5107,6 +5357,7 @@ function clearTouchEnhancements(){
     document.querySelectorAll('[data-touch-preset-enhanced]').forEach(el => {
         delete el.dataset.touchPresetEnhanced;
     });
+    clearNodeDualWheelPairs();
 }
 function enhanceTouchInputs(){
     if(!isMobileAppShell()){
@@ -5116,6 +5367,7 @@ function enhanceTouchInputs(){
     document.querySelectorAll('#wsPage select, #ajccPage select:not(.ajcc-hidden-select)').forEach(enhanceTouchSelect);
     Object.keys(TOUCH_PRESET_VALUES).forEach(id => enhanceTouchPresetInput(document.getElementById(id)));
     document.querySelectorAll('.ios-wheel-picker[data-for]').forEach(enhanceIosWheelPicker);
+    enhanceNodeDualWheelPairs();
     refreshTouchPickers();
     refreshTouchPresets();
     refreshIosWheelPickers();
