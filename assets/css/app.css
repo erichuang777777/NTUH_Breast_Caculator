@@ -2343,6 +2343,11 @@ body.mobile-device-shell .ws-context-pill-row {
     font-weight: 850;
     color: #115e59;
   }
+  .mobile-dashboard-agent-fab,
+  .mobile-agent-backdrop,
+  .dashboard-agent-mobile-close {
+    display: none;
+  }
   body.modal-dashboard-mode .modal-dashboard-main {
     width: 100%;
   }
@@ -2991,6 +2996,107 @@ body.mobile-device-shell .ws-context-pill-row {
     .patient-tool-card.card-wsPage {
       grid-column: 1 / -1;
     }
+  }
+}
+.mobile-dashboard-agent-fab,
+.mobile-agent-backdrop,
+.dashboard-agent-mobile-close {
+  display: none;
+}
+@media (max-width: 899px) {
+  body.mobile-device-shell.modal-dashboard-mode .modal-dashboard-overview.patient-journey-dashboard,
+  body.modal-dashboard-mode .modal-dashboard-overview.patient-journey-dashboard {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: .55rem;
+    padding: calc(env(safe-area-inset-top, 0px) + 10px) 10px calc(env(safe-area-inset-bottom, 0px) + 12px);
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+  body.mobile-device-shell.modal-dashboard-mode .modal-dashboard-overview.patient-journey-dashboard .modal-dashboard-main,
+  body.modal-dashboard-mode .modal-dashboard-overview.patient-journey-dashboard .modal-dashboard-main {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+  }
+  body.mobile-device-shell.modal-dashboard-mode .dashboard-agent-panel,
+  body.modal-dashboard-mode .dashboard-agent-panel {
+    display: none;
+    position: fixed;
+    left: 10px;
+    right: 10px;
+    top: calc(env(safe-area-inset-top, 0px) + 54px);
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
+    z-index: 760;
+    height: auto;
+    max-height: none;
+    min-height: 0;
+    grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+    padding: .68rem;
+    border: 1px solid #d8e3ee;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 22px 60px rgba(15,23,42,.34);
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+  body.mobile-agent-open.modal-dashboard-mode .dashboard-agent-panel {
+    display: grid;
+  }
+  body.mobile-agent-open.modal-dashboard-mode .mobile-agent-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 750;
+    border: 0;
+    background: rgba(15,23,42,.38);
+    cursor: pointer;
+  }
+  body.modal-dashboard-mode .mobile-dashboard-agent-fab {
+    display: inline-flex;
+    position: fixed;
+    top: calc(env(safe-area-inset-top, 0px) + 62px);
+    right: 14px;
+    z-index: 740;
+    width: 48px;
+    height: 48px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(15,118,110,.35);
+    border-radius: 999px;
+    background: #0f766e;
+    color: #fff;
+    box-shadow: 0 12px 30px rgba(15,23,42,.24);
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  body.mobile-agent-open.modal-dashboard-mode .mobile-dashboard-agent-fab {
+    display: none;
+  }
+  .mobile-dashboard-agent-fab svg {
+    width: 23px;
+    height: 23px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  body.modal-dashboard-mode .dashboard-agent-mobile-close {
+    display: inline-flex;
+  }
+  body.modal-dashboard-mode .dashboard-agent-position,
+  body.modal-dashboard-mode .dashboard-agent-collapse-btn {
+    display: none;
+  }
+  body.modal-dashboard-mode .dashboard-agent-thread {
+    min-height: 0;
+    overflow-y: auto;
+  }
+  body.modal-dashboard-mode .dashboard-agent-input textarea {
+    min-height: 96px;
+    max-height: 24vh;
   }
 }
 .dashboard-widget-modal {
@@ -3943,6 +4049,23 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
 }
 .ws-context-group { display: grid; gap: .38rem; }
 .ws-context-group h4 { margin: 0; color: #64748b; font-size: .72rem; font-weight: 900; text-transform: uppercase; letter-spacing: .04em; }
+.ws-context-collapsible {
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: #f8fafc;
+  padding: .48rem .58rem;
+}
+.ws-context-collapsible summary {
+  cursor: pointer;
+  color: #475569;
+  font-size: .78rem;
+  font-weight: 900;
+  list-style-position: inside;
+  user-select: none;
+}
+.ws-context-collapsible[open] summary {
+  margin-bottom: .45rem;
+}
 .ws-context-pill-row { display: flex; flex-wrap: wrap; gap: .36rem; }
 .ws-context-pill {
   display: inline-flex;
@@ -4357,11 +4480,29 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
   display: flex;
   justify-content: center;
   gap: .45rem;
-  padding: .72rem 1rem .9rem;
+  padding: .72rem 1rem .62rem;
   border-top: 1px solid #f1f5f9;
   color: #475569;
   font-size: .9rem;
   font-weight: 750;
+}
+.node-wheel-note {
+  display: grid;
+  gap: .28rem;
+  padding: 0 1rem 1rem;
+  color: #64748b;
+  font-size: .76rem;
+  font-weight: 800;
+}
+.node-wheel-note input {
+  width: 100%;
+  border: 1px solid #dbe3ef;
+  border-radius: 8px;
+  padding: .52rem .62rem;
+  color: #0f172a;
+  font: inherit;
+  font-size: .9rem;
+  font-weight: 600;
 }
 .ios-wheel-picker::-webkit-scrollbar {
   display: none;
@@ -4530,7 +4671,13 @@ body.dark .ws-tab-card.active .ws-tab-sub { color: #38bdf8; }
   gap: .45rem;
   min-width: 0;
 }
+.ws-node-quad-row {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
 .ws-form > .ws-node-pair-row {
+  grid-column: 1 / -1;
+}
+.ws-form > .ws-node-note-field {
   grid-column: 1 / -1;
 }
 .dashboard-mode .ws-input-col .ws-form > .ws-node-pair-row,
@@ -4540,6 +4687,11 @@ body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-form > .
   display: grid !important;
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   gap: .38rem;
+}
+.dashboard-mode .ws-input-col .ws-form > .ws-node-quad-row,
+body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-form > .ws-node-quad-row,
+#wsPage.active.dashboard-mode #wsInputCol.ws-full-mode .ws-form > .ws-node-quad-row {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
 }
 .ws-node-pair-row .ws-field {
   min-width: 0;
@@ -4575,6 +4727,19 @@ body.desktop-dashboard-mode #wsPage.active #wsInputCol.ws-full-mode .ws-form > .
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: .38rem;
+  }
+  body.mobile-device-shell .ws-form > .ws-node-quad-row,
+  body.mobile-device-shell #wsPage.active .ws-form > .ws-node-quad-row {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: .24rem;
+  }
+  body.mobile-device-shell .ws-node-quad-row .ws-field {
+    padding-inline: .2rem !important;
+  }
+  body.mobile-device-shell .ws-node-quad-row .ws-field label {
+    font-size: .58rem !important;
+    min-height: 1.2rem !important;
+    line-height: 1.05 !important;
   }
 }
 .ws-pathology-box {
@@ -7788,6 +7953,25 @@ body.desktop-dashboard-mode #wsPage.dashboard-widget.active > .page-body > .ws-r
 }
 body.desktop-dashboard-mode #wsPage.dashboard-widget.active .ws-tab-switcher {
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+/* Pathology stage should read as one neutral worksheet, not color-coded tags. */
+#wsPage.active .ws-postop-section .ws-post-tnm-grid .ws-q-block,
+#wsPage.active .ws-postop-section .ws-post-biomarker-grid .ws-q-block,
+#wsPage.active .ws-postop-section .ws-post-biomarker-grid .ws-q-biocol,
+#wsPage.active .ws-postop-section .ws-post-aux-block,
+#wsPage.active .ws-postop-section .ws-field {
+  border-left-color: #e2e8f0 !important;
+}
+#wsPage.active .ws-postop-section .ws-post-tnm-grid .ws-q-block,
+#wsPage.active .ws-postop-section .ws-post-biomarker-grid .ws-q-block,
+#wsPage.active .ws-postop-section .ws-post-biomarker-grid .ws-q-biocol,
+#wsPage.active .ws-postop-section .ws-post-aux-block {
+  border-left-width: 1px !important;
+}
+#wsPage.active .ws-postop-section .ws-q-blocklabel,
+#wsPage.active .ws-postop-section .ws-field label {
+  color: #64748b !important;
 }
 
 /* ── Compare & Print ── */

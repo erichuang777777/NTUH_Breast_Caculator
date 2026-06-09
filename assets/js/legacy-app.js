@@ -3147,6 +3147,24 @@ function setDashboardAgentCollapsed(collapsed){
 function toggleDashboardAgentCollapsed(){
     setDashboardAgentCollapsed(!getDashboardAgentCollapsed());
 }
+function dashboardAgentUseMobileDrawer(){
+    try {
+        return (typeof isMobileAppShell === 'function' && isMobileAppShell()) || (window.innerWidth && window.innerWidth < 900);
+    } catch(e){
+        return false;
+    }
+}
+function openMobileDashboardAgent(){
+    document.body.classList.add('mobile-agent-open');
+    setTimeout(() => {
+        dashboardAgentScrollBottom();
+        const input = document.getElementById('dashboardAgentInput');
+        if(input) input.focus();
+    }, 40);
+}
+function closeMobileDashboardAgent(){
+    document.body.classList.remove('mobile-agent-open');
+}
 function getDashboardAgentApiConfig(){
     const fallback = dashboardAgentDefaultApiConfig();
     if(window.OncoBreastAgentAdapter){
@@ -3557,6 +3575,8 @@ function dashboardIcon(name){
         bug:'<path d="m8 2 1.88 1.88"/><path d="M14.12 3.88 16 2"/><path d="M9 7.13v-1a3 3 0 0 1 6 0v1"/><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6Z"/><path d="M12 20v-9"/><path d="M4 13H2"/><path d="M22 13h-2"/><path d="m5 19-1.5 1.5"/><path d="M20.5 20.5 19 19"/>',
         trash:'<path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v5"/><path d="M14 11v5"/>',
         collapse:'<path d="M4 14h6v6"/><path d="m10 14-7 7"/><path d="M20 10h-6V4"/><path d="m14 10 7-7"/>',
+        chat:'<path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4Z"/><path d="M8 9h8"/><path d="M8 13h5"/>',
+        x:'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
         paperclip:'<path d="M21.44 11.05 12 20.49a6 6 0 0 1-8.49-8.49l9.9-9.9a4 4 0 0 1 5.66 5.66l-9.9 9.9a2 2 0 1 1-2.83-2.83l8.49-8.49"/>',
         mic:'<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/><path d="M8 22h8"/>',
         send:'<path d="m22 2-7 20-4-9-9-4 20-7Z"/><path d="M22 2 11 13"/>'
@@ -3619,7 +3639,8 @@ function dashboardAgentToggleMic(){
 }
 function renderDashboardAgentPanel(){
     const pos = getDashboardAgentPosition();
-    const collapsed = getDashboardAgentCollapsed();
+    const mobileDrawer = dashboardAgentUseMobileDrawer();
+    const collapsed = !mobileDrawer && getDashboardAgentCollapsed();
     const agentModel = dashboardAgentModelValue();
     if(collapsed){
         return `<aside class="dashboard-agent-panel collapsed" aria-label="AI Agent collapsed">
@@ -3649,6 +3670,7 @@ function renderDashboardAgentPanel(){
                 <button type="button" class="dashboard-agent-top-btn" onclick="openAgentIssueReport()" title="回報 Agent 對話錯誤" aria-label="回報 Agent 對話錯誤">${dashboardIcon('bug')}</button>
                 <button type="button" class="dashboard-agent-top-btn" onclick="dashboardAgentClearHistory()" title="清除對話紀錄" aria-label="清除對話紀錄">${dashboardIcon('trash')}</button>
                 <button type="button" class="dashboard-agent-collapse-btn" onclick="setDashboardAgentCollapsed(true)" title="縮小 AI Agent" aria-label="縮小 AI Agent">${dashboardIcon('collapse')}</button>
+                <button type="button" class="dashboard-agent-mobile-close" onclick="closeMobileDashboardAgent()" title="關閉 Agent" aria-label="關閉 Agent">${dashboardIcon('x')}</button>
             </div>
         </div>
         <div id="dashboardAgentContextMeter">${dashboardAgentContextMeterHtml()}</div>
@@ -3673,6 +3695,9 @@ function renderDashboardAgentPanel(){
             <div id="dashboardAgentPhiWarning" class="dashboard-agent-phi-warning" hidden></div>
         </form>
     </aside>`;
+}
+function renderMobileDashboardAgentFab(){
+    return `<button type="button" class="mobile-dashboard-agent-fab" onclick="openMobileDashboardAgent()" title="開啟 AI Agent" aria-label="開啟 AI Agent">${dashboardIcon('chat')}</button><button type="button" class="mobile-agent-backdrop" onclick="closeMobileDashboardAgent()" aria-label="關閉 AI Agent"></button>`;
 }
 function dashboardAgentEntryHtml(entry){
     const role = entry && entry.role === 'user' ? 'user' : 'agent';
@@ -4025,7 +4050,7 @@ function renderModalDashboardOverview(){
             </div>
         </section>
         <section class="patient-tool-grid patient-journey-tools">${toolGroups}</section>`;
-    overview.innerHTML = `<div class="modal-dashboard-main">${mainHtml}</div>${renderDashboardAgentPanel()}`;
+    overview.innerHTML = `<div class="modal-dashboard-main">${mainHtml}</div>${renderDashboardAgentPanel()}${renderMobileDashboardAgentFab()}`;
     setTimeout(() => dashboardAgentRefreshStatus(false), 0);
 }
 function removeModalDashboardOverview(){
@@ -4347,7 +4372,7 @@ const AGENT_SYSTEM_PROMPT_PUBLIC = [
     '若 system_context.answer_hints 有提醒，必須逐條遵守；若提醒要求特定關鍵字或資料庫 title，回答中必須出現。',
     '一般自然語言問題要直接回答，不要自動打開工具。',
     '只有當使用者明確要求「打開、開啟、呼叫、調用、切到、open、show」某個工具時，才從 tool_registry 選 tool_id；其他情況 tool_id 必須是空字串。',
-    'patient_patch 只能使用這些欄位：age, menopause, side, symptoms, ecog, dm, htn, cad, size, tumor_kind, grade, cT, cN, cM, pT, pN, pM, er, pr, her2, her2_ihc, her2_fish, ki67, oncotype_rs, nodes_pos, nodes_total, sln_pos, sln_total, aln_pos, aln_total, pni, lvi, margin_involved, post_nac_response, brca, pdl1, pik3ca, esr1, civic_variant, height, weight, scr, breast_surgery, axillary_surgery, nipple_sparing。',
+    'patient_patch 只能使用這些欄位：age, menopause, side, symptoms, ecog, dm, htn, cad, size, tumor_kind, grade, cT, cN, cM, pT, pN, pM, er, pr, her2, her2_ihc, her2_fish, ki67, oncotype_rs, nodes_pos, nodes_total, sln_pos, sln_total, aln_pos, aln_total, node_note, pni, lvi, margin_involved, post_nac_response, brca, pdl1, pik3ca, esr1, civic_variant, height, weight, scr, breast_surgery, axillary_surgery, nipple_sparing。',
     '若只是回答問題，不需要 patient_patch；若抽取欄位有不確定，reply 要說需要人工確認。',
     '回傳 patient_patch 時，不要說已更新或已寫入；只能說已抓到候選欄位，請使用者確認後套用。',
     '回答不能取代醫師判斷、正式 guideline、院內政策或健保事前審查。',
@@ -4535,7 +4560,7 @@ const PATIENT_DEFAULTS = {
     er:'', pr:'', her2:'', her2_ihc:'', her2_fish:'', ki67:'', brca:'', pdl1:'', tp53:'', esr1:'', pik3ca:'', oncotype_rs:'', civic_variant:'',
     p_grade:'', p_er:'', p_pr:'', p_her2:'', p_her2_ihc:'', p_her2_fish:'', p_ki67:'',
     surgery_type:'', breast_surgery:'', axillary_surgery:'', reconstruction_surgery:'', nipple_sparing:'',
-    sln_pos:'', sln_total:'', aln_pos:'', aln_total:'', pni:'', lvi:'', margin_involved:'', post_nac_response:'',
+    sln_pos:'', sln_total:'', aln_pos:'', aln_total:'', node_note:'', pni:'', lvi:'', margin_involved:'', post_nac_response:'',
     menopause:'', ecog:'', dm:'', htn:'', cad:'', phase:'', prior:'',
     h_p0:'', h_p1:'', h_p2:'', h_p3:'',
     rcb_d1:'', rcb_d2:'', rcb_finv:'', rcb_ln:'', rcb_dmet:'',
@@ -4942,15 +4967,17 @@ const TOUCH_PRESET_VALUES = {
 };
 const WORKSPACE_ZERO_DISPLAY_BLANK_IDS = new Set(['ws_sln_pos','ws_sln_total','ws_aln_pos','ws_aln_total','ws_nodes_pos','ws_nodes_total']);
 const IOS_WHEEL_VALUES = {
-    ws_sln_pos: ['0','1','2','3','4','5'],
-    ws_sln_total: ['0','1','2','3','4','5'],
-    ws_aln_pos: ['0','1','2','3','4','5'],
-    ws_aln_total: ['0','1','2','3','4','5','10','14','17','20']
+    ws_sln_pos: ['0','1','2','3','4','5','6','7','8','9'],
+    ws_sln_total: ['0','1','2','3','4','5','6','7','8','9'],
+    ws_aln_pos: Array.from({length:41}, (_, i) => String(i)),
+    ws_aln_total: Array.from({length:41}, (_, i) => String(i))
 };
-const NODE_DUAL_WHEEL_VALUES = Array.from({length:51}, (_, i) => String(i));
+function nodeWheelValues(max){
+    return Array.from({length:Math.max(0, Number(max) || 0) + 1}, (_, i) => String(i));
+}
 const NODE_DUAL_WHEEL_PAIRS = {
-    slnb: { title:'SLNB', leftInput:'ws_sln_pos', rightInput:'ws_sln_total', leftLabel:'SLNB+', rightLabel:'SLNB total' },
-    alnd: { title:'ALND', leftInput:'ws_aln_pos', rightInput:'ws_aln_total', leftLabel:'ALND+', rightLabel:'ALND total' }
+    slnb: { title:'SLNB', leftInput:'ws_sln_pos', rightInput:'ws_sln_total', leftLabel:'SLNB+', rightLabel:'SLNB total', max:9 },
+    alnd: { title:'ALND', leftInput:'ws_aln_pos', rightInput:'ws_aln_total', leftLabel:'ALND+', rightLabel:'ALND total', max:40 }
 };
 function iosWheelRenderValues(values){
     const base = (values || []).map(v => String(v));
@@ -5101,9 +5128,15 @@ function refreshIosWheelPickers(){
     });
 }
 let _nodeDualWheelState = null;
-function nodeWheelNumber(value){
+function currentNodeWheelValues(){
+    return (_nodeDualWheelState && _nodeDualWheelState.values && _nodeDualWheelState.values.length)
+        ? _nodeDualWheelState.values
+        : nodeWheelValues(9);
+}
+function nodeWheelNumber(value, values){
+    values = values || currentNodeWheelValues();
     const n = Number(value);
-    return Number.isFinite(n) ? Math.max(0, Math.min(NODE_DUAL_WHEEL_VALUES.length - 1, Math.round(n))) : 0;
+    return Number.isFinite(n) ? Math.max(0, Math.min(values.length - 1, Math.round(n))) : 0;
 }
 function ensureNodeDualWheelSheet(){
     let sheet = document.getElementById('nodeDualWheelOverlay');
@@ -5131,6 +5164,7 @@ function ensureNodeDualWheelSheet(){
             </div>
           </div>
           <div class="node-wheel-result"><span id="nodeWheelLeftResult">0</span><span aria-hidden="true"> / </span><span id="nodeWheelRightResult">0</span></div>
+          <label class="node-wheel-note"><span>備註</span><input type="text" id="nodeWheelNote" placeholder="例如：頸部淋巴結、非常規 LN 內容"></label>
         </div>`;
     document.body.appendChild(sheet);
     sheet.addEventListener('click', event => {
@@ -5149,17 +5183,22 @@ function openNodeDualWheelSheet(pairId){
     const rightInput = document.getElementById(pair.rightInput);
     if(!leftInput || !rightInput) return;
     const sheet = ensureNodeDualWheelSheet();
+    const values = nodeWheelValues(pair.max);
     _nodeDualWheelState = {
         pairId,
         pair,
+        values,
         itemHeight:43,
         mid:2,
-        left:{ idx:nodeWheelNumber(leftInput.value || ((_patient || {})[pair.leftInput.replace(/^ws_/, '')])), offset:0, dragging:false, startY:0, startOffset:0, vel:0, lastY:0, lastT:0 },
-        right:{ idx:nodeWheelNumber(rightInput.value || ((_patient || {})[pair.rightInput.replace(/^ws_/, '')])), offset:0, dragging:false, startY:0, startOffset:0, vel:0, lastY:0, lastT:0 }
+        left:{ idx:nodeWheelNumber(leftInput.value || ((_patient || {})[pair.leftInput.replace(/^ws_/, '')]), values), offset:0, dragging:false, startY:0, startOffset:0, vel:0, lastY:0, lastT:0 },
+        right:{ idx:nodeWheelNumber(rightInput.value || ((_patient || {})[pair.rightInput.replace(/^ws_/, '')]), values), offset:0, dragging:false, startY:0, startOffset:0, vel:0, lastY:0, lastT:0 }
     };
+    syncNodeDualWheelBounds('left', false);
     document.getElementById('nodeWheelTitle').textContent = pair.title;
     document.getElementById('nodeWheelLeftLabel').textContent = pair.leftLabel;
     document.getElementById('nodeWheelRightLabel').textContent = pair.rightLabel;
+    const noteInput = document.getElementById('nodeWheelNote');
+    if(noteInput) noteInput.value = ((_patient || {}).node_note || document.getElementById('ws_node_note')?.value || '');
     buildNodeDualWheel('left', false);
     buildNodeDualWheel('right', false);
     updateNodeDualWheelResult();
@@ -5179,18 +5218,18 @@ function buildNodeDualWheel(side, animate){
     const list = wrap ? wrap.querySelector('.node-wheel-list') : null;
     const state = _nodeDualWheelState && _nodeDualWheelState[side];
     if(!list || !state) return;
-    if(!list.children.length){
-        list.innerHTML = NODE_DUAL_WHEEL_VALUES.map(v => `<button type="button" class="node-wheel-item" data-value="${esc(v)}">${esc(v)}</button>`).join('');
-        Array.from(list.querySelectorAll('.node-wheel-item')).forEach(btn => {
-            btn.addEventListener('click', () => {
-                const st = _nodeDualWheelState && _nodeDualWheelState[side];
-                if(!st) return;
-                st.idx = nodeWheelNumber(btn.dataset.value);
-                applyNodeDualWheelOffset(side, true);
-                updateNodeDualWheelResult();
-            });
+    const values = currentNodeWheelValues();
+    list.innerHTML = values.map(v => `<button type="button" class="node-wheel-item" data-value="${esc(v)}">${esc(v)}</button>`).join('');
+    Array.from(list.querySelectorAll('.node-wheel-item')).forEach(btn => {
+        btn.addEventListener('click', () => {
+            const st = _nodeDualWheelState && _nodeDualWheelState[side];
+            if(!st) return;
+            st.idx = nodeWheelNumber(btn.dataset.value);
+            syncNodeDualWheelBounds(side, true);
+            applyNodeDualWheelOffset(side, true);
+            updateNodeDualWheelResult();
         });
-    }
+    });
     applyNodeDualWheelOffset(side, animate);
 }
 function applyNodeDualWheelOffset(side, animate){
@@ -5215,17 +5254,28 @@ function refreshNodeDualWheelItems(side){
         item.classList.toggle('sel', idx === state.idx);
     });
 }
+function syncNodeDualWheelBounds(changedSide, animate){
+    if(!_nodeDualWheelState) return;
+    const values = currentNodeWheelValues();
+    _nodeDualWheelState.left.idx = nodeWheelNumber(_nodeDualWheelState.left.idx, values);
+    _nodeDualWheelState.right.idx = nodeWheelNumber(_nodeDualWheelState.right.idx, values);
+    if(_nodeDualWheelState.right.idx < _nodeDualWheelState.left.idx){
+        _nodeDualWheelState.right.idx = _nodeDualWheelState.left.idx;
+        if(changedSide !== 'right') applyNodeDualWheelOffset('right', !!animate);
+    }
+}
 function updateNodeDualWheelResult(){
     if(!_nodeDualWheelState) return;
+    const values = currentNodeWheelValues();
     const left = document.getElementById('nodeWheelLeftResult');
     const right = document.getElementById('nodeWheelRightResult');
-    if(left) left.textContent = `${_nodeDualWheelState.pair.leftLabel} ${NODE_DUAL_WHEEL_VALUES[_nodeDualWheelState.left.idx]}`;
-    if(right) right.textContent = `${_nodeDualWheelState.pair.rightLabel} ${NODE_DUAL_WHEEL_VALUES[_nodeDualWheelState.right.idx]}`;
+    if(left) left.textContent = `${_nodeDualWheelState.pair.leftLabel} ${values[_nodeDualWheelState.left.idx]}`;
+    if(right) right.textContent = `${_nodeDualWheelState.pair.rightLabel} ${values[_nodeDualWheelState.right.idx]}`;
 }
 function clampNodeWheelOffset(offset){
     if(!_nodeDualWheelState) return offset;
     const max = _nodeDualWheelState.mid * _nodeDualWheelState.itemHeight + _nodeDualWheelState.itemHeight;
-    const min = -((NODE_DUAL_WHEEL_VALUES.length - 1 - _nodeDualWheelState.mid) * _nodeDualWheelState.itemHeight) - _nodeDualWheelState.itemHeight;
+    const min = -((currentNodeWheelValues().length - 1 - _nodeDualWheelState.mid) * _nodeDualWheelState.itemHeight) - _nodeDualWheelState.itemHeight;
     return Math.max(min, Math.min(max, offset));
 }
 function snapNodeDualWheel(side){
@@ -5233,7 +5283,8 @@ function snapNodeDualWheel(side){
     if(!state || !_nodeDualWheelState) return;
     const raw = (-state.offset + _nodeDualWheelState.mid * _nodeDualWheelState.itemHeight) / _nodeDualWheelState.itemHeight;
     const momentum = Math.max(-4, Math.min(4, Math.round(state.vel / 5)));
-    state.idx = Math.max(0, Math.min(NODE_DUAL_WHEEL_VALUES.length - 1, Math.round(raw) + momentum));
+    state.idx = Math.max(0, Math.min(currentNodeWheelValues().length - 1, Math.round(raw) + momentum));
+    syncNodeDualWheelBounds(side, true);
     applyNodeDualWheelOffset(side, true);
     updateNodeDualWheelResult();
 }
@@ -5263,6 +5314,7 @@ function attachNodeDualWheelHandlers(wrap){
         const list = wrap.querySelector('.node-wheel-list');
         if(list) list.style.transform = `translateY(${state.offset}px)`;
         state.idx = nodeWheelNumber(Math.round((-state.offset + _nodeDualWheelState.mid * _nodeDualWheelState.itemHeight) / _nodeDualWheelState.itemHeight));
+        syncNodeDualWheelBounds(side, false);
         refreshNodeDualWheelItems(side);
         updateNodeDualWheelResult();
     }
@@ -5293,7 +5345,8 @@ function attachNodeDualWheelHandlers(wrap){
         const state = _nodeDualWheelState && _nodeDualWheelState[side];
         if(!state) return;
         event.preventDefault();
-        state.idx = Math.max(0, Math.min(NODE_DUAL_WHEEL_VALUES.length - 1, state.idx + (event.deltaY > 0 ? 1 : -1)));
+        state.idx = Math.max(0, Math.min(currentNodeWheelValues().length - 1, state.idx + (event.deltaY > 0 ? 1 : -1)));
+        syncNodeDualWheelBounds(side, true);
         applyNodeDualWheelOffset(side, true);
         updateNodeDualWheelResult();
     }, { passive:false });
@@ -5308,8 +5361,17 @@ function commitNodeDualWheelValue(inputId, value){
 }
 function commitNodeDualWheelSheet(){
     if(!_nodeDualWheelState) return;
-    commitNodeDualWheelValue(_nodeDualWheelState.pair.leftInput, NODE_DUAL_WHEEL_VALUES[_nodeDualWheelState.left.idx]);
-    commitNodeDualWheelValue(_nodeDualWheelState.pair.rightInput, NODE_DUAL_WHEEL_VALUES[_nodeDualWheelState.right.idx]);
+    const values = currentNodeWheelValues();
+    syncNodeDualWheelBounds('right', false);
+    commitNodeDualWheelValue(_nodeDualWheelState.pair.leftInput, values[_nodeDualWheelState.left.idx]);
+    commitNodeDualWheelValue(_nodeDualWheelState.pair.rightInput, values[_nodeDualWheelState.right.idx]);
+    const noteInput = document.getElementById('nodeWheelNote');
+    const workspaceNote = document.getElementById('ws_node_note');
+    if(noteInput && workspaceNote){
+        workspaceNote.value = noteInput.value || '';
+        dispatchCompatEvent(workspaceNote, 'input');
+        dispatchCompatEvent(workspaceNote, 'change');
+    }
     closeNodeDualWheelSheet();
 }
 function resetNodeDualWheelSheet(){
@@ -5482,7 +5544,7 @@ function hasPatientValue(key){
     return v !== undefined && v !== null && String(v).trim() !== '';
 }
 const PATIENT_CONTEXT_CORE_FIELDS = ['age','clinical_tnm','size','tumor_kind','grade','er','pr','her2'];
-const PATIENT_CONTEXT_COMMON_FIELDS = ['menopause','ecog','dm','htn','cad','ki67','oncotype_rs','sln_pos','sln_total','aln_pos','aln_total','nodes_pos','nodes_total','pni','lvi','margin_involved','post_nac_response','mets_bone','mets_liver','mets_brain','mets_lung','brca','pdl1','pik3ca','esr1','civic_variant','height','weight','scr'];
+const PATIENT_CONTEXT_COMMON_FIELDS = ['menopause','ecog','dm','htn','cad','ki67','oncotype_rs','sln_pos','sln_total','aln_pos','aln_total','nodes_pos','nodes_total','node_note','pni','lvi','margin_involved','post_nac_response','mets_bone','mets_liver','mets_brain','mets_lung','brca','pdl1','pik3ca','esr1','civic_variant','height','weight','scr'];
 const PATIENT_CONTEXT_DEFAULT_NO_FIELDS = new Set(['dm','htn','cad','mets_bone','mets_liver','mets_brain','mets_lung']);
 const PATIENT_CONTEXT_DEFAULT_GENE_FIELDS = new Set(['brca','pdl1','tp53','pik3ca','esr1']);
 const PATIENT_CONTEXT_FIELD_META = {
@@ -5516,6 +5578,7 @@ const PATIENT_CONTEXT_FIELD_META = {
     sln_total:{label:'SLNB total', input:'ws_sln_total'},
     aln_pos:{label:'ALND+', input:'ws_aln_pos'},
     aln_total:{label:'ALND total', input:'ws_aln_total'},
+    node_note:{label:'LN note', input:'ws_node_note'},
     pni:{label:'PNI', input:'ws_pni'},
     lvi:{label:'LVI', input:'ws_lvi'},
     margin_involved:{label:'Margin', input:'ws_margin_involved'},
@@ -5689,9 +5752,8 @@ function renderWorkspacePatientContext(){
             <button type="button" onclick="setPatientContextPreset('m0')">M0</button>
             <button type="button" onclick="setPatientContextPreset('m1')">M1</button>
         </div>
-        <div class="ws-context-group"><h4>Core</h4><div class="ws-context-pill-row">${PATIENT_CONTEXT_CORE_FIELDS.map(k => renderPatientContextPill(k, 'core')).join('')}</div></div>
-        <div class="ws-context-group"><h4>Common</h4><div class="ws-context-pill-row">${PATIENT_CONTEXT_COMMON_FIELDS.map(k => renderPatientContextPill(k)).join('')}</div></div>
-        <div class="ws-context-group"><h4>Module readiness</h4><div class="ws-context-module-grid">${PATIENT_CONTEXT_MODULES.map(renderPatientContextModule).join('')}</div></div>
+        <details class="ws-context-group ws-context-collapsible"><summary>欄位狀態</summary><div class="ws-context-pill-row">${PATIENT_CONTEXT_CORE_FIELDS.map(k => renderPatientContextPill(k, 'core')).join('')}${PATIENT_CONTEXT_COMMON_FIELDS.map(k => renderPatientContextPill(k)).join('')}</div></details>
+        <details class="ws-context-group ws-context-collapsible"><summary>Module readiness</summary><div class="ws-context-module-grid">${PATIENT_CONTEXT_MODULES.map(renderPatientContextModule).join('')}</div></details>
     `;
 }
 function refreshInitialVisitChecklist(){
