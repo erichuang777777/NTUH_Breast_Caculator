@@ -1521,7 +1521,7 @@ async function searchTrials(){
     const params = new URLSearchParams({
       'query.cond': keyword,
       'query.locn': location,
-      'pageSize': 3,
+      'pageSize': 100,
       'fields': 'NCTId,BriefTitle,OverallStatus,Phase,StartDate,PrimaryCompletionDate,LeadSponsorName,LocationFacility,LocationCity,LocationCountry,BriefSummary,EligibilityCriteria',
       'format': 'json'
     });

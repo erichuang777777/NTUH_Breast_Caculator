@@ -55,6 +55,7 @@ APP_CONFIG_DEFAULTS = {
 
 OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://127.0.0.1:11434").rstrip("/")
 OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "gemma4:31B")
+OLLAMA_API_KEY = os.environ.get("OLLAMA_API_KEY", "")
 OLLAMA_TIMEOUT_SECONDS = int(os.environ.get("OLLAMA_TIMEOUT_SECONDS", "90"))
 TRANSLATION_TIMEOUT_SECONDS = int(os.environ.get("TRANSLATION_TIMEOUT_SECONDS", "120"))
 
@@ -131,9 +132,79 @@ def _normalize_ollama_model(value):
     raw = str(value or "").strip()
     if not raw:
         return OLLAMA_MODEL
+    raw_l = raw.lower()
+    if raw_l in ("gemma4:31b-cloud", "gemma4:31b"):
+        return "gemma4:31B"
+    if raw_l in ("gptoss120b", "gpt-oss:120b-cloud", "gpt-oss:120b"):
+        return "gpt-oss:120b"
     if re.match(r"^[A-Za-z0-9._:/+\-]{1,120}$", raw):
         return raw
     return OLLAMA_MODEL
+
+
+def _ollama_raw_model_names():
+    try:
+        req = urllib.request.Request(
+            f"{OLLAMA_HOST}/api/tags",
+            headers=_ollama_headers(),
+            method="GET",
+        )
+        with urllib.request.urlopen(req, timeout=min(8, max(1, OLLAMA_TIMEOUT_SECONDS))) as resp:
+            raw = json.loads(resp.read().decode("utf-8"))
+        models = raw.get("models") if isinstance(raw, dict) else []
+        if not isinstance(models, list):
+            return []
+        out = []
+        for m in models:
+            if not isinstance(m, dict):
+                continue
+            name = str((m or {}).get("name") or (m or {}).get("model") or (m or {}).get("id") or "").strip()
+            if name:
+                out.append(name)
+        return out
+    except Exception:
+        return []
+
+
+def _ollama_call_model(display_model):
+    selected = _normalize_ollama_model(display_model)
+    for raw in _ollama_raw_model_names():
+        if _normalize_ollama_model(raw) == selected:
+            return raw
+    return selected
+
+
+def _ollama_headers():
+    headers = {"Content-Type": "application/json"}
+    if OLLAMA_API_KEY:
+        headers["Authorization"] = f"Bearer {OLLAMA_API_KEY}"
+    return headers
+
+
+def _ollama_openai_base():
+    if re.search(r"/v1/?$", OLLAMA_HOST):
+        return re.sub(r"/+$", "", OLLAMA_HOST)
+    return f"{OLLAMA_HOST}/v1"
+
+
+def _ollama_openai_chat_payload(model, messages):
+    return {
+        "model": model,
+        "messages": messages,
+        "temperature": 0.2,
+        "response_format": {"type": "json_object"},
+    }
+
+
+def _ollama_response_content(raw):
+    if isinstance(raw, dict):
+        content = ((raw.get("message") or {}).get("content") or "").strip()
+        if content:
+            return content
+        choices = raw.get("choices") or []
+        if choices and isinstance(choices[0], dict):
+            return ((((choices[0].get("message") or {}).get("content")) or choices[0].get("text") or "").strip())
+    return ""
 
 
 def _i18n_cache_path(lang):
@@ -3818,6 +3889,7 @@ class Handler(BaseHTTPRequestHandler):
         if not message:
             return self._json(400, {'error': 'message required'})
         selected_model = _normalize_ollama_model(payload.get('preferred_model') or payload.get('model') or (payload.get('client') or {}).get('model'))
+        actual_model = _ollama_call_model(selected_model)
 
         tools = payload.get('tool_registry') or []
         allowed_tools = {str(t.get('id')) for t in tools if isinstance(t, dict) and t.get('id')}
@@ -3834,7 +3906,7 @@ class Handler(BaseHTTPRequestHandler):
             "preferred_model": selected_model,
         }
         ollama_payload = {
-            "model": selected_model,
+            "model": actual_model,
             "stream": False,
             "format": "json",
             "messages": [
@@ -3846,16 +3918,31 @@ class Handler(BaseHTTPRequestHandler):
                 "num_ctx": 8192
             }
         }
+        messages = ollama_payload["messages"]
         try:
+            runtime = "local-ollama"
             req = urllib.request.Request(
                 f"{OLLAMA_HOST}/api/chat",
                 data=json.dumps(ollama_payload, ensure_ascii=False).encode("utf-8"),
-                headers={"Content-Type": "application/json"},
+                headers=_ollama_headers(),
                 method="POST",
             )
-            with urllib.request.urlopen(req, timeout=OLLAMA_TIMEOUT_SECONDS) as resp:
-                raw = json.loads(resp.read().decode("utf-8"))
-            content = ((raw.get("message") or {}).get("content") or "").strip()
+            try:
+                with urllib.request.urlopen(req, timeout=OLLAMA_TIMEOUT_SECONDS) as resp:
+                    raw = json.loads(resp.read().decode("utf-8"))
+            except urllib.error.HTTPError as http_err:
+                if http_err.code != 404:
+                    raise
+                runtime = "ollama-openai-compatible"
+                req = urllib.request.Request(
+                    f"{_ollama_openai_base()}/chat/completions",
+                    data=json.dumps(_ollama_openai_chat_payload(actual_model, messages), ensure_ascii=False).encode("utf-8"),
+                    headers=_ollama_headers(),
+                    method="POST",
+                )
+                with urllib.request.urlopen(req, timeout=OLLAMA_TIMEOUT_SECONDS) as resp:
+                    raw = json.loads(resp.read().decode("utf-8"))
+            content = _ollama_response_content(raw)
             answer = _parse_agent_json_text(content)
             reply = str(answer.get("reply") or answer.get("message") or answer.get("text") or "").strip()
             tool_id = str(answer.get("tool_id") or "").strip()
@@ -3876,7 +3963,8 @@ class Handler(BaseHTTPRequestHandler):
                 "citations": answer.get("citations") if isinstance(answer.get("citations"), list) else system_context.get("citations", [])[:4],
                 "called_tools": system_context.get("called_tools", []),
                 "model": selected_model,
-                "runtime": "local-ollama"
+                "actual_model": actual_model if actual_model != selected_model else "",
+                "runtime": runtime
             })
         except Exception as e:
             self._json(502, {
@@ -3884,6 +3972,7 @@ class Handler(BaseHTTPRequestHandler):
                 "error": "Ollama agent unavailable",
                 "detail": str(e),
                 "model": selected_model,
+                "actual_model": actual_model if 'actual_model' in locals() and actual_model != selected_model else "",
                 "ollama_host": OLLAMA_HOST
             })
 
@@ -3893,19 +3982,33 @@ class Handler(BaseHTTPRequestHandler):
         try:
             req = urllib.request.Request(
                 f"{OLLAMA_HOST}/api/tags",
-                headers={"Content-Type": "application/json"},
+                headers=_ollama_headers(),
                 method="GET",
             )
-            with urllib.request.urlopen(req, timeout=min(12, max(1, OLLAMA_TIMEOUT_SECONDS))) as resp:
-                raw = json.loads(resp.read().decode("utf-8"))
-            models = raw.get("models") if isinstance(raw, dict) else []
+            runtime = "local-ollama"
+            try:
+                with urllib.request.urlopen(req, timeout=min(12, max(1, OLLAMA_TIMEOUT_SECONDS))) as resp:
+                    raw = json.loads(resp.read().decode("utf-8"))
+                models = raw.get("models") if isinstance(raw, dict) else []
+            except urllib.error.HTTPError as http_err:
+                if http_err.code != 404:
+                    raise
+                runtime = "ollama-openai-compatible"
+                req = urllib.request.Request(
+                    f"{_ollama_openai_base()}/models",
+                    headers=_ollama_headers(),
+                    method="GET",
+                )
+                with urllib.request.urlopen(req, timeout=min(12, max(1, OLLAMA_TIMEOUT_SECONDS))) as resp:
+                    raw = json.loads(resp.read().decode("utf-8"))
+                models = raw.get("data") if isinstance(raw, dict) else []
             if not isinstance(models, list):
                 models = []
             model_names = []
             for m in models:
                 if not isinstance(m, dict):
                     continue
-                raw_model = str((m or {}).get("name") or (m or {}).get("model") or "").strip()
+                raw_model = str((m or {}).get("name") or (m or {}).get("model") or (m or {}).get("id") or "").strip()
                 if raw_model:
                     model_names.append(_normalize_ollama_model(raw_model))
             self._json(200, {
@@ -3919,7 +4022,7 @@ class Handler(BaseHTTPRequestHandler):
                 "model_count": len(models),
                 "models": model_names[:50],
                 "ollama_host": OLLAMA_HOST,
-                "runtime": "local-ollama"
+                "runtime": runtime
             })
         except Exception as e:
             self._json(502, {

@@ -40,12 +40,15 @@
     const fallback = opts.fallback || defaultConfig(opts.location || global.location);
     const loc = opts.location || global.location || {};
     try {
+      const host = loc.hostname || '';
+      const isLocal = host === '127.0.0.1' || host === 'localhost';
       const raw = storage && storage.getItem ? storage.getItem(key) : '';
       if(!raw) return fallback;
       const saved = JSON.parse(raw || '{}');
       const endpoint = String(saved.endpoint || '').trim();
       if(!endpoint && fallback && fallback.endpoint) return fallback;
-      if((loc.hostname === '127.0.0.1' || loc.hostname === 'localhost') && endpoint === '/api/agent') return fallback;
+      if(isLocal) return fallback;
+      if(/^https?:\/\/(127\.0\.0\.1|localhost)(:|\/|$)/i.test(endpoint)) return fallback;
       return {
         enabled: !!saved.enabled,
         endpoint,

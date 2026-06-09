@@ -2227,6 +2227,12 @@ body.mobile-device-shell .ws-context-pill-row {
     background: #fff;
     padding: .5rem;
   }
+  .patient-tool-group-plain {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    padding: 0;
+  }
   .patient-tool-group.active {
     border-color: #99f6e4;
     box-shadow: inset 0 0 0 1px #ccfbf1;

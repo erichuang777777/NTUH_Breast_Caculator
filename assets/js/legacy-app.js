@@ -2287,8 +2287,11 @@ function dashboardToolGroupsHtml(cardById, ctx){
     return groups.map(group => {
         const cards = group.ids.map(id => cardById[id]).filter(Boolean).join('');
         if(!cards) return '';
-        return `<section class="patient-tool-group">
-            <header><div><strong>${esc(group.title)}</strong><span>${esc(group.note)}</span></div></header>
+        const header = group.id === 'diagnosis'
+            ? `<header><div><strong>${esc(group.title)}</strong><span>${esc(group.note)}</span></div></header>`
+            : '';
+        return `<section class="patient-tool-group ${group.id === 'diagnosis' ? '' : 'patient-tool-group-plain'}">
+            ${header}
             <div class="patient-tool-group-grid">${cards}</div>
         </section>`;
     }).filter(Boolean).join('');
@@ -2377,7 +2380,9 @@ function buildBreastFiltersFromWorkspace(p){
     if(er || pr) filters.er_pr = (er === '+' || pr === '+') ? 'positive' : 'negative';
     if(her2) filters.her2 = her2 === '+' ? 'positive' : 'negative';
     if(er === '-' && pr === '-' && (her2 === '-' || her2 === 'low')) filters.tnbc = 'true';
-    // Keep LN+ in the patient summary, but do not use it as an automatic hard drug filter.
+    const nodeStage = String(p.cN || p.pN || p.N || '').trim();
+    const nodePositive = Number(p.nodes_pos || 0) > 0 || /^N[1-3]/i.test(nodeStage);
+    if(nodePositive) filters.ln = 'true';
     if(p.brca && p.brca !== 'wt') filters.brca = 'true';
     if(p.esr1 === 'mut') filters.esr1 = 'true';
     if(p.pik3ca === 'mut' || p.pik3ca === '+') filters.pik3ca = 'true';
@@ -2542,7 +2547,7 @@ window.searchTrials = window.searchTrials || async function(){
         const params = new URLSearchParams({
             'query.cond': String(keyword).trim() || 'breast cancer',
             'query.locn': String(locationText).trim() || 'Taiwan',
-            pageSize: '5',
+            pageSize: '100',
             format: 'json'
         });
         if(status) params.set('filter.overallStatus', status);
@@ -2551,10 +2556,13 @@ window.searchTrials = window.searchTrials || async function(){
         const data = await resp.json();
         const studies = Array.isArray(data.studies) ? data.studies : [];
         if(!studies.length){
+            _lastTrialResults = [];
+            _lastTrialTotal = 0;
             el.innerHTML = '<div style="padding:1rem;color:var(--text-muted)">未找到符合條件的試驗。請嘗試修改關鍵字或地點。</div>';
             return;
         }
         const total = data.totalCount || studies.length;
+        const normalized = [];
         const rows = studies.map(study => {
             const ps = study.protocolSection || {};
             const id = ps.identificationModule || {};
@@ -2570,6 +2578,14 @@ window.searchTrials = window.searchTrials || async function(){
             const twLocs = (locations.locations || []).filter(loc => loc.country === 'Taiwan');
             const locs = twLocs.map(loc => `${loc.facility || ''} (${loc.city || ''})`).slice(0, 3).join('、');
             const badgeLabel = overallStatus === 'RECRUITING' ? '招募中' : (overallStatus === 'ACTIVE_NOT_RECRUITING' ? '進行中' : (overallStatus || '其他'));
+            normalized.push({
+                nctId,
+                title,
+                phase,
+                status: overallStatus,
+                sponsor: leadSponsor,
+                url: `https://clinicaltrials.gov/study/${nctId}`
+            });
             return `<div class="trial-card">
                 <div style="display:flex;gap:.5rem;align-items:flex-start;flex-wrap:wrap">
                     <span class="trial-badge ${overallStatus === 'RECRUITING' ? 'recruiting' : 'active'}">${esc(badgeLabel)}</span>
@@ -2583,6 +2599,8 @@ window.searchTrials = window.searchTrials || async function(){
                 ${locs ? `<div class="trial-locations">&#128205; 台灣試驗中心：${esc(locs)}</div>` : ''}
             </div>`;
         }).join('');
+        _lastTrialResults = normalized;
+        _lastTrialTotal = total;
         el.innerHTML = `<div style="font-size:.78rem;color:var(--text-muted);margin-bottom:.6rem">符合條件 ${total} 筆（顯示前 ${studies.length} 筆）</div>${rows}`;
     } catch(err){
         el.innerHTML = `<div style="padding:1rem;color:#ef4444">搜尋失敗：${esc(err && err.message ? err.message : 'unknown error')}。請確認網路連線，或稍後再試。</div>`;
@@ -2906,15 +2924,19 @@ function dashboardWidgetSummary(widget){
     if(widget.id === 'inpatientPage'){
         const cyclesEl = document.getElementById('inpCycles');
         const doseVars = dashboardPatientBsaCrcl(p);
-        const regimen = typeof _inpSelectedRegimen !== 'undefined' && _inpSelectedRegimen ? _inpSelectedRegimen.name : '';
-        const price = typeof _inpLastTotal !== 'undefined' && _inpLastTotal ? `NT$ ${Number(_inpLastTotal).toLocaleString()}` : '';
+        const selectedRegimenText = typeof currentRegimenSummaryText === 'function' ? currentRegimenSummaryText() : '';
+        const regimen = selectedRegimenText || (typeof _inpSelectedRegimen !== 'undefined' && _inpSelectedRegimen ? _inpSelectedRegimen.name : '');
+        const regimenTotal = typeof _regimenLastGrandTotal !== 'undefined' && _regimenLastGrandTotal ? _regimenLastGrandTotal : 0;
+        const price = regimenTotal
+            ? `NT$ ${Number(regimenTotal).toLocaleString()}`
+            : (typeof _inpLastTotal !== 'undefined' && _inpLastTotal ? `NT$ ${Number(_inpLastTotal).toLocaleString()}` : '');
         const doseLine = dashboardJoin([
             doseVars.weight ? `體重 ${doseVars.weight}kg` : (typeof _inpWt !== 'undefined' ? `體重 ${_inpWt}kg` : ''),
             doseVars.bsa ? `BSA ${doseVars.bsa.toFixed(2)}` : (typeof _inpBSA !== 'undefined' ? `BSA ${_inpBSA.toFixed(2)}` : '')
         ]);
         const regimenLine = dashboardJoin([
             regimen || '待選處方',
-            cyclesEl && cyclesEl.value ? `${cyclesEl.value} 週期` : '',
+            !selectedRegimenText && cyclesEl && cyclesEl.value ? `${cyclesEl.value} 週期` : '',
         ]);
         const lines = [
             dashboardPlainLine(doseLine),
@@ -3095,7 +3117,9 @@ function getDashboardAgentApiConfig(){
         const endpoint = String(saved.endpoint || '').trim();
         if(!endpoint && fallback && fallback.endpoint) return fallback;
         const host = (location && location.hostname) ? location.hostname : '';
-        if((host === '127.0.0.1' || host === 'localhost') && endpoint === '/api/agent') return fallback;
+        const isLocal = host === '127.0.0.1' || host === 'localhost';
+        if(isLocal) return fallback;
+        if(/^https?:\/\/(127\.0\.0\.1|localhost)(:|\/|$)/i.test(endpoint)) return fallback;
         return {
             enabled: !!saved.enabled,
             endpoint,
@@ -3924,7 +3948,7 @@ function renderModalDashboardOverview(){
             <div class="patient-context-title">
                 <div>
                     <strong>共用設定檔</strong>
-                    <span class="patient-context-focus">固定 Dashboard：分期、藥物、試驗與門診工具整合</span>
+                    <span class="patient-context-focus">診斷與分期：先確認這個病人的正確資料</span>
                 </div>
                 <button type="button" class="patient-context-inform-btn" onclick="generatePatientTreatmentPlan()">病人說明單</button>
             </div>
@@ -11529,6 +11553,9 @@ let _regimenAddOns = {};  // addon_key → true/false
 let _patientConditions = {};  // her2, hr, ln
 let _regimenSkip = {};    // drug_key → true = exclude from calc & print
 let _regimenCycleOverride = null; // number override for regimens with cycle_options
+let _regimenLastNhiTotal = 0;
+let _regimenLastSelfTotal = 0;
+let _regimenLastGrandTotal = 0;
 
 const REGIMENS = [
   {
@@ -11844,6 +11871,7 @@ function selectRegimen(id){
   renderRegimenCards();
   applyNHIRules();
   document.getElementById('addonSection').style.display='';
+  scrollRegimenSummaryIntoViewIfMobile();
 }
 
 function applyNHIRules(){
@@ -11904,7 +11932,22 @@ function optimizeVials(doseMg, drugKey, useNHI){
   return best;
 }
 
-function setRegimenCycles(n){ _regimenCycleOverride = n; calcRegimen(); }
+function setRegimenCycles(n){ _regimenCycleOverride = n; calcRegimen(); scrollRegimenSummaryIntoViewIfMobile(); }
+
+function scrollRegimenSummaryIntoViewIfMobile(){
+  if(typeof isMobileAppShell === 'function' && !isMobileAppShell()) return;
+  const target = document.getElementById('regimenSummary');
+  if(!target) return;
+  setTimeout(() => target.scrollIntoView({ behavior:'smooth', block:'start' }), 80);
+}
+
+function currentRegimenSummaryText(){
+  const reg = typeof _selectedRegimen !== 'undefined' ? _selectedRegimen : null;
+  if(!reg) return '';
+  const phase = Array.isArray(reg.phases) && reg.phases.length ? reg.phases[0] : null;
+  const cycles = reg.cycle_options && _regimenCycleOverride ? _regimenCycleOverride : (phase && phase.cycles);
+  return `${reg.name}${cycles ? ` ×${cycles}` : ''}`;
+}
 
 function calcRegimen(){
   if(!_selectedRegimen) return;
@@ -12068,6 +12111,9 @@ function calcRegimen(){
   selfTotal += addonTotal;
 
   const grandTotal = nhiTotal + selfTotal;
+  _regimenLastNhiTotal = nhiTotal;
+  _regimenLastSelfTotal = selfTotal;
+  _regimenLastGrandTotal = grandTotal;
   document.getElementById('regimenDetail').innerHTML = detailHtml;
   document.getElementById('regimenSummary').innerHTML = `<div class="reg-summary">
     <div class="sum-line" style="font-weight:700;font-size:.9rem;margin-bottom:.3rem"><span>${reg.name} 療程費用總計</span><span>體重 ${_patientWt}kg / BSA ${_patientBSA.toFixed(2)} m²</span></div>
@@ -12083,6 +12129,7 @@ function calcRegimen(){
       <button class="btn btn-outline btn-sm" onclick="requestNewRegimen()" style="border-color:#0369a1;color:#0369a1">📋 通報：建議新增處方</button>
     </div>
   </div>`;
+  if(document.body && document.body.classList.contains('modal-dashboard-mode')) renderModalDashboardOverview();
 }
 
 function buildDrugRow(drug, doseLabel, vialInfo, costPerCycle, totalCost, cycles, isNHI, nhiClass, selfClass, loadCost){
