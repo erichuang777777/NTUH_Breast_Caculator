@@ -8872,6 +8872,7 @@ function loadFeatureFlags(){
         const saved = localStorage.getItem(FEATURE_FLAGS_KEY);
         if(saved) FEATURE_FLAGS = { ...FEATURE_FLAGS_DEFAULT, ...JSON.parse(saved) };
         delete FEATURE_FLAGS.nccn;
+        FEATURE_FLAGS.inpatient = true;
         FEATURE_FLAGS.calc_ihc4 = true;
         FEATURE_FLAGS.calc_gail = true;
     } catch(e){ console.warn('Failed to load feature flags', e); }
@@ -8892,7 +8893,7 @@ function saveFeatureFlags(){
     try { localStorage.setItem(FEATURE_FLAGS_KEY, JSON.stringify(FEATURE_FLAGS)); } catch(e){}
 }
 function setFlag(name, value){
-    if(name === 'calc_ihc4' || name === 'calc_gail') value = true;
+    if(name === 'inpatient' || name === 'calc_ihc4' || name === 'calc_gail') value = true;
     FEATURE_FLAGS[name] = !!value;
     saveFeatureFlags();
     if(typeof loadLanding === 'function') loadLanding();
@@ -8907,6 +8908,7 @@ function setDevMode(enableAll){
     }
     FEATURE_FLAGS.calc_ihc4 = true;
     FEATURE_FLAGS.calc_gail = true;
+    FEATURE_FLAGS.inpatient = true;
     FEATURE_FLAGS.patientJourney = false;
     delete FEATURE_FLAGS.nccn;
     saveFeatureFlags();

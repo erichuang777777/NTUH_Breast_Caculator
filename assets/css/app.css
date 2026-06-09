@@ -723,6 +723,9 @@ body.mobile-device-shell .ws-context-pill-row {
     height: calc(100vh - 50px);
     overflow: hidden;
   }
+  body.device-preview-desktop.modal-dashboard-mode .dashboard-controls {
+    display: none !important;
+  }
   body.device-preview-desktop.modal-dashboard-mode:not(.modal-dashboard-open) .dept-page.active {
     display: none !important;
   }
