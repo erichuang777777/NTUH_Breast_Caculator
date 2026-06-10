@@ -17,13 +17,17 @@ import io
 import sqlite3
 import subprocess
 import sys
+from datetime import datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 
 ROOT = Path(__file__).resolve().parent
 DB_PATH = ROOT / "nhi_drug_coverage.db"
 VALIDATION_BASELINE = ROOT / "data" / "validation" / "drug_data_known_issues.json"
+PRICE_ANNOUNCEMENT_DATE = "115/03/23"
+PRICE_EFFECTIVE_DATE = "115/04/01"
 
 # 官方 115 年調整後藥價（健保署 115/03/23 公告，115/04/01 生效）
 # 以代表性品項為主（原廠品或最常用規格）
@@ -134,6 +138,22 @@ def run_validation():
     )
 
 
+def taipei_now():
+    return datetime.now(ZoneInfo("Asia/Taipei"))
+
+
+def build_price_badge_text(updated_date):
+    return f"藥價公告 {PRICE_ANNOUNCEMENT_DATE}｜生效 {PRICE_EFFECTIVE_DATE}｜資料更新 {updated_date}"
+
+
+def upsert_app_config(cursor, key, value, updated_at):
+    cursor.execute(
+        "INSERT INTO app_config (key, value, updated_at) VALUES (?, ?, ?) "
+        "ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=excluded.updated_at",
+        (key, value, updated_at),
+    )
+
+
 def find_drugs(cursor, drug_name):
     cursor.execute(
         """
@@ -151,12 +171,17 @@ def main():
     args = parse_args()
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
+    now = taipei_now()
+    updated_date = now.strftime("%Y/%m/%d")
+    updated_at = now.isoformat(timespec="seconds")
+    badge_text = build_price_badge_text(updated_date)
 
     updated = 0
     unchanged = 0
     skipped = 0
     multi_match = 0
     planned = []
+    badge_changed = False
 
     try:
         c.execute("BEGIN")
@@ -179,6 +204,12 @@ def main():
                         (price, unit, drug_id),
                     )
                 updated += 1
+
+        badge_row = c.execute("SELECT value FROM app_config WHERE key='price_badge_text'").fetchone()
+        current_badge = badge_row[0] if badge_row else ""
+        badge_changed = current_badge != badge_text
+        if badge_changed and not args.dry_run:
+            upsert_app_config(c, "price_badge_text", badge_text, updated_at)
 
         if args.dry_run:
             conn.rollback()
@@ -206,6 +237,9 @@ def main():
         print(f"多筆 exact generic_name match：{multi_match} 組")
     print(f"有藥價資料：{with_price}/{total} 藥物")
     print("\n資料來源：健保署115/03/23公告PDF「115年藥價年度例行調整結果明細表」（115/04/01生效）")
+    if badge_changed:
+        action = "Would update" if args.dry_run else "Updated"
+        print(f"{action} app_config.price_badge_text -> {badge_text}")
 
     if not args.dry_run and not args.no_export:
         print("\nExporting data/api/*.json ...", flush=True)

@@ -32,6 +32,7 @@ python build_static.py
 ```
 
 CI 也會每月自動跑一次 dry-run 與 API smoke check，對應 `.github/workflows/monthly-api-check.yml`。
+正式跑 `update_official_prices.py` 時，會同步更新 `app_config.price_badge_text`，讓首頁藥價日期標籤一起變更。
 
 之後要人工抽查：
 
