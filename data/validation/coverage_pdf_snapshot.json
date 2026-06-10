@@ -1,0 +1,3854 @@
+{
+  "source_page_url": "https://www.nhi.gov.tw/ch/np-2508-1.html",
+  "pdf_url": "https://www.nhi.gov.tw/ch/dl-61741-ef3fcae5171e405c9f1548463d6dc30c-1.pdf",
+  "pdf_sha256": "d293f19dbb2d0824944c7ff9d4732bc9ae117d200876f2fd1c1c822eacfc5de9",
+  "fetched_at": "2026-06-10T10:00:13+00:00",
+  "page_count": 411,
+  "drugs": {
+    "1721": {
+      "drug_id": 1721,
+      "generic_name": "Afinitor",
+      "trade_names": "Afinitor",
+      "terms": [
+        "afinitor",
+        "無法切除或轉移的成人胰臟內分泌腫瘤，其分化程度為良好或中度，或who2010年分類為g1",
+        "為進展性腫瘤，即過去12個月影像檢查為持續惡化者（recist定義為疾病惡化者）",
+        "不可合併使用化學藥物或其他標靶藥物",
+        "除因病人使用本品後，發生嚴重不良反應或耐受不良之情形外，本品與sunitinib不得轉換使用",
+        "腫瘤分化程度為良好者",
+        "5.除晚期腎細胞癌之外，其他疾病需經事前審查核准後使用，每次申請之療程以3個月為限",
+        "初次申請時需檢送病理報告及影像報告，之後每3個月申請一次，再次申請時需檢附影像資料及前次治療結果評估資料證實無惡化，才可繼續使用",
+        "6.限每日最大劑量為10mg",
+        "限併有水腦症狀或其他顯著神經學症狀，且經神經外科專科醫師評估不適合接受或無法以外科切除手術的患者使用",
+        "1.治療經vegf-targeted療法無效後之晚期腎細胞癌患者",
+        "2.使用於胰臟神經內分泌腫瘤成人病患，需同時符合下列條件：（）",
+        "3.使用於無法切除",
+        "局部晚期或轉移之胃腸道或肺部來源之非功能性神經內分泌腫瘤成人病患，需同時符合下列條件：（）",
+        "4.與exemestane併用，作為先前已使用過非類固醇類之芳香環酶抑制劑治療無效，而未曾使用exemestane之荷爾蒙接受體陽性",
+        "her2受體陰性且尚未出現器官轉移危急症狀",
+        "visceralcrisis",
+        "之轉移性乳癌病人的治療",
+        "本品與tucidinostat僅得擇一使用，除因耐受性不良，不得互換",
+        "且使用本品無效後，不得申請cdk4",
+        "6抑制劑藥品（",
+        "1.治療患有結節性硬化症",
+        "tuberoussclerosis",
+        "之腦室管膜下巨細胞星狀瘤",
+        "sega:subependymalgiantcellastrocytoma",
+        "2.結節性硬化症併有腎血管肌脂肪瘤之成年病患，且需符合以下條件"
+      ],
+      "therapy_line": 2,
+      "prior_auth_required": 1,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 156,
+          "hash": "8fcd5835f80168f222e8514b0692702465d2fd9e",
+          "snippet": "母細胞瘤病人的手術輔助，且不得與temozolomide併用。2.需經事前審查核准後使用。9.36.everolimus：（100/2/1、102/1/1）附表九之九9.36.1.everolimus5mg及10mg(如afinitor5mg及10mg)：（100/2/1、102/1/1、104/9/1、104/12/1、106/3/1、108/10/1、109/4/1、114/12/1）1.治療經vegf-targeted療法無效後之晚期腎細胞癌患者",
+          "score": 14,
+          "matched_terms": [
+            "afinitor",
+            "為進展性腫瘤，即過去12個月影像檢查為持續惡化者（recist定義為疾病惡化者）",
+            "1.治療經vegf-targeted療法無效後之晚期腎細胞癌患者"
+          ]
+        },
+        {
+          "page": 291,
+          "hash": "76d92d3589044e81a1e9e82e7603a105ac0466a6",
+          "snippet": "醫療機構名稱保險對象姓名出生原受理編號（申復時填用）預定實施日期代號身分證統一編號科別□門診□住院病歷號碼申請醫師身分證號icd-10代碼疾病名稱使用日期年月日至年月日藥品代碼申請類別給付規定用法用量申請數量保險人核定欄afinitor5mg&10mgtablets□b025165100□b025166100□v000020100□v000021100□第一次申請□治療後再次申請□同意備查。□使用劑量不符合常規，核定量為□不同意□不符合適應症。□不符合",
+          "score": 8,
+          "matched_terms": [
+            "afinitor"
+          ]
+        }
+      ]
+    },
+    "1724": {
+      "drug_id": 1724,
+      "generic_name": "Alpelisib",
+      "trade_names": "Piqray",
+      "terms": [
+        "alpelisib",
+        "piqray",
+        "荷爾蒙受體為：er或pr＞30%",
+        "her-2檢測為陰性",
+        "具有pik3ca基因突變",
+        "2.需經事前審查核准後使用：",
+        "初次申請需檢附pik3ca基因突變檢測報告，且需符合全民健康保險藥品給付規定之通則十二",
+        "核准後每12週需檢附療效評估資料再次申請，若疾病惡化及必須停止使用",
+        "3.每日最多處方2粒",
+        "1.與fulvestrant併用於曾接受cdk4",
+        "6抑制劑治療但疾病惡化的停經後轉移性乳癌病人，且須完全符合下列條件："
+      ],
+      "therapy_line": 2,
+      "prior_auth_required": 1,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 215,
+          "hash": "3b657d7550cbf4483ad099a4972efbc82c567e0c",
+          "snippet": "為限。初次申請時需檢送病理報告及影像報告，之後每3個月申請一次，再次申請時需檢附影像資料及前次治療結果評估資料證實無惡化，才可繼續使用。3.本藥品與everolimus僅得擇一使用，除因耐受性不良，不得互換。9.129.alpelisib(如piqray）：(115/1/1、115/6/1)1.與fulvestrant併用於曾接受cdk4/6抑制劑治療但疾病惡化的停經後轉移性乳癌病人，且須完全符合下列條件：(1)荷爾蒙受體為：er或pr＞30%。(2)h",
+          "score": 34,
+          "matched_terms": [
+            "alpelisib",
+            "piqray",
+            "荷爾蒙受體為：er或pr＞30%",
+            "her-2檢測為陰性",
+            "具有pik3ca基因突變",
+            "2.需經事前審查核准後使用：",
+            "1.與fulvestrant併用於曾接受cdk4",
+            "6抑制劑治療但疾病惡化的停經後轉移性乳癌病人，且須完全符合下列條件："
+          ]
+        },
+        {
+          "page": 216,
+          "hash": "4a66a0d94603e44ef2c17d62235b8250df86e12d",
+          "snippet": "(115.5.22更新)216之通則十二。(2)核准後每12週需檢附療效評估資料再次申請，若疾病惡化及必須停止使用。3.每日最多處方2粒。4.本藥品併用fulvestrant與capivasertib併用fulvestrant用於pik3ca基因突變病人時，僅得擇一給付。(115/6/1)9.130.fulvestrant(如fus",
+          "score": 16,
+          "matched_terms": [
+            "alpelisib",
+            "核准後每12週需檢附療效評估資料再次申請，若疾病惡化及必須停止使用",
+            "3.每日最多處方2粒"
+          ]
+        },
+        {
+          "page": 217,
+          "hash": "9dadca62000e0d84d53b4dc4cb3d39b1127c98be",
+          "snippet": "用總療程以24週為上限。4.使用本品併用cetuximab作為第二線治療，不得再申請給付抗表皮生長因子受體(anti-egfr)藥品作為後續治療。9.135.capivasertib(如truqap)：(115/6/1)1.與fulvestrant併用於曾接受cdk4/6抑制劑治療但疾病惡化的停經後轉移性乳癌病人，且須完全符合下列條件：(1)荷爾蒙受體為陽性(er或pr>30%)。(2)第二型人類表皮生長因子受體(her2)陰性。(3)具pik3ca/akt1/pten任一變異。2.",
+          "score": 16,
+          "matched_terms": [
+            "alpelisib",
+            "2.需經事前審查核准後使用：",
+            "1.與fulvestrant併用於曾接受cdk4",
+            "6抑制劑治療但疾病惡化的停經後轉移性乳癌病人，且須完全符合下列條件："
+          ]
+        }
+      ]
+    },
+    "1725": {
+      "drug_id": 1725,
+      "generic_name": "Anastrozole",
+      "trade_names": "Arimidex",
+      "terms": [
+        "anastrozole",
+        "arimidex",
+        "有腦血管梗塞病史者",
+        "有靜脈血栓栓塞症病史者",
+        "有子宮異常出血病史，且「經陰道超音波檢查」判定為子宮內膜異常增生的高危險群",
+        "手術後大於等於11年且無復發者不得使用",
+        "每日最大劑量2.5mg，使用不得超過四年",
+        "每日最大劑量2.5mg，使用不得超過五年",
+        "若由tamoxifen轉換使用本品，則使用期限合計不得超過5年",
+        "1.停經後雌激素接受器為陽性或不清楚之局部晚期或轉移性乳癌第一線治療",
+        "2.停經後婦女晚期乳癌，雌激素接受器為陰性，但曾對tamoxifen有陽性反應者",
+        "3.停經後婦女罹患早期侵犯性乳癌，經外科手術切除後且雌激素接受器為陽性，且有血栓栓塞症或子宮內膜異常增生的高危險群，而無法使用tamoxifen治療者",
+        "1.接受抗動情激素治療失敗的自然或人工停經後之末期乳癌病人之治療",
+        "停經後之局部晚期或轉移性乳癌婦女患者之第一線治療用藥",
+        "2.停經後且荷爾蒙接受體呈陽性，有淋巴結轉移之乳癌病人，作為tamoxifen治療五年後的延伸治療，且不得與其他aromataseinhibitor併用",
+        "使用時需同時符合下列規定：（）",
+        "3.停經後且荷爾蒙接受體呈陽性之早期乳癌病人，經外科手術切除後之輔助治療，且不得與tamoxifen或其他aromataseinhibitor併用",
+        "使用時需同時符合下列規定：",
+        "4.病歷上應詳細記載手術資料",
+        "病理報告",
+        "應包含er",
+        "pr之檢測結果且無復發現象",
+        "及用藥紀錄",
+        "如tamoxifen使用五年證明"
+      ],
+      "therapy_line": 1,
+      "prior_auth_required": 0,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 143,
+          "hash": "aaa918b6c7d1d8fe477faf4d26b004cf67504a4c",
+          "snippet": "病患，經使用tamoxifen無效後，方可使用。2.具有雌激素受體陽性之停經婦女，使用tamoxifen至少兩年之高危險早期侵犯性乳癌的輔助治療，且不得與tamoxifen或其他aromataseinhibitor併用。使用時需同時符合下列規定：(105/8/1)(1)病歷上應詳細記載手術資料、病理報告(應包含er、pr之檢測結果且無復發現象)。(2)本案藥品使用不得超過三年。9.1.2.anastrozole(如arimidex)：（88/6/1、92/3/1",
+          "score": 70,
+          "matched_terms": [
+            "anastrozole",
+            "arimidex",
+            "有腦血管梗塞病史者",
+            "有靜脈血栓栓塞症病史者",
+            "有子宮異常出血病史，且「經陰道超音波檢查」判定為子宮內膜異常增生的高危險群",
+            "手術後大於等於11年且無復發者不得使用",
+            "每日最大劑量2.5mg，使用不得超過四年",
+            "每日最大劑量2.5mg，使用不得超過五年",
+            "若由tamoxifen轉換使用本品，則使用期限合計不得超過5年",
+            "1.停經後雌激素接受器為陽性或不清楚之局部晚期或轉移性乳癌第一線治療",
+            "2.停經後婦女晚期乳癌，雌激素接受器為陰性，但曾對tamoxifen有陽性反應者",
+            "3.停經後婦女罹患早期侵犯性乳癌，經外科手術切除後且雌激素接受器為陽性，且有血栓栓塞症或子宮內膜異常增生的高危險群，而無法使用tamoxifen治療者",
+            "1.接受抗動情激素治療失敗的自然或人工停經後之末期乳癌病人之治療",
+            "停經後之局部晚期或轉移性乳癌婦女患者之第一線治療用藥",
+            "2.停經後且荷爾蒙接受體呈陽性，有淋巴結轉移之乳癌病人，作為tamoxifen治療五年後的延伸治療，且不得與其他aromataseinhibitor併用",
+            "3.停經後且荷爾蒙接受體呈陽性之早期乳癌病人，經外科手術切除後之輔助治療，且不得與tamoxifen或其他aromataseinhibitor併用",
+            "使用時需同時符合下列規定：",
+            "4.病歷上應詳細記載手術資料",
+            "病理報告",
+            "應包含er",
+            "pr之檢測結果且無復發現象",
+            "及用藥紀錄",
+            "如tamoxifen使用五年證明"
+          ]
+        }
+      ]
+    },
+    "1727": {
+      "drug_id": 1727,
+      "generic_name": "Arimidex",
+      "trade_names": "Arimidex",
+      "terms": [
+        "arimidex",
+        "有腦血管梗塞病史者",
+        "有靜脈血栓栓塞症病史者",
+        "有子宮異常出血病史，且「經陰道超音波檢查」判定為子宮內膜異常增生的高危險群",
+        "手術後大於等於11年且無復發者不得使用",
+        "每日最大劑量2.5mg，使用不得超過四年",
+        "每日最大劑量2.5mg，使用不得超過五年",
+        "若由tamoxifen轉換使用本品，則使用期限合計不得超過5年",
+        "1.停經後雌激素接受器為陽性或不清楚之局部晚期或轉移性乳癌第一線治療",
+        "2.停經後婦女晚期乳癌，雌激素接受器為陰性，但曾對tamoxifen有陽性反應者",
+        "3.停經後婦女罹患早期侵犯性乳癌，經外科手術切除後且雌激素接受器為陽性，且有血栓栓塞症或子宮內膜異常增生的高危險群，而無法使用tamoxifen治療者",
+        "1.接受抗動情激素治療失敗的自然或人工停經後之末期乳癌病人之治療",
+        "停經後之局部晚期或轉移性乳癌婦女患者之第一線治療用藥",
+        "2.停經後且荷爾蒙接受體呈陽性，有淋巴結轉移之乳癌病人，作為tamoxifen治療五年後的延伸治療，且不得與其他aromataseinhibitor併用",
+        "使用時需同時符合下列規定：（）",
+        "3.停經後且荷爾蒙接受體呈陽性之早期乳癌病人，經外科手術切除後之輔助治療，且不得與tamoxifen或其他aromataseinhibitor併用",
+        "使用時需同時符合下列規定：",
+        "4.病歷上應詳細記載手術資料",
+        "病理報告",
+        "應包含er",
+        "pr之檢測結果且無復發現象",
+        "及用藥紀錄",
+        "如tamoxifen使用五年證明"
+      ],
+      "therapy_line": 1,
+      "prior_auth_required": 0,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 143,
+          "hash": "aaa918b6c7d1d8fe477faf4d26b004cf67504a4c",
+          "snippet": "病患，經使用tamoxifen無效後，方可使用。2.具有雌激素受體陽性之停經婦女，使用tamoxifen至少兩年之高危險早期侵犯性乳癌的輔助治療，且不得與tamoxifen或其他aromataseinhibitor併用。使用時需同時符合下列規定：(105/8/1)(1)病歷上應詳細記載手術資料、病理報告(應包含er、pr之檢測結果且無復發現象)。(2)本案藥品使用不得超過三年。9.1.2.anastrozole(如arimidex)：（88/6/1、92/3/1",
+          "score": 64,
+          "matched_terms": [
+            "arimidex",
+            "有腦血管梗塞病史者",
+            "有靜脈血栓栓塞症病史者",
+            "有子宮異常出血病史，且「經陰道超音波檢查」判定為子宮內膜異常增生的高危險群",
+            "手術後大於等於11年且無復發者不得使用",
+            "每日最大劑量2.5mg，使用不得超過四年",
+            "每日最大劑量2.5mg，使用不得超過五年",
+            "若由tamoxifen轉換使用本品，則使用期限合計不得超過5年",
+            "1.停經後雌激素接受器為陽性或不清楚之局部晚期或轉移性乳癌第一線治療",
+            "2.停經後婦女晚期乳癌，雌激素接受器為陰性，但曾對tamoxifen有陽性反應者",
+            "3.停經後婦女罹患早期侵犯性乳癌，經外科手術切除後且雌激素接受器為陽性，且有血栓栓塞症或子宮內膜異常增生的高危險群，而無法使用tamoxifen治療者",
+            "1.接受抗動情激素治療失敗的自然或人工停經後之末期乳癌病人之治療",
+            "停經後之局部晚期或轉移性乳癌婦女患者之第一線治療用藥",
+            "2.停經後且荷爾蒙接受體呈陽性，有淋巴結轉移之乳癌病人，作為tamoxifen治療五年後的延伸治療，且不得與其他aromataseinhibitor併用",
+            "3.停經後且荷爾蒙接受體呈陽性之早期乳癌病人，經外科手術切除後之輔助治療，且不得與tamoxifen或其他aromataseinhibitor併用",
+            "使用時需同時符合下列規定：",
+            "4.病歷上應詳細記載手術資料",
+            "病理報告",
+            "應包含er",
+            "pr之檢測結果且無復發現象",
+            "及用藥紀錄",
+            "如tamoxifen使用五年證明"
+          ]
+        }
+      ]
+    },
+    "1729": {
+      "drug_id": 1729,
+      "generic_name": "Avastin",
+      "trade_names": null,
+      "terms": [
+        "avastin",
+        "bevacizumab",
+        "：轉移性乳癌，與化療合併使用"
+      ],
+      "therapy_line": 1,
+      "prior_auth_required": 0,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 144,
+          "hash": "d407410351fb93acec41f71bb73a86118ae836fd",
+          "snippet": "查點抑制劑之藥品給付規定。(112/12/1、114/2/1)5.與pembrolizumab及pemetrexed(限使用pexeda、apeta或pemetrexedsandoz)併用，或與atezolizumab及bevacizumab(限使用alymsys、avastin、abevmy、vegzelma或mvasi)、paclitaxel併用，做為轉移性且不具有egfr/alk/ros-1腫瘤基因異常的非鱗狀非小細胞肺癌的第一線治療，患者需符合免疫檢",
+          "score": 10,
+          "matched_terms": [
+            "avastin",
+            "bevacizumab"
+          ]
+        },
+        {
+          "page": 145,
+          "hash": "581f58e874e57dbe5255eed825cf53945226a6e9",
+          "snippet": "rboplatin併用於早期三陰性乳癌(第ii期至第iiib期，ct1cn1-2或t2-4n0-2)病人的術前前導性治療用藥，病人需符合免疫檢查點抑制劑之藥品給付規定。(114/6/1)(8)與atezolizumab及bevacizumab(限使用alymsys、avastin、abevmy、vegzelma或mvasi)、carboplatin併用於轉移性非鱗狀非小細胞肺癌第一線治療，患者需符合免疫檢查點抑制劑之藥品給付規定。(114/6/1、114/8",
+          "score": 10,
+          "matched_terms": [
+            "avastin",
+            "bevacizumab"
+          ]
+        },
+        {
+          "page": 157,
+          "hash": "32b47abd9463179dd3e80ee3933a2f93efdb7365",
+          "snippet": "請續用。(註：腫瘤出血併發症分級(grading)定義依commonterminologycriteriaforadverseevents(ctcae),version4.0.)(4)限每日最大劑量為10mg。9.37.bevacizumab(如avastin)：（100/6/1、101/05/1、106/4/1、108/3/1、109/6/1、112/8/1、113/3/1、113/6/1、113/9/1、114/3/1、114/6/1、114/8/1、1",
+          "score": 10,
+          "matched_terms": [
+            "avastin",
+            "bevacizumab"
+          ]
+        },
+        {
+          "page": 159,
+          "hash": "9c43b034877e6ea595f77bb08b388243db7eaac5",
+          "snippet": "(115.5.22更新)159(5)figostageivdisease具germlineorsomaticbrca1/2致病性或疑似致病性突變者，若已經申請niraparib用於第一線化學治療後維持性治療時不得另外申請bevacizumab併用，除因niraparib耐受性不良，在維持性治療可再換成bevacizumab（除zirabev以外）單獨使用，總申請療程以17個療程為上限。(113/3/1、113/9/1、114/3/1、114/6/1、114/",
+          "score": 10,
+          "matched_terms": [
+            "avastin",
+            "bevacizumab"
+          ]
+        },
+        {
+          "page": 178,
+          "hash": "f93c251bbf3ba3355bd809b26ffebb644800881e",
+          "snippet": "8/1)iii.轉移性非鱗狀非小細胞肺癌第一線：限pembrolizumab與pemetrexed(限使用pexeda、apeta或pemetrexedsandoz)及含鉑類化學療法併用，或限atezoli-zumab與bevacizumab(限使用alymsys、avastin、abevmy、vegzelma或mvasi)及carboplatin、paclitaxel併用，做為轉移性且不具有egfr/alk/ros-1腫瘤基因異常的非鱗狀非小細胞肺癌第一線",
+          "score": 10,
+          "matched_terms": [
+            "avastin",
+            "bevacizumab"
+          ]
+        },
+        {
+          "page": 252,
+          "hash": "dc5011e75992a714122fab78be431cfebc6e7cca",
+          "snippet": "下兒童及青少年，規格量≧3.5ml品項，每4週處方為1瓶。14.9.7.新生血管抑制劑(anti-angiogenicagents):ranibizumab(如lucentis)、aflibercept(如eylea)、bevacizumab(如avastin)(114/3/1)：本類藥品使用早產兒視網膜病變(retinopathyofprematurity,rop)須符合下列條件：1.限曾接受過訓練之眼科專科醫師施行。2.早產兒視網膜病變，病人應在小兒科新",
+          "score": 10,
+          "matched_terms": [
+            "avastin",
+            "bevacizumab"
+          ]
+        }
+      ]
+    },
+    "1730": {
+      "drug_id": 1730,
+      "generic_name": "Bevacizumab",
+      "trade_names": "Avastin",
+      "terms": [
+        "bevacizumab",
+        "avastin",
+        "bevacizumab與folfiri（folinicacid",
+        "5-fluorouracil",
+        "irinotecan）或folfox（folinicacid",
+        "oxaliplatin）或5-fluorouracil",
+        "leucovorin的化學療法合併使用，作為轉移性大腸或直腸癌患者的第一線治療",
+        "ⅱ.須經事前審查核准後使用，每次申請事前審查之療程以18週為限，再次申請必須提出客觀證據（如：影像學）證實無惡化，才可繼續使用",
+        "除zirabev及abevmy以外",
+        "與含有5-fluorouracil",
+        "leucovorin",
+        "oxaliplatin的化學療法合併使用，作為先前接受過以fluoropyrimidine為基礎的化學療法併用cetuximab或panitumumab無效且未曾接受過bevacizumab治療，ras基因沒有突變的轉移性大腸或直腸癌病人的第二線治療",
+        "ⅲ.須經事前審查核准後使用，每次申請事前審查之療程以12週為限，再次申請必須提出客觀證據（如：recistcriteria）證實無惡化，才可繼續使用",
+        "ⅳ.使用劑量：限5mg",
+        "kg，每兩週一次",
+        "單獨使用可用於治療曾接受標準放射線治療且含temozolomide在內之化學藥物治療失敗之多型性神經膠母細胞瘤",
+        "glioblastomamultiforme",
+        "復發之成人患者",
+        "須經事前審查核准後使用，每次申請事前審查之療程以12週為限，再次申請必須提出客觀證據（如：影像學）證實無惡化，才可繼續使用",
+        "bevacizumab（除zirabev以外）與carboplatin及paclitaxel合併使用，接著單獨使用bevacizumab（除zirabev以外）治療，作為第四期卵巢上皮細胞",
+        "輸卵管或原發性腹膜癌病人接受初次手術切除後之第一線治療之維持治療",
+        "ⅳ.每人以總共給付22個療程為上限",
+        "若病情惡化或停藥後再復發即不得再次申請",
+        "bevacizumab與carboplatin及paclitaxel合併使用，作為曾接受過第一線含鉑類藥物",
+        "platinum-based",
+        "化學治療間隔6-12個月內再復發之治療",
+        "接著單獨使用bevacizumab治療，作為含鉑藥物具感受性之治療",
+        "1.轉移性大腸或直腸癌：",
+        "2.惡性神經膠質瘤",
+        "who第4級",
+        "-神經膠母細胞瘤：",
+        "3.卵巢上皮細胞",
+        "輸卵管或原發性腹膜癌：",
+        "ⅰ.若前曾申請bevacizumab使用於卵巢上皮細胞",
+        "輸卵管或原發性腹膜癌作為第一線治療者不可再次使用",
+        "限使用alymsys",
+        "abevmy",
+        "vegzelma或mvasi",
+        "與olaparib併用適用於晚期高度惡性上皮卵巢癌",
+        "輸卵管腫瘤或原發性腹膜癌，且對第一線含鉑化療合併bevacizumab有反應（完全反應或部分反應）之成年病人做為維持治療，患者需符合olaparib給付規定，限用兩年",
+        "bevacizumab以15個月的療程為上限",
+        "figostageivdisease具germlineorsomaticbrca1",
+        "2致病性或疑似致病性突變者，若已經申請niraparib用於第一線化學治療後維持性治療時不得另外申請bevacizumab併用，除因niraparib耐受性不良，在維持性治療可再換成bevacizumab（除zirabev以外）單獨使用，總申請療程以17個療程為上限",
+        "4.持續性",
+        "復發性或轉移性之子宮頸癌："
+      ],
+      "therapy_line": 1,
+      "prior_auth_required": 1,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 144,
+          "hash": "d407410351fb93acec41f71bb73a86118ae836fd",
+          "snippet": "查點抑制劑之藥品給付規定。(112/12/1、114/2/1)5.與pembrolizumab及pemetrexed(限使用pexeda、apeta或pemetrexedsandoz)併用，或與atezolizumab及bevacizumab(限使用alymsys、avastin、abevmy、vegzelma或mvasi)、paclitaxel併用，做為轉移性且不具有egfr/alk/ros-1腫瘤基因異常的非鱗狀非小細胞肺癌的第一線治療，患者需符合免疫檢",
+          "score": 24,
+          "matched_terms": [
+            "bevacizumab",
+            "avastin",
+            "5-fluorouracil",
+            "限使用alymsys",
+            "abevmy",
+            "vegzelma或mvasi"
+          ]
+        },
+        {
+          "page": 145,
+          "hash": "581f58e874e57dbe5255eed825cf53945226a6e9",
+          "snippet": "115.5.22更新)145(3)gemcitabine與paclitaxel併用，可使用於曾經使用過anthracycline之局部復發且無法手術切除或轉移性之乳癌病患。（94/10/1）(4)用於曾經使用含鉑類藥物(platinum-based)治療後復發且間隔至少6個月之卵巢癌，作為第二線治療。（96/5/1、99/10/1）(5)無法手術切除或晚期或復發之膽道癌(含肝內膽管)病患。（105/2/1）(6)與durvalumab及cisplatin併用於治療",
+          "score": 24,
+          "matched_terms": [
+            "bevacizumab",
+            "avastin",
+            "platinum-based",
+            "限使用alymsys",
+            "abevmy",
+            "vegzelma或mvasi"
+          ]
+        },
+        {
+          "page": 151,
+          "hash": "9522d813ae7cbb790053be08c49d14c73a2e3544",
+          "snippet": "101/5/1、106/11/1)(4)本藥品與erlotinib及afatinib不得併用。(96/8/1、103/5/1、109/4/1)(5)本藥品於第一線使用時，與osimertinib、dacomitinib及bevacizumab併用erlotinib之治療組合僅得擇一使用，除因耐受性不良，不得互換。(109/6/1、109/10/1、111/4/1、113/3/1、113/10/1)ⅰ.如需更換使用osimertinib，必須符合osimert",
+          "score": 12,
+          "matched_terms": [
+            "bevacizumab",
+            "glioblastomamultiforme"
+          ]
+        },
+        {
+          "page": 152,
+          "hash": "17b2429d3e81fa9b8581631743d1c2dc96fa575e",
+          "snippet": "、106/1/1、106/4/1、107/6/1、110/6/1、111/2/1、112/12/1、113/6/1、115/2/1、115/5/1)1.直腸結腸癌治療部分：(1)與folfiri（folinicacid/5-fluorouracil/irinotecan）或folfox（folinicacid/5-fluorouracil/oxaliplatin）合併使用於治療ras原生型(wild-type)之轉移性直腸結腸癌病人之第一線治療。需檢附all-ra",
+          "score": 16,
+          "matched_terms": [
+            "bevacizumab",
+            "5-fluorouracil",
+            "irinotecan）或folfox（folinicacid"
+          ]
+        },
+        {
+          "page": 154,
+          "hash": "81059822f9804b3060d9338a7bca6768590c1a92",
+          "snippet": "性非小細胞肺癌之第二線用藥。（97/6/1、111/2/1）(4)先前已使用過platinum類及docetaxel或paclitaxel化學治療後，但仍局部惡化或轉移之非小細胞肺癌之第三線用藥。2.erlotinib與bevacizumab(除zirabev以外)併用，作為無法手術切除的轉移性（第ⅳ期）且帶有表皮生長因子受體(egfr)exon21l858r活性化突變之腦轉移非鱗狀非小細胞肺癌病患的第一線治療。(113/3/1、113/9/1、114/3/",
+          "score": 8,
+          "matched_terms": [
+            "bevacizumab"
+          ]
+        },
+        {
+          "page": 156,
+          "hash": "8fcd5835f80168f222e8514b0692702465d2fd9e",
+          "snippet": "療程以3個月為限，之後每3個月評估一次。送審時需檢送影像資料，無疾病惡化方可繼續使用。(101/8/1、114/6/1)(3)每日至多處方4粒。(4)sorafenib、lenvatinib、atezolizumab併用bevacizumab、tremelimumab併用durvalumab僅得擇一給付，不得互換。(109/1/1、112/8/1、114/2/1)3.用於放射性碘治療無效之局部晚期或轉移性的進行性(progressive)分化型甲狀腺癌(ra",
+          "score": 8,
+          "matched_terms": [
+            "bevacizumab"
+          ]
+        },
+        {
+          "page": 157,
+          "hash": "32b47abd9463179dd3e80ee3933a2f93efdb7365",
+          "snippet": "請續用。(註：腫瘤出血併發症分級(grading)定義依commonterminologycriteriaforadverseevents(ctcae),version4.0.)(4)限每日最大劑量為10mg。9.37.bevacizumab(如avastin)：（100/6/1、101/05/1、106/4/1、108/3/1、109/6/1、112/8/1、113/3/1、113/6/1、113/9/1、114/3/1、114/6/1、114/8/1、1",
+          "score": 36,
+          "matched_terms": [
+            "bevacizumab",
+            "avastin",
+            "bevacizumab與folfiri（folinicacid",
+            "5-fluorouracil",
+            "irinotecan）或folfox（folinicacid",
+            "oxaliplatin）或5-fluorouracil",
+            "leucovorin",
+            "1.轉移性大腸或直腸癌："
+          ]
+        },
+        {
+          "page": 158,
+          "hash": "892a7ed655669c22a587c45bba1c6fddd249fd5e",
+          "snippet": "(115.5.22更新)158的化學療法合併使用，作為轉移性大腸或直腸癌患者的第一線治療。(108/3/1)ⅰ.使用總療程以36週為上限(106/4/1)。ⅱ.須經事前審查核准後使用，每次申請事前審查之療程以18週為限，再次申請必須提出客觀證據（如：影像學）證實無惡化，才可繼續使用。(106/4/1)ⅲ.本藥品不得與cetuximab、panitumumab併用。(108/3/1、113/3/1)(2)bevacizumab(除zirabev及abevmy以外)與含有5-fluorouracil/",
+          "score": 114,
+          "matched_terms": [
+            "bevacizumab",
+            "5-fluorouracil",
+            "ⅱ.須經事前審查核准後使用，每次申請事前審查之療程以18週為限，再次申請必須提出客觀證據（如：影像學）證實無惡化，才可繼續使用",
+            "除zirabev及abevmy以外",
+            "與含有5-fluorouracil",
+            "leucovorin",
+            "ⅲ.須經事前審查核准後使用，每次申請事前審查之療程以12週為限，再次申請必須提出客觀證據（如：recistcriteria）證實無惡化，才可繼續使用",
+            "ⅳ.使用劑量：限5mg",
+            "kg，每兩週一次",
+            "單獨使用可用於治療曾接受標準放射線治療且含temozolomide在內之化學藥物治療失敗之多型性神經膠母細胞瘤",
+            "glioblastomamultiforme",
+            "復發之成人患者",
+            "須經事前審查核准後使用，每次申請事前審查之療程以12週為限，再次申請必須提出客觀證據（如：影像學）證實無惡化，才可繼續使用",
+            "bevacizumab（除zirabev以外）與carboplatin及paclitaxel合併使用，接著單獨使用bevacizumab（除zirabev以外）治療，作為第四期卵巢上皮細胞",
+            "輸卵管或原發性腹膜癌病人接受初次手術切除後之第一線治療之維持治療",
+            "ⅳ.每人以總共給付22個療程為上限",
+            "若病情惡化或停藥後再復發即不得再次申請",
+            "bevacizumab與carboplatin及paclitaxel合併使用，作為曾接受過第一線含鉑類藥物",
+            "platinum-based",
+            "化學治療間隔6-12個月內再復發之治療",
+            "接著單獨使用bevacizumab治療，作為含鉑藥物具感受性之治療",
+            "2.惡性神經膠質瘤",
+            "who第4級",
+            "-神經膠母細胞瘤：",
+            "3.卵巢上皮細胞",
+            "輸卵管或原發性腹膜癌：",
+            "ⅰ.若前曾申請bevacizumab使用於卵巢上皮細胞",
+            "輸卵管或原發性腹膜癌作為第一線治療者不可再次使用",
+            "限使用alymsys",
+            "abevmy",
+            "vegzelma或mvasi",
+            "與olaparib併用適用於晚期高度惡性上皮卵巢癌",
+            "輸卵管腫瘤或原發性腹膜癌，且對第一線含鉑化療合併bevacizumab有反應（完全反應或部分反應）之成年病人做為維持治療，患者需符合olaparib給付規定，限用兩年",
+            "bevacizumab以15個月的療程為上限"
+          ]
+        },
+        {
+          "page": 159,
+          "hash": "9c43b034877e6ea595f77bb08b388243db7eaac5",
+          "snippet": "(115.5.22更新)159(5)figostageivdisease具germlineorsomaticbrca1/2致病性或疑似致病性突變者，若已經申請niraparib用於第一線化學治療後維持性治療時不得另外申請bevacizumab併用，除因niraparib耐受性不良，在維持性治療可再換成bevacizumab（除zirab",
+          "score": 32,
+          "matched_terms": [
+            "bevacizumab",
+            "avastin",
+            "除zirabev及abevmy以外",
+            "限使用alymsys",
+            "abevmy",
+            "vegzelma或mvasi",
+            "figostageivdisease具germlineorsomaticbrca1",
+            "2致病性或疑似致病性突變者，若已經申請niraparib用於第一線化學治療後維持性治療時不得另外申請bevacizumab併用，除因niraparib耐受性不良，在維持性治療可再換成bevacizumab（除zirabev以外）單獨使用，總申請療程以17個療程為上限",
+            "4.持續性",
+            "復發性或轉移性之子宮頸癌："
+          ]
+        },
+        {
+          "page": 164,
+          "hash": "e3f73e006ba42cebf378492af721a7de5614dc24",
+          "snippet": "(115.5.22更新)164(6)本藥品於第一線使用時，與osimertinib、dacomitinib及bevacizumab併用erlotinib之治療組合僅得擇一使用，除因耐受性不良，不得互換。(109/6/1、109/10/1、111/4/1、113/3/1、113/10/1)ⅰ.如需更換使用osimertinib，必須符合osimert",
+          "score": 8,
+          "matched_terms": [
+            "bevacizumab"
+          ]
+        },
+        {
+          "page": 167,
+          "hash": "4d37b90747ac12eecd61c5151d1da44b3317842d",
+          "snippet": "准後使用，每次申請之療程以18週為限，再次申請必須提出客觀證據(如：影像學)證實無惡化，才可繼續使用。(2)panitumumab與cetuximab二者僅能擇一使用。(107/6/1、115/2/1)(3)本藥品不得與bevacizumab併用。(107/6/1)(4)經手術完全切除(r0切除)且查無轉移病灶者不得申請給付。(115/2/1)2.治療已接受過含5fluorouracil、irinotecan及oxaliplatin二線以上之細胞毒性治療失敗",
+          "score": 8,
+          "matched_terms": [
+            "bevacizumab"
+          ]
+        },
+        {
+          "page": 174,
+          "hash": "c9aa6b0343aef167f1e2842840a4638f44fcf898",
+          "snippet": "查核准後使用，初次申請之療程以3個月為限，之後每3個月評估一次。送審時需檢送影像資料，無疾病惡化方可繼續使用。(109/1/1、114/6/1)(3)lenvatinib、sorafenib、atezolizumab併用bevacizumab、tremelimumab併用durvalumab僅得擇一給付，不得互換；且lenvatinib治療失敗後，不得申請使用regorafenib或ramucirumab。(109/1/1、109/8/1、112/8/1、1",
+          "score": 8,
+          "matched_terms": [
+            "bevacizumab"
+          ]
+        },
+        {
+          "page": 177,
+          "hash": "184f7c3a5445e7577fd1799f85fcef7e45a17273",
+          "snippet": "/6/1、113/8/1、114/2/1、114/6/1、115/2/1、115/4/1、115/6/1)(1)晚期肝細胞癌第一線用藥(112/8/1、112/10/1、114/2/1):ⅰ.限atezolizumab與bevacizumab併用，或限durvalumab與tremelimumab併用，適用於治療未曾接受全身性療法之轉移性或無法手術切除且不適合局部治療或局部治療失敗之child-pughaclass晚期肝細胞癌成人患者，並符合下列條件之一：（",
+          "score": 8,
+          "matched_terms": [
+            "bevacizumab"
+          ]
+        },
+        {
+          "page": 178,
+          "hash": "f93c251bbf3ba3355bd809b26ffebb644800881e",
+          "snippet": "8/1)iii.轉移性非鱗狀非小細胞肺癌第一線：限pembrolizumab與pemetrexed(限使用pexeda、apeta或pemetrexedsandoz)及含鉑類化學療法併用，或限atezoli-zumab與bevacizumab(限使用alymsys、avastin、abevmy、vegzelma或mvasi)及carboplatin、paclitaxel併用，做為轉移性且不具有egfr/alk/ros-1腫瘤基因異常的非鱗狀非小細胞肺癌第一線",
+          "score": 20,
+          "matched_terms": [
+            "bevacizumab",
+            "avastin",
+            "限使用alymsys",
+            "abevmy",
+            "vegzelma或mvasi"
+          ]
+        },
+        {
+          "page": 180,
+          "hash": "137ca215d4042ff3f495970df37d8a22e6b2b82c",
+          "snippet": "符合續用申請條件者)本藥品尚未給付於此適應症本藥品尚未給付於此適應症本藥品尚未給付於此適應症本藥品尚未給付於此適應症晚期肝細胞癌第一線用藥（併用）p072本藥品尚未給付於此適應症本藥品尚未給付於此適應症不需檢附報告（併用bevacizumab）本藥品尚未給付於此適應症不需檢附報告(併用tremelimumab)本藥品尚未給付於此適應症頭頸部鱗狀細胞癌第一線用藥p082cps≧20本藥品尚未給付於此適應症本藥品尚未給付於此適應症本藥品尚未給付於此適應症本藥品尚",
+          "score": 8,
+          "matched_terms": [
+            "bevacizumab"
+          ]
+        },
+        {
+          "page": 181,
+          "hash": "9c1302fe099ea5a8ff52902884467179c2ff15fd",
+          "snippet": "尚未給付於此適應症*ventanasp263僅適用於檢測非小細胞肺癌或泌尿道上皮癌維持療法(4)每位病人每個適應症限給付一種免疫檢查點抑制劑且不得互換，治療期間亦不可合併申報該適應症之標靶藥物（atezolizumab與bevacizumab併用於晚期肝細胞癌第一線用藥及非鱗狀非小細胞肺癌第一線用藥除外），無效後或給付時程期滿後則不再給付該適應症相關之標靶藥物。（enfortumabvedotin用於局部晚期或轉移性泌尿道上皮癌第三線用藥及cetuximab",
+          "score": 8,
+          "matched_terms": [
+            "bevacizumab"
+          ]
+        },
+        {
+          "page": 192,
+          "hash": "748c0fbe1c160f241d4ec662a9f40ed2f7134f12",
+          "snippet": "brcawildtype之高度惡性病人。ⅲ.figo(internationalfederationofgynecologyandobstetrics)stageiiiorivdisease。(3)限olaparib併用bevacizumab(限使用alymsys、abevmy、vegzelma或mvasi)，使用於具下列所有條件的成年病人做為維持治療，限用兩年：(114/6/1、114/8/1)：i.對第一線含鉑化療合併bevacizumab有反應(完全反",
+          "score": 16,
+          "matched_terms": [
+            "bevacizumab",
+            "限使用alymsys",
+            "abevmy",
+            "vegzelma或mvasi",
+            "figostageivdisease具germlineorsomaticbrca1"
+          ]
+        },
+        {
+          "page": 217,
+          "hash": "9dadca62000e0d84d53b4dc4cb3d39b1127c98be",
+          "snippet": "。9.134.encorafenib(如braftovi):(115/5/1)1.與cetuximab併用，作為具有brafv600e突變的轉移性結腸直腸癌(crc)成人病人之第二線治療，需同時符合下列條件：(1)曾接受bevacizumab與folfiri（folinicacid/5-fluorouracil/irinotecan）或folfox（folinicacid/5-fluorouracil/oxaliplatin）或5-fluorouracil/",
+          "score": 28,
+          "matched_terms": [
+            "bevacizumab",
+            "bevacizumab與folfiri（folinicacid",
+            "5-fluorouracil",
+            "irinotecan）或folfox（folinicacid",
+            "oxaliplatin）或5-fluorouracil",
+            "leucovorin"
+          ]
+        },
+        {
+          "page": 252,
+          "hash": "dc5011e75992a714122fab78be431cfebc6e7cca",
+          "snippet": "下兒童及青少年，規格量≧3.5ml品項，每4週處方為1瓶。14.9.7.新生血管抑制劑(anti-angiogenicagents):ranibizumab(如lucentis)、aflibercept(如eylea)、bevacizumab(如avastin)(114/3/1)：本類藥品使用早產兒視網膜病變(retinopathyofprematurity,rop)須符合下列條件：1.限曾接受過訓練之眼科專科醫師施行。2.早產兒視網膜病變，病人應在小兒科新",
+          "score": 14,
+          "matched_terms": [
+            "bevacizumab",
+            "avastin"
+          ]
+        }
+      ]
+    },
+    "1731": {
+      "drug_id": 1731,
+      "generic_name": "Capecitabine",
+      "trade_names": "Xeloda",
+      "terms": [
+        "capecitabine",
+        "xeloda",
+        "capecitabine單獨用於無法接受anthracycline治療者",
+        "capecitabine合併ixabepilone用於對taxane有抗藥性且無法接受anthracycline治療者",
+        "capecitabine單獨或合併ixabepilone用於對taxane及anthracycline治療無效者",
+        "1.capecitabine與docetaxel併用於治療對anthracycline化學治療無效之局部晚期或轉移性乳癌病患",
+        "2.用於局部晚期或轉移性乳癌，需符合下列條件之一：",
+        "3.治療轉移性結腸直腸癌的第一線用藥",
+        "4.第三期結腸癌患者手術後的輔助性療法，以八個療程為限",
+        "5.capecitabine合併platinum可使用於晚期胃癌之第一線治療"
+      ],
+      "therapy_line": 1,
+      "prior_auth_required": 0,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 146,
+          "hash": "03f7552b8f911041035888cc01d37ec5e08ecfc6",
+          "snippet": "癌，惟若再加用irinotecan(如campto)則不予給付。(91/10/1)(2)作為第三期結腸癌(duke`sc)原發腫瘤完全切除手術後的輔助療法。(98/2/1)2.與fluoropyrimidine類藥物(如capecitabine、5-fu、ufur，但不包含ts-1)併用，可用於局部晚期及復發/轉移性胃癌之治療。(須依藥品許可證登載之適應症使用)。(98/2/1、98/3/1、98/7/1、102/9/1、102/12/1、109/12/1）3",
+          "score": 8,
+          "matched_terms": [
+            "capecitabine"
+          ]
+        },
+        {
+          "page": 147,
+          "hash": "0804cee0093e37813336478ab07930a988d8ebe9",
+          "snippet": "性或持續性子宮頸癌，且不適合以外科手術及（或）放射療法進行治療的患者。（98/11/1）9.16.2.topotecan口服劑型（100/6/1）限用於小細胞肺癌之第二線化學治療（第一線治療應包括白金化合物）。9.17.capecitabine（如xeloda）：（88/10/1、91/4/1、92/6/1、93/8/1、96/9/1、97/12/1、110/2/1、113/4/1、113/6/1、115/2/1）1.capecitabine與docetaxe",
+          "score": 36,
+          "matched_terms": [
+            "capecitabine",
+            "xeloda",
+            "capecitabine單獨用於無法接受anthracycline治療者",
+            "capecitabine合併ixabepilone用於對taxane有抗藥性且無法接受anthracycline治療者",
+            "capecitabine單獨或合併ixabepilone用於對taxane及anthracycline治療無效者",
+            "1.capecitabine與docetaxel併用於治療對anthracycline化學治療無效之局部晚期或轉移性乳癌病患",
+            "2.用於局部晚期或轉移性乳癌，需符合下列條件之一：",
+            "3.治療轉移性結腸直腸癌的第一線用藥",
+            "4.第三期結腸癌患者手術後的輔助性療法，以八個療程為限",
+            "5.capecitabine合併platinum可使用於晚期胃癌之第一線治療"
+          ]
+        },
+        {
+          "page": 148,
+          "hash": "277222851a97f11cb35e99e3d5d13e5936d6436a",
+          "snippet": "l及pertuzumab與trastuzumab皮下注射複方製劑(如phesgo)併用達18個月上限仍未惡化者，得再次申請本藥品。(108/5/1、113/12/1)3.轉移性胃癌(限iv劑型)trastuzumab合併capecitabine(或5-fluorouracil)及cisplatin適用於未曾接受過化學治療之her2過度表現(ihc3+或fish+)轉移性胃腺癌(或胃食道接合處腺癌)的治療。(109/2/1)4.經事前審查核准後使用，核准後早期乳",
+          "score": 8,
+          "matched_terms": [
+            "capecitabine"
+          ]
+        },
+        {
+          "page": 164,
+          "hash": "e3f73e006ba42cebf378492af721a7de5614dc24",
+          "snippet": "制劑併用。4.與gemcitabine合併使用作為晚期或復發之膽道癌第一線治療。(113/2/1)9.47.lapatinib（如tykerb）：（103/9/1、106/11/1、110/2/1、114/2/1）1.與capecitabine併用，使用於曾接受anthracycline,taxane以及trastuzumab治療後病況惡化之轉移性乳癌併有腦部轉移，且為her2過度表現(ihc3+或fish+)病人。2.每3個月需進行療效評估，病歷應留存評估紀",
+          "score": 8,
+          "matched_terms": [
+            "capecitabine"
+          ]
+        },
+        {
+          "page": 178,
+          "hash": "f93c251bbf3ba3355bd809b26ffebb644800881e",
+          "snippet": "113/6/1、115/2/1)(5)胃癌（不含胃腸基質瘤及神經內分泌腫瘤/癌）：(113/4/1、113/6/1、115/2/1、115/4/1)i.限nivolumab併用fluoropyrimidine（5-fu或capecitabine）及oxaliplatin，用於第一線治療晚期或轉移性且不具有her2過度表現的胃癌病人。(113/4/1、113/6/1、115/2/1)ii.與zolbetuximab僅得擇一使用，且治療失敗時不可互換。(115/4",
+          "score": 8,
+          "matched_terms": [
+            "capecitabine"
+          ]
+        },
+        {
+          "page": 195,
+          "hash": "12ea25afeef85b228636864fec4ada1c228ddede",
+          "snippet": "nsine、lapatinib和trastuzumabderuxtecan僅能擇一給付，不得互換。(114/2/1)9.88.ixabepilone(如ixempra)：(110/2/1)1.限ixabepilone合併capecitabine用於局部晚期或轉移性乳癌患者，需符合以下條件之一：(1)對taxane有抗藥性且無法接受anthracycline治療者。(2)對taxane及anthracycline治療無效者。2.每3個療程需進行療效評估，病歷應留",
+          "score": 8,
+          "matched_terms": [
+            "capecitabine"
+          ]
+        }
+      ]
+    },
+    "1732": {
+      "drug_id": 1732,
+      "generic_name": "Ceritinib",
+      "trade_names": "Zykadia",
+      "terms": [
+        "ceritinib",
+        "zykadia",
+        "須經事前審查核准後使用：",
+        "每次申請事前審查之療程以三個月為限，每三個月需再次申請",
+        "再次申請時並需附上治療後相關臨床資料，如給藥4週後，需追蹤胸部x光或電腦斷層等影像檢查評估療效，往後每4週做胸部x光檢查，每3個月需追蹤其作為評估藥效的影像（如胸部x光或電腦斷層），若病情惡化即不得再次申請",
+        "每日最大劑量限450mg",
+        "適用於alk陽性之晚期非小細胞肺癌第一線治療",
+        "ceritinib與crizotinib",
+        "alectinib",
+        "brigatinib",
+        "lorlatinib用於alk陽性之晚期非小細胞肺癌第一線治療時，僅得擇一使用，除因病人使用後，發生嚴重不良反應或耐受不良之情形外，不得互換"
+      ],
+      "therapy_line": 1,
+      "prior_auth_required": 1,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 166,
+          "hash": "66d41a3ca91c453bbd370de31971d802eaa13f73",
+          "snippet": "需追蹤胸部x光或電腦斷層等影像檢查評估療效，往後每4週做胸部x光檢查，每3個月需追蹤其作為評估藥效的影像(如胸部x光或電腦斷層)，若病情惡化即不得再次申請。(108/12/1、112/11/1)4.crizotinib與ceritinib、alectinib、brigatinib、lorlatinib用於alk陽性之晚期非小細胞肺癌第一線治療時，僅得擇一使用，除因病人使用後，發生嚴重不良反應或耐受不良之情形外，不得互換。(108/7/1、108/12/1",
+          "score": 14,
+          "matched_terms": [
+            "ceritinib",
+            "alectinib",
+            "brigatinib",
+            "lorlatinib用於alk陽性之晚期非小細胞肺癌第一線治療時，僅得擇一使用，除因病人使用後，發生嚴重不良反應或耐受不良之情形外，不得互換"
+          ]
+        },
+        {
+          "page": 171,
+          "hash": "947a7dee142a10bd9a19426bb69885c57289b121",
+          "snippet": "ib或cytokine治療失敗的晚期腎細胞癌病患。2.無效後則不給付temsirolimus。(108/12/1)3.需經事前審查核准後使用，每次申請之療程以3個月為限，送審時需檢送影像資料，每3個月評估一次。9.59.ceritinib(如zykadia)：(106/9/1、106/11/1、108/7/1、108/12/1、111/2/1、111/8/1、112/11/1、113/6/1)1.適用於alk陽性之晚期非小細胞肺癌第一線治療。(108/7",
+          "score": 36,
+          "matched_terms": [
+            "ceritinib",
+            "zykadia",
+            "須經事前審查核准後使用：",
+            "每次申請事前審查之療程以三個月為限，每三個月需再次申請",
+            "每日最大劑量限450mg",
+            "適用於alk陽性之晚期非小細胞肺癌第一線治療",
+            "ceritinib與crizotinib",
+            "alectinib",
+            "brigatinib",
+            "lorlatinib用於alk陽性之晚期非小細胞肺癌第一線治療時，僅得擇一使用，除因病人使用後，發生嚴重不良反應或耐受不良之情形外，不得互換"
+          ]
+        },
+        {
+          "page": 191,
+          "hash": "aa740e313b72902f906d738831b6a7ddececf302",
+          "snippet": "(115.5.22更新)191i.每次申請事前審查之療程以三個月為限，每三個月需再次申請。ii.初次申請時需檢具確實患有非小細胞肺癌之病理或細胞檢查報告，及alk突變檢測報告且需符合全民健康保險藥品給付規定之通則十二。iii.再次申請時並需附上治療後相關臨床資料，如給藥4週後，需追蹤胸部x光或電腦斷層等影像",
+          "score": 18,
+          "matched_terms": [
+            "ceritinib",
+            "每次申請事前審查之療程以三個月為限，每三個月需再次申請",
+            "alectinib",
+            "brigatinib",
+            "lorlatinib用於alk陽性之晚期非小細胞肺癌第一線治療時，僅得擇一使用，除因病人使用後，發生嚴重不良反應或耐受不良之情形外，不得互換"
+          ]
+        }
+      ]
+    },
+    "1733": {
+      "drug_id": 1733,
+      "generic_name": "Cetuximab",
+      "trade_names": "Erbitux",
+      "terms": [
+        "cetuximab",
+        "erbitux",
+        "與folfiri（folinicacid",
+        "5-fluorouracil",
+        "irinotecan）或folfox（folinicacid",
+        "oxaliplatin）合併使用於治療ras原生型",
+        "wild-type",
+        "之轉移性直腸結腸癌病人之第一線治療",
+        "需檢附all-ras基因突變分析檢測報告，且需符合全民健康保險藥品給付規定之通則十二",
+        "ⅰ.本藥品須經事前審查核准後使用，每次申請之療程以18週為限，再次申請必須提出客觀證據",
+        "如：影像學",
+        "證實無惡化，才可繼續使用",
+        "與irinotecan合併使用，治療已接受過含5-fluorouracil",
+        "irinotecan及oxaliplatin二線以上之細胞毒性治療失敗",
+        "具有表皮生長因子受體",
+        "egfr",
+        "表現型且k-ras基因沒有突變的轉移性直腸結腸癌的病人，且於115年1月31日前經審核同意用藥，後續評估符合續用申請條件者",
+        "ⅰ.本藥品須經事前審查核准後使用，每次申請之療程以9週為限，再次申請必須提出客觀證據（如：影像學）證實無惡化，才可繼續使用",
+        "限與放射線療法合併使用於局部晚期之口咽癌",
+        "下咽癌及喉癌病人，且符合下列條件之一：",
+        "須經事前審查核准後使用，每位病人每12週申請一次，需無疾病惡化情形方得繼續使用",
+        "限無法接受局部治療之復發及",
+        "或轉移性頭頸部鱗狀細胞癌，且未曾申報cetuximab之病人使用",
+        "1.直腸結腸癌治療部分：",
+        "2.口咽癌",
+        "下咽癌及喉癌治療部分：",
+        "3.頭頸癌部分"
+      ],
+      "therapy_line": 1,
+      "prior_auth_required": 1,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 152,
+          "hash": "17b2429d3e81fa9b8581631743d1c2dc96fa575e",
+          "snippet": "(115.5.22更新)152(4)pemetrexed(限使用pexeda、apeta或pemetrexedsandoz)與pembrolizumab與含鉑類之化學療法併用於轉移性，不具有egfr/alk/ros-1腫瘤基因異常的非鱗狀非小細胞肺癌的第一線治療，患者需符合免疫檢查點抑制劑之藥品給付規定。(114/6/1、114/8/1)(5)與amivantamab及carboplatin併用於罹患帶有表皮生長因",
+          "score": 88,
+          "matched_terms": [
+            "cetuximab",
+            "erbitux",
+            "與folfiri（folinicacid",
+            "5-fluorouracil",
+            "irinotecan）或folfox（folinicacid",
+            "oxaliplatin）合併使用於治療ras原生型",
+            "wild-type",
+            "之轉移性直腸結腸癌病人之第一線治療",
+            "需檢附all-ras基因突變分析檢測報告，且需符合全民健康保險藥品給付規定之通則十二",
+            "ⅰ.本藥品須經事前審查核准後使用，每次申請之療程以18週為限，再次申請必須提出客觀證據",
+            "如：影像學",
+            "證實無惡化，才可繼續使用",
+            "與irinotecan合併使用，治療已接受過含5-fluorouracil",
+            "irinotecan及oxaliplatin二線以上之細胞毒性治療失敗",
+            "具有表皮生長因子受體",
+            "egfr",
+            "ⅰ.本藥品須經事前審查核准後使用，每次申請之療程以9週為限，再次申請必須提出客觀證據（如：影像學）證實無惡化，才可繼續使用",
+            "限與放射線療法合併使用於局部晚期之口咽癌",
+            "下咽癌及喉癌病人，且符合下列條件之一：",
+            "1.直腸結腸癌治療部分：",
+            "2.口咽癌",
+            "下咽癌及喉癌治療部分："
+          ]
+        },
+        {
+          "page": 153,
+          "hash": "2144d85277f117881abde099be7b598c2d4e8dd9",
+          "snippet": "(115.5.22更新)153ⅲ.聽力障礙者(聽力障礙定義為500hz、1000hz、2000hz平均聽力損失大於25分貝)；ⅳ.無法耐受platinum-based化學治療。(2)須經事前審查核准後使用，每位病人每12週申請一次，需無疾病惡化情形方得繼續使用。(98/7/1、115/2/1)3.頭頸癌部分(106/1/1、106/4/1、112/12/1、115/2/1)：(1)限無法接受局部治療之復發及/或轉移性頭頸部鱗狀細胞癌，且未曾申報cetuximab之病人使用。(",
+          "score": 26,
+          "matched_terms": [
+            "cetuximab",
+            "egfr",
+            "須經事前審查核准後使用，每位病人每12週申請一次，需無疾病惡化情形方得繼續使用",
+            "限無法接受局部治療之復發及",
+            "或轉移性頭頸部鱗狀細胞癌，且未曾申報cetuximab之病人使用",
+            "3.頭頸癌部分"
+          ]
+        },
+        {
+          "page": 158,
+          "hash": "892a7ed655669c22a587c45bba1c6fddd249fd5e",
+          "snippet": "58的化學療法合併使用，作為轉移性大腸或直腸癌患者的第一線治療。(108/3/1)ⅰ.使用總療程以36週為上限(106/4/1)。ⅱ.須經事前審查核准後使用，每次申請事前審查之療程以18週為限，再次申請必須提出客觀證據（如：影像學）證實無惡化，才可繼續使用。(106/4/1)ⅲ.本藥品不得與cetuximab、panitumumab併用。(108/3/1、113/3/1)(2)bevacizumab(除zirabev及abevmy以外)與含有5-",
+          "score": 20,
+          "matched_terms": [
+            "cetuximab",
+            "5-fluorouracil",
+            "如：影像學",
+            "證實無惡化，才可繼續使用"
+          ]
+        },
+        {
+          "page": 167,
+          "hash": "4d37b90747ac12eecd61c5151d1da44b3317842d",
+          "snippet": "(115.5.22更新)167(1)本藥品須經事前審查核准後使用，每次申請之療程以18週為限，再次申請必須提出客觀證據(如：影像學)證實無惡化，才可繼續使用。(2)panitumumab與cetuximab二者僅能擇一使用。(107/6/1、115/2/1)(3)本藥品不得與bevacizumab併用。(107/6/1)(4)經手術完全切除(r0切",
+          "score": 32,
+          "matched_terms": [
+            "cetuximab",
+            "wild-type",
+            "需檢附all-ras基因突變分析檢測報告，且需符合全民健康保險藥品給付規定之通則十二",
+            "如：影像學",
+            "證實無惡化，才可繼續使用",
+            "irinotecan及oxaliplatin二線以上之細胞毒性治療失敗",
+            "egfr"
+          ]
+        },
+        {
+          "page": 181,
+          "hash": "9c1302fe099ea5a8ff52902884467179c2ff15fd",
+          "snippet": "vacizumab併用於晚期肝細胞癌第一線用藥及非鱗狀非小細胞肺癌第一線用藥除外），無效後或給付時程期滿後則不再給付該適應症相關之標靶藥物。（enfortumabvedotin用於局部晚期或轉移性泌尿道上皮癌第三線用藥及cetuximab用於頭頸部鱗狀細胞癌(不含鼻咽癌)除外）。(108/4/1、111/6/1、112/8/1、113/5/1、115/2/1)(5)給付時程期限：自初次處方用藥日起算2年（pembrolizumab用於早期三陰性乳癌依前述",
+          "score": 8,
+          "matched_terms": [
+            "cetuximab"
+          ]
+        },
+        {
+          "page": 217,
+          "hash": "9dadca62000e0d84d53b4dc4cb3d39b1127c98be",
+          "snippet": "(115.5.22更新)217出客觀影像學證據（如：recistcriteria）證實無惡化，才可繼續使用。3.本案藥品與免疫檢查點抑制劑僅能擇一給付，且治療失敗時不可互換。9.134.encorafenib(如braftovi):(115/5/1)1.與cetuximab併用，作為具有brafv600e突變的轉移性結腸直腸",
+          "score": 32,
+          "matched_terms": [
+            "cetuximab",
+            "與folfiri（folinicacid",
+            "5-fluorouracil",
+            "irinotecan）或folfox（folinicacid",
+            "如：影像學",
+            "證實無惡化，才可繼續使用",
+            "egfr"
+          ]
+        }
+      ]
+    },
+    "1737": {
+      "drug_id": 1737,
+      "generic_name": "Docetaxel",
+      "trade_names": null,
+      "terms": [
+        "docetaxel",
+        "局部晚期或轉移性乳癌",
+        "與anthracycline合併使用於腋下淋巴結轉移之早期乳癌之術後輔助性化學治療",
+        "早期乳癌手術後，經診斷為三陰性反應且無淋巴轉移的病人，得作為與cyclophosphamide併用doxorubicin的化學輔助療法",
+        "於荷爾蒙治療失敗之轉移性前列腺癌",
+        "與darolutamide併用於治療高風險轉移性的去勢敏感性前列腺癌",
+        "mcspc",
+        "，患者需符合darolutamide之藥品給付規定",
+        "1.乳癌：",
+        "2.非小細胞肺癌：局部晚期或轉移性非小細胞肺癌",
+        "3.前列腺癌：",
+        "4.頭頸癌：限局部晚期且無遠端轉移之頭頸部鱗狀細胞癌且無法手術切除者，與cisplatin及5-fluorouracil併用，作為放射治療前的引導治療，限使用4個療程",
+        "5.胃腺癌：晚期胃腺癌患者，包括胃食道接合處之腺癌"
+      ],
+      "therapy_line": 1,
+      "prior_auth_required": 0,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 144,
+          "hash": "d407410351fb93acec41f71bb73a86118ae836fd",
+          "snippet": "腫瘤≧4公分或淋巴結陽性n1/n2(排除n3)，且無疾病轉移m0）之不具egfr或alk腫瘤基因異常之非小細胞肺癌術前輔助治療成人病人，至多3個療程，且病人需符合免疫檢查點抑制劑之藥品給付規定。(115/6/1)9.3.docetaxel：（87/7/1、92/11/1、93/8/1、95/8/1、96/1/1、99/6/1、100/1/1、101/9/1、108/1/1、113/5/1、115/6/1）1.本類藥品(除doce及phyxotere之外)",
+          "score": 36,
+          "matched_terms": [
+            "docetaxel",
+            "局部晚期或轉移性乳癌",
+            "與anthracycline合併使用於腋下淋巴結轉移之早期乳癌之術後輔助性化學治療",
+            "早期乳癌手術後，經診斷為三陰性反應且無淋巴轉移的病人，得作為與cyclophosphamide併用doxorubicin的化學輔助療法",
+            "於荷爾蒙治療失敗之轉移性前列腺癌",
+            "與darolutamide併用於治療高風險轉移性的去勢敏感性前列腺癌",
+            "mcspc",
+            "，患者需符合darolutamide之藥品給付規定"
+          ]
+        },
+        {
+          "page": 147,
+          "hash": "0804cee0093e37813336478ab07930a988d8ebe9",
+          "snippet": "citabine（如xeloda）：（88/10/1、91/4/1、92/6/1、93/8/1、96/9/1、97/12/1、110/2/1、113/4/1、113/6/1、115/2/1）1.capecitabine與docetaxel併用於治療對anthracycline化學治療無效之局部晚期或轉移性乳癌病患。2.用於局部晚期或轉移性乳癌，需符合下列條件之一：(110/2/1)(1)capecitabine單獨用於無法接受anthracycline治",
+          "score": 12,
+          "matched_terms": [
+            "docetaxel",
+            "局部晚期或轉移性乳癌"
+          ]
+        },
+        {
+          "page": 148,
+          "hash": "277222851a97f11cb35e99e3d5d13e5936d6436a",
+          "snippet": "sine以14個療程為上限。2.轉移性乳癌(1)單獨使用於治療腫瘤細胞上有her2過度表現(ihc3+或fish+)，曾接受過一次以上化學治療之轉移性乳癌病人。(91/4/1、99/1/1)(2)與paclitaxel或docetaxel併用，使用於未曾接受過化學治療之轉移性乳癌病患，且為her2過度表現(ihc3+或fish+)者。(93/8/1、95/2/1、99/1/1)(3)轉移性乳癌且her2過度表現之病人，僅限先前未使用過本藥品者方可使用。(",
+          "score": 8,
+          "matched_terms": [
+            "docetaxel"
+          ]
+        },
+        {
+          "page": 154,
+          "hash": "81059822f9804b3060d9338a7bca6768590c1a92",
+          "snippet": "02/4/1)(3)先前已使用過platinum類第一線化學治療，或70歲以上接受過第一線化學治療，但仍局部惡化或轉移之腺性非小細胞肺癌之第二線用藥。（97/6/1、111/2/1）(4)先前已使用過platinum類及docetaxel或paclitaxel化學治療後，但仍局部惡化或轉移之非小細胞肺癌之第三線用藥。2.erlotinib與bevacizumab(除zirabev以外)併用，作為無法手術切除的轉移性（第ⅳ期）且帶有表皮生長因子受體(egf",
+          "score": 8,
+          "matched_terms": [
+            "docetaxel"
+          ]
+        },
+        {
+          "page": 165,
+          "hash": "86f5197d99d2215b5ba5999e4df7f072fb21b804",
+          "snippet": "(115.5.22更新)165的去勢敏感性前列腺癌(mcspc)的成年男性(ecog分數須≦1)。高風險需符合下列三項條件中至少兩項：(109/5/1、110/2/1、113/8/1）(1)葛里森分數(gleasonscore)≧8；(2)骨骼掃描出現三個(含)以上病灶且至少其中一",
+          "score": 12,
+          "matched_terms": [
+            "docetaxel",
+            "mcspc"
+          ]
+        },
+        {
+          "page": 168,
+          "hash": "136987d163957e5cca2bfe57fbbbef059cab8e19",
+          "snippet": "(115.5.22更新)168i.用藥紀錄(證明未常規使用止痛藥物，屬無症狀或輕度症狀)。ii.三個月內影像報告證明無臟器轉移。4.治療藥物或手術去勢抗性的轉移性前列腺癌(ecog分數須≦2)且已使用過docetaxel2個療程以上治療無效者。5.前述2、3、4項須經事前審查核准後使用，每3個月需再次申請。（111/3/1、112/9/1）(1)申請時需檢附病理報告、使用雄性素去除療法紀錄及系列psa和睪固酮數據。(106/9/1)(2",
+          "score": 8,
+          "matched_terms": [
+            "docetaxel"
+          ]
+        },
+        {
+          "page": 176,
+          "hash": "e3daf56649d6aae7a5c75d26ebddc49086289eb7",
+          "snippet": ")iii.鱗狀非小細胞肺癌第二線用藥：先前已使用過platinum類化學治療失敗後，又有疾病惡化，且egfr/alk腫瘤基因為原生型之晚期鱗狀非小細胞肺癌成人病人。iv.肺腺癌第三線用藥：先前已使用過platinum類及docetaxel/paclitaxel類二線(含)以上化學治療均失敗，又有疾病惡化，且egfr/alk/ros-1腫瘤基因為原生型之晚期非小細胞肺腺癌成人病人。(3)典型何杰金氏淋巴瘤：先前已接受自體造血幹細胞移植(hsct)與移植後b",
+          "score": 8,
+          "matched_terms": [
+            "docetaxel"
+          ]
+        },
+        {
+          "page": 183,
+          "hash": "9e545ba7e8c23f40f8d7ce8dc1f2e713f0f1369c",
+          "snippet": "估資料再次申請，若疾病有惡化情形即不應再行申請。（113/12/1、114/5/1）2.轉移性乳癌(108/5/1、108/12/1、112/8/1、113/12/1)(1)pertuzumab與trastuzumab及docetaxel併用於治療轉移後未曾以抗her2或化學療法治療之her2過度表現(ihc3+或fish+)轉移性乳癌病人。(108/12/1、112/8/1)(2)須經事前審查核准後使用，核准後每18週須檢附療效評估資料再次申請，若疾病",
+          "score": 8,
+          "matched_terms": [
+            "docetaxel"
+          ]
+        },
+        {
+          "page": 197,
+          "hash": "9156f1d979628c53713bb99316de82ef3f5a19e9",
+          "snippet": "應或耐受不良之情形外，不得互換。4.每日最大劑量限600mg。9.94.darolutamide(如nubeqa)：(110/11/1、112/9/1、113/5/1、113/8/1、115/4/1)1.作為單一療法或與docetaxel併用於治療高風險轉移性的去勢敏感性前列腺癌(mcspc)，總療程以36個月為上限。(113/5/1、114/6/1、115/4/1)(1)須經事前審查核准後使用。(2)每3個月需再次申請，再申請時若psa值下降未超過治療",
+          "score": 12,
+          "matched_terms": [
+            "docetaxel",
+            "mcspc"
+          ]
+        },
+        {
+          "page": 198,
+          "hash": "0ffdb3c7279d7f2b23f769d616a226668cbeeed1",
+          "snippet": "瘤基因原生型、鱗狀癌者需為egfr/alk腫瘤基因原生型。ⅱ.先前已使用過platinum類化學治療失敗後，又有疾病惡化，且egfr/alk腫瘤基因為原生型之晚期鱗狀非小細胞肺癌患者。ⅲ.先前已使用過platinum類及docetaxel/paclitaxel類二線(含)以上化學治療均失敗，又有疾病惡化，且egfr/alk/ros-1腫瘤基因為原生型之晚期非小細胞肺腺癌患者。ⅳ.先前曾接受過至少一線anti-egfrtki治療失敗，且因ntrk基因融合對",
+          "score": 8,
+          "matched_terms": [
+            "docetaxel"
+          ]
+        },
+        {
+          "page": 208,
+          "hash": "e6b62335ca277b4489e18ee9739ef45f8dc43753",
+          "snippet": "mabⅲ：pertuzumab與trastuzumab併用(4)須經事前審查核准後使用，核准後每24週須檢附療效評估資料再次申請，若疾病有惡化情形即不應再行申請。（113/12/1、114/5/1）2.轉移性乳癌(1)與docetaxel併用於治療轉移後未曾以抗her2或化學療法治療之her2過度表現(ihc3+或fish+)轉移性乳癌病人。(2)須經事前審查核准後使用，核准後每18週須檢附療效評估資料再次申請，若疾病有惡化情形即不應再行申請，每位病人至",
+          "score": 8,
+          "matched_terms": [
+            "docetaxel"
+          ]
+        },
+        {
+          "page": 278,
+          "hash": "d502a009d5f2abec2e4d469ea0b2c92bd3f15db5",
+          "snippet": "料□非小細胞肺癌之病理或細胞檢查報告□曾經接受第一線含鉑化學治療，或70歲(含)以上接受過第一線化學治療之證明□影像診斷證明（如胸部x光、電腦斷層或其他可作為評估的影像）□b.限單獨使用於先前已使用過platinum類及docetaxel或paclitaxel化學治療後，但仍局部惡化或轉移之非小細胞肺癌之第三線用藥。※檢附資料□非小細胞肺癌之病理或細胞檢查報告□曾經接受第一線及第二線化學藥物如platinum（cisplatin或carboplatin）",
+          "score": 8,
+          "matched_terms": [
+            "docetaxel"
+          ]
+        }
+      ]
+    },
+    "1739": {
+      "drug_id": 1739,
+      "generic_name": "Enhertu",
+      "trade_names": "Enhertu",
+      "terms": [
+        "enhertu",
+        "之前分別接受過trastuzumab與一種taxane藥物治療，或其合併療法，或pertuzumab與trastuzumab與一種taxane藥物治療",
+        "之前已經接受過轉移性癌症治療，或在輔助療法治療期間或完成治療後6個月內癌症復發",
+        "合併有主要臟器",
+        "不包含骨及軟組織",
+        "須經事前審查核准後使用，核准後每12週須檢附療效評估資料再次申請，若疾病有惡化情形即不應再行申請，每位病人至多給付18個療程為上限",
+        "trastuzumabderuxtecan",
+        "trastuzumabemtansine和lapatinib僅能擇一給付，不得互換",
+        "病人身體狀況良好（ecog≦1）",
+        "須接受過至少一種化學療法治療",
+        "須經事前審查核准後使用，每次申請之療程以12週為限，初次申請時需檢附er",
+        "pr皆為陰性且her2弱陽性",
+        "ihc1+或ihc2+",
+        "ish-",
+        "之檢測報告",
+        "再次申請必須提出客觀證據（如：影像學）證實無惡化，才可繼續使用",
+        "trastuzumabderuxtecan和sacituzumabgovitecan僅能擇一給付，不得互換",
+        "1.單獨使用於具her2過度表現",
+        "ihc3+或fish+",
+        "之轉移性乳癌病人作為二線治療，並同時符合下列情形：",
+        "2.單獨使用於er",
+        "pr皆陰性且具her2弱陽性",
+        "表現之無法切除的局部晚期或轉移性乳癌病人，且符合下列各項條件：",
+        "3.申報醫療費用時「總量」應依實際使用量申報，取至小數點第一位，第二位四捨五入"
+      ],
+      "therapy_line": 2,
+      "prior_auth_required": 1,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 209,
+          "hash": "6399a727f9a62200ceac5acde9da523ddb7f9770",
+          "snippet": ".本藥品與ruxolitinib、momelotinib用於中度風險或高風險之骨髓纖維化治療時，僅得擇一給付。ruxolitinib、momelotinib治療後如疾病惡化不得換用本藥品。(114/10/1)9.115.trastuzumabderuxtecan(如enhertu)：(114/2/1)1.單獨使用於具her2過度表現(ihc3+或fish+)之轉移性乳癌病人作為二線治療，並同時符合下列情形：(1)之前分別接受過trastuzumab與一種taxane藥物治療，或",
+          "score": 86,
+          "matched_terms": [
+            "enhertu",
+            "之前分別接受過trastuzumab與一種taxane藥物治療，或其合併療法，或pertuzumab與trastuzumab與一種taxane藥物治療",
+            "之前已經接受過轉移性癌症治療，或在輔助療法治療期間或完成治療後6個月內癌症復發",
+            "合併有主要臟器",
+            "不包含骨及軟組織",
+            "須經事前審查核准後使用，核准後每12週須檢附療效評估資料再次申請，若疾病有惡化情形即不應再行申請，每位病人至多給付18個療程為上限",
+            "trastuzumabderuxtecan",
+            "trastuzumabemtansine和lapatinib僅能擇一給付，不得互換",
+            "病人身體狀況良好（ecog≦1）",
+            "須接受過至少一種化學療法治療",
+            "須經事前審查核准後使用，每次申請之療程以12週為限，初次申請時需檢附er",
+            "pr皆為陰性且her2弱陽性",
+            "ihc1+或ihc2+",
+            "ish-",
+            "之檢測報告",
+            "再次申請必須提出客觀證據（如：影像學）證實無惡化，才可繼續使用",
+            "trastuzumabderuxtecan和sacituzumabgovitecan僅能擇一給付，不得互換",
+            "1.單獨使用於具her2過度表現",
+            "ihc3+或fish+",
+            "之轉移性乳癌病人作為二線治療，並同時符合下列情形：",
+            "2.單獨使用於er",
+            "pr皆陰性且具her2弱陽性",
+            "表現之無法切除的局部晚期或轉移性乳癌病人，且符合下列各項條件：",
+            "3.申報醫療費用時「總量」應依實際使用量申報，取至小數點第一位，第二位四捨五入"
+          ]
+        }
+      ]
+    },
+    "1740": {
+      "drug_id": 1740,
+      "generic_name": "Erlotinib",
+      "trade_names": "Tarceva",
+      "terms": [
+        "erlotinib",
+        "tarceva",
+        "適用於具有egfr-tk突變之局部侵犯性或轉移性",
+        "即第ⅲb",
+        "ⅲc或第ⅳ期",
+        "之肺腺癌病患之第一線治療，需檢附egfr基因檢測結果報告，且需符合全民健康保險藥品給付規定之通則十二",
+        "已接受4個週期platinum類第一線化學療法後，腫瘤範圍穩定",
+        "stabledisease，不含partialresponse或completeresponse",
+        "之局部晚期或轉移性肺腺癌的維持療法",
+        "先前已使用過platinum類第一線化學治療，或70歲以上接受過第一線化學治療，但仍局部惡化或轉移之腺性非小細胞肺癌之第二線用藥",
+        "先前已使用過platinum類及docetaxel或paclitaxel化學治療後，但仍局部惡化或轉移之非小細胞肺癌之第三線用藥",
+        "用於已接受platinum類第一線化學療法後，病情穩定之維持療法：病歷應留存確實患有肺腺癌之病理或細胞檢查報告，並附已接受4個週期platinum類第一線化學療法後，腫瘤範圍穩定",
+        "之影像診斷證明（如胸部x光",
+        "電腦斷層或其他可作為評估的影像）",
+        "用於第二線用藥：病歷應留存確實患有非小細胞肺癌之病理或細胞檢查報告，並附曾經接受platinum類第一線化學治療，或70歲",
+        "以上接受過第一線化學治療之證明，及目前又有疾病惡化之影像診斷證明（如胸部x光",
+        "電腦斷層或其他可作為評估的影像），此影像證明以可測量（measurable）的病灶為優先，如沒有可以測量的病灶，則可評估（evaluable）的病灶亦可採用",
+        "用於第三線用藥：病歷應留存確實患有非小細胞肺癌之病理或細胞檢查報告，並附曾經接受第一線及第二線化學藥物如platinum",
+        "cisplatin或carboplatin",
+        "與taxane",
+        "paclitaxel或docetaxel",
+        "治療之證明，及目前又有疾病惡化之影像診斷證明（如胸部x光",
+        "每次處方以4週為限，再次處方時需於病歷記錄治療後相關臨床資料，如每4週需追蹤胸部x光或電腦斷層等影像檢查，每8至12週需進行完整療效評估（如胸部x光或電腦斷層）",
+        "本藥品與gefitinib及afatinib不得併用",
+        "本藥品於第一線使用時，與osimertinib及dacomitinib僅得擇一使用，除因耐受性不良，不得互換",
+        "1.限單獨使用於",
+        "2.erlotinib與bevacizumab",
+        "除zirabev以外",
+        "併用，作為無法手術切除的轉移性（第ⅳ期）且帶有表皮生長因子受體",
+        "egfr",
+        "exon21l858r活性化突變之腦轉移非鱗狀非小細胞肺癌病患的第一線治療",
+        "3.使用注意事項",
+        "ⅰ.如需更換使用osimertinib，必須符合osimertinib第一線使用於具有egfrexon19del或exon21l858r基因突變之局部侵犯性或轉移性（即為iiib",
+        "iiic期或第ⅳ期）肺腺癌病患之限制"
+      ],
+      "therapy_line": 1,
+      "prior_auth_required": 0,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 151,
+          "hash": "9522d813ae7cbb790053be08c49d14c73a2e3544",
+          "snippet": "96/11/1、100/6/1、111/2/1)2.使用注意事項(106/11/1、109/4/1、109/10/1、111/4/1、113/3/1）(1)用於第一線用藥：病歷應留存確實患有肺腺癌之病理或細胞檢查報告，及egfr-tk基因突變檢測報告。(100/6/1、106/11/1)(2)用於第二線以上用藥：病歷應留存確實患有肺腺癌之病理或細胞檢查報告，並附曾經接受第一線含鉑化學治療，或70歲(含)以上接受過第一線化學治療之證明，及目前又有",
+          "score": 38,
+          "matched_terms": [
+            "erlotinib",
+            "之影像診斷證明（如胸部x光",
+            "電腦斷層或其他可作為評估的影像）",
+            "以上接受過第一線化學治療之證明，及目前又有疾病惡化之影像診斷證明（如胸部x光",
+            "電腦斷層或其他可作為評估的影像），此影像證明以可測量（measurable）的病灶為優先，如沒有可以測量的病灶，則可評估（evaluable）的病灶亦可採用",
+            "治療之證明，及目前又有疾病惡化之影像診斷證明（如胸部x光",
+            "每次處方以4週為限，再次處方時需於病歷記錄治療後相關臨床資料，如每4週需追蹤胸部x光或電腦斷層等影像檢查，每8至12週需進行完整療效評估（如胸部x光或電腦斷層）",
+            "egfr",
+            "ⅰ.如需更換使用osimertinib，必須符合osimertinib第一線使用於具有egfrexon19del或exon21l858r基因突變之局部侵犯性或轉移性（即為iiib",
+            "iiic期或第ⅳ期）肺腺癌病患之限制"
+          ]
+        },
+        {
+          "page": 153,
+          "hash": "2144d85277f117881abde099be7b598c2d4e8dd9",
+          "snippet": "髓漿細胞(plasmacells)比例≧10%，或是經切片確認且有≧1顆的plasmacytoma。ⅱ.出現下列任一臨床症狀：o.腎功能不全：serumcreatinine＞2.0mg/dl或estimatedgfr(egfr)＜40ml/min，且無其他原因可以解釋。p.高血鈣(correctedserumcalcium＞11.0mg/dl或2.75mmol/l)。iii.貧血(hemoglobin＜10gm/dl且無其他原因可以解釋)。",
+          "score": 30,
+          "matched_terms": [
+            "erlotinib",
+            "tarceva",
+            "適用於具有egfr-tk突變之局部侵犯性或轉移性",
+            "即第ⅲb",
+            "ⅲc或第ⅳ期",
+            "1.限單獨使用於",
+            "egfr"
+          ]
+        },
+        {
+          "page": 154,
+          "hash": "81059822f9804b3060d9338a7bca6768590c1a92",
+          "snippet": "(115.5.22更新)154品給付規定之通則十二。(102/11/1、108/6/1、108/11/1、113/6/1）(2)已接受4個週期platinum類第一線化學療法後，腫瘤範圍穩定(stabledisease，不含partialresponse或completeresponse)之局部晚期或轉移性肺腺癌的維持療法。(102/4/1)(3)先前已使用過platinum類第一線化學治療，或70歲以上接",
+          "score": 100,
+          "matched_terms": [
+            "erlotinib",
+            "已接受4個週期platinum類第一線化學療法後，腫瘤範圍穩定",
+            "stabledisease，不含partialresponse或completeresponse",
+            "之局部晚期或轉移性肺腺癌的維持療法",
+            "先前已使用過platinum類第一線化學治療，或70歲以上接受過第一線化學治療，但仍局部惡化或轉移之腺性非小細胞肺癌之第二線用藥",
+            "先前已使用過platinum類及docetaxel或paclitaxel化學治療後，但仍局部惡化或轉移之非小細胞肺癌之第三線用藥",
+            "用於已接受platinum類第一線化學療法後，病情穩定之維持療法：病歷應留存確實患有肺腺癌之病理或細胞檢查報告，並附已接受4個週期platinum類第一線化學療法後，腫瘤範圍穩定",
+            "之影像診斷證明（如胸部x光",
+            "電腦斷層或其他可作為評估的影像）",
+            "用於第二線用藥：病歷應留存確實患有非小細胞肺癌之病理或細胞檢查報告，並附曾經接受platinum類第一線化學治療，或70歲",
+            "以上接受過第一線化學治療之證明，及目前又有疾病惡化之影像診斷證明（如胸部x光",
+            "電腦斷層或其他可作為評估的影像），此影像證明以可測量（measurable）的病灶為優先，如沒有可以測量的病灶，則可評估（evaluable）的病灶亦可採用",
+            "用於第三線用藥：病歷應留存確實患有非小細胞肺癌之病理或細胞檢查報告，並附曾經接受第一線及第二線化學藥物如platinum",
+            "cisplatin或carboplatin",
+            "與taxane",
+            "paclitaxel或docetaxel",
+            "治療之證明，及目前又有疾病惡化之影像診斷證明（如胸部x光",
+            "每次處方以4週為限，再次處方時需於病歷記錄治療後相關臨床資料，如每4週需追蹤胸部x光或電腦斷層等影像檢查，每8至12週需進行完整療效評估（如胸部x光或電腦斷層）",
+            "本藥品與gefitinib及afatinib不得併用",
+            "本藥品於第一線使用時，與osimertinib及dacomitinib僅得擇一使用，除因耐受性不良，不得互換",
+            "2.erlotinib與bevacizumab",
+            "除zirabev以外",
+            "併用，作為無法手術切除的轉移性（第ⅳ期）且帶有表皮生長因子受體",
+            "egfr",
+            "exon21l858r活性化突變之腦轉移非鱗狀非小細胞肺癌病患的第一線治療",
+            "3.使用注意事項",
+            "ⅰ.如需更換使用osimertinib，必須符合osimertinib第一線使用於具有egfrexon19del或exon21l858r基因突變之局部侵犯性或轉移性（即為iiib",
+            "iiic期或第ⅳ期）肺腺癌病患之限制"
+          ]
+        },
+        {
+          "page": 159,
+          "hash": "9c43b034877e6ea595f77bb08b388243db7eaac5",
+          "snippet": "cbrca1/2致病性或疑似致病性突變者，若已經申請niraparib用於第一線化學治療後維持性治療時不得另外申請bevacizumab併用，除因niraparib耐受性不良，在維持性治療可再換成bevacizumab（除zirabev以外）單獨使用，總申請療程以17個療程為上限。(113/3/1、113/9/1、114/3/1、114/6/1、114/10/1)4.持續性、復發性或轉移性之子宮頸癌：(109/6/1、113/3/1)(1)bevacizu",
+          "score": 12,
+          "matched_terms": [
+            "erlotinib",
+            "除zirabev以外",
+            "egfr"
+          ]
+        },
+        {
+          "page": 163,
+          "hash": "29d0a53130b467718a33270ad0f2c718373df2f8",
+          "snippet": "atinib（如giotrif）：(103/5/1、106/11/1、108/6/1、108/11/1、109/4/1、109/6/1、109/10/1、111/4/1、113/3/1、113/6/1、113/10/1)1.限單獨使用於：(1)具有egfr-tk基因突變之局部晚期或轉移性(即第ⅲb、ⅲc期或第ⅳ期)之肺腺癌病患之第一線治療，需檢附egfr基因檢測結果報告，且需符合全民健康保險藥品給付規定之通則十二。(108/6/1、108/11/1、1",
+          "score": 24,
+          "matched_terms": [
+            "erlotinib",
+            "即第ⅲb",
+            "之肺腺癌病患之第一線治療，需檢附egfr基因檢測結果報告，且需符合全民健康保險藥品給付規定之通則十二",
+            "每次處方以4週為限，再次處方時需於病歷記錄治療後相關臨床資料，如每4週需追蹤胸部x光或電腦斷層等影像檢查，每8至12週需進行完整療效評估（如胸部x光或電腦斷層）",
+            "1.限單獨使用於",
+            "egfr"
+          ]
+        },
+        {
+          "page": 164,
+          "hash": "e3f73e006ba42cebf378492af721a7de5614dc24",
+          "snippet": "(115.5.22更新)164(6)本藥品於第一線使用時，與osimertinib、dacomitinib及bevacizumab併用erlotinib之治療組合僅得擇一使用，除因耐受性不良，不得互換。(109/6/1、109/10/1、111/4/1、113/3/1、113/10/1)ⅰ.如需更換使用osimertinib，必須符合osimertinib第一線使用於具",
+          "score": 14,
+          "matched_terms": [
+            "erlotinib",
+            "egfr",
+            "ⅰ.如需更換使用osimertinib，必須符合osimertinib第一線使用於具有egfrexon19del或exon21l858r基因突變之局部侵犯性或轉移性（即為iiib",
+            "iiic期或第ⅳ期）肺腺癌病患之限制"
+          ]
+        },
+        {
+          "page": 190,
+          "hash": "e7f733abc922630d76a3322f7002d4f6dbcb34b8",
+          "snippet": "ab首次治療同時申請事前審查並經核准後使用。(114/8/1）9.80.osimertinib(如tagrisso)：(109/4/1、109/6/1、109/10/1、111/4/1、113/6/1、113/10/1)1.限單獨使用於：(1)具有egfrexon19del或exon21l858r基因突變之局部侵犯性或轉移性（即為iiib、iiic期或第ⅳ期）肺腺癌病患之第一線治療。(111/4/1、113/10/1)(2)先前已使用過egfr標靶藥物",
+          "score": 24,
+          "matched_terms": [
+            "erlotinib",
+            "之影像診斷證明（如胸部x光",
+            "電腦斷層或其他可作為評估的影像）",
+            "電腦斷層或其他可作為評估的影像），此影像證明以可測量（measurable）的病灶為優先，如沒有可以測量的病灶，則可評估（evaluable）的病灶亦可採用",
+            "1.限單獨使用於",
+            "egfr"
+          ]
+        },
+        {
+          "page": 191,
+          "hash": "aa740e313b72902f906d738831b6a7ddececf302",
+          "snippet": "療後相關臨床資料，若病情惡化即不得再次申請。3.每日最大劑量限180mg。(111/8/1)。9.83.dacomitinib(如vizimpro)：(109/10/1、111/9/1、113/6/1)1.限單獨使用具有egfr-tkexon19del或exon21l858r點突變，且無腦轉移(non-cns)之局部侵犯性或轉移性(即第ⅲb、ⅲc或第ⅳ期)之肺腺癌病患之第一線治療，需檢附egfr基因檢測結果報告，且需符合全民健康保險藥品給付規定",
+          "score": 26,
+          "matched_terms": [
+            "erlotinib",
+            "即第ⅲb",
+            "ⅲc或第ⅳ期",
+            "之肺腺癌病患之第一線治療，需檢附egfr基因檢測結果報告，且需符合全民健康保險藥品給付規定之通則十二",
+            "每次處方以4週為限，再次處方時需於病歷記錄治療後相關臨床資料，如每4週需追蹤胸部x光或電腦斷層等影像檢查，每8至12週需進行完整療效評估（如胸部x光或電腦斷層）",
+            "egfr"
+          ]
+        },
+        {
+          "page": 276,
+          "hash": "963578689390e36b5d8397fe2d411a7490a0a184",
+          "snippet": "住院病歷號碼申請醫師身分證號icd-10代碼疾病名稱使用日期年月日至年月日藥品名稱及代碼申請類別給付規定用法用量申請數量保險人核定欄iressa□b023808100□第一次申請□治療後再次申請a.限單獨使用於(1)具有egfr-tk基因突變之局部侵犯性或轉移性(即第ⅲb期或第ⅳ期)之肺腺癌病患之第一線治療。(2)先前已使用過第一線含鉑化學治療，或70歲(含)以上接受過第一線化學治療，但仍局部惡化或轉移之肺腺癌。影像診斷證明（如胸部x光、電腦斷",
+          "score": 40,
+          "matched_terms": [
+            "erlotinib",
+            "tarceva",
+            "即第ⅲb",
+            "之影像診斷證明（如胸部x光",
+            "電腦斷層或其他可作為評估的影像）",
+            "以上接受過第一線化學治療之證明，及目前又有疾病惡化之影像診斷證明（如胸部x光",
+            "電腦斷層或其他可作為評估的影像），此影像證明以可測量（measurable）的病灶為優先，如沒有可以測量的病灶，則可評估（evaluable）的病灶亦可採用",
+            "治療之證明，及目前又有疾病惡化之影像診斷證明（如胸部x光",
+            "egfr"
+          ]
+        },
+        {
+          "page": 278,
+          "hash": "d502a009d5f2abec2e4d469ea0b2c92bd3f15db5",
+          "snippet": "(115.5.22更新)278附表九之二全民健康保險使用抗癌藥品erlotinib申請表申請類別:□送核□補資料□申復□資料異動受理日期：受理編號：緊急傳真日期：醫療機構名稱保險對象姓名出生原受理編號（申復時填用）預定實施日期代號身分證統一編號科別□門診□住院病歷號碼申請醫師身分證號icd-10代碼疾",
+          "score": 34,
+          "matched_terms": [
+            "erlotinib",
+            "tarceva",
+            "先前已使用過platinum類及docetaxel或paclitaxel化學治療後，但仍局部惡化或轉移之非小細胞肺癌之第三線用藥",
+            "電腦斷層或其他可作為評估的影像）",
+            "cisplatin或carboplatin",
+            "與taxane",
+            "paclitaxel或docetaxel"
+          ]
+        }
+      ]
+    },
+    "1741": {
+      "drug_id": 1741,
+      "generic_name": "Everolimus",
+      "trade_names": null,
+      "terms": [
+        "everolimus",
+        "無法切除或轉移的成人胰臟內分泌腫瘤，其分化程度為良好或中度，或who2010年分類為g1",
+        "為進展性腫瘤，即過去12個月影像檢查為持續惡化者（recist定義為疾病惡化者）",
+        "不可合併使用化學藥物或其他標靶藥物",
+        "除因病人使用本品後，發生嚴重不良反應或耐受不良之情形外，本品與sunitinib不得轉換使用",
+        "腫瘤分化程度為良好者",
+        "5.除晚期腎細胞癌之外，其他疾病需經事前審查核准後使用，每次申請之療程以3個月為限",
+        "初次申請時需檢送病理報告及影像報告，之後每3個月申請一次，再次申請時需檢附影像資料及前次治療結果評估資料證實無惡化，才可繼續使用",
+        "6.限每日最大劑量為10mg",
+        "限併有水腦症狀或其他顯著神經學症狀，且經神經外科專科醫師評估不適合接受或無法以外科切除手術的患者使用",
+        "1.治療經vegf-targeted療法無效後之晚期腎細胞癌患者",
+        "2.使用於胰臟神經內分泌腫瘤成人病患，需同時符合下列條件：（）",
+        "3.使用於無法切除",
+        "局部晚期或轉移之胃腸道或肺部來源之非功能性神經內分泌腫瘤成人病患，需同時符合下列條件：（）",
+        "4.與exemestane併用，作為先前已使用過非類固醇類之芳香環酶抑制劑治療無效，而未曾使用exemestane之荷爾蒙接受體陽性",
+        "her2受體陰性且尚未出現器官轉移危急症狀",
+        "visceralcrisis",
+        "之轉移性乳癌病人的治療",
+        "本品與tucidinostat僅得擇一使用，除因耐受性不良，不得互換",
+        "且使用本品無效後，不得申請cdk4",
+        "6抑制劑藥品（",
+        "1.治療患有結節性硬化症",
+        "tuberoussclerosis",
+        "之腦室管膜下巨細胞星狀瘤",
+        "sega:subependymalgiantcellastrocytoma",
+        "2.結節性硬化症併有腎血管肌脂肪瘤之成年病患，且需符合以下條件"
+      ],
+      "therapy_line": 2,
+      "prior_auth_required": 1,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 156,
+          "hash": "8fcd5835f80168f222e8514b0692702465d2fd9e",
+          "snippet": "9.35.carmustine植入劑(如gliadelwafer)：(100/2/1)附表八之四1.作為復發性多形神經膠母細胞瘤病人的手術輔助，且不得與temozolomide併用。2.需經事前審查核准後使用。9.36.everolimus：（100/2/1、102/1/1）附表九之九9.36.1.everolimus5mg及10mg(如afinitor5mg及10mg)：（100/2/1、102/1/1、104/9/1、104/12/1、106/3/1、",
+          "score": 14,
+          "matched_terms": [
+            "everolimus",
+            "為進展性腫瘤，即過去12個月影像檢查為持續惡化者（recist定義為疾病惡化者）",
+            "1.治療經vegf-targeted療法無效後之晚期腎細胞癌患者"
+          ]
+        },
+        {
+          "page": 157,
+          "hash": "32b47abd9463179dd3e80ee3933a2f93efdb7365",
+          "snippet": "(115.5.22更新)157(3)不可合併使用化學藥物或其他標靶藥物。(4)除因病人使用本品後，發生嚴重不良反應或耐受不良之情形外，本品與sunitinib不得轉換使用。3.使用於無法切除、局部晚期或轉移之胃腸道或肺部來源之非功能性神經內分泌腫瘤成人病患，需同時符合下列條件：（108/1",
+          "score": 64,
+          "matched_terms": [
+            "everolimus",
+            "為進展性腫瘤，即過去12個月影像檢查為持續惡化者（recist定義為疾病惡化者）",
+            "不可合併使用化學藥物或其他標靶藥物",
+            "除因病人使用本品後，發生嚴重不良反應或耐受不良之情形外，本品與sunitinib不得轉換使用",
+            "腫瘤分化程度為良好者",
+            "5.除晚期腎細胞癌之外，其他疾病需經事前審查核准後使用，每次申請之療程以3個月為限",
+            "初次申請時需檢送病理報告及影像報告，之後每3個月申請一次，再次申請時需檢附影像資料及前次治療結果評估資料證實無惡化，才可繼續使用",
+            "6.限每日最大劑量為10mg",
+            "限併有水腦症狀或其他顯著神經學症狀，且經神經外科專科醫師評估不適合接受或無法以外科切除手術的患者使用",
+            "3.使用於無法切除",
+            "4.與exemestane併用，作為先前已使用過非類固醇類之芳香環酶抑制劑治療無效，而未曾使用exemestane之荷爾蒙接受體陽性",
+            "her2受體陰性且尚未出現器官轉移危急症狀",
+            "visceralcrisis",
+            "之轉移性乳癌病人的治療",
+            "且使用本品無效後，不得申請cdk4",
+            "6抑制劑藥品（",
+            "1.治療患有結節性硬化症",
+            "tuberoussclerosis",
+            "之腦室管膜下巨細胞星狀瘤",
+            "sega:subependymalgiantcellastrocytoma",
+            "2.結節性硬化症併有腎血管肌脂肪瘤之成年病患，且需符合以下條件"
+          ]
+        },
+        {
+          "page": 185,
+          "hash": "b73c8cf5421e351b8ae007d7eab11d00079786ab",
+          "snippet": "(115.5.22更新)185(2)her-2檢測為陰性。(3)經完整疾病評估後未出現器官轉移危急症狀(visceralcrisis)且無中樞神經系統(cns)轉移。(4)骨轉移不可為唯一轉移部位。4.經事前審查核准後使用，核准後每24週須檢附療效評估資料再次申請，若疾病惡化即必須停止使用，且後續不得再申請使用ribociclib、palbocicl",
+          "score": 10,
+          "matched_terms": [
+            "everolimus",
+            "visceralcrisis"
+          ]
+        },
+        {
+          "page": 215,
+          "hash": "3b657d7550cbf4483ad099a4972efbc82c567e0c",
+          "snippet": "/12/1)1.與exemestane併用，適用於曾接受過至少一種治療轉移性的內分泌併用cdk4/6抑制劑治療後復發或惡化，且未曾使用exemestane之荷爾蒙接受體陽性、her2受體陰性，且尚未出現器官轉移危急症狀(visceralcrisis)之停經後轉移性乳癌病人。2.需經事前審查核准後使用，每次申請之療程以3個月為限。初次申請時需檢送病理報告及影像報告，之後每3個月申請一次，再次申請時需檢附影像資料及前次治療結果評估資料證實無惡化，才可繼續使用。3.本藥",
+          "score": 14,
+          "matched_terms": [
+            "everolimus",
+            "初次申請時需檢送病理報告及影像報告，之後每3個月申請一次，再次申請時需檢附影像資料及前次治療結果評估資料證實無惡化，才可繼續使用",
+            "visceralcrisis"
+          ]
+        },
+        {
+          "page": 291,
+          "hash": "76d92d3589044e81a1e9e82e7603a105ac0466a6",
+          "snippet": "(115.5.22更新)291醫事服務機構醫院申請日期：年月日印信文號：承辦人複核科長決行附表九之九全民健康保險使用抗癌藥品everolimus申請表申請類別:□送核□補資料□申復□資料異動受理日期：受理編號：緊急傳真日期：醫療機構名稱保險對象姓名出生原受理編號（申復時填用）預定實施日期代號身分證統一編號科別□門診□住院病歷號碼申請醫師身分證號icd-10代碼疾",
+          "score": 8,
+          "matched_terms": [
+            "everolimus"
+          ]
+        }
+      ]
+    },
+    "1742": {
+      "drug_id": 1742,
+      "generic_name": "Exemestane",
+      "trade_names": "Aromasin Sugar Coated Tablets",
+      "terms": [
+        "exemestane",
+        "aromasinsugarcoatedtablets",
+        "病歷上應詳細記載手術資料",
+        "病理報告",
+        "應包含er",
+        "pr之檢測結果且無復發現象",
+        "本案藥品使用不得超過三年",
+        "有腦血管梗塞病史者",
+        "有靜脈血栓栓塞症病史者",
+        "有子宮異常出血病史，且「經陰道超音波檢查」判定為子宮內膜異常增生的高危險群",
+        "手術後大於等於11年且無復發者不得使用",
+        "每日最大劑量2.5mg，使用不得超過四年",
+        "每日最大劑量2.5mg，使用不得超過五年",
+        "若由tamoxifen轉換使用本品，則使用期限合計不得超過5年",
+        "1.限停經後或卵巢切除後，且女性荷爾蒙受體",
+        "estrogenreceptor",
+        "陽性之晚期乳癌病患，經使用tamoxifen無效後，方可使用",
+        "2.具有雌激素受體陽性之停經婦女，使用tamoxifen至少兩年之高危險早期侵犯性乳癌的輔助治療，且不得與tamoxifen或其他aromataseinhibitor併用",
+        "使用時需同時符合下列規定：",
+        "1.停經後雌激素接受器為陽性或不清楚之局部晚期或轉移性乳癌第一線治療",
+        "2.停經後婦女晚期乳癌，雌激素接受器為陰性，但曾對tamoxifen有陽性反應者",
+        "3.停經後婦女罹患早期侵犯性乳癌，經外科手術切除後且雌激素接受器為陽性，且有血栓栓塞症或子宮內膜異常增生的高危險群，而無法使用tamoxifen治療者",
+        "1.接受抗動情激素治療失敗的自然或人工停經後之末期乳癌病人之治療",
+        "停經後之局部晚期或轉移性乳癌婦女患者之第一線治療用藥",
+        "2.停經後且荷爾蒙接受體呈陽性，有淋巴結轉移之乳癌病人，作為tamoxifen治療五年後的延伸治療，且不得與其他aromataseinhibitor併用",
+        "使用時需同時符合下列規定：（）",
+        "3.停經後且荷爾蒙接受體呈陽性之早期乳癌病人，經外科手術切除後之輔助治療，且不得與tamoxifen或其他aromataseinhibitor併用"
+      ],
+      "therapy_line": 1,
+      "prior_auth_required": 0,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 143,
+          "hash": "aaa918b6c7d1d8fe477faf4d26b004cf67504a4c",
+          "snippet": "(115.5.22更新)143第9節抗癌瘤藥物antineoplasticsdrugs9.1.aromataseinhibitors9.1.1.exemestane(如aromasinsugarcoatedtablets)：（88/11/1、90/10/1、99/6/1、105/8/1)1.限停經後或卵巢切除後，且女性荷爾蒙受體(estrogenreceptor)陽性之晚期乳癌病患",
+          "score": 86,
+          "matched_terms": [
+            "exemestane",
+            "aromasinsugarcoatedtablets",
+            "病歷上應詳細記載手術資料",
+            "病理報告",
+            "應包含er",
+            "pr之檢測結果且無復發現象",
+            "本案藥品使用不得超過三年",
+            "有腦血管梗塞病史者",
+            "有靜脈血栓栓塞症病史者",
+            "有子宮異常出血病史，且「經陰道超音波檢查」判定為子宮內膜異常增生的高危險群",
+            "手術後大於等於11年且無復發者不得使用",
+            "每日最大劑量2.5mg，使用不得超過四年",
+            "每日最大劑量2.5mg，使用不得超過五年",
+            "若由tamoxifen轉換使用本品，則使用期限合計不得超過5年",
+            "1.限停經後或卵巢切除後，且女性荷爾蒙受體",
+            "estrogenreceptor",
+            "陽性之晚期乳癌病患，經使用tamoxifen無效後，方可使用",
+            "2.具有雌激素受體陽性之停經婦女，使用tamoxifen至少兩年之高危險早期侵犯性乳癌的輔助治療，且不得與tamoxifen或其他aromataseinhibitor併用",
+            "使用時需同時符合下列規定：",
+            "1.停經後雌激素接受器為陽性或不清楚之局部晚期或轉移性乳癌第一線治療",
+            "2.停經後婦女晚期乳癌，雌激素接受器為陰性，但曾對tamoxifen有陽性反應者",
+            "3.停經後婦女罹患早期侵犯性乳癌，經外科手術切除後且雌激素接受器為陽性，且有血栓栓塞症或子宮內膜異常增生的高危險群，而無法使用tamoxifen治療者",
+            "1.接受抗動情激素治療失敗的自然或人工停經後之末期乳癌病人之治療",
+            "停經後之局部晚期或轉移性乳癌婦女患者之第一線治療用藥",
+            "2.停經後且荷爾蒙接受體呈陽性，有淋巴結轉移之乳癌病人，作為tamoxifen治療五年後的延伸治療，且不得與其他aromataseinhibitor併用",
+            "3.停經後且荷爾蒙接受體呈陽性之早期乳癌病人，經外科手術切除後之輔助治療，且不得與tamoxifen或其他aromataseinhibitor併用"
+          ]
+        },
+        {
+          "page": 157,
+          "hash": "32b47abd9463179dd3e80ee3933a2f93efdb7365",
+          "snippet": "泌腫瘤成人病患，需同時符合下列條件：（108/10/1）(1)腫瘤分化程度為良好者。(2)為進展性腫瘤，即過去12個月影像檢查為持續惡化者（recist定義為疾病惡化者）。(3)不可合併使用化學藥物或其他標靶藥物。4.與exemestane併用，作為先前已使用過非類固醇類之芳香環酶抑制劑治療無效，而未曾使用exemestane之荷爾蒙接受體陽性、her2受體陰性且尚未出現器官轉移危急症狀(visceralcrisis)之轉移性乳癌病人的治療。本品與tuci",
+          "score": 12,
+          "matched_terms": [
+            "exemestane",
+            "病理報告"
+          ]
+        },
+        {
+          "page": 215,
+          "hash": "3b657d7550cbf4483ad099a4972efbc82c567e0c",
+          "snippet": "inib用於中度風險或高風險之骨髓纖維化治療時，僅得擇一給付。ruxolitinib、fedratinib治療後如疾病惡化不得換用本藥品。9.128.tucidinostat(如kepida)：(114/12/1)1.與exemestane併用，適用於曾接受過至少一種治療轉移性的內分泌併用cdk4/6抑制劑治療後復發或惡化，且未曾使用exemestane之荷爾蒙接受體陽性、her2受體陰性，且尚未出現器官轉移危急症狀(visceralcrisis)之停經後",
+          "score": 12,
+          "matched_terms": [
+            "exemestane",
+            "病理報告"
+          ]
+        }
+      ]
+    },
+    "1743": {
+      "drug_id": 1743,
+      "generic_name": "Fluorouracil",
+      "trade_names": null,
+      "terms": [
+        "fluorouracil",
+        "5-fluorouracil",
+        "5-fu",
+        "：乳癌術後輔助化療及轉移性乳癌治療"
+      ],
+      "therapy_line": 2,
+      "prior_auth_required": 0,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 144,
+          "hash": "d407410351fb93acec41f71bb73a86118ae836fd",
+          "snippet": "併用於治療高風險轉移性的去勢敏感性前列腺癌(mcspc)，患者需符合darolutamide之藥品給付規定。(113/5/1)(4)頭頸癌：限局部晚期且無遠端轉移之頭頸部鱗狀細胞癌且無法手術切除者，與cisplatin及5-fluorouracil併用，作為放射治療前的引導治療，限使用4個療程。(100/1/1)(5)胃腺癌：晚期胃腺癌患者，包括胃食道接合處之腺癌。(108/1/1)9.4.gemcitabine（如gemzar）：（92/12/1、93/8/1、",
+          "score": 10,
+          "matched_terms": [
+            "fluorouracil",
+            "5-fluorouracil"
+          ]
+        },
+        {
+          "page": 146,
+          "hash": "03f7552b8f911041035888cc01d37ec5e08ecfc6",
+          "snippet": "/1、98/2/1、98/3/1、98/7/1、102/9/1、102/12/1、109/12/1、110/5/1、110/6/1、110/7/1、111/11/1、113/4/1、113/6/1、115/2/1)1.和5-fu和folinicacid併用(1)治療轉移性結腸直腸癌，惟若再加用irinotecan(如campto)則不予給付。(91/10/1)(2)作為第三期結腸癌(duke`sc)原發腫瘤完全切除手術後的輔助療法。(98/2/",
+          "score": 12,
+          "matched_terms": [
+            "fluorouracil",
+            "5-fluorouracil",
+            "5-fu"
+          ]
+        },
+        {
+          "page": 148,
+          "hash": "277222851a97f11cb35e99e3d5d13e5936d6436a",
+          "snippet": "rastuzumab皮下注射複方製劑(如phesgo)併用達18個月上限仍未惡化者，得再次申請本藥品。(108/5/1、113/12/1)3.轉移性胃癌(限iv劑型)trastuzumab合併capecitabine(或5-fluorouracil)及cisplatin適用於未曾接受過化學治療之her2過度表現(ihc3+或fish+)轉移性胃腺癌(或胃食道接合處腺癌)的治療。(109/2/1)4.經事前審查核准後使用，核准後早期乳癌及轉移性胃癌每24週、晚期乳癌",
+          "score": 10,
+          "matched_terms": [
+            "fluorouracil",
+            "5-fluorouracil"
+          ]
+        },
+        {
+          "page": 152,
+          "hash": "17b2429d3e81fa9b8581631743d1c2dc96fa575e",
+          "snippet": "、106/1/1、106/4/1、107/6/1、110/6/1、111/2/1、112/12/1、113/6/1、115/2/1、115/5/1)1.直腸結腸癌治療部分：(1)與folfiri（folinicacid/5-fluorouracil/irinotecan）或folfox（folinicacid/5-fluorouracil/oxaliplatin）合併使用於治療ras原生型(wild-type)之轉移性直腸結腸癌病人之第一線治療。需檢附all-ra",
+          "score": 10,
+          "matched_terms": [
+            "fluorouracil",
+            "5-fluorouracil"
+          ]
+        },
+        {
+          "page": 157,
+          "hash": "32b47abd9463179dd3e80ee3933a2f93efdb7365",
+          "snippet": "2/8/1、113/3/1、113/6/1、113/9/1、114/3/1、114/6/1、114/8/1、114/10/1)1.轉移性大腸或直腸癌：(1)bevacizumab與folfiri（folinicacid/5-fluorouracil/irinotecan）或folfox（folinicacid/5-fluorouracil/oxaliplatin）或5-fluorouracil/leucovorin",
+          "score": 10,
+          "matched_terms": [
+            "fluorouracil",
+            "5-fluorouracil"
+          ]
+        },
+        {
+          "page": 158,
+          "hash": "892a7ed655669c22a587c45bba1c6fddd249fd5e",
+          "snippet": "像學）證實無惡化，才可繼續使用。(106/4/1)ⅲ.本藥品不得與cetuximab、panitumumab併用。(108/3/1、113/3/1)(2)bevacizumab(除zirabev及abevmy以外)與含有5-fluorouracil/leucovorin/oxaliplatin的化學療法合併使用，作為先前接受過以fluoropyrimidine為基礎的化學療法併用cetuximab或panitumumab無效且未曾接受過bevacizumab治療，",
+          "score": 10,
+          "matched_terms": [
+            "fluorouracil",
+            "5-fluorouracil"
+          ]
+        },
+        {
+          "page": 166,
+          "hash": "66d41a3ca91c453bbd370de31971d802eaa13f73",
+          "snippet": "受性不良，不得互換。(110/3/1）9.53.panitumumab（如vectibix）：(105/4/1、107/6/1、110/6/1、113/6/1、115/2/1)1.與folfox（folinicacid/5-fluorouracil/oxaliplatin）或folfiri（folinicacid/5-fluorouracil/irinotecan）合併使用於治療ras原生型(wild-type)之轉移性直腸結腸癌病人之第一線治療。需檢附all-r",
+          "score": 10,
+          "matched_terms": [
+            "fluorouracil",
+            "5-fluorouracil"
+          ]
+        },
+        {
+          "page": 167,
+          "hash": "4d37b90747ac12eecd61c5151d1da44b3317842d",
+          "snippet": "ab二者僅能擇一使用。(107/6/1、115/2/1)(3)本藥品不得與bevacizumab併用。(107/6/1)(4)經手術完全切除(r0切除)且查無轉移病灶者不得申請給付。(115/2/1)2.治療已接受過含5fluorouracil、irinotecan及oxaliplatin二線以上之細胞毒性治療失敗、ras原生型(wild-type)的轉移性直腸結腸癌的病人。需檢附all-ras基因突變分析檢測報告，且需符合全民健康保險藥品給付規定之通則十二。",
+          "score": 8,
+          "matched_terms": [
+            "fluorouracil"
+          ]
+        },
+        {
+          "page": 198,
+          "hash": "0ffdb3c7279d7f2b23f769d616a226668cbeeed1",
+          "snippet": "過至少一線anti-egfrtki治療失敗，且因ntrk基因融合對anti-egfrtki產生抗性之局部侵犯性或轉移性之egfr突變非小細胞肺癌患者。(2)大腸直腸癌:先前已使用過folfiri（folinicacid/5-fluorouracil/irinotecan）或folfox（folinicacid/5-fluorouracil/oxaliplatin）治療失敗，又有疾病惡化之轉移性直腸結腸癌患者。(3)黑色素瘤:先前曾接受過至少一次全身性治療失敗，又有",
+          "score": 10,
+          "matched_terms": [
+            "fluorouracil",
+            "5-fluorouracil"
+          ]
+        },
+        {
+          "page": 217,
+          "hash": "9dadca62000e0d84d53b4dc4cb3d39b1127c98be",
+          "snippet": "15/5/1)1.與cetuximab併用，作為具有brafv600e突變的轉移性結腸直腸癌(crc)成人病人之第二線治療，需同時符合下列條件：(1)曾接受bevacizumab與folfiri（folinicacid/5-fluorouracil/irinotecan）或folfox（folinicacid/5-fluorouracil/oxaliplatin）或5-fluorouracil/leucovorin合併使用之全身性療法。(2)未曾接受過抗表皮生長因",
+          "score": 10,
+          "matched_terms": [
+            "fluorouracil",
+            "5-fluorouracil"
+          ]
+        }
+      ]
+    },
+    "1744": {
+      "drug_id": 1744,
+      "generic_name": "Fulvestrant",
+      "trade_names": "Fustron",
+      "terms": [
+        "fulvestrant",
+        "fustron",
+        "1.單獨使用於患有雌激素受體陽性的局部晚期或轉移性乳癌之停經病人，其已接受輔助抗雌激素療法但疾病仍復發，或使用抗雌激素療法但疾病仍惡化",
+        "2.與alpelisib併用於曾接受cdk4",
+        "6抑制劑治療但疾病惡化的停經後轉移性乳癌病人，且須符合alpelisib之藥品給付規定",
+        "3.與cdk4",
+        "6抑制劑",
+        "限使用palbociclib",
+        "併用於曾接受過內分泌療法之局部晚期或轉移性乳癌病人，且須符合cdk4",
+        "6抑制劑之藥品給付規定"
+      ],
+      "therapy_line": 2,
+      "prior_auth_required": 0,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 184,
+          "hash": "e0cde22cfcf13fff4658f9cd53438bfc7c7b84f2",
+          "snippet": "情惡化應即停止使用。(4)若併用低劑量cytarabine，每日至多處方6粒，最多給付4個療程。若併用azacitidine治療，每日至多處方4粒，最多給付6個療程。(110/7/1、114/8/1)9.72.cdk4/6抑制劑(如ribociclib；palbociclib)：(108/10/1、108/12/1、109/4/1、109/10/1、110/5/1、110/10/1、113/1/1、113/3/1、114/7/1、115/1/1",
+          "score": 10,
+          "matched_terms": [
+            "fulvestrant",
+            "6抑制劑"
+          ]
+        },
+        {
+          "page": 215,
+          "hash": "3b657d7550cbf4483ad099a4972efbc82c567e0c",
+          "snippet": "ib、fedratinib治療後如疾病惡化不得換用本藥品。9.128.tucidinostat(如kepida)：(114/12/1)1.與exemestane併用，適用於曾接受過至少一種治療轉移性的內分泌併用cdk4/6抑制劑治療後復發或惡化，且未曾使用exemestane之荷爾蒙接受體陽性、her2受體陰性，且尚未出現器官轉移危急症狀(visceralcrisis)之停經後轉移性乳癌病人。2.需經事前審查核准後使用，每次申請之療程以3個月為",
+          "score": 10,
+          "matched_terms": [
+            "fulvestrant",
+            "6抑制劑"
+          ]
+        },
+        {
+          "page": 216,
+          "hash": "4a66a0d94603e44ef2c17d62235b8250df86e12d",
+          "snippet": "(115.5.22更新)216之通則十二。(2)核准後每12週需檢附療效評估資料再次申請，若疾病惡化及必須停止使用。3.每日最多處方2粒。4.本藥品併用fulvestrant與capivasertib併用fulvestrant用於pik3ca基因突變病人時，僅得擇一給付。(115/6/1)9.130.fulvestrant(如fustron)：(115/1/1、115/6/1)1.單獨使用於",
+          "score": 26,
+          "matched_terms": [
+            "fulvestrant",
+            "fustron",
+            "1.單獨使用於患有雌激素受體陽性的局部晚期或轉移性乳癌之停經病人，其已接受輔助抗雌激素療法但疾病仍復發，或使用抗雌激素療法但疾病仍惡化",
+            "3.與cdk4",
+            "6抑制劑",
+            "限使用palbociclib",
+            "併用於曾接受過內分泌療法之局部晚期或轉移性乳癌病人，且須符合cdk4",
+            "6抑制劑之藥品給付規定"
+          ]
+        },
+        {
+          "page": 217,
+          "hash": "9dadca62000e0d84d53b4dc4cb3d39b1127c98be",
+          "snippet": "程以24週為上限。4.使用本品併用cetuximab作為第二線治療，不得再申請給付抗表皮生長因子受體(anti-egfr)藥品作為後續治療。9.135.capivasertib(如truqap)：(115/6/1)1.與fulvestrant併用於曾接受cdk4/6抑制劑治療但疾病惡化的停經後轉移性乳癌病人，且須完全符合下列條件：(1)荷爾蒙受體為陽性(er或pr>30%)。(2)第二型人類表皮生長因子受體(her2)陰性。(3)具pik3ca/akt1/p",
+          "score": 10,
+          "matched_terms": [
+            "fulvestrant",
+            "6抑制劑"
+          ]
+        }
+      ]
+    },
+    "1745": {
+      "drug_id": 1745,
+      "generic_name": "Gemcitabine",
+      "trade_names": "Gemzar",
+      "terms": [
+        "gemcitabine",
+        "gemzar",
+        "1.晚期或無法手術切除之非小細胞肺癌及胰臟癌病患",
+        "2.晚期膀胱癌病患",
+        "3.gemcitabine與paclitaxel併用，可使用於曾經使用過anthracycline之局部復發且無法手術切除或轉移性之乳癌病患",
+        "4.用於曾經使用含鉑類藥物",
+        "platinum-based",
+        "治療後復發且間隔至少6個月之卵巢癌，作為第二線治療",
+        "5.無法手術切除或晚期或復發之膽道癌",
+        "含肝內膽管",
+        "6.與durvalumab及cisplatin併用於治療局部晚期或轉移性未接受治療或不可手術之膽道癌",
+        "biliarytractcancer",
+        "成人病人",
+        "壺腹癌除外",
+        "，患者需符合免疫檢查點抑制劑之藥品給付規定",
+        "7.與nivolumab及cisplatin併用於無法切除或轉移性泌尿道上皮癌成人病人的第一線治療，病人需符合免疫檢查點抑制劑之藥品給付規定，且至多6個療程"
+      ],
+      "therapy_line": 1,
+      "prior_auth_required": 0,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 144,
+          "hash": "d407410351fb93acec41f71bb73a86118ae836fd",
+          "snippet": "(115.5.22更新)1443.與pembrolizumab及paclitaxel併用於轉移性鱗狀非小細胞肺癌的第一線治療，患者需符合免疫檢查點抑制劑之藥品給付規定。(112/12/1)4.與atezolizumab及etoposide併用，或與durvalumab及etoposide併用於擴散期(extensivestage)小細胞肺癌成人患者時，患者需符合免疫檢查點抑制劑之藥品",
+          "score": 18,
+          "matched_terms": [
+            "gemcitabine",
+            "gemzar",
+            "成人病人",
+            "，患者需符合免疫檢查點抑制劑之藥品給付規定"
+          ]
+        },
+        {
+          "page": 145,
+          "hash": "581f58e874e57dbe5255eed825cf53945226a6e9",
+          "snippet": "(115.5.22更新)145(3)gemcitabine與paclitaxel併用，可使用於曾經使用過anthracycline之局部復發且無法手術切除或轉移性之乳癌病患。（94/10/1）(4)用於曾經使用含鉑類藥物(platinum-based)治療後復發且間隔至少6個月",
+          "score": 22,
+          "matched_terms": [
+            "gemcitabine",
+            "platinum-based",
+            "治療後復發且間隔至少6個月之卵巢癌，作為第二線治療",
+            "含肝內膽管",
+            "biliarytractcancer",
+            "成人病人",
+            "壺腹癌除外",
+            "，患者需符合免疫檢查點抑制劑之藥品給付規定"
+          ]
+        },
+        {
+          "page": 146,
+          "hash": "03f7552b8f911041035888cc01d37ec5e08ecfc6",
+          "snippet": "合免疫檢查點抑制劑之藥品給付規定。(113/4/1、113/6/1、115/2/1)5.與nivolumab及fluoropyrimidine併用於無法接受化學放射性治療或手術切除等治癒性治療之晚期或轉移性食道鱗狀細胞癌成人病人的第一線治療，病人需符合免疫檢查點抑制劑之藥品給付規定。(115/2/1)9.11.uracil-tegafur：(如ufur)(100/1/1)1.限轉移性胃癌、轉移性直腸癌、轉移性結腸癌、轉移性乳癌之病患使用（89/",
+          "score": 10,
+          "matched_terms": [
+            "gemcitabine",
+            "成人病人"
+          ]
+        },
+        {
+          "page": 164,
+          "hash": "e3f73e006ba42cebf378492af721a7de5614dc24",
+          "snippet": "性手術的成年患者，限用1年。(2)需經事前審查核准後使用。3.非小細胞肺癌(109/2/1)(1)曾使用含鉑之化學藥物治療失敗的局部晚期或轉移性之非小細胞肺癌。(2)不得與標靶治療、其他化療或免疫檢查點抑制劑併用。4.與gemcitabine合併使用作為晚期或復發之膽道癌第一線治療。(113/2/1)9.47.lapatinib（如tykerb）：（103/9/1、106/11/1、110/2/1、114/2/1）1.與capecitabine併用，使用於曾",
+          "score": 8,
+          "matched_terms": [
+            "gemcitabine"
+          ]
+        },
+        {
+          "page": 178,
+          "hash": "f93c251bbf3ba3355bd809b26ffebb644800881e",
+          "snippet": "stage)小細胞肺癌成人患者。(112/12/1、114/2/1)(4)惡性肋膜間皮瘤：限ipilimumab與nivolumab併用於無法切除之惡性肋膜間皮瘤且病理組織顯示為非上皮型(non-epithelioid)成人病人的第一線治療。(113/4/1、113/6/1、115/2/1)(5)胃癌（不含胃腸基質瘤及神經內分泌腫瘤/癌）：(113/4/1、113/6/1、115/2/1、115/4/1)i.限nivolumab併用fluoro",
+          "score": 12,
+          "matched_terms": [
+            "gemcitabine",
+            "biliarytractcancer",
+            "成人病人"
+          ]
+        }
+      ]
+    },
+    "1747": {
+      "drug_id": 1747,
+      "generic_name": "Herceptin",
+      "trade_names": "Herceptin",
+      "terms": [
+        "herceptin",
+        "1.早期乳癌",
+        "i.外科手術後達病理上緩解",
+        "，下列i.~iii.使用於外科手術前後之總療程合併計算，依藥品仿單記載以18個療程為上限：",
+        "ⅱ.若外科手術後無法達病理上緩解",
+        "non-pcr",
+        "，本藥品與trastuzumabemtansine使用於外科手術前後的總療程合併計算，依藥品仿單記載以全部18個療程為上限，其中trastuzumabemtansine以14個療程為上限",
+        "，本藥品使用於外科手術前後以9個療程為上限",
+        "ii.若外科手術後無法達病理上緩解",
+        "，本藥品與trastuzumabemtansine使用於外科手術前後的總療程合併計算，以全部18個療程為上限，其中trastuzumabemtansine以14個療程為上限",
+        "2.轉移性乳癌",
+        "單獨使用於治療腫瘤細胞上有her2過度表現",
+        "ihc3+或fish+",
+        "，曾接受過一次以上化學治療之轉移性乳癌病人",
+        "與paclitaxel或docetaxel併用，使用於未曾接受過化學治療之轉移性乳癌病患，且為her2過度表現"
+      ],
+      "therapy_line": 1,
+      "prior_auth_required": 1,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 147,
+          "hash": "0804cee0093e37813336478ab07930a988d8ebe9",
+          "snippet": "ab及oxaliplatin併用於第一線治療晚期或轉移性且不具有her2過度表現的胃癌病人，病人需符合免疫檢查點抑制劑之藥品給付規定。(113/4/1、113/6/1、115/2/1)9.18.trastuzumab(如herceptin)：(91/4/1、93/8/1、95/2/1、99/1/1、99/8/1、99/10/1、101/1/1、105/11/1、108/5/1、109/2/1、111/12/1、112/10/1、113/8/1、113/1",
+          "score": 20,
+          "matched_terms": [
+            "herceptin",
+            "1.早期乳癌",
+            "i.外科手術後達病理上緩解",
+            "，下列i.~iii.使用於外科手術前後之總療程合併計算，依藥品仿單記載以18個療程為上限：",
+            "ⅱ.若外科手術後無法達病理上緩解",
+            "non-pcr",
+            "ihc3+或fish+"
+          ]
+        }
+      ]
+    },
+    "1748": {
+      "drug_id": 1748,
+      "generic_name": "Kadcyla",
+      "trade_names": "Kadcyla",
+      "terms": [
+        "kadcyla",
+        "使用於具her2過度表現",
+        "ihc3+或fish+",
+        "之早期乳癌病人，曾接受過至少6個療程（每3週一療程，至少16週）的化學治療（其中至少3個療程",
+        "的taxane藥物）和至少3個療程",
+        "的trastuzumab術前輔助治療後，仍有殘留病灶的術後輔助治療，且需符合下列任一條件：",
+        "經事前審查核准後使用，核准後每24週須檢附療效評估資料再次申請，若疾病有惡化情形即不應再行申請",
+        "每位病人使用本藥品以14個療程為上限",
+        "排除使用本藥品條件：",
+        "本藥品申請通過後，如轉換成trastuzumab或其他抗her2藥物後不得再次申請本藥品，且本藥品與trastuzumab使用於早期乳癌手術前後的總療程合併計算，每位病人以全部18個療程為上限",
+        "限單獨使用於先前未使用過本藥品且her2過度表現",
+        "之轉移性乳癌病人作為二線治療，並同時符合下列情形：",
+        "經事前審查核准後使用，核准後每12週須檢附療效評估資料再次申請，若疾病有惡化情形即不應再行申請，每位病人至多給付10個月",
+        "13個療程為上限",
+        "trastuzumabemtansine",
+        "lapatinib和trastuzumabderuxtecan僅能擇一給付，不得互換",
+        "1.早期乳癌",
+        "2.轉移性乳癌"
+      ],
+      "therapy_line": 2,
+      "prior_auth_required": 1,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 194,
+          "hash": "bd33e968804a0a4fd71ff58cbc5d5d5f03334237",
+          "snippet": "且為症狀性及疾病侵襲性的患者。2.需經事前審查核准後使用，每次申請之療程以6個月為限，送審時需檢送影像資料，每6個月評估一次。3.出現疾病惡化或無法忍受之藥物不良反應，應立即停用。4.每日最大劑量為300毫克。9.87.trastuzumabemtansine(如kadcyla)：(110/2/1、113/8/1、114/2/1、114/5/1)1.早期乳癌(113/8/1、114/2/1、114/5/1)(1)使用於具her2過度表現(ihc3+或fish+)之早期乳癌病人",
+          "score": 46,
+          "matched_terms": [
+            "kadcyla",
+            "使用於具her2過度表現",
+            "ihc3+或fish+",
+            "之早期乳癌病人，曾接受過至少6個療程（每3週一療程，至少16週）的化學治療（其中至少3個療程",
+            "的taxane藥物）和至少3個療程",
+            "的trastuzumab術前輔助治療後，仍有殘留病灶的術後輔助治療，且需符合下列任一條件：",
+            "經事前審查核准後使用，核准後每24週須檢附療效評估資料再次申請，若疾病有惡化情形即不應再行申請",
+            "每位病人使用本藥品以14個療程為上限",
+            "排除使用本藥品條件：",
+            "trastuzumabemtansine",
+            "1.早期乳癌"
+          ]
+        }
+      ]
+    },
+    "1749": {
+      "drug_id": 1749,
+      "generic_name": "Lapatinib",
+      "trade_names": "Tykerb",
+      "terms": [
+        "lapatinib",
+        "tykerb",
+        "2.每3個月需進行療效評估，病歷應留存評估紀錄，無疾病惡化方可繼續使用",
+        "1.與capecitabine併用，使用於曾接受anthracycline",
+        "taxane以及trastuzumab治療後病況惡化之轉移性乳癌併有腦部轉移，且為her2過度表現",
+        "ihc3+或fish+",
+        "3.lapatinib",
+        "trastuzumabemtansine和trastuzumabderuxtecan僅能擇一給付，不得互換"
+      ],
+      "therapy_line": 2,
+      "prior_auth_required": 0,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 164,
+          "hash": "e3f73e006ba42cebf378492af721a7de5614dc24",
+          "snippet": "(1)曾使用含鉑之化學藥物治療失敗的局部晚期或轉移性之非小細胞肺癌。(2)不得與標靶治療、其他化療或免疫檢查點抑制劑併用。4.與gemcitabine合併使用作為晚期或復發之膽道癌第一線治療。(113/2/1)9.47.lapatinib（如tykerb）：（103/9/1、106/11/1、110/2/1、114/2/1）1.與capecitabine併用，使用於曾接受anthracycline,taxane以及trastuzumab治療後病況惡化之轉",
+          "score": 26,
+          "matched_terms": [
+            "lapatinib",
+            "tykerb",
+            "2.每3個月需進行療效評估，病歷應留存評估紀錄，無疾病惡化方可繼續使用",
+            "1.與capecitabine併用，使用於曾接受anthracycline",
+            "ihc3+或fish+",
+            "3.lapatinib",
+            "trastuzumabemtansine和trastuzumabderuxtecan僅能擇一給付，不得互換"
+          ]
+        },
+        {
+          "page": 195,
+          "hash": "12ea25afeef85b228636864fec4ada1c228ddede",
+          "snippet": "藥品與trastuzumab使用於早期乳癌手術前後的總療程合併計算，每位病人以全部18個療程為上限。2.轉移性乳癌(110/2/1、113/8/1、114/2/1)(1)限單獨使用於先前未使用過本藥品且her2過度表現(ihc3+或fish+)之轉移性乳癌病人作為二線治療，並同時符合下列情形：i.之前分別接受過trastuzumab與一種taxane藥物治療，或其合併療法，或pertuzumab與trastuzumab與一種taxane藥物治療。ⅱ.之前已經",
+          "score": 10,
+          "matched_terms": [
+            "lapatinib",
+            "ihc3+或fish+"
+          ]
+        },
+        {
+          "page": 209,
+          "hash": "6399a727f9a62200ceac5acde9da523ddb7f9770",
+          "snippet": "olitinib、momelotinib治療後如疾病惡化不得換用本藥品。(114/10/1)9.115.trastuzumabderuxtecan(如enhertu)：(114/2/1)1.單獨使用於具her2過度表現(ihc3+或fish+)之轉移性乳癌病人作為二線治療，並同時符合下列情形：(1)之前分別接受過trastuzumab與一種taxane藥物治療，或其合併療法，或pertuzumab與trastuzumab與一種taxane藥物治療。(2)之前",
+          "score": 10,
+          "matched_terms": [
+            "lapatinib",
+            "ihc3+或fish+"
+          ]
+        }
+      ]
+    },
+    "1750": {
+      "drug_id": 1750,
+      "generic_name": "Lenvatinib",
+      "trade_names": "Lenvima",
+      "terms": [
+        "lenvatinib",
+        "lenvima",
+        "需經事前審查核准後使用，每次申請之療程以3個月為限，送審時需檢送影像資料，每3個月評估一次",
+        "lenvatinib與sorafenib不得合併使用",
+        "轉移性或無法手術切除且不適合局部治療或局部治療失敗之child-pughaclass晚期肝細胞癌成人患者，並符合下列條件之一：",
+        "需經事前審查核准後使用，初次申請之療程以3個月為限，之後每3個月評估一次",
+        "送審時需檢送影像資料，無疾病惡化方可繼續使用",
+        "sorafenib",
+        "atezolizumab併用bevacizumab",
+        "tremelimumab併用durvalumab僅得擇一給付，不得互換",
+        "且lenvatinib治療失敗後，不得申請使用regorafenib或ramucirumab",
+        "2.晚期肝細胞癌部分："
+      ],
+      "therapy_line": 2,
+      "prior_auth_required": 1,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 156,
+          "hash": "8fcd5835f80168f222e8514b0692702465d2fd9e",
+          "snippet": "idomide（如thado）：(98/7/1)治療新診斷多發性骨髓瘤。使用時須和prednisolone及oralmelphalan併用，或和骨髓移植併用，或和palmidronate併用於骨髓移植後之治療。9.34.sorafenib(如nexavar)：(98/10/1、100/6/1、101/8/1、104/12/1、105/11/1、106/1/1、107/7/1、108/6/1、108/12/1、109/1/1、112/8/1、114/2/1",
+          "score": 38,
+          "matched_terms": [
+            "lenvatinib",
+            "需經事前審查核准後使用，每次申請之療程以3個月為限，送審時需檢送影像資料，每3個月評估一次",
+            "轉移性或無法手術切除且不適合局部治療或局部治療失敗之child-pughaclass晚期肝細胞癌成人患者，並符合下列條件之一：",
+            "需經事前審查核准後使用，初次申請之療程以3個月為限，之後每3個月評估一次",
+            "送審時需檢送影像資料，無疾病惡化方可繼續使用",
+            "sorafenib",
+            "atezolizumab併用bevacizumab",
+            "tremelimumab併用durvalumab僅得擇一給付，不得互換",
+            "2.晚期肝細胞癌部分："
+          ]
+        },
+        {
+          "page": 173,
+          "hash": "2ba1f2e61df54a191ad84c25891ef47c775b1e38",
+          "snippet": "1日以前已核定用藥之病人，得經事前審查核准後，使用至總療程上限（即終生10個療程，pomado則每人6個療程）或使用期間發生疾病惡化為止。（112/4/1、113/9/1）7.每日最多處方1粒(113/9/1)9.63.lenvatinib(如lenvima)：(107/7/1、109/1/1、109/8/1、112/8/1、114/2/1、114/6/1)1.用於放射性碘治療無效之局部晚期或轉移性的進行性(progressive)分化型甲狀腺癌(rai-",
+          "score": 18,
+          "matched_terms": [
+            "lenvatinib",
+            "lenvima",
+            "需經事前審查核准後使用，每次申請之療程以3個月為限，送審時需檢送影像資料，每3個月評估一次"
+          ]
+        },
+        {
+          "page": 174,
+          "hash": "c9aa6b0343aef167f1e2842840a4638f44fcf898",
+          "snippet": "(115.5.22更新)174(2)lenvatinib與sorafenib不得合併使用。(109/8/1)2.晚期肝細胞癌部分：(109/1/1、109/8/1、112/8/1、114/2/1、114/6/1)(1)轉移性或無法手術切除且不適合局部治療或局部治療失敗之chi",
+          "score": 42,
+          "matched_terms": [
+            "lenvatinib",
+            "lenvatinib與sorafenib不得合併使用",
+            "轉移性或無法手術切除且不適合局部治療或局部治療失敗之child-pughaclass晚期肝細胞癌成人患者，並符合下列條件之一：",
+            "需經事前審查核准後使用，初次申請之療程以3個月為限，之後每3個月評估一次",
+            "送審時需檢送影像資料，無疾病惡化方可繼續使用",
+            "sorafenib",
+            "atezolizumab併用bevacizumab",
+            "tremelimumab併用durvalumab僅得擇一給付，不得互換",
+            "且lenvatinib治療失敗後，不得申請使用regorafenib或ramucirumab",
+            "2.晚期肝細胞癌部分："
+          ]
+        },
+        {
+          "page": 177,
+          "hash": "184f7c3a5445e7577fd1799f85fcef7e45a17273",
+          "snippet": "期肝細胞癌第一線用藥(112/8/1、112/10/1、114/2/1):ⅰ.限atezolizumab與bevacizumab併用，或限durvalumab與tremelimumab併用，適用於治療未曾接受全身性療法之轉移性或無法手術切除且不適合局部治療或局部治療失敗之child-pughaclass晚期肝細胞癌成人患者，並符合下列條件之一：（112/8/1、112/10/1、114/2/1)i.肝外轉移（遠端轉移或肝外淋巴結侵犯）。ii.大血管侵犯（腫瘤侵犯主門靜脈或侵犯左/右靜脈第一或第二分支）。iii.經導管動脈化學藥物栓塞治療（transcathet",
+          "score": 16,
+          "matched_terms": [
+            "lenvatinib",
+            "轉移性或無法手術切除且不適合局部治療或局部治療失敗之child-pughaclass晚期肝細胞癌成人患者，並符合下列條件之一：",
+            "sorafenib"
+          ]
+        }
+      ]
+    },
+    "1751": {
+      "drug_id": 1751,
+      "generic_name": "Letrozole",
+      "trade_names": null,
+      "terms": [
+        "letrozole",
+        "手術後大於等於11年且無復發者不得使用",
+        "每日最大劑量2.5mg，使用不得超過四年",
+        "每日最大劑量2.5mg，使用不得超過五年",
+        "若由tamoxifen轉換使用本品，則使用期限合計不得超過5年",
+        "1.接受抗動情激素治療失敗的自然或人工停經後之末期乳癌病人之治療",
+        "停經後之局部晚期或轉移性乳癌婦女患者之第一線治療用藥",
+        "2.停經後且荷爾蒙接受體呈陽性，有淋巴結轉移之乳癌病人，作為tamoxifen治療五年後的延伸治療，且不得與其他aromataseinhibitor併用",
+        "使用時需同時符合下列規定：（）",
+        "3.停經後且荷爾蒙接受體呈陽性之早期乳癌病人，經外科手術切除後之輔助治療，且不得與tamoxifen或其他aromataseinhibitor併用",
+        "使用時需同時符合下列規定：",
+        "4.病歷上應詳細記載手術資料",
+        "病理報告",
+        "應包含er",
+        "pr之檢測結果且無復發現象",
+        "及用藥紀錄",
+        "如tamoxifen使用五年證明"
+      ],
+      "therapy_line": 1,
+      "prior_auth_required": 0,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 143,
+          "hash": "aaa918b6c7d1d8fe477faf4d26b004cf67504a4c",
+          "snippet": "病患，經使用tamoxifen無效後，方可使用。2.具有雌激素受體陽性之停經婦女，使用tamoxifen至少兩年之高危險早期侵犯性乳癌的輔助治療，且不得與tamoxifen或其他aromataseinhibitor併用。使用時需同時符合下列規定：(105/8/1)(1)病歷上應詳細記載手術資料、病理報告(應包含er、pr之檢測結果且無復發現象)。(2)本案藥品使用不得超過三年。9.1.2.anastrozole(如arimidex)：（88/6/1、92/3/1",
+          "score": 46,
+          "matched_terms": [
+            "letrozole",
+            "手術後大於等於11年且無復發者不得使用",
+            "每日最大劑量2.5mg，使用不得超過四年",
+            "每日最大劑量2.5mg，使用不得超過五年",
+            "若由tamoxifen轉換使用本品，則使用期限合計不得超過5年",
+            "1.接受抗動情激素治療失敗的自然或人工停經後之末期乳癌病人之治療",
+            "停經後之局部晚期或轉移性乳癌婦女患者之第一線治療用藥",
+            "2.停經後且荷爾蒙接受體呈陽性，有淋巴結轉移之乳癌病人，作為tamoxifen治療五年後的延伸治療，且不得與其他aromataseinhibitor併用",
+            "3.停經後且荷爾蒙接受體呈陽性之早期乳癌病人，經外科手術切除後之輔助治療，且不得與tamoxifen或其他aromataseinhibitor併用",
+            "使用時需同時符合下列規定：",
+            "4.病歷上應詳細記載手術資料",
+            "病理報告",
+            "應包含er",
+            "pr之檢測結果且無復發現象",
+            "及用藥紀錄",
+            "如tamoxifen使用五年證明"
+          ]
+        }
+      ]
+    },
+    "1752": {
+      "drug_id": 1752,
+      "generic_name": "Niraparib",
+      "trade_names": "Zejula",
+      "terms": [
+        "niraparib",
+        "zejula",
+        "單獨使用olaparib於具下列所有條件的病人做為維持治療，限用兩年：",
+        "單獨使用niraparib於具下列所有條件的病人做為維持治療，限用兩年：",
+        "限olaparib併用bevacizumab",
+        "限使用alymsys",
+        "abevmy",
+        "vegzelma或",
+        "須經事前審查核准後使用：",
+        "i.每次申請之療程以6個月為限",
+        "用於具germlineorsomaticbrca1",
+        "2致病性或疑似致病性突變時，olaparib與niraparib僅能擇一使用，除因耐受不良，不得互換",
+        "倘因併用bevacizumab耐受性不良，在維持性治療可再換成olaparib單獨使用，總療程數合併計算，限用兩年",
+        "niraparib使用時，體重大於",
+        "77公斤且基期血小板高於",
+        "ul，每日最多使用300mg",
+        "體重小於77公斤或基期血小板低於15萬",
+        "ul，每日最多使用200mg",
+        "figostageivdisease具germlineorsomaticbrca1",
+        "2致病性或疑似致病性突變者，若已經申請niraparib用於第一線化學治療後維持性治療時不得另外申請bevacizumab併用，除因niraparib耐受性不良，在維持性治療可再換成bevacizumab",
+        "除zirabev以外",
+        "單獨使用，總申請療程以17個療程為上限",
+        "olaparib單獨使用於曾接受前導性",
+        "術後輔助性或轉移性化療，且具germlinebrca1",
+        "2致病性或疑似致病性突變之三陰性",
+        "荷爾蒙接受體及her2受體皆為陰性",
+        "轉移性乳癌病人",
+        "1.卵巢",
+        "輸卵管或原發性腹膜癌",
+        "olaparib",
+        "mvasi",
+        "，使用於具下列所有條件的成年病人做為維持治療，限用兩年：",
+        "2.三陰性乳癌",
+        "talazoparib",
+        "talazoparib限用於治療同時符合下列條件之18歲以上局部晚期或轉移性乳癌病患：",
+        "3.去勢療法無效的轉移性攝護腺癌",
+        "mcrpc"
+      ],
+      "therapy_line": 1,
+      "prior_auth_required": 1,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 159,
+          "hash": "9c43b034877e6ea595f77bb08b388243db7eaac5",
+          "snippet": "(115.5.22更新)159(5)figostageivdisease具germlineorsomaticbrca1/2致病性或疑似致病性突變者，若已經申請niraparib用於第一線化學治療後維持性治療時不得另外申請bevacizumab併用，除因niraparib耐受性不良，在維持性治療可再換成bevacizumab（除zirab",
+          "score": 42,
+          "matched_terms": [
+            "niraparib",
+            "限使用alymsys",
+            "abevmy",
+            "vegzelma或",
+            "須經事前審查核准後使用：",
+            "figostageivdisease具germlineorsomaticbrca1",
+            "2致病性或疑似致病性突變者，若已經申請niraparib用於第一線化學治療後維持性治療時不得另外申請bevacizumab併用，除因niraparib耐受性不良，在維持性治療可再換成bevacizumab",
+            "除zirabev以外",
+            "單獨使用，總申請療程以17個療程為上限",
+            "mvasi"
+          ]
+        },
+        {
+          "page": 192,
+          "hash": "748c0fbe1c160f241d4ec662a9f40ed2f7134f12",
+          "snippet": "(115.5.22更新)192(4)每日限用1粒。9.84.copanlisib(如aliqopa）(刪除)：(109/11/1、113/6/1)9.85.parp抑制劑(如olaparib、niraparib、talazoparib)：(109/11/1、111/6/1、111/8/1、112/1/1、112/11/1、113/3/1、113/6/1、113/9/1、114/3/1、114/6/1、114",
+          "score": 100,
+          "matched_terms": [
+            "niraparib",
+            "單獨使用olaparib於具下列所有條件的病人做為維持治療，限用兩年：",
+            "單獨使用niraparib於具下列所有條件的病人做為維持治療，限用兩年：",
+            "限olaparib併用bevacizumab",
+            "限使用alymsys",
+            "abevmy",
+            "vegzelma或",
+            "須經事前審查核准後使用：",
+            "i.每次申請之療程以6個月為限",
+            "用於具germlineorsomaticbrca1",
+            "2致病性或疑似致病性突變時，olaparib與niraparib僅能擇一使用，除因耐受不良，不得互換",
+            "倘因併用bevacizumab耐受性不良，在維持性治療可再換成olaparib單獨使用，總療程數合併計算，限用兩年",
+            "niraparib使用時，體重大於",
+            "77公斤且基期血小板高於",
+            "ul，每日最多使用300mg",
+            "體重小於77公斤或基期血小板低於15萬",
+            "ul，每日最多使用200mg",
+            "figostageivdisease具germlineorsomaticbrca1",
+            "2致病性或疑似致病性突變者，若已經申請niraparib用於第一線化學治療後維持性治療時不得另外申請bevacizumab併用，除因niraparib耐受性不良，在維持性治療可再換成bevacizumab",
+            "除zirabev以外",
+            "單獨使用，總申請療程以17個療程為上限",
+            "1.卵巢",
+            "輸卵管或原發性腹膜癌",
+            "olaparib",
+            "mvasi",
+            "，使用於具下列所有條件的成年病人做為維持治療，限用兩年：",
+            "talazoparib"
+          ]
+        }
+      ]
+    },
+    "1753": {
+      "drug_id": 1753,
+      "generic_name": "Olaparib",
+      "trade_names": "Lynparza",
+      "terms": [
+        "olaparib",
+        "lynparza",
+        "olaparib單獨使用於曾接受前導性",
+        "術後輔助性或轉移性化療，且具germlinebrca1",
+        "2致病性或疑似致病性突變之三陰性",
+        "荷爾蒙接受體及her2受體皆為陰性",
+        "轉移性乳癌病人",
+        "三陰性乳癌",
+        "：olaparib單獨使用於曾接受前導性"
+      ],
+      "therapy_line": 1,
+      "prior_auth_required": 1,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 158,
+          "hash": "892a7ed655669c22a587c45bba1c6fddd249fd5e",
+          "snippet": "次使用。(113/3/1)ⅱ.初次申請為5個療程，後續每次申請為5個療程，總申請療程以15個療程為上限。(113/3/1)(3)bevacizumab(限使用alymsys、abevmy、vegzelma或mvasi)與olaparib併用適用於晚期高度惡性上皮卵巢癌、輸卵管腫瘤或原發性腹膜癌，且對第一線含鉑化療合併bevacizumab有反應（完全反應或部分反應）之成年病人做為維持治療，患者需符合olaparib給付規定，限用兩年。bevacizum",
+          "score": 8,
+          "matched_terms": [
+            "olaparib"
+          ]
+        },
+        {
+          "page": 165,
+          "hash": "86f5197d99d2215b5ba5999e4df7f072fb21b804",
+          "snippet": "內影像報告證明無臟器轉移。（106/9/1）3.與prednisone或prednisolone併用，治療藥物或手術去勢抗性的轉移性前列腺癌(ecog分數須≦2)且已使用過docetaxel2個療程以上治療無效者。4.與olaparib及prednisone或prednisolone，用於具germline或somaticbrca1/2致病性或疑似致病性突變之成人病人，患者需符合olaparib藥品給付規定。(114/6/1)5.前述1、2、3項須經事",
+          "score": 8,
+          "matched_terms": [
+            "olaparib"
+          ]
+        },
+        {
+          "page": 168,
+          "hash": "136987d163957e5cca2bfe57fbbbef059cab8e19",
+          "snippet": "失敗後不得再申請使用enzalutamide。(106/9/1)7.不論病人處於轉移或非轉移的狀態下，新型荷爾蒙藥品(abiraterone、apalutamide、darolutamide和enzalutamide)及olaparib與abiraterone併用，終生僅給付一種治療，且除非出現嚴重不耐受反應導致必須永久停止治療，不得互換。(112/9/1、114/6/1)8.本品與radium-223dichloride不得合併使用。(108/3/1",
+          "score": 8,
+          "matched_terms": [
+            "olaparib"
+          ]
+        },
+        {
+          "page": 178,
+          "hash": "f93c251bbf3ba3355bd809b26ffebb644800881e",
+          "snippet": "先前未接受過治療或不可手術之局部晚期或轉移性膽道癌(biliarytractcancer)，並須排除以下任一情形：(114/2/1)ⅰ.壺腹癌。ⅱ.曾接受異體器官移植。ⅲ.具有或曾有活動性自體免疫或發炎性疾病。(7)早期三陰性乳癌：非轉移性、第ii期至第iiib期（ct1cn1-2或t2-4n0-2）成年病人(114/6/1)：i.術前前導性治療：限pembrolizumab每3週1次與carboplatin和paclitaxel併用至多4個療程",
+          "score": 10,
+          "matched_terms": [
+            "olaparib",
+            "三陰性乳癌"
+          ]
+        },
+        {
+          "page": 192,
+          "hash": "748c0fbe1c160f241d4ec662a9f40ed2f7134f12",
+          "snippet": "(115.5.22更新)192(4)每日限用1粒。9.84.copanlisib(如aliqopa）(刪除)：(109/11/1、113/6/1)9.85.parp抑制劑(如olaparib、niraparib、talazoparib)：(109/11/1、111/6/1、111/8/1、112/1/1、112/11/1、113/3/1、113/6/1、113/9/1、114/3/1、114/6/1、114",
+          "score": 8,
+          "matched_terms": [
+            "olaparib"
+          ]
+        },
+        {
+          "page": 193,
+          "hash": "b20481f891164d8fd779c78a513f42bf8ddd1e8b",
+          "snippet": "(115.5.22更新)193(113/3/1、113/9/1、114/3/1、114/6/1、114/10/1)2.三陰性乳癌(olaparib、talazoparib)：(109/11/1、111/6/1、111/8/1、112/1/1、113/6/1)(1)olaparib單獨使用於曾接受前導性、術後輔助性或轉移性化療，且具germline",
+          "score": 30,
+          "matched_terms": [
+            "olaparib",
+            "olaparib單獨使用於曾接受前導性",
+            "術後輔助性或轉移性化療，且具germlinebrca1",
+            "2致病性或疑似致病性突變之三陰性",
+            "荷爾蒙接受體及her2受體皆為陰性",
+            "轉移性乳癌病人",
+            "三陰性乳癌"
+          ]
+        },
+        {
+          "page": 194,
+          "hash": "bd33e968804a0a4fd71ff58cbc5d5d5f03334237",
+          "snippet": "須完成至少6個週期的前導性化療或術後輔助性化療，且化療處方須含有anthracyclines類藥物、taxane類藥物，或兩者的複方；亦允許含鉑化療。(3)病人須在最後一次治療(包括手術、化療或放療)完成後的12週內使用olaparib。(4)須符合下列之高復發風險條件：ⅰ.三陰性乳癌：i.針對曾接受前導性化療的病人，須符合於乳房和/或手術切除的淋巴結中發現有殘餘的侵襲性癌症(non-pcr)。ii.針對曾接受手術且接續術後輔助性化療的病人，須具有腋窩",
+          "score": 10,
+          "matched_terms": [
+            "olaparib",
+            "三陰性乳癌"
+          ]
+        },
+        {
+          "page": 196,
+          "hash": "46a1ba3aedbcc323d674e01c8192678bb7722574",
+          "snippet": "盆腔轉移。（111/3/1、113/8/1）ⅲ.出現內臟轉移。3.不論病人處於轉移或非轉移的狀態下，新型荷爾蒙藥品(abiraterone、apalutamide、darolutamide和enzalutamide)，及olaparib與abiraterone併用，終生僅給付一種治療，且除非出現嚴重不耐受反應導致必須永久停止治療，不得互換。(112/9/1、114/6/1)9.91.dabrafenib(如tafinlar)、trametinib(如m",
+          "score": 8,
+          "matched_terms": [
+            "olaparib"
+          ]
+        },
+        {
+          "page": 198,
+          "hash": "0ffdb3c7279d7f2b23f769d616a226668cbeeed1",
+          "snippet": "(115.5.22更新)198勢。3.不論病人處於轉移或非轉移的狀態下，新型荷爾蒙藥品(abiraterone、apalutamide、darolutamide和enzalutamide)，及olaparib與abiraterone併用，終生僅給付一種治療，且除非出現嚴重不耐受反應導致必須永久停止治療，不得互換。(112/9/1、114/6/1)9.95.larotrectinib(如vitrakvi)：(111/3/1、1",
+          "score": 8,
+          "matched_terms": [
+            "olaparib"
+          ]
+        }
+      ]
+    },
+    "1755": {
+      "drug_id": 1755,
+      "generic_name": "Paclitaxel",
+      "trade_names": null,
+      "terms": [
+        "paclitaxel",
+        "1.晚期卵巢癌，作為第一線治療時需與cisplatin併用",
+        "2.非小細胞肺癌，作為第一線用藥時需與cisplatin併用",
+        "3.與pembrolizumab及carboplatin併用於轉移性鱗狀非小細胞肺癌的第一線治療，患者需符合免疫檢查點抑制劑之藥品給付規定",
+        "4.已使用合併療法",
+        "除非有禁忌症",
+        "至少應包括使用anthracycline",
+        "失敗的轉移性乳癌患者",
+        "5.腋下淋巴轉移之乳癌且動情素受體為陰性之患者，paclitaxel可作為接續含doxorubicin在內之輔助化學治療",
+        "6.卡波西氏肉瘤第二線用藥",
+        "7.與pembrolizumab及carboplatin併用於早期三陰性乳癌",
+        "第ii期至第iiib期，ct1cn1-2或t2-4n0-2",
+        "病人的術前前導性治療用藥，病人需符合免疫檢查點抑制劑之藥品給付規定"
+      ],
+      "therapy_line": 1,
+      "prior_auth_required": 0,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 144,
+          "hash": "d407410351fb93acec41f71bb73a86118ae836fd",
+          "snippet": "(115.5.22更新)1443.與pembrolizumab及paclitaxel併用於轉移性鱗狀非小細胞肺癌的第一線治療，患者需符合免疫檢查點抑制劑之藥品給付規定。(112/12/1)4.與atezolizumab及etoposide併用，或與durvalumab及etoposide併用於擴散期(e",
+          "score": 12,
+          "matched_terms": [
+            "paclitaxel",
+            "第ii期至第iiib期，ct1cn1-2或t2-4n0-2",
+            "病人的術前前導性治療用藥，病人需符合免疫檢查點抑制劑之藥品給付規定"
+          ]
+        },
+        {
+          "page": 145,
+          "hash": "581f58e874e57dbe5255eed825cf53945226a6e9",
+          "snippet": "(115.5.22更新)145(3)gemcitabine與paclitaxel併用，可使用於曾經使用過anthracycline之局部復發且無法手術切除或轉移性之乳癌病患。（94/10/1）(4)用於曾經使用含鉑類藥物(platinum-based)治療後復發且間隔至少6個月之卵巢癌，作為第二線治",
+          "score": 18,
+          "matched_terms": [
+            "paclitaxel",
+            "除非有禁忌症",
+            "至少應包括使用anthracycline",
+            "失敗的轉移性乳癌患者",
+            "第ii期至第iiib期，ct1cn1-2或t2-4n0-2",
+            "病人的術前前導性治療用藥，病人需符合免疫檢查點抑制劑之藥品給付規定"
+          ]
+        },
+        {
+          "page": 147,
+          "hash": "0804cee0093e37813336478ab07930a988d8ebe9",
+          "snippet": "(115.5.22更新)147限用於下列適應症:(99/10/1)1.用於治療曾接受第一線含platinum及paclitaxel化學治療而失敗者或再復發之進行性或轉移性卵巢癌病人。(91/3/1)2.用於治療cd4數量低下（<200cd4lymphocyte/mm3）和粘膜、皮膚或內臟有病變的aidsrelatedkaposi’ssarcoma的",
+          "score": 8,
+          "matched_terms": [
+            "paclitaxel"
+          ]
+        },
+        {
+          "page": 148,
+          "hash": "277222851a97f11cb35e99e3d5d13e5936d6436a",
+          "snippet": "uzumabemtansine以14個療程為上限。2.轉移性乳癌(1)單獨使用於治療腫瘤細胞上有her2過度表現(ihc3+或fish+)，曾接受過一次以上化學治療之轉移性乳癌病人。(91/4/1、99/1/1)(2)與paclitaxel或docetaxel併用，使用於未曾接受過化學治療之轉移性乳癌病患，且為her2過度表現(ihc3+或fish+)者。(93/8/1、95/2/1、99/1/1)(3)轉移性乳癌且her2過度表現之病人，僅限先前未使用過",
+          "score": 8,
+          "matched_terms": [
+            "paclitaxel"
+          ]
+        },
+        {
+          "page": 154,
+          "hash": "81059822f9804b3060d9338a7bca6768590c1a92",
+          "snippet": "先前已使用過platinum類第一線化學治療，或70歲以上接受過第一線化學治療，但仍局部惡化或轉移之腺性非小細胞肺癌之第二線用藥。（97/6/1、111/2/1）(4)先前已使用過platinum類及docetaxel或paclitaxel化學治療後，但仍局部惡化或轉移之非小細胞肺癌之第三線用藥。2.erlotinib與bevacizumab(除zirabev以外)併用，作為無法手術切除的轉移性（第ⅳ期）且帶有表皮生長因子受體(egfr)exon21l85",
+          "score": 8,
+          "matched_terms": [
+            "paclitaxel"
+          ]
+        },
+        {
+          "page": 158,
+          "hash": "892a7ed655669c22a587c45bba1c6fddd249fd5e",
+          "snippet": "胞、輸卵管或原發性腹膜癌：(109/6/1、113/3/1、113/9/1、114/3/1、114/6/1、114/8/1、114/10/1)(1)bevacizumab（除zirabev以外）與carboplatin及paclitaxel合併使用，接著單獨使用bevacizumab（除zirabev以外）治療，作為第四期卵巢上皮細胞、輸卵管或原發性腹膜癌病人接受初次手術切除後之第一線治療之維持治療。(113/3/1、113/9/1、114/3/1、114",
+          "score": 8,
+          "matched_terms": [
+            "paclitaxel"
+          ]
+        },
+        {
+          "page": 159,
+          "hash": "9c43b034877e6ea595f77bb08b388243db7eaac5",
+          "snippet": "個療程為上限。(113/3/1、113/9/1、114/3/1、114/6/1、114/10/1)4.持續性、復發性或轉移性之子宮頸癌：(109/6/1、113/3/1)(1)bevacizumab與cisplatin及paclitaxel合併使用，可用於持續性、復發性或轉移性之子宮頸癌。(2)bevacizumab與paclitaxel及topotecan合併使用，作為無法接受含鉑類藥物治療患者之持續性、復發性或轉移性之子宮頸癌。(3)須經事前審查核准後",
+          "score": 8,
+          "matched_terms": [
+            "paclitaxel"
+          ]
+        },
+        {
+          "page": 176,
+          "hash": "e3daf56649d6aae7a5c75d26ebddc49086289eb7",
+          "snippet": "胞肺癌第二線用藥：先前已使用過platinum類化學治療失敗後，又有疾病惡化，且egfr/alk腫瘤基因為原生型之晚期鱗狀非小細胞肺癌成人病人。iv.肺腺癌第三線用藥：先前已使用過platinum類及docetaxel/paclitaxel類二線(含)以上化學治療均失敗，又有疾病惡化，且egfr/alk/ros-1腫瘤基因為原生型之晚期非小細胞肺腺癌成人病人。(3)典型何杰金氏淋巴瘤：先前已接受自體造血幹細胞移植(hsct)與移植後brentuximabv",
+          "score": 8,
+          "matched_terms": [
+            "paclitaxel"
+          ]
+        },
+        {
+          "page": 178,
+          "hash": "f93c251bbf3ba3355bd809b26ffebb644800881e",
+          "snippet": "(115.5.22更新)178ii.轉移性鱗狀非小細胞肺癌第一線用藥：限pembrolizumab與carboplatin及paclitaxel併用至多使用4個療程，接續單用pembrolizumab治療。(112/12/1、113/4/1、113/8/1)iii.轉移性非鱗狀非小細胞肺癌第一線：限pembrolizumab與pemetrexed(限使用pexe",
+          "score": 8,
+          "matched_terms": [
+            "paclitaxel"
+          ]
+        },
+        {
+          "page": 198,
+          "hash": "0ffdb3c7279d7f2b23f769d616a226668cbeeed1",
+          "snippet": "者需為egfr/alk腫瘤基因原生型。ⅱ.先前已使用過platinum類化學治療失敗後，又有疾病惡化，且egfr/alk腫瘤基因為原生型之晚期鱗狀非小細胞肺癌患者。ⅲ.先前已使用過platinum類及docetaxel/paclitaxel類二線(含)以上化學治療均失敗，又有疾病惡化，且egfr/alk/ros-1腫瘤基因為原生型之晚期非小細胞肺腺癌患者。ⅳ.先前曾接受過至少一線anti-egfrtki治療失敗，且因ntrk基因融合對anti-egfrtk",
+          "score": 8,
+          "matched_terms": [
+            "paclitaxel"
+          ]
+        },
+        {
+          "page": 278,
+          "hash": "d502a009d5f2abec2e4d469ea0b2c92bd3f15db5",
+          "snippet": "理或細胞檢查報告□曾經接受第一線含鉑化學治療，或70歲(含)以上接受過第一線化學治療之證明□影像診斷證明（如胸部x光、電腦斷層或其他可作為評估的影像）□b.限單獨使用於先前已使用過platinum類及docetaxel或paclitaxel化學治療後，但仍局部惡化或轉移之非小細胞肺癌之第三線用藥。※檢附資料□非小細胞肺癌之病理或細胞檢查報告□曾經接受第一線及第二線化學藥物如platinum（cisplatin或carboplatin）與taxanes（pa",
+          "score": 8,
+          "matched_terms": [
+            "paclitaxel"
+          ]
+        }
+      ]
+    },
+    "1756": {
+      "drug_id": 1756,
+      "generic_name": "Palbociclib",
+      "trade_names": "ribociclib",
+      "terms": [
+        "palbociclib",
+        "ribociclib",
+        "荷爾蒙接受體為：er或pr",
+        "her-2檢測為陰性",
+        "經完整疾病評估後未出現器官轉移危急症狀",
+        "visceralcrisis",
+        "且無中樞神經系統",
+        "骨轉移不可為唯一轉移部位",
+        "病患目前未接受卵巢功能抑制治療",
+        "包含gnrhanalogue等",
+        "且滿足下列條件之一：（）",
+        "1.用於停經後乳癌婦女發生遠端轉移後之全身性藥物治療，須完全符合以下條件：",
+        "2.用於停經前",
+        "正在停經乳癌婦女及男性乳癌發生遠端轉移後之全身性藥物治療，須與芳香環轉化酶抑制劑及gnrhanalogue併用",
+        "3.限palbociclib與fulvestrant併用於治療曾接受過內分泌療法之局部晚期或轉移性乳癌病人，且須完全符合下列條件：",
+        "4.經事前審查核准後使用，核准後每24週須檢附療效評估資料再次申請，若疾病惡化即必須停止使用，且後續不得再申請使用ribociclib",
+        "5.使用限制：",
+        "7.若先前使用everolimus無效後，不得再申請本類藥品"
+      ],
+      "therapy_line": 2,
+      "prior_auth_required": 1,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 184,
+          "hash": "e0cde22cfcf13fff4658f9cd53438bfc7c7b84f2",
+          "snippet": "止使用。(4)若併用低劑量cytarabine，每日至多處方6粒，最多給付4個療程。若併用azacitidine治療，每日至多處方4粒，最多給付6個療程。(110/7/1、114/8/1)9.72.cdk4/6抑制劑(如ribociclib；palbociclib)：(108/10/1、108/12/1、109/4/1、109/10/1、110/5/1、110/10/1、113/1/1、113/3/1、114/7/1、115/1/1)1.用於停經後乳癌婦女",
+          "score": 54,
+          "matched_terms": [
+            "palbociclib",
+            "ribociclib",
+            "荷爾蒙接受體為：er或pr",
+            "her-2檢測為陰性",
+            "經完整疾病評估後未出現器官轉移危急症狀",
+            "visceralcrisis",
+            "且無中樞神經系統",
+            "骨轉移不可為唯一轉移部位",
+            "病患目前未接受卵巢功能抑制治療",
+            "包含gnrhanalogue等",
+            "1.用於停經後乳癌婦女發生遠端轉移後之全身性藥物治療，須完全符合以下條件：",
+            "2.用於停經前",
+            "正在停經乳癌婦女及男性乳癌發生遠端轉移後之全身性藥物治療，須與芳香環轉化酶抑制劑及gnrhanalogue併用",
+            "3.限palbociclib與fulvestrant併用於治療曾接受過內分泌療法之局部晚期或轉移性乳癌病人，且須完全符合下列條件："
+          ]
+        },
+        {
+          "page": 185,
+          "hash": "b73c8cf5421e351b8ae007d7eab11d00079786ab",
+          "snippet": "(115.5.22更新)185(2)her-2檢測為陰性。(3)經完整疾病評估後未出現器官轉移危急症狀(visceralcrisis)且無中樞神經系統(cns)轉移。(4)骨轉移不可為唯一轉移部位。4.經事前審查核准後使用，核准後每24週須檢附療效評估資料再次申請，若疾病惡化",
+          "score": 40,
+          "matched_terms": [
+            "palbociclib",
+            "ribociclib",
+            "her-2檢測為陰性",
+            "經完整疾病評估後未出現器官轉移危急症狀",
+            "visceralcrisis",
+            "且無中樞神經系統",
+            "骨轉移不可為唯一轉移部位",
+            "4.經事前審查核准後使用，核准後每24週須檢附療效評估資料再次申請，若疾病惡化即必須停止使用，且後續不得再申請使用ribociclib",
+            "5.使用限制：",
+            "7.若先前使用everolimus無效後，不得再申請本類藥品"
+          ]
+        },
+        {
+          "page": 216,
+          "hash": "4a66a0d94603e44ef2c17d62235b8250df86e12d",
+          "snippet": "ivasertib併用於曾接受cdk4/6抑制劑治療但疾病惡化的停經後轉移性乳癌病人，且須符合alpelisib或capivasertib之藥品給付規定。(115/1/1、115/6/1)3.與cdk4/6抑制劑(限使用palbociclib)併用於曾接受過內分泌療法之局部晚期或轉移性乳癌病人，且須符合cdk4/6抑制劑之藥品給付規定。9.131.repotrectinib(如augtyro)：(115/2/1)1.單獨給付於在crizotinib或entr",
+          "score": 8,
+          "matched_terms": [
+            "palbociclib"
+          ]
+        }
+      ]
+    },
+    "1757": {
+      "drug_id": 1757,
+      "generic_name": "Perjeta",
+      "trade_names": "Perjeta",
+      "terms": [
+        "perjeta",
+        "使用於術前輔助治療，經外科手術後達病理上完全緩解者（pcr），得繼續使用至18個療程為上限",
+        "若未接受術前輔助治療，即先行手術者，可給予術後輔助治療，以18個療程為使用上限",
+        "下列ｉ~ⅲ使用於外科手術前後之總療程合併計算，依藥品仿單記載以18個療程為上限：",
+        "須經事前審查核准後使用，核准後每24週須檢附療效評估資料再次申請，若疾病有惡化情形即不應再行申請",
+        "pertuzumab與trastuzumab及docetaxel併用於治療轉移後未曾以抗her2或化學療法治療之her2過度表現",
+        "ihc3+或fish+",
+        "轉移性乳癌病人",
+        "須經事前審查核准後使用，核准後每18週須檢附療效評估資料再次申請，若疾病有惡化情形即不應再行申請，每位病人至多給付18個月為限",
+        "下列ｉ~ⅱ使用於轉移性乳癌總療程合併計算，以全部18個月為上限：",
+        "先前於早期乳癌已使用pertuzumab與trastuzumab併用或使用pertuzumab與trastuzumab皮下注射複方製劑",
+        "如phesgo",
+        "者，不得再次申請pertuzumab與trastuzumab併用，惟於早期乳癌治療結束至首次疾病復發轉移時間超過12個月以上者得再次申請",
+        "pertuzumab",
+        "：用於her2陽性乳癌，與trastuzumab及化療併用",
+        "適用情境包括：",
+        "her2陽性早期乳癌術前",
+        "術後輔助治療（與trastuzumab+化療併用）",
+        "her2陽性轉移性乳癌第一線治療（與trastuzumab+docetaxel併用）",
+        "實際給付需依健保規定",
+        "治療線別",
+        "事前審查與院內政策確認"
+      ],
+      "therapy_line": 1,
+      "prior_auth_required": 1,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 183,
+          "hash": "9e545ba7e8c23f40f8d7ce8dc1f2e713f0f1369c",
+          "snippet": "(115.5.22更新)183(109/11/1、114/1/1)(2)已結案者自結案日後不予支付藥費。9.70.pertuzumab(如perjeta)：(108/5/1、108/12/1、112/8/1、113/12/1、114/1/1、114/5/1、114/12/1)1.本藥品與trastuzumab及化學療法併用於具her2過度表現（ihc3",
+          "score": 54,
+          "matched_terms": [
+            "perjeta",
+            "使用於術前輔助治療，經外科手術後達病理上完全緩解者（pcr），得繼續使用至18個療程為上限",
+            "若未接受術前輔助治療，即先行手術者，可給予術後輔助治療，以18個療程為使用上限",
+            "下列ｉ~ⅲ使用於外科手術前後之總療程合併計算，依藥品仿單記載以18個療程為上限：",
+            "須經事前審查核准後使用，核准後每24週須檢附療效評估資料再次申請，若疾病有惡化情形即不應再行申請",
+            "pertuzumab與trastuzumab及docetaxel併用於治療轉移後未曾以抗her2或化學療法治療之her2過度表現",
+            "ihc3+或fish+",
+            "轉移性乳癌病人",
+            "須經事前審查核准後使用，核准後每18週須檢附療效評估資料再次申請，若疾病有惡化情形即不應再行申請，每位病人至多給付18個月為限",
+            "先前於早期乳癌已使用pertuzumab與trastuzumab併用或使用pertuzumab與trastuzumab皮下注射複方製劑",
+            "如phesgo",
+            "者，不得再次申請pertuzumab與trastuzumab併用，惟於早期乳癌治療結束至首次疾病復發轉移時間超過12個月以上者得再次申請",
+            "pertuzumab"
+          ]
+        }
+      ]
+    },
+    "1758": {
+      "drug_id": 1758,
+      "generic_name": "Pertuzumab",
+      "trade_names": "Perjeta",
+      "terms": [
+        "pertuzumab",
+        "perjeta",
+        "使用於術前輔助治療，經外科手術後達病理上完全緩解者（pcr），得繼續使用至18個療程為上限",
+        "若未接受術前輔助治療，即先行手術者，可給予術後輔助治療，以18個療程為使用上限",
+        "下列ｉ~ⅲ使用於外科手術前後之總療程合併計算，依藥品仿單記載以18個療程為上限：",
+        "須經事前審查核准後使用，核准後每24週須檢附療效評估資料再次申請，若疾病有惡化情形即不應再行申請",
+        "pertuzumab與trastuzumab及docetaxel併用於治療轉移後未曾以抗her2或化學療法治療之her2過度表現",
+        "ihc3+或fish+",
+        "轉移性乳癌病人",
+        "須經事前審查核准後使用，核准後每18週須檢附療效評估資料再次申請，若疾病有惡化情形即不應再行申請，每位病人至多給付18個月為限",
+        "下列ｉ~ⅱ使用於轉移性乳癌總療程合併計算，以全部18個月為上限：",
+        "先前於早期乳癌已使用pertuzumab與trastuzumab併用或使用pertuzumab與trastuzumab皮下注射複方製劑",
+        "如phesgo",
+        "者，不得再次申請pertuzumab與trastuzumab併用，惟於早期乳癌治療結束至首次疾病復發轉移時間超過12個月以上者得再次申請",
+        "：用於her2陽性乳癌，與trastuzumab及化療併用",
+        "適用情境包括：",
+        "her2陽性早期乳癌術前",
+        "術後輔助治療（與trastuzumab+化療併用）",
+        "her2陽性轉移性乳癌第一線治療（與trastuzumab+docetaxel併用）",
+        "實際給付需依健保規定",
+        "治療線別",
+        "事前審查與院內政策確認"
+      ],
+      "therapy_line": 1,
+      "prior_auth_required": 1,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 147,
+          "hash": "0804cee0093e37813336478ab07930a988d8ebe9",
+          "snippet": "、99/10/1、101/1/1、111/12/1、112/10/1、113/8/1、113/12/1、114/1/1、114/12/1)(1)外科手術前後、化學療法(術前輔助治療或輔助治療)治療後，具her2過度表現(ihc3+或fish+)，且具腋下淋巴結轉移但無遠處臟器轉移之早期乳癌患者，作為輔助性治療用藥：(99/8/1、99/10/1、101/1/1、111/12/1、112/10/1、113/8/1、113/12/1、114/1/1、114/12",
+          "score": 16,
+          "matched_terms": [
+            "pertuzumab",
+            "ihc3+或fish+",
+            "如phesgo"
+          ]
+        },
+        {
+          "page": 148,
+          "hash": "277222851a97f11cb35e99e3d5d13e5936d6436a",
+          "snippet": "2)外科手術前後、化學療法(術前輔助治療或輔助治療)治療後，符合下列所有條件之早期乳癌患者：(111/12/1、112/10/1、113/8/1、113/12/1、114/1/1、114/12/1)ⅰ.her2過度表現(ihc3+或fish+)。ⅱ.雌激素受體（er)為陰性。ⅲ.腫瘤大於2公分。須經乳房超音波或乳房x光攝影或核磁共振診斷。ⅳ.且未發生腋下淋巴結轉移之早期乳癌患者，作為輔助性治療用藥。ⅴ.依下列條件之一使用(113/8/1)：i.外科手術後達病",
+          "score": 20,
+          "matched_terms": [
+            "pertuzumab",
+            "ihc3+或fish+",
+            "轉移性乳癌病人",
+            "如phesgo"
+          ]
+        },
+        {
+          "page": 183,
+          "hash": "9e545ba7e8c23f40f8d7ce8dc1f2e713f0f1369c",
+          "snippet": "(115.5.22更新)183(109/11/1、114/1/1)(2)已結案者自結案日後不予支付藥費。9.70.pertuzumab(如perjeta)：(108/5/1、108/12/1、112/8/1、113/12/1、114/1/1、114/5/1、114/12/1)1.本藥品與trastuzumab及化學療法併用於具her2過度表現（ihc3",
+          "score": 58,
+          "matched_terms": [
+            "pertuzumab",
+            "perjeta",
+            "使用於術前輔助治療，經外科手術後達病理上完全緩解者（pcr），得繼續使用至18個療程為上限",
+            "若未接受術前輔助治療，即先行手術者，可給予術後輔助治療，以18個療程為使用上限",
+            "下列ｉ~ⅲ使用於外科手術前後之總療程合併計算，依藥品仿單記載以18個療程為上限：",
+            "須經事前審查核准後使用，核准後每24週須檢附療效評估資料再次申請，若疾病有惡化情形即不應再行申請",
+            "pertuzumab與trastuzumab及docetaxel併用於治療轉移後未曾以抗her2或化學療法治療之her2過度表現",
+            "ihc3+或fish+",
+            "轉移性乳癌病人",
+            "須經事前審查核准後使用，核准後每18週須檢附療效評估資料再次申請，若疾病有惡化情形即不應再行申請，每位病人至多給付18個月為限",
+            "先前於早期乳癌已使用pertuzumab與trastuzumab併用或使用pertuzumab與trastuzumab皮下注射複方製劑",
+            "如phesgo",
+            "者，不得再次申請pertuzumab與trastuzumab併用，惟於早期乳癌治療結束至首次疾病復發轉移時間超過12個月以上者得再次申請"
+          ]
+        },
+        {
+          "page": 195,
+          "hash": "12ea25afeef85b228636864fec4ada1c228ddede",
+          "snippet": "藥品與trastuzumab使用於早期乳癌手術前後的總療程合併計算，每位病人以全部18個療程為上限。2.轉移性乳癌(110/2/1、113/8/1、114/2/1)(1)限單獨使用於先前未使用過本藥品且her2過度表現(ihc3+或fish+)之轉移性乳癌病人作為二線治療，並同時符合下列情形：i.之前分別接受過trastuzumab與一種taxane藥物治療，或其合併療法，或pertuzumab與trastuzumab與一種taxane藥物治療。ⅱ.之前已經",
+          "score": 16,
+          "matched_terms": [
+            "pertuzumab",
+            "ihc3+或fish+",
+            "轉移性乳癌病人"
+          ]
+        },
+        {
+          "page": 208,
+          "hash": "e6b62335ca277b4489e18ee9739ef45f8dc43753",
+          "snippet": "方可繼續使用。續用時的申請以3個療程為限。疾病若發生惡化情形應即停止使用。(3)每人以10個療程為上限。3.不得與蛋白酶體抑制劑(bortezomib、carfilzomib)或lenalidomide併用。9.112.pertuzumab與trastuzumab皮下注射複方製劑(如phesgo):(113/12/1、114/5/1)1.本藥品及化學療法併用於具her2過度表現（ihc3+或fish+），且具腋下淋巴結轉移但無遠處臟器轉移之早期乳癌病人（1",
+          "score": 44,
+          "matched_terms": [
+            "pertuzumab",
+            "使用於術前輔助治療，經外科手術後達病理上完全緩解者（pcr），得繼續使用至18個療程為上限",
+            "若未接受術前輔助治療，即先行手術者，可給予術後輔助治療，以18個療程為使用上限",
+            "下列ｉ~ⅲ使用於外科手術前後之總療程合併計算，依藥品仿單記載以18個療程為上限：",
+            "須經事前審查核准後使用，核准後每24週須檢附療效評估資料再次申請，若疾病有惡化情形即不應再行申請",
+            "ihc3+或fish+",
+            "轉移性乳癌病人",
+            "須經事前審查核准後使用，核准後每18週須檢附療效評估資料再次申請，若疾病有惡化情形即不應再行申請，每位病人至多給付18個月為限",
+            "下列ｉ~ⅱ使用於轉移性乳癌總療程合併計算，以全部18個月為上限：",
+            "如phesgo"
+          ]
+        },
+        {
+          "page": 209,
+          "hash": "6399a727f9a62200ceac5acde9da523ddb7f9770",
+          "snippet": "olitinib、momelotinib治療後如疾病惡化不得換用本藥品。(114/10/1)9.115.trastuzumabderuxtecan(如enhertu)：(114/2/1)1.單獨使用於具her2過度表現(ihc3+或fish+)之轉移性乳癌病人作為二線治療，並同時符合下列情形：(1)之前分別接受過trastuzumab與一種taxane藥物治療，或其合併療法，或pertuzumab與trastuzumab與一種taxane藥物治療。(2)之前",
+          "score": 16,
+          "matched_terms": [
+            "pertuzumab",
+            "ihc3+或fish+",
+            "轉移性乳癌病人"
+          ]
+        }
+      ]
+    },
+    "1759": {
+      "drug_id": 1759,
+      "generic_name": "Piqray",
+      "trade_names": "Piqray",
+      "terms": [
+        "piqray",
+        "荷爾蒙受體為：er或pr＞30%",
+        "her-2檢測為陰性",
+        "具有pik3ca基因突變",
+        "2.需經事前審查核准後使用：",
+        "初次申請需檢附pik3ca基因突變檢測報告，且需符合全民健康保險藥品給付規定之通則十二",
+        "核准後每12週需檢附療效評估資料再次申請，若疾病惡化及必須停止使用",
+        "3.每日最多處方2粒",
+        "1.與fulvestrant併用於曾接受cdk4",
+        "6抑制劑治療但疾病惡化的停經後轉移性乳癌病人，且須完全符合下列條件："
+      ],
+      "therapy_line": 2,
+      "prior_auth_required": 1,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 215,
+          "hash": "3b657d7550cbf4483ad099a4972efbc82c567e0c",
+          "snippet": "病理報告及影像報告，之後每3個月申請一次，再次申請時需檢附影像資料及前次治療結果評估資料證實無惡化，才可繼續使用。3.本藥品與everolimus僅得擇一使用，除因耐受性不良，不得互換。9.129.alpelisib(如piqray）：(115/1/1、115/6/1)1.與fulvestrant併用於曾接受cdk4/6抑制劑治療但疾病惡化的停經後轉移性乳癌病人，且須完全符合下列條件：(1)荷爾蒙受體為：er或pr＞30%。(2)her-2檢測為陰",
+          "score": 28,
+          "matched_terms": [
+            "piqray",
+            "荷爾蒙受體為：er或pr＞30%",
+            "her-2檢測為陰性",
+            "具有pik3ca基因突變",
+            "2.需經事前審查核准後使用：",
+            "1.與fulvestrant併用於曾接受cdk4",
+            "6抑制劑治療但疾病惡化的停經後轉移性乳癌病人，且須完全符合下列條件："
+          ]
+        }
+      ]
+    },
+    "1760": {
+      "drug_id": 1760,
+      "generic_name": "Ramucirumab",
+      "trade_names": "Cyramza",
+      "terms": [
+        "ramucirumab",
+        "cyramza",
+        "2.需經事前審查核准後使用，初次申請之療程以12週為限，之後每8週評估一次",
+        "送審時需檢送影像資料，無疾病惡化方可繼續使用",
+        "1.單一療法適用於接受過sorafenib治療失敗後之轉移性或無法手術切除且不適合局部治療或局部治療失敗，且alpha-fetoprotein",
+        "≥400ng",
+        "ml之child-pughaclass晚期肝細胞癌成人患者",
+        "3.ramucirumab與regorafenib",
+        "nivolumab僅能擇一使用，不得互換"
+      ],
+      "therapy_line": 2,
+      "prior_auth_required": 1,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 166,
+          "hash": "66d41a3ca91c453bbd370de31971d802eaa13f73",
+          "snippet": "曾接受sorafenib治療失敗後之轉移性或無法手術切除且不適合局部治療或局部治療失敗之child-pughaclass晚期肝細胞癌成人患者。(2)需經事前審查核准後使用，初次申請之療程以12週為限，之後每8週評估一次。送審時需檢送影像資料，無疾病惡化方可繼續使用。(3)每日至多處方4粒。(4)regorafenib與ramucirumab、nivolumab僅能擇一使用，不得互換。(110/5/1)4.本藥品不得與trifluridine/tipiracil併用。(107/12",
+          "score": 14,
+          "matched_terms": [
+            "ramucirumab",
+            "送審時需檢送影像資料，無疾病惡化方可繼續使用",
+            "nivolumab僅能擇一使用，不得互換"
+          ]
+        },
+        {
+          "page": 174,
+          "hash": "c9aa6b0343aef167f1e2842840a4638f44fcf898",
+          "snippet": "catheterarterialchemoembolization,t.a.c.e.）失敗者，需提供患者於12個月內>=3次局部治療之記錄。(2)需經事前審查核准後使用，初次申請之療程以3個月為限，之後每3個月評估一次。送審時需檢送影像資料，無疾病惡化方可繼續使用。(109/1/1、114/6/1)(3)lenvatinib、sorafenib、atezolizumab併用bevacizumab、tremelimumab併用durvalumab僅得擇一給付，不得互換；且lenva",
+          "score": 12,
+          "matched_terms": [
+            "ramucirumab",
+            "送審時需檢送影像資料，無疾病惡化方可繼續使用"
+          ]
+        },
+        {
+          "page": 177,
+          "hash": "184f7c3a5445e7577fd1799f85fcef7e45a17273",
+          "snippet": "合下列所有條件：ⅰ.child-pughaclass肝細胞癌成人患者。ⅱ.先前經t.a.c.e.於12個月內>=3次局部治療失敗者。ⅲ.已使用過至少一線標靶藥物治療失敗，又有疾病惡化者。本類藥品與regorafenib、ramucirumab僅能擇一使用，且治療失敗時不可互換。(108/6/1、110/5/1)ⅳ.未曾進行肝臟移植。ⅴ.於109年4月1日前經審核同意用藥，後續評估符合續用申請條件者。(109/4/1)(9)默克細胞癌：限avelumab用於先",
+          "score": 8,
+          "matched_terms": [
+            "ramucirumab"
+          ]
+        },
+        {
+          "page": 196,
+          "hash": "46a1ba3aedbcc323d674e01c8192678bb7722574",
+          "snippet": "報告以及brafv600e突變檢測報告，且需符合全民健康保險藥品給付規定之通則十二。ii.每次申請事前審查之療程以3個月為限，每3個月需再次申請，再次申請時並需附上治療後相關臨床資料，若病情惡化即不得再次申請。9.92.ramucirumab(如cyramza)：(110/5/1)1.單一療法適用於接受過sorafenib治療失敗後之轉移性或無法手術切除且不適合局部治療或局部治療失敗，且alpha-fetoprotein(afp)≥400ng/ml之chil",
+          "score": 32,
+          "matched_terms": [
+            "ramucirumab",
+            "cyramza",
+            "2.需經事前審查核准後使用，初次申請之療程以12週為限，之後每8週評估一次",
+            "送審時需檢送影像資料，無疾病惡化方可繼續使用",
+            "1.單一療法適用於接受過sorafenib治療失敗後之轉移性或無法手術切除且不適合局部治療或局部治療失敗，且alpha-fetoprotein",
+            "≥400ng",
+            "ml之child-pughaclass晚期肝細胞癌成人患者",
+            "3.ramucirumab與regorafenib",
+            "nivolumab僅能擇一使用，不得互換"
+          ]
+        }
+      ]
+    },
+    "1761": {
+      "drug_id": 1761,
+      "generic_name": "Ribociclib",
+      "trade_names": "ribociclib",
+      "terms": [
+        "ribociclib",
+        "荷爾蒙接受體為：er或pr",
+        "her-2檢測為陰性",
+        "經完整疾病評估後未出現器官轉移危急症狀",
+        "visceralcrisis",
+        "且無中樞神經系統",
+        "骨轉移不可為唯一轉移部位",
+        "病患目前未接受卵巢功能抑制治療",
+        "包含gnrhanalogue等",
+        "且滿足下列條件之一：（）",
+        "1.用於停經後乳癌婦女發生遠端轉移後之全身性藥物治療，須完全符合以下條件：",
+        "2.用於停經前",
+        "正在停經乳癌婦女及男性乳癌發生遠端轉移後之全身性藥物治療，須與芳香環轉化酶抑制劑及gnrhanalogue併用",
+        "3.限palbociclib與fulvestrant併用於治療曾接受過內分泌療法之局部晚期或轉移性乳癌病人，且須完全符合下列條件：",
+        "4.經事前審查核准後使用，核准後每24週須檢附療效評估資料再次申請，若疾病惡化即必須停止使用，且後續不得再申請使用ribociclib",
+        "palbociclib",
+        "5.使用限制：",
+        "7.若先前使用everolimus無效後，不得再申請本類藥品"
+      ],
+      "therapy_line": 2,
+      "prior_auth_required": 1,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 184,
+          "hash": "e0cde22cfcf13fff4658f9cd53438bfc7c7b84f2",
+          "snippet": "止使用。(4)若併用低劑量cytarabine，每日至多處方6粒，最多給付4個療程。若併用azacitidine治療，每日至多處方4粒，最多給付6個療程。(110/7/1、114/8/1)9.72.cdk4/6抑制劑(如ribociclib；palbociclib)：(108/10/1、108/12/1、109/4/1、109/10/1、110/5/1、110/10/1、113/1/1、113/3/1、114/7/1、115/1/1)1.用於停經後乳癌婦女",
+          "score": 50,
+          "matched_terms": [
+            "ribociclib",
+            "荷爾蒙接受體為：er或pr",
+            "her-2檢測為陰性",
+            "經完整疾病評估後未出現器官轉移危急症狀",
+            "visceralcrisis",
+            "且無中樞神經系統",
+            "骨轉移不可為唯一轉移部位",
+            "病患目前未接受卵巢功能抑制治療",
+            "包含gnrhanalogue等",
+            "1.用於停經後乳癌婦女發生遠端轉移後之全身性藥物治療，須完全符合以下條件：",
+            "2.用於停經前",
+            "正在停經乳癌婦女及男性乳癌發生遠端轉移後之全身性藥物治療，須與芳香環轉化酶抑制劑及gnrhanalogue併用",
+            "3.限palbociclib與fulvestrant併用於治療曾接受過內分泌療法之局部晚期或轉移性乳癌病人，且須完全符合下列條件：",
+            "palbociclib"
+          ]
+        },
+        {
+          "page": 185,
+          "hash": "b73c8cf5421e351b8ae007d7eab11d00079786ab",
+          "snippet": "(115.5.22更新)185(2)her-2檢測為陰性。(3)經完整疾病評估後未出現器官轉移危急症狀(visceralcrisis)且無中樞神經系統(cns)轉移。(4)骨轉移不可為唯一轉移部位。4.經事前審查核准後使用，核准後每24週須檢附療效評估資料再次申請，若疾病惡化",
+          "score": 36,
+          "matched_terms": [
+            "ribociclib",
+            "her-2檢測為陰性",
+            "經完整疾病評估後未出現器官轉移危急症狀",
+            "visceralcrisis",
+            "且無中樞神經系統",
+            "骨轉移不可為唯一轉移部位",
+            "4.經事前審查核准後使用，核准後每24週須檢附療效評估資料再次申請，若疾病惡化即必須停止使用，且後續不得再申請使用ribociclib",
+            "palbociclib",
+            "5.使用限制：",
+            "7.若先前使用everolimus無效後，不得再申請本類藥品"
+          ]
+        }
+      ]
+    },
+    "1764": {
+      "drug_id": 1764,
+      "generic_name": "Sacituzumab govitecan",
+      "trade_names": "Trodelvy",
+      "terms": [
+        "sacituzumabgovitecan",
+        "trodelvy",
+        "須符合下列各項條件：",
+        "須經事前審查核准後使用，每次申請之療程以3個月為限，初次申請時需檢附er",
+        "her2皆為陰性之檢測報告",
+        "再次申請必須提出客觀證據（如：影像學）證實無惡化，才可繼續使用",
+        "sacituzumabgovitecan和trastuzumabderuxtecan僅能擇一給付，不得互換",
+        "ⅲ.曾接受至少兩線",
+        "每線至少兩個完整療程或於第二個療程中產生疾病惡化",
+        "的轉移性乳癌化學治療",
+        "須經事前審查核准後使用，每次申請之療程以3個月為限，初次申請時需檢附hr陽性",
+        "her2陰性",
+        "ihc0",
+        "ihc1+或ihc2+",
+        "ish–",
+        "之檢測報告",
+        "1.用於治療先前已接受兩次以上全身性治療無效",
+        "其中一次需為治療晚期疾病",
+        "之無法切除的局部晚期或轉移性的三陰性乳癌成人病人",
+        "2.用於治療患有無法切除的局部晚期或轉移性的hr陽性",
+        "her2陰性之乳癌成人病人"
+      ],
+      "therapy_line": 2,
+      "prior_auth_required": 1,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 205,
+          "hash": "0d08ee6a803a6b4e8706a9d3aef59d709da648c5",
+          "snippet": "生限給付6個療程。3.病人接受本藥物治療後，不給付造血幹細胞移植。(113/2/1、114/8/1)4.本藥品、glofitamab及epcoritamab僅得擇一給付，治療失敗後不得互換。(114/8/1)9.106.sacituzumabgovitecan(如trodelvy）：(113/2/1、114/2/1、114/10/1)1.用於治療先前已接受兩次以上全身性治療無效(其中一次需為治療晚期疾病)之無法切除的局部晚期或轉移性的三陰性乳癌成人病人。(113/2/1、11",
+          "score": 74,
+          "matched_terms": [
+            "sacituzumabgovitecan",
+            "trodelvy",
+            "須符合下列各項條件：",
+            "須經事前審查核准後使用，每次申請之療程以3個月為限，初次申請時需檢附er",
+            "her2皆為陰性之檢測報告",
+            "再次申請必須提出客觀證據（如：影像學）證實無惡化，才可繼續使用",
+            "sacituzumabgovitecan和trastuzumabderuxtecan僅能擇一給付，不得互換",
+            "每線至少兩個完整療程或於第二個療程中產生疾病惡化",
+            "的轉移性乳癌化學治療",
+            "須經事前審查核准後使用，每次申請之療程以3個月為限，初次申請時需檢附hr陽性",
+            "her2陰性",
+            "ihc0",
+            "ihc1+或ihc2+",
+            "ish–",
+            "之檢測報告",
+            "1.用於治療先前已接受兩次以上全身性治療無效",
+            "其中一次需為治療晚期疾病",
+            "之無法切除的局部晚期或轉移性的三陰性乳癌成人病人",
+            "her2陰性之乳癌成人病人"
+          ]
+        },
+        {
+          "page": 209,
+          "hash": "6399a727f9a62200ceac5acde9da523ddb7f9770",
+          "snippet": "，每位病人至多給付18個療程為上限。(5)trastuzumabderuxtecan、trastuzumabemtansine和lapatinib僅能擇一給付，不得互換。2.單獨使用於er、pr皆陰性且具her2弱陽性(ihc1+或ihc2+/ish-)表現之無法切除的局部晚期或轉移性乳癌病人，且符合下列各項條件：(1)病人身體狀況良好（ecog≦1）。(2)須接受過至少一種化學療法治療。(3)須經事前審查核准後使用，每次申請之療程以12週為限，初次申請時需",
+          "score": 20,
+          "matched_terms": [
+            "sacituzumabgovitecan",
+            "再次申請必須提出客觀證據（如：影像學）證實無惡化，才可繼續使用",
+            "ihc1+或ihc2+",
+            "之檢測報告"
+          ]
+        }
+      ]
+    },
+    "1765": {
+      "drug_id": 1765,
+      "generic_name": "Sorafenib",
+      "trade_names": "Nexavar",
+      "terms": [
+        "sorafenib",
+        "nexavar",
+        "晚期腎細胞癌且已接受interferon-alpha或interleukin-2治療失敗，或不適合以上兩種藥物治療之病患",
+        "不適合以上兩種藥物治療之病患，須符合cytokine禁忌症者得直接使用sorafenib",
+        "但須列舉出所符合之禁忌症及檢附相關證明",
+        "無效後則不給付temsirolimus",
+        "需檢送影像資料，每3個月評估一次",
+        "轉移性或無法手術切除且不適合局部治療或局部治療失敗之child-pughaclass晚期肝細胞癌成人患者，並符合下列條件之一：",
+        "需經事前審查核准後使用，初次申請之療程以3個月為限，之後每3個月評估一次",
+        "送審時需檢送影像資料，無疾病惡化方可繼續使用",
+        "每日至多處方4粒",
+        "lenvatinib",
+        "atezolizumab併用bevacizumab",
+        "tremelimumab併用durvalumab僅得擇一給付，不得互換",
+        "放射性碘治療無效之局部晚期或轉移性的進行性",
+        "progressive",
+        "分化型甲狀腺癌",
+        "需經事前審查核准後使用，每次申請之療程以3個月為限，送審時需檢送影像資料，每3個月評估一次",
+        "sorafenib與lenvatinib不得合併使用",
+        "1.晚期腎細胞癌部分：",
+        "2.晚期肝細胞癌部分：",
+        "3.用於放射性碘治療無效之局部晚期或轉移性的進行性",
+        "rai-rdtc",
+        "1.作為復發性多形神經膠母細胞瘤病人的手術輔助，且不得與temozolomide併用",
+        "2.需經事前審查核准後使用"
+      ],
+      "therapy_line": 2,
+      "prior_auth_required": 1,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 156,
+          "hash": "8fcd5835f80168f222e8514b0692702465d2fd9e",
+          "snippet": "idomide（如thado）：(98/7/1)治療新診斷多發性骨髓瘤。使用時須和prednisolone及oralmelphalan併用，或和骨髓移植併用，或和palmidronate併用於骨髓移植後之治療。9.34.sorafenib(如nexavar)：(98/10/1、100/6/1、101/8/1、104/12/1、105/11/1、106/1/1、107/7/1、108/6/1、108/12/1、109/1/1、112/8/1、114/2/1",
+          "score": 94,
+          "matched_terms": [
+            "sorafenib",
+            "nexavar",
+            "晚期腎細胞癌且已接受interferon-alpha或interleukin-2治療失敗，或不適合以上兩種藥物治療之病患",
+            "不適合以上兩種藥物治療之病患，須符合cytokine禁忌症者得直接使用sorafenib",
+            "但須列舉出所符合之禁忌症及檢附相關證明",
+            "無效後則不給付temsirolimus",
+            "需檢送影像資料，每3個月評估一次",
+            "轉移性或無法手術切除且不適合局部治療或局部治療失敗之child-pughaclass晚期肝細胞癌成人患者，並符合下列條件之一：",
+            "需經事前審查核准後使用，初次申請之療程以3個月為限，之後每3個月評估一次",
+            "送審時需檢送影像資料，無疾病惡化方可繼續使用",
+            "每日至多處方4粒",
+            "lenvatinib",
+            "atezolizumab併用bevacizumab",
+            "tremelimumab併用durvalumab僅得擇一給付，不得互換",
+            "放射性碘治療無效之局部晚期或轉移性的進行性",
+            "progressive",
+            "分化型甲狀腺癌",
+            "需經事前審查核准後使用，每次申請之療程以3個月為限，送審時需檢送影像資料，每3個月評估一次",
+            "sorafenib與lenvatinib不得合併使用",
+            "1.晚期腎細胞癌部分：",
+            "2.晚期肝細胞癌部分：",
+            "3.用於放射性碘治療無效之局部晚期或轉移性的進行性",
+            "rai-rdtc",
+            "1.作為復發性多形神經膠母細胞瘤病人的手術輔助，且不得與temozolomide併用",
+            "2.需經事前審查核准後使用"
+          ]
+        },
+        {
+          "page": 166,
+          "hash": "66d41a3ca91c453bbd370de31971d802eaa13f73",
+          "snippet": "再次申請必須提出客觀證據（如：影像學）證實無惡化，才可繼續使用。2.胃腸道間質瘤(gist)(105/8/1）(1)先前曾接受imatinib與sunitinib治療的局部晚期、無法切除或轉移性的胃腸道間質瘤患者。(2)需經事前審查核准後使用，每次申請之療程以3個月為限，送審時需檢送影像資料，每3個月評估一次。3.肝細胞癌(hcc)：(108/6/1、110/5/1)(1)適用於曾接受sorafenib治療失敗後之轉移性或無法手術切除且不適合局部治療或局部治療失敗之child-pughaclass晚期肝細胞癌成人患者。(2)",
+          "score": 26,
+          "matched_terms": [
+            "sorafenib",
+            "需檢送影像資料，每3個月評估一次",
+            "送審時需檢送影像資料，無疾病惡化方可繼續使用",
+            "每日至多處方4粒",
+            "需經事前審查核准後使用，每次申請之療程以3個月為限，送審時需檢送影像資料，每3個月評估一次",
+            "2.需經事前審查核准後使用"
+          ]
+        },
+        {
+          "page": 174,
+          "hash": "c9aa6b0343aef167f1e2842840a4638f44fcf898",
+          "snippet": "(115.5.22更新)174(2)lenvatinib與sorafenib不得合併使用。(109/8/1)2.晚期肝細胞癌部分：(109/1/1、109/8/1、112/8/1、114/2/1、114/6/1)(1)轉移性或無法手術切除且不適合局部治療或局部治療失敗之chi",
+          "score": 34,
+          "matched_terms": [
+            "sorafenib",
+            "轉移性或無法手術切除且不適合局部治療或局部治療失敗之child-pughaclass晚期肝細胞癌成人患者，並符合下列條件之一：",
+            "需經事前審查核准後使用，初次申請之療程以3個月為限，之後每3個月評估一次",
+            "送審時需檢送影像資料，無疾病惡化方可繼續使用",
+            "lenvatinib",
+            "atezolizumab併用bevacizumab",
+            "tremelimumab併用durvalumab僅得擇一給付，不得互換",
+            "2.晚期肝細胞癌部分："
+          ]
+        },
+        {
+          "page": 177,
+          "hash": "184f7c3a5445e7577fd1799f85fcef7e45a17273",
+          "snippet": "期肝細胞癌第一線用藥(112/8/1、112/10/1、114/2/1):ⅰ.限atezolizumab與bevacizumab併用，或限durvalumab與tremelimumab併用，適用於治療未曾接受全身性療法之轉移性或無法手術切除且不適合局部治療或局部治療失敗之child-pughaclass晚期肝細胞癌成人患者，並符合下列條件之一：（112/8/1、112/10/1、114/2/1)i.肝外轉移（遠端轉移或肝外淋巴結侵犯）。ii.大血管侵犯（腫瘤侵犯主門靜脈或侵犯左/右靜脈第一或第二分支）。iii.經導管動脈化學藥物栓塞治療（transcathet",
+          "score": 16,
+          "matched_terms": [
+            "sorafenib",
+            "轉移性或無法手術切除且不適合局部治療或局部治療失敗之child-pughaclass晚期肝細胞癌成人患者，並符合下列條件之一：",
+            "lenvatinib"
+          ]
+        },
+        {
+          "page": 196,
+          "hash": "46a1ba3aedbcc323d674e01c8192678bb7722574",
+          "snippet": "i.每次申請事前審查之療程以3個月為限，每3個月需再次申請，再次申請時並需附上治療後相關臨床資料，若病情惡化即不得再次申請。9.92.ramucirumab(如cyramza)：(110/5/1)1.單一療法適用於接受過sorafenib治療失敗後之轉移性或無法手術切除且不適合局部治療或局部治療失敗，且alpha-fetoprotein(afp)≥400ng/ml之child-pughaclass晚期肝細胞癌成人患者。2.需經事前審查核准後使用，初次申請",
+          "score": 14,
+          "matched_terms": [
+            "sorafenib",
+            "送審時需檢送影像資料，無疾病惡化方可繼續使用",
+            "2.需經事前審查核准後使用"
+          ]
+        },
+        {
+          "page": 288,
+          "hash": "65ac0f56ded14388a08f02dad1b27c753129e0e8",
+          "snippet": "(115.5.22更新)288附表九之七：全民健康保險使用抗癌藥品sorafenib申請表申請類別:□送核□補資料□申復□資料異動受理日期：受理編號：緊急傳真日期：醫療機構名稱保險對象姓名出生原受理編號（申復時填用）預定實施日期代號身分證統一編號科別□門診□住院病歷號碼申請醫師身分證號icd-10代碼疾",
+          "score": 40,
+          "matched_terms": [
+            "sorafenib",
+            "nexavar",
+            "晚期腎細胞癌且已接受interferon-alpha或interleukin-2治療失敗，或不適合以上兩種藥物治療之病患",
+            "不適合以上兩種藥物治療之病患，須符合cytokine禁忌症者得直接使用sorafenib",
+            "但須列舉出所符合之禁忌症及檢附相關證明",
+            "無效後則不給付temsirolimus",
+            "需檢送影像資料，每3個月評估一次",
+            "需經事前審查核准後使用，每次申請之療程以3個月為限，送審時需檢送影像資料，每3個月評估一次",
+            "1.晚期腎細胞癌部分："
+          ]
+        }
+      ]
+    },
+    "1766": {
+      "drug_id": 1766,
+      "generic_name": "Talazoparib",
+      "trade_names": "Talzenna",
+      "terms": [
+        "talazoparib",
+        "talzenna",
+        "單獨使用olaparib於具下列所有條件的病人做為維持治療，限用兩年：",
+        "單獨使用niraparib於具下列所有條件的病人做為維持治療，限用兩年：",
+        "限olaparib併用bevacizumab",
+        "限使用alymsys",
+        "abevmy",
+        "vegzelma或",
+        "須經事前審查核准後使用：",
+        "i.每次申請之療程以6個月為限",
+        "用於具germlineorsomaticbrca1",
+        "2致病性或疑似致病性突變時，olaparib與niraparib僅能擇一使用，除因耐受不良，不得互換",
+        "倘因併用bevacizumab耐受性不良，在維持性治療可再換成olaparib單獨使用，總療程數合併計算，限用兩年",
+        "niraparib使用時，體重大於",
+        "77公斤且基期血小板高於",
+        "ul，每日最多使用300mg",
+        "體重小於77公斤或基期血小板低於15萬",
+        "ul，每日最多使用200mg",
+        "figostageivdisease具germlineorsomaticbrca1",
+        "2致病性或疑似致病性突變者，若已經申請niraparib用於第一線化學治療後維持性治療時不得另外申請bevacizumab併用，除因niraparib耐受性不良，在維持性治療可再換成bevacizumab",
+        "除zirabev以外",
+        "單獨使用，總申請療程以17個療程為上限",
+        "olaparib單獨使用於曾接受前導性",
+        "術後輔助性或轉移性化療，且具germlinebrca1",
+        "2致病性或疑似致病性突變之三陰性",
+        "荷爾蒙接受體及her2受體皆為陰性",
+        "轉移性乳癌病人",
+        "1.卵巢",
+        "輸卵管或原發性腹膜癌",
+        "olaparib",
+        "niraparib",
+        "mvasi",
+        "，使用於具下列所有條件的成年病人做為維持治療，限用兩年：",
+        "2.三陰性乳癌",
+        "talazoparib限用於治療同時符合下列條件之18歲以上局部晚期或轉移性乳癌病患：",
+        "3.去勢療法無效的轉移性攝護腺癌",
+        "mcrpc"
+      ],
+      "therapy_line": 1,
+      "prior_auth_required": 1,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 192,
+          "hash": "748c0fbe1c160f241d4ec662a9f40ed2f7134f12",
+          "snippet": "(115.5.22更新)192(4)每日限用1粒。9.84.copanlisib(如aliqopa）(刪除)：(109/11/1、113/6/1)9.85.parp抑制劑(如olaparib、niraparib、talazoparib)：(109/11/1、111/6/1、111/8/1、112/1/1、112/11/1、113/3/1、113/6/1、113/9/1、114/3/1、114/6/1、114",
+          "score": 100,
+          "matched_terms": [
+            "talazoparib",
+            "單獨使用olaparib於具下列所有條件的病人做為維持治療，限用兩年：",
+            "單獨使用niraparib於具下列所有條件的病人做為維持治療，限用兩年：",
+            "限olaparib併用bevacizumab",
+            "限使用alymsys",
+            "abevmy",
+            "vegzelma或",
+            "須經事前審查核准後使用：",
+            "i.每次申請之療程以6個月為限",
+            "用於具germlineorsomaticbrca1",
+            "2致病性或疑似致病性突變時，olaparib與niraparib僅能擇一使用，除因耐受不良，不得互換",
+            "倘因併用bevacizumab耐受性不良，在維持性治療可再換成olaparib單獨使用，總療程數合併計算，限用兩年",
+            "niraparib使用時，體重大於",
+            "77公斤且基期血小板高於",
+            "ul，每日最多使用300mg",
+            "體重小於77公斤或基期血小板低於15萬",
+            "ul，每日最多使用200mg",
+            "figostageivdisease具germlineorsomaticbrca1",
+            "2致病性或疑似致病性突變者，若已經申請niraparib用於第一線化學治療後維持性治療時不得另外申請bevacizumab併用，除因niraparib耐受性不良，在維持性治療可再換成bevacizumab",
+            "除zirabev以外",
+            "單獨使用，總申請療程以17個療程為上限",
+            "1.卵巢",
+            "輸卵管或原發性腹膜癌",
+            "olaparib",
+            "niraparib",
+            "mvasi",
+            "，使用於具下列所有條件的成年病人做為維持治療，限用兩年："
+          ]
+        },
+        {
+          "page": 193,
+          "hash": "b20481f891164d8fd779c78a513f42bf8ddd1e8b",
+          "snippet": "(115.5.22更新)193(113/3/1、113/9/1、114/3/1、114/6/1、114/10/1)2.三陰性乳癌(olaparib、talazoparib)：(109/11/1、111/6/1、111/8/1、112/1/1、113/6/1)(1)olaparib單獨使用於曾接受前導性、術後輔助性或轉移性化療，且具germline",
+          "score": 44,
+          "matched_terms": [
+            "talazoparib",
+            "須經事前審查核准後使用：",
+            "用於具germlineorsomaticbrca1",
+            "olaparib單獨使用於曾接受前導性",
+            "術後輔助性或轉移性化療，且具germlinebrca1",
+            "2致病性或疑似致病性突變之三陰性",
+            "荷爾蒙接受體及her2受體皆為陰性",
+            "轉移性乳癌病人",
+            "olaparib",
+            "2.三陰性乳癌",
+            "talazoparib限用於治療同時符合下列條件之18歲以上局部晚期或轉移性乳癌病患：",
+            "mcrpc"
+          ]
+        }
+      ]
+    },
+    "1767": {
+      "drug_id": 1767,
+      "generic_name": "Tamoxifen",
+      "trade_names": "Nolvadex",
+      "terms": [
+        "tamoxifen",
+        "nolvadex",
+        "tamoxifen：荷爾蒙受體陽性（hr+）乳癌輔助及晚期治療，停經前後皆可使用"
+      ],
+      "therapy_line": 1,
+      "prior_auth_required": 0,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 78,
+          "hash": "68d6ff9ab983e300987f63dccf20c51f0c117edf",
+          "snippet": "/1)ⅰ.荷爾蒙接受體陽性。ⅱ.停經前婦女有轉移性乳癌者。(86/9/1、99/2/1、113/6/1)(3)停經前(或更年期前)之早期乳癌，且須完全符合以下六點：(100/2/1、106/2/1、109/2/1)ⅰ.與tamoxifen合併使用，作為手術後取代化學治療之輔助療法。ⅱ.荷爾蒙接受體為強陽性：er/pr為2+或3+。ⅲ.her-2fish檢測為陰性或ihc為1+。ⅳ.淋巴結轉移數目須≦3個。ⅴ.使用期限：leuprorelin、gosere",
+          "score": 8,
+          "matched_terms": [
+            "tamoxifen"
+          ]
+        },
+        {
+          "page": 143,
+          "hash": "aaa918b6c7d1d8fe477faf4d26b004cf67504a4c",
+          "snippet": "omasinsugarcoatedtablets)：（88/11/1、90/10/1、99/6/1、105/8/1)1.限停經後或卵巢切除後，且女性荷爾蒙受體(estrogenreceptor)陽性之晚期乳癌病患，經使用tamoxifen無效後，方可使用。2.具有雌激素受體陽性之停經婦女，使用tamoxifen至少兩年之高危險早期侵犯性乳癌的輔助治療，且不得與tamoxifen或其他aromataseinhibitor併用。使用時需同時符合下列規定：(1",
+          "score": 8,
+          "matched_terms": [
+            "tamoxifen"
+          ]
+        },
+        {
+          "page": 205,
+          "hash": "0d08ee6a803a6b4e8706a9d3aef59d709da648c5",
+          "snippet": "+或ihc2+/ish–)之檢測報告。(3)再次申請必須提出客觀證據（如：影像學）證實無惡化，才可繼續使用。9.107.abemaciclib(如verzenio)：(113/3/1、113/6/1)1.併用內分泌療法(tamoxifen或芳香環酶抑制劑)，作為荷爾蒙受體(hr)陽性(er或pr>30%)、第二型人類表皮生長因子受體(her2)陰性、淋巴結陽性，高復發風險之早期乳癌成年女性病人的輔助療法，須符合下列高復發風險條件之一(113/3/1、11",
+          "score": 8,
+          "matched_terms": [
+            "tamoxifen"
+          ]
+        }
+      ]
+    },
+    "1768": {
+      "drug_id": 1768,
+      "generic_name": "Trastuzumab",
+      "trade_names": "Herceptin",
+      "terms": [
+        "trastuzumab",
+        "herceptin",
+        "外科手術前後",
+        "化學療法",
+        "術前輔助治療或輔助治療",
+        "治療後，具her2過度表現",
+        "ihc3+或fish+",
+        "，且具腋下淋巴結轉移但無遠處臟器轉移之早期乳癌患者，作為輔助性治療用藥：",
+        "治療後，符合下列所有條件之早期乳癌患者：",
+        "單獨使用於治療腫瘤細胞上有her2過度表現",
+        "，曾接受過一次以上化學治療之轉移性乳癌病人",
+        "與paclitaxel或docetaxel併用，使用於未曾接受過化學治療之轉移性乳癌病患，且為her2過度表現",
+        "轉移性乳癌且her2過度表現之病人，僅限先前未使用過本藥品者方可使用",
+        "若先前使用過docetaxel及pertuzumab與trastuzumab併用或docetaxel及pertuzumab與trastuzumab皮下注射複方製劑",
+        "如phesgo",
+        "併用達18個月上限仍未惡化者，得再次申請本藥品",
+        "4.經事前審查核准後使用，核准後早期乳癌及轉移性胃癌每24週",
+        "晚期乳癌每18週須檢附療效評估資料再次申請，若疾病有惡化情形即不應再行申請",
+        "1.早期乳癌",
+        "i.外科手術後達病理上緩解",
+        "，下列i.~iii.使用於外科手術前後之總療程合併計算，依藥品仿單記載以18個療程為上限：",
+        "ⅱ.若外科手術後無法達病理上緩解",
+        "non-pcr",
+        "，本藥品與trastuzumabemtansine使用於外科手術前後的總療程合併計算，依藥品仿單記載以全部18個療程為上限，其中trastuzumabemtansine以14個療程為上限",
+        "，本藥品使用於外科手術前後以9個療程為上限",
+        "ii.若外科手術後無法達病理上緩解",
+        "，本藥品與trastuzumabemtansine使用於外科手術前後的總療程合併計算，以全部18個療程為上限，其中trastuzumabemtansine以14個療程為上限",
+        "2.轉移性乳癌"
+      ],
+      "therapy_line": 1,
+      "prior_auth_required": 1,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 147,
+          "hash": "0804cee0093e37813336478ab07930a988d8ebe9",
+          "snippet": "/1)6.與nivolumab及oxaliplatin併用於第一線治療晚期或轉移性且不具有her2過度表現的胃癌病人，病人需符合免疫檢查點抑制劑之藥品給付規定。(113/4/1、113/6/1、115/2/1)9.18.trastuzumab(如herceptin)：(91/4/1、93/8/1、95/2/1、99/1/1、99/8/1、99/10/1、101/1/1、105/11/1、108/5/1、109/2/1、111/12/1、112/10/1、11",
+          "score": 52,
+          "matched_terms": [
+            "trastuzumab",
+            "herceptin",
+            "外科手術前後",
+            "化學療法",
+            "術前輔助治療或輔助治療",
+            "治療後，具her2過度表現",
+            "ihc3+或fish+",
+            "，且具腋下淋巴結轉移但無遠處臟器轉移之早期乳癌患者，作為輔助性治療用藥：",
+            "如phesgo",
+            "1.早期乳癌",
+            "i.外科手術後達病理上緩解",
+            "，下列i.~iii.使用於外科手術前後之總療程合併計算，依藥品仿單記載以18個療程為上限：",
+            "ⅱ.若外科手術後無法達病理上緩解",
+            "non-pcr"
+          ]
+        },
+        {
+          "page": 148,
+          "hash": "277222851a97f11cb35e99e3d5d13e5936d6436a",
+          "snippet": "(115.5.22更新)148限，其中trastuzumabemtansine以14個療程為上限。(113/8/1、113/12/1)(2)外科手術前後、化學療法(術前輔助治療或輔助治療)治療後，符合下列所有條件之早期乳癌患者：(111/12/1、112/10/1、113/8/1",
+          "score": 76,
+          "matched_terms": [
+            "trastuzumab",
+            "外科手術前後",
+            "化學療法",
+            "術前輔助治療或輔助治療",
+            "ihc3+或fish+",
+            "治療後，符合下列所有條件之早期乳癌患者：",
+            "單獨使用於治療腫瘤細胞上有her2過度表現",
+            "，曾接受過一次以上化學治療之轉移性乳癌病人",
+            "與paclitaxel或docetaxel併用，使用於未曾接受過化學治療之轉移性乳癌病患，且為her2過度表現",
+            "轉移性乳癌且her2過度表現之病人，僅限先前未使用過本藥品者方可使用",
+            "若先前使用過docetaxel及pertuzumab與trastuzumab併用或docetaxel及pertuzumab與trastuzumab皮下注射複方製劑",
+            "如phesgo",
+            "併用達18個月上限仍未惡化者，得再次申請本藥品",
+            "4.經事前審查核准後使用，核准後早期乳癌及轉移性胃癌每24週",
+            "晚期乳癌每18週須檢附療效評估資料再次申請，若疾病有惡化情形即不應再行申請",
+            "i.外科手術後達病理上緩解",
+            "non-pcr",
+            "，本藥品使用於外科手術前後以9個療程為上限",
+            "ii.若外科手術後無法達病理上緩解",
+            "，本藥品與trastuzumabemtansine使用於外科手術前後的總療程合併計算，以全部18個療程為上限，其中trastuzumabemtansine以14個療程為上限",
+            "2.轉移性乳癌"
+          ]
+        },
+        {
+          "page": 164,
+          "hash": "e3f73e006ba42cebf378492af721a7de5614dc24",
+          "snippet": "3/2/1)9.47.lapatinib（如tykerb）：（103/9/1、106/11/1、110/2/1、114/2/1）1.與capecitabine併用，使用於曾接受anthracycline,taxane以及trastuzumab治療後病況惡化之轉移性乳癌併有腦部轉移，且為her2過度表現(ihc3+或fish+)病人。2.每3個月需進行療效評估，病歷應留存評估紀錄，無疾病惡化方可繼續使用。(106/11/1)3.lapatinib、trastu",
+          "score": 12,
+          "matched_terms": [
+            "trastuzumab",
+            "ihc3+或fish+"
+          ]
+        },
+        {
+          "page": 183,
+          "hash": "9e545ba7e8c23f40f8d7ce8dc1f2e713f0f1369c",
+          "snippet": "2)已結案者自結案日後不予支付藥費。9.70.pertuzumab(如perjeta)：(108/5/1、108/12/1、112/8/1、113/12/1、114/1/1、114/5/1、114/12/1)1.本藥品與trastuzumab及化學療法併用於具her2過度表現（ihc3+或fish+），且具腋下淋巴結轉移但無遠處臟器轉移之早期乳癌病人（113/12/1、114/5/1、114/12/1）(1)使用於術前輔助治療，經外科手術後達病理上完全緩解者",
+          "score": 26,
+          "matched_terms": [
+            "trastuzumab",
+            "外科手術前後",
+            "化學療法",
+            "ihc3+或fish+",
+            "如phesgo",
+            "2.轉移性乳癌"
+          ]
+        },
+        {
+          "page": 194,
+          "hash": "bd33e968804a0a4fd71ff58cbc5d5d5f03334237",
+          "snippet": "須在最後一次治療(包括手術、化療或放療)完成後的12週內使用olaparib。(4)須符合下列之高復發風險條件：ⅰ.三陰性乳癌：i.針對曾接受前導性化療的病人，須符合於乳房和/或手術切除的淋巴結中發現有殘餘的侵襲性癌症(non-pcr)。ii.針對曾接受手術且接續術後輔助性化療的病人，須具有腋窩淋巴結陽性(≧pn1)，或腋窩淋巴結陰性(pn0)且原發性病理腫瘤大小≧2公分(≧pt2)。ⅱ.hr陽性且her2陰性乳癌：i.針對曾接受前導性化療的病人，須",
+          "score": 16,
+          "matched_terms": [
+            "trastuzumab",
+            "ihc3+或fish+",
+            "1.早期乳癌",
+            "non-pcr"
+          ]
+        },
+        {
+          "page": 195,
+          "hash": "12ea25afeef85b228636864fec4ada1c228ddede",
+          "snippet": "(115.5.22更新)195本藥品，且本藥品與trastuzumab使用於早期乳癌手術前後的總療程合併計算，每位病人以全部18個療程為上限。2.轉移性乳癌(110/2/1、113/8/1、114/2/1)(1)限單獨使用於先前未使用過本藥品且her2過度表現(ihc3+或fish+)之轉",
+          "score": 14,
+          "matched_terms": [
+            "trastuzumab",
+            "ihc3+或fish+",
+            "2.轉移性乳癌"
+          ]
+        },
+        {
+          "page": 205,
+          "hash": "0d08ee6a803a6b4e8706a9d3aef59d709da648c5",
+          "snippet": "療晚期疾病)之無法切除的局部晚期或轉移性的三陰性乳癌成人病人。(113/2/1、114/2/1)(1)須符合下列各項條件：ⅰ.病人身體狀況良好（ecog≦1）。ⅱ.須使用過taxane類藥物至少1個療程。ⅲ.先前未接受過trastuzumabderuxtecan治療。(114/2/1)(2)須經事前審查核准後使用，每次申請之療程以3個月為限，初次申請時需檢附er、pr、her2皆為陰性之檢測報告。(3)再次申請必須提出客觀證據（如：影像學）證實無惡化，才可繼",
+          "score": 8,
+          "matched_terms": [
+            "trastuzumab"
+          ]
+        },
+        {
+          "page": 208,
+          "hash": "e6b62335ca277b4489e18ee9739ef45f8dc43753",
+          "snippet": "申請以3個療程為限。疾病若發生惡化情形應即停止使用。(3)每人以10個療程為上限。3.不得與蛋白酶體抑制劑(bortezomib、carfilzomib)或lenalidomide併用。9.112.pertuzumab與trastuzumab皮下注射複方製劑(如phesgo):(113/12/1、114/5/1)1.本藥品及化學療法併用於具her2過度表現（ihc3+或fish+），且具腋下淋巴結轉移但無遠處臟器轉移之早期乳癌病人（113/12/1、114/",
+          "score": 26,
+          "matched_terms": [
+            "trastuzumab",
+            "外科手術前後",
+            "化學療法",
+            "ihc3+或fish+",
+            "如phesgo",
+            "2.轉移性乳癌"
+          ]
+        },
+        {
+          "page": 209,
+          "hash": "6399a727f9a62200ceac5acde9da523ddb7f9770",
+          "snippet": ".本藥品與ruxolitinib、momelotinib用於中度風險或高風險之骨髓纖維化治療時，僅得擇一給付。ruxolitinib、momelotinib治療後如疾病惡化不得換用本藥品。(114/10/1)9.115.trastuzumabderuxtecan(如enhertu)：(114/2/1)1.單獨使用於具her2過度表現(ihc3+或fish+)之轉移性乳癌病人作為二線治療，並同時符合下列情形：(1)之前分別接受過trastuzumab與一種ta",
+          "score": 16,
+          "matched_terms": [
+            "trastuzumab",
+            "化學療法",
+            "ihc3+或fish+"
+          ]
+        },
+        {
+          "page": 268,
+          "hash": "b449825edf57e5904b63c7bfbbe99e7dde9aca41",
+          "snippet": "(115.5.22更新)268附表七之一全民健康保險使用抗癌藥品trastuzumab申請表(刪除)",
+          "score": 8,
+          "matched_terms": [
+            "trastuzumab"
+          ]
+        }
+      ]
+    },
+    "1769": {
+      "drug_id": 1769,
+      "generic_name": "Trastuzumab deruxtecan",
+      "trade_names": "Enhertu",
+      "terms": [
+        "trastuzumabderuxtecan",
+        "enhertu",
+        "之前分別接受過trastuzumab與一種taxane藥物治療，或其合併療法，或pertuzumab與trastuzumab與一種taxane藥物治療",
+        "之前已經接受過轉移性癌症治療，或在輔助療法治療期間或完成治療後6個月內癌症復發",
+        "合併有主要臟器",
+        "不包含骨及軟組織",
+        "須經事前審查核准後使用，核准後每12週須檢附療效評估資料再次申請，若疾病有惡化情形即不應再行申請，每位病人至多給付18個療程為上限",
+        "trastuzumabemtansine和lapatinib僅能擇一給付，不得互換",
+        "病人身體狀況良好（ecog≦1）",
+        "須接受過至少一種化學療法治療",
+        "須經事前審查核准後使用，每次申請之療程以12週為限，初次申請時需檢附er",
+        "pr皆為陰性且her2弱陽性",
+        "ihc1+或ihc2+",
+        "ish-",
+        "之檢測報告",
+        "再次申請必須提出客觀證據（如：影像學）證實無惡化，才可繼續使用",
+        "trastuzumabderuxtecan和sacituzumabgovitecan僅能擇一給付，不得互換",
+        "1.單獨使用於具her2過度表現",
+        "ihc3+或fish+",
+        "之轉移性乳癌病人作為二線治療，並同時符合下列情形：",
+        "2.單獨使用於er",
+        "pr皆陰性且具her2弱陽性",
+        "表現之無法切除的局部晚期或轉移性乳癌病人，且符合下列各項條件：",
+        "3.申報醫療費用時「總量」應依實際使用量申報，取至小數點第一位，第二位四捨五入"
+      ],
+      "therapy_line": 2,
+      "prior_auth_required": 1,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 164,
+          "hash": "e3f73e006ba42cebf378492af721a7de5614dc24",
+          "snippet": "/11/1、110/2/1、114/2/1）1.與capecitabine併用，使用於曾接受anthracycline,taxane以及trastuzumab治療後病況惡化之轉移性乳癌併有腦部轉移，且為her2過度表現(ihc3+或fish+)病人。2.每3個月需進行療效評估，病歷應留存評估紀錄，無疾病惡化方可繼續使用。(106/11/1)3.lapatinib、trastuzumabemtansine和trastuzumabderuxtecan僅能擇一給付",
+          "score": 10,
+          "matched_terms": [
+            "trastuzumabderuxtecan",
+            "ihc3+或fish+"
+          ]
+        },
+        {
+          "page": 195,
+          "hash": "12ea25afeef85b228636864fec4ada1c228ddede",
+          "snippet": "藥品與trastuzumab使用於早期乳癌手術前後的總療程合併計算，每位病人以全部18個療程為上限。2.轉移性乳癌(110/2/1、113/8/1、114/2/1)(1)限單獨使用於先前未使用過本藥品且her2過度表現(ihc3+或fish+)之轉移性乳癌病人作為二線治療，並同時符合下列情形：i.之前分別接受過trastuzumab與一種taxane藥物治療，或其合併療法，或pertuzumab與trastuzumab與一種taxane藥物治療。ⅱ.之前已經",
+          "score": 28,
+          "matched_terms": [
+            "trastuzumabderuxtecan",
+            "之前分別接受過trastuzumab與一種taxane藥物治療，或其合併療法，或pertuzumab與trastuzumab與一種taxane藥物治療",
+            "之前已經接受過轉移性癌症治療，或在輔助療法治療期間或完成治療後6個月內癌症復發",
+            "合併有主要臟器",
+            "不包含骨及軟組織",
+            "ihc3+或fish+",
+            "之轉移性乳癌病人作為二線治療，並同時符合下列情形："
+          ]
+        },
+        {
+          "page": 205,
+          "hash": "0d08ee6a803a6b4e8706a9d3aef59d709da648c5",
+          "snippet": "114/2/1、114/10/1)1.用於治療先前已接受兩次以上全身性治療無效(其中一次需為治療晚期疾病)之無法切除的局部晚期或轉移性的三陰性乳癌成人病人。(113/2/1、114/2/1)(1)須符合下列各項條件：ⅰ.病人身體狀況良好（ecog≦1）。ⅱ.須使用過taxane類藥物至少1個療程。ⅲ.先前未接受過trastuzumabderuxtecan治療。(114/2/1)(2)須經事前審查核准後使用，每次申請之療程以3個月為限，初次申請時需檢附er、pr、her",
+          "score": 24,
+          "matched_terms": [
+            "trastuzumabderuxtecan",
+            "病人身體狀況良好（ecog≦1）",
+            "ihc1+或ihc2+",
+            "之檢測報告",
+            "再次申請必須提出客觀證據（如：影像學）證實無惡化，才可繼續使用"
+          ]
+        },
+        {
+          "page": 209,
+          "hash": "6399a727f9a62200ceac5acde9da523ddb7f9770",
+          "snippet": ".本藥品與ruxolitinib、momelotinib用於中度風險或高風險之骨髓纖維化治療時，僅得擇一給付。ruxolitinib、momelotinib治療後如疾病惡化不得換用本藥品。(114/10/1)9.115.trastuzumabderuxtecan(如enhertu)：(114/2/1)1.單獨使用於具her2過度表現(ihc3+或fish+)之轉移性乳癌病人作為二線治療，並同時符合下列情形：(1)之前分別接受過trastuzumab與一種taxane藥物治療，或",
+          "score": 88,
+          "matched_terms": [
+            "trastuzumabderuxtecan",
+            "enhertu",
+            "之前分別接受過trastuzumab與一種taxane藥物治療，或其合併療法，或pertuzumab與trastuzumab與一種taxane藥物治療",
+            "之前已經接受過轉移性癌症治療，或在輔助療法治療期間或完成治療後6個月內癌症復發",
+            "合併有主要臟器",
+            "不包含骨及軟組織",
+            "須經事前審查核准後使用，核准後每12週須檢附療效評估資料再次申請，若疾病有惡化情形即不應再行申請，每位病人至多給付18個療程為上限",
+            "trastuzumabemtansine和lapatinib僅能擇一給付，不得互換",
+            "病人身體狀況良好（ecog≦1）",
+            "須接受過至少一種化學療法治療",
+            "須經事前審查核准後使用，每次申請之療程以12週為限，初次申請時需檢附er",
+            "pr皆為陰性且her2弱陽性",
+            "ihc1+或ihc2+",
+            "ish-",
+            "之檢測報告",
+            "再次申請必須提出客觀證據（如：影像學）證實無惡化，才可繼續使用",
+            "trastuzumabderuxtecan和sacituzumabgovitecan僅能擇一給付，不得互換",
+            "1.單獨使用於具her2過度表現",
+            "ihc3+或fish+",
+            "之轉移性乳癌病人作為二線治療，並同時符合下列情形：",
+            "2.單獨使用於er",
+            "pr皆陰性且具her2弱陽性",
+            "表現之無法切除的局部晚期或轉移性乳癌病人，且符合下列各項條件：",
+            "3.申報醫療費用時「總量」應依實際使用量申報，取至小數點第一位，第二位四捨五入"
+          ]
+        }
+      ]
+    },
+    "1770": {
+      "drug_id": 1770,
+      "generic_name": "Trastuzumab emtansine",
+      "trade_names": "Kadcyla",
+      "terms": [
+        "trastuzumabemtansine",
+        "kadcyla",
+        "使用於具her2過度表現",
+        "ihc3+或fish+",
+        "之早期乳癌病人，曾接受過至少6個療程（每3週一療程，至少16週）的化學治療（其中至少3個療程",
+        "的taxane藥物）和至少3個療程",
+        "的trastuzumab術前輔助治療後，仍有殘留病灶的術後輔助治療，且需符合下列任一條件：",
+        "經事前審查核准後使用，核准後每24週須檢附療效評估資料再次申請，若疾病有惡化情形即不應再行申請",
+        "每位病人使用本藥品以14個療程為上限",
+        "排除使用本藥品條件：",
+        "本藥品申請通過後，如轉換成trastuzumab或其他抗her2藥物後不得再次申請本藥品，且本藥品與trastuzumab使用於早期乳癌手術前後的總療程合併計算，每位病人以全部18個療程為上限",
+        "限單獨使用於先前未使用過本藥品且her2過度表現",
+        "之轉移性乳癌病人作為二線治療，並同時符合下列情形：",
+        "經事前審查核准後使用，核准後每12週須檢附療效評估資料再次申請，若疾病有惡化情形即不應再行申請，每位病人至多給付10個月",
+        "13個療程為上限",
+        "lapatinib和trastuzumabderuxtecan僅能擇一給付，不得互換",
+        "1.早期乳癌",
+        "2.轉移性乳癌"
+      ],
+      "therapy_line": 2,
+      "prior_auth_required": 1,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 147,
+          "hash": "0804cee0093e37813336478ab07930a988d8ebe9",
+          "snippet": "1、99/8/1、99/10/1、101/1/1、105/11/1、108/5/1、109/2/1、111/12/1、112/10/1、113/8/1、113/12/1、114/1/1、114/5/1、114/12/1)1.早期乳癌(99/1/1、99/8/1、99/10/1、101/1/1、111/12/1、112/10/1、113/8/1、113/12/1、114/1/1、114/12/1)(1)外科手術前後、化學療法(術前輔助治療或輔助治療)",
+          "score": 14,
+          "matched_terms": [
+            "trastuzumabemtansine",
+            "ihc3+或fish+",
+            "1.早期乳癌"
+          ]
+        },
+        {
+          "page": 148,
+          "hash": "277222851a97f11cb35e99e3d5d13e5936d6436a",
+          "snippet": "(115.5.22更新)148限，其中trastuzumabemtansine以14個療程為上限。(113/8/1、113/12/1)(2)外科手術前後、化學療法(術前輔助治療或輔助治療)治療後，符合下列所有條件之早期乳癌患者：(111/12/1、112/10/1、113/8/1、113/12/1",
+          "score": 14,
+          "matched_terms": [
+            "trastuzumabemtansine",
+            "ihc3+或fish+",
+            "2.轉移性乳癌"
+          ]
+        },
+        {
+          "page": 164,
+          "hash": "e3f73e006ba42cebf378492af721a7de5614dc24",
+          "snippet": "/11/1、110/2/1、114/2/1）1.與capecitabine併用，使用於曾接受anthracycline,taxane以及trastuzumab治療後病況惡化之轉移性乳癌併有腦部轉移，且為her2過度表現(ihc3+或fish+)病人。2.每3個月需進行療效評估，病歷應留存評估紀錄，無疾病惡化方可繼續使用。(106/11/1)3.lapatinib、trastuzumabemtansine和trastuzumabderuxtecan僅能擇一給付",
+          "score": 12,
+          "matched_terms": [
+            "trastuzumabemtansine",
+            "ihc3+或fish+"
+          ]
+        },
+        {
+          "page": 194,
+          "hash": "bd33e968804a0a4fd71ff58cbc5d5d5f03334237",
+          "snippet": "且為症狀性及疾病侵襲性的患者。2.需經事前審查核准後使用，每次申請之療程以6個月為限，送審時需檢送影像資料，每6個月評估一次。3.出現疾病惡化或無法忍受之藥物不良反應，應立即停用。4.每日最大劑量為300毫克。9.87.trastuzumabemtansine(如kadcyla)：(110/2/1、113/8/1、114/2/1、114/5/1)1.早期乳癌(113/8/1、114/2/1、114/5/1)(1)使用於具her2過度表現(ihc3+或fish+)之早期乳癌病人",
+          "score": 48,
+          "matched_terms": [
+            "trastuzumabemtansine",
+            "kadcyla",
+            "使用於具her2過度表現",
+            "ihc3+或fish+",
+            "之早期乳癌病人，曾接受過至少6個療程（每3週一療程，至少16週）的化學治療（其中至少3個療程",
+            "的taxane藥物）和至少3個療程",
+            "的trastuzumab術前輔助治療後，仍有殘留病灶的術後輔助治療，且需符合下列任一條件：",
+            "經事前審查核准後使用，核准後每24週須檢附療效評估資料再次申請，若疾病有惡化情形即不應再行申請",
+            "每位病人使用本藥品以14個療程為上限",
+            "排除使用本藥品條件：",
+            "1.早期乳癌"
+          ]
+        },
+        {
+          "page": 195,
+          "hash": "12ea25afeef85b228636864fec4ada1c228ddede",
+          "snippet": "(115.5.22更新)195本藥品，且本藥品與trastuzumab使用於早期乳癌手術前後的總療程合併計算，每位病人以全部18個療程為上限。2.轉移性乳癌(110/2/1、113/8/1、114/2/1)(1)限單獨使用於先前未使用過本藥品且her2過度表現(ihc3+或fish+)之轉移性乳癌病人作為二線治療，並同時符合下列情形：i.之前分別接受過trastuzumab",
+          "score": 34,
+          "matched_terms": [
+            "trastuzumabemtansine",
+            "ihc3+或fish+",
+            "限單獨使用於先前未使用過本藥品且her2過度表現",
+            "之轉移性乳癌病人作為二線治療，並同時符合下列情形：",
+            "經事前審查核准後使用，核准後每12週須檢附療效評估資料再次申請，若疾病有惡化情形即不應再行申請，每位病人至多給付10個月",
+            "13個療程為上限",
+            "lapatinib和trastuzumabderuxtecan僅能擇一給付，不得互換",
+            "2.轉移性乳癌"
+          ]
+        },
+        {
+          "page": 209,
+          "hash": "6399a727f9a62200ceac5acde9da523ddb7f9770",
+          "snippet": "療時，僅得擇一給付。ruxolitinib、momelotinib治療後如疾病惡化不得換用本藥品。(114/10/1)9.115.trastuzumabderuxtecan(如enhertu)：(114/2/1)1.單獨使用於具her2過度表現(ihc3+或fish+)之轉移性乳癌病人作為二線治療，並同時符合下列情形：(1)之前分別接受過trastuzumab與一種taxane藥物治療，或其合併療法，或pertuzumab與trastuzumab與一種taxa",
+          "score": 20,
+          "matched_terms": [
+            "trastuzumabemtansine",
+            "使用於具her2過度表現",
+            "ihc3+或fish+",
+            "之轉移性乳癌病人作為二線治療，並同時符合下列情形："
+          ]
+        }
+      ]
+    },
+    "1771": {
+      "drug_id": 1771,
+      "generic_name": "Tykerb",
+      "trade_names": "Tykerb",
+      "terms": [
+        "tykerb",
+        "2.每3個月需進行療效評估，病歷應留存評估紀錄，無疾病惡化方可繼續使用",
+        "1.與capecitabine併用，使用於曾接受anthracycline",
+        "taxane以及trastuzumab治療後病況惡化之轉移性乳癌併有腦部轉移，且為her2過度表現",
+        "ihc3+或fish+",
+        "3.lapatinib",
+        "trastuzumabemtansine和trastuzumabderuxtecan僅能擇一給付，不得互換"
+      ],
+      "therapy_line": 2,
+      "prior_auth_required": 0,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 164,
+          "hash": "e3f73e006ba42cebf378492af721a7de5614dc24",
+          "snippet": "藥物治療失敗的局部晚期或轉移性之非小細胞肺癌。(2)不得與標靶治療、其他化療或免疫檢查點抑制劑併用。4.與gemcitabine合併使用作為晚期或復發之膽道癌第一線治療。(113/2/1)9.47.lapatinib（如tykerb）：（103/9/1、106/11/1、110/2/1、114/2/1）1.與capecitabine併用，使用於曾接受anthracycline,taxane以及trastuzumab治療後病況惡化之轉移性乳癌併有腦部",
+          "score": 20,
+          "matched_terms": [
+            "tykerb",
+            "2.每3個月需進行療效評估，病歷應留存評估紀錄，無疾病惡化方可繼續使用",
+            "1.與capecitabine併用，使用於曾接受anthracycline",
+            "ihc3+或fish+",
+            "3.lapatinib",
+            "trastuzumabemtansine和trastuzumabderuxtecan僅能擇一給付，不得互換"
+          ]
+        }
+      ]
+    },
+    "1773": {
+      "drug_id": 1773,
+      "generic_name": "Phesgo",
+      "trade_names": "Phesgo (pertuzumab + trastuzumab SC)",
+      "terms": [
+        "phesgo",
+        "pertuzumab+trastuzumabsc",
+        "健保未給付，需全額自費",
+        "phesgo（pertuzumab+trastuzumab皮下注射固定劑量複方）：用於her2陽性乳癌",
+        "台灣健保未給付，需全額自費",
+        "適用於與化療併用，治療her2陽性早期及轉移性乳癌",
+        "取代靜脈注射herceptin+perjeta，給藥時間由90分鐘縮短為約5-8分鐘"
+      ],
+      "therapy_line": 1,
+      "prior_auth_required": 0,
+      "nhi_ref_numbers": [],
+      "matches": [
+        {
+          "page": 147,
+          "hash": "0804cee0093e37813336478ab07930a988d8ebe9",
+          "snippet": "個療程為上限：(113/8/1、113/12/1、114/1/1、114/12/1)i.本藥品ii.pertuzumab與trastuzumab併用iii.pertuzumab與trastuzumab皮下注射複方製劑(如phesgo)ⅱ.若外科手術後無法達病理上緩解(non-pcr)，本藥品與trastuzumabemtansine使用於外科手術前後的總療程合併計算，依藥品仿單記載以全部18個療程為上",
+          "score": 8,
+          "matched_terms": [
+            "phesgo"
+          ]
+        },
+        {
+          "page": 148,
+          "hash": "277222851a97f11cb35e99e3d5d13e5936d6436a",
+          "snippet": "99/1/1、108/5/1、113/12/1)(4)若先前使用過docetaxel及pertuzumab與trastuzumab併用或docetaxel及pertuzumab與trastuzumab皮下注射複方製劑(如phesgo)併用達18個月上限仍未惡化者，得再次申請本藥品。(108/5/1、113/12/1)3.轉移性胃癌(限iv劑型)trastuzumab合併capecitabine(或5-fluorouracil)及cisplatin適",
+          "score": 8,
+          "matched_terms": [
+            "phesgo"
+          ]
+        },
+        {
+          "page": 183,
+          "hash": "9e545ba7e8c23f40f8d7ce8dc1f2e713f0f1369c",
+          "snippet": "~ⅲ使用於外科手術前後之總療程合併計算，依藥品仿單記載以18個療程為上限：ｉ：pertuzumab與trastuzumab併用ⅱ：trastuzumabⅲ：pertuzumab與trastuzumab皮下注射複方製劑(如phesgo)(4)須經事前審查核准後使用，核准後每24週須檢附療效評估資料再次申請，若疾病有惡化情形即不應再行申請。（113/12/1、114/5/1）2.轉移性乳癌(108/5/1、108/12/1、112/8/1、113/12",
+          "score": 8,
+          "matched_terms": [
+            "phesgo"
+          ]
+        },
+        {
+          "page": 208,
+          "hash": "e6b62335ca277b4489e18ee9739ef45f8dc43753",
+          "snippet": "停止使用。(3)每人以10個療程為上限。3.不得與蛋白酶體抑制劑(bortezomib、carfilzomib)或lenalidomide併用。9.112.pertuzumab與trastuzumab皮下注射複方製劑(如phesgo):(113/12/1、114/5/1)1.本藥品及化學療法併用於具her2過度表現（ihc3+或fish+），且具腋下淋巴結轉移但無遠處臟器轉移之早期乳癌病人（113/12/1、114/5/1）(1)使用於術前輔助治療",
+          "score": 8,
+          "matched_terms": [
+            "phesgo"
+          ]
+        }
+      ]
+    },
+    "1774": {
+      "drug_id": 1774,
+      "generic_name": "Pembrolizumab",
+      "trade_names": "Keytruda",
+      "terms": [
+        "pembrolizumab",
+        "keytruda",
+        "早期tnbc第ii期至第iiib期，ct1cn1-2或t2-4n0-2",
+        "與paclitaxel",
+        "carboplatin等化療併用作術前前導治療，需符合免疫檢查點抑制劑給付規定",
+        "1.與paclitaxel及carboplatin併用於早期三陰性乳癌",
+        "第ii期至第iiib期，ct1cn1-2或t2-4n0-2",
+        "病人的術前前導性治療用藥，病人需符合免疫檢查點抑制劑之藥品給付規定",
+        "2.臨床常用keynote-522",
+        "kn522架構：pembrolizumab合併taxane",
+        "platinum，接續anthracycline",
+        "cyclophosphamide",
+        "手術後依規範評估pembrolizumab輔助治療",
+        "3.轉移性或無法切除tnbc之免疫治療適應症需依pd-l1",
+        "治療線別與當期健保規範另行確認"
+      ],
+      "therapy_line": 1,
+      "prior_auth_required": 1,
+      "nhi_ref_numbers": [
+        "114/6/1"
+      ],
+      "matches": [
+        {
+          "page": 144,
+          "hash": "d407410351fb93acec41f71bb73a86118ae836fd",
+          "snippet": "(115.5.22更新)1443.與pembrolizumab及paclitaxel併用於轉移性鱗狀非小細胞肺癌的第一線治療，患者需符合免疫檢查點抑制劑之藥品給付規定。(112/12/1)4.與atezolizumab及etoposide併用，或與durvalumab及etopos",
+          "score": 14,
+          "matched_terms": [
+            "pembrolizumab",
+            "第ii期至第iiib期，ct1cn1-2或t2-4n0-2",
+            "病人的術前前導性治療用藥，病人需符合免疫檢查點抑制劑之藥品給付規定",
+            "cyclophosphamide"
+          ]
+        },
+        {
+          "page": 145,
+          "hash": "581f58e874e57dbe5255eed825cf53945226a6e9",
+          "snippet": "(115.5.22更新)145(3)gemcitabine與paclitaxel併用，可使用於曾經使用過anthracycline之局部復發且無法手術切除或轉移性之乳癌病患。（94/10/1）(4)用於曾經使用含鉑類藥物(platinum-based)治療後復發且間隔至少6個月之卵巢癌，作為第二線治",
+          "score": 16,
+          "matched_terms": [
+            "pembrolizumab",
+            "與paclitaxel",
+            "第ii期至第iiib期，ct1cn1-2或t2-4n0-2",
+            "病人的術前前導性治療用藥，病人需符合免疫檢查點抑制劑之藥品給付規定"
+          ]
+        },
+        {
+          "page": 152,
+          "hash": "17b2429d3e81fa9b8581631743d1c2dc96fa575e",
+          "snippet": "(115.5.22更新)152(4)pemetrexed(限使用pexeda、apeta或pemetrexedsandoz)與pembrolizumab與含鉑類之化學療法併用於轉移性，不具有egfr/alk/ros-1腫瘤基因異常的非鱗狀非小細胞肺癌的第一線治療，患者需符合免疫檢查點抑制劑之藥品給付規定。(114/6/1、114/8/1)(5)與amivantamab及",
+          "score": 8,
+          "matched_terms": [
+            "pembrolizumab"
+          ]
+        },
+        {
+          "page": 175,
+          "hash": "d007a32e676155a3bc111856d48d031858641995",
+          "snippet": "abiraterone、enzalutamide及其他治療因惡性腫瘤伴隨骨骼事件之藥品，如denosumab、bisphosphonates等。9.69.免疫檢查點抑制劑(如atezolizumab；nivolumab；pembrolizumab；avelumab；ipilimumab；durvalumab；tremelimumab；cemiplimab製劑)：(108/4/1、",
+          "score": 8,
+          "matched_terms": [
+            "pembrolizumab"
+          ]
+        },
+        {
+          "page": 177,
+          "hash": "184f7c3a5445e7577fd1799f85fcef7e45a17273",
+          "snippet": ")食道鱗狀細胞癌：限nivolumab用於曾接受合併含鉑及fluoropyrimidine化學治療之後惡化的無法切除晚期或復發性食道鱗狀細胞癌病人。(113/4/1、113/6/1、115/2/1)(11)大腸直腸癌：限pembrolizumab做為無法切除或轉移性高微衛星不穩定性(msi-h)或錯誤配對修復功能不足性(dmmr)大腸直腸癌(crc)之成年病人第一線治療。(114/6/1)2.本類藥品得於藥品許可證登載之適應症及藥品仿單內，併用其他藥品於下列患者",
+          "score": 8,
+          "matched_terms": [
+            "pembrolizumab"
+          ]
+        },
+        {
+          "page": 178,
+          "hash": "f93c251bbf3ba3355bd809b26ffebb644800881e",
+          "snippet": "(115.5.22更新)178ii.轉移性鱗狀非小細胞肺癌第一線用藥：限pembrolizumab與carboplatin及paclitaxel併用至多使用4個療程，接續單用pembrolizumab治療。(112/12/1、113/4/1、113/8/1)iii.轉移性非鱗狀非小細胞肺癌第一線：限pembroliz",
+          "score": 10,
+          "matched_terms": [
+            "pembrolizumab",
+            "cyclophosphamide"
+          ]
+        },
+        {
+          "page": 179,
+          "hash": "387c5451aebb2f49812f84e20f13c570a8901fda",
+          "snippet": "(115.5.22更新)179病人可免除此條件)(114/2/1)iii.腎功能：(晚期腎細胞癌病人可免除此條件)(109/4/1、112/10/1、115/2/1)i.泌尿道上皮癌第一線用藥：單獨使用pembrolizumab須符合egfr>30ml/min/1.73m2且<60ml/min/1.73m2；nivolumab併用化療須符合egfr≥60ml/min/1.73m2。ii.泌尿道上皮癌第二線用藥：egfr>30ml/min/1.7",
+          "score": 8,
+          "matched_terms": [
+            "pembrolizumab"
+          ]
+        },
+        {
+          "page": 180,
+          "hash": "137ca215d4042ff3f495970df37d8a22e6b2b82c",
+          "snippet": "(115.5.22更新)180給付範圍事審代碼pembrolizumab(dako22c3或ventanasp263*)nivolumab(dako28-8或ventanasp263*)atezolizumab(ventanasp142)avelumab(ventanasp263*)durv",
+          "score": 8,
+          "matched_terms": [
+            "pembrolizumab"
+          ]
+        },
+        {
+          "page": 181,
+          "hash": "9c1302fe099ea5a8ff52902884467179c2ff15fd",
+          "snippet": "(115.5.22更新)181給付範圍事審代碼pembrolizumab(dako22c3或ventanasp263*)nivolumab(dako28-8或ventanasp263*)atezolizumab(ventanasp142)avelumab(ventanasp263*)durv",
+          "score": 8,
+          "matched_terms": [
+            "pembrolizumab"
+          ]
+        },
+        {
+          "page": 182,
+          "hash": "656769035c30c16b8776b10f8e4427bcf9dcc620",
+          "snippet": "(115.5.22更新)182vi.使用免疫檢查點抑制劑之治療計畫(treatmentprotocol)。ⅶ.單獨使用pembrolizumab於泌尿道上皮癌第一線用藥時，須另檢附下列其中一項佐證資料：(111/2/1、114/6/1、115/2/1)i.ctcae(thecommonterminologycriteriaforadverseevents)v4.",
+          "score": 8,
+          "matched_terms": [
+            "pembrolizumab"
+          ]
+        },
+        {
+          "page": 194,
+          "hash": "bd33e968804a0a4fd71ff58cbc5d5d5f03334237",
+          "snippet": "之檢測報告，以及germlinebrca1/2突變之檢測報告，且需符合全民健康保險藥品給付規定之通則十二。iii.再次申請必須提出客觀證據（如：影像學）證實無惡化，才可繼續使用。iv.用於術後輔助治療，olaparib與pembrolizumab僅能擇一給付。5.olaparib每日最多使用4粒(112/1/1)9.86.vandetanib(如caprelsa)：(109/11/1)1.適用於無法進行手術切除的局部侵犯或轉移性甲狀腺髓質癌，並且為症狀性及疾病侵",
+          "score": 8,
+          "matched_terms": [
+            "pembrolizumab"
+          ]
+        },
+        {
+          "page": 206,
+          "hash": "56393025bcc6cabbce6858e1b4eae3efabc172a0",
+          "snippet": "不可以其他原因申請互換使用。9.109.enfortumabvedotin(如padcev）：(113/5/1)1.適用於先前接受過含鉑化學治療，後續接受免疫檢查點抑制劑(如atezolizumab；nivolumab；pembrolizumab；avelumab；ipilimumab製劑)治療失敗後疾病惡化的局部晚期或轉移性泌尿道上皮癌成人病人，須檢附接受過含鉑化學治療之病歷報告。2.使用條件：(1)病人身體狀況良好（ecog≦2）且預期壽命至少3個月以上。(",
+          "score": 8,
+          "matched_terms": [
+            "pembrolizumab"
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -34,6 +34,8 @@ python build_static.py
 CI 也會每月自動跑一次 dry-run 與 API smoke check，對應 `.github/workflows/monthly-api-check.yml`。
 正式跑 `update_official_prices.py` 時，會同步更新 `app_config.price_badge_text`，讓首頁藥價日期標籤一起變更。
 
+另外每月 27 日會跑 `.github/workflows/monthly-coverage-check.yml`，用整份藥品給付規定 PDF 做 rule-based drift check，檢查條文頁碼與文字是否變動。
+
 之後要人工抽查：
 
 - HER2 標靶
