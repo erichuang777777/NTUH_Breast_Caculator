@@ -31,6 +31,8 @@ python update_official_prices.py
 python build_static.py
 ```
 
+CI 也會每月自動跑一次 dry-run 與 API smoke check，對應 `.github/workflows/monthly-api-check.yml`。
+
 之後要人工抽查：
 
 - HER2 標靶
