@@ -22,6 +22,20 @@
 | 資料來源 | [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md) |
 | 維護規則 | [docs/MAINTENANCE.md](docs/MAINTENANCE.md) 與 [AGENTS.md](AGENTS.md) |
 
+## PREDICT citation
+
+The PREDICT Breast calculator in this repository implements the published PREDICT prognostic model. If you use or adapt it, please cite:
+
+- Grootes I, Wishart GC, Pharoah PDP. An updated PREDICT breast cancer prognostic model including the benefits and harms of radiotherapy. *npj Breast Cancer* 2024;10:6. doi:[10.1038/s41523-024-00612-y](https://doi.org/10.1038/s41523-024-00612-y) (v3.0)
+- Candido dos Reis FJ, et al. An updated PREDICT breast cancer prognostication and treatment benefit prediction model with independent validation. *Breast Cancer Res* 2017;19:58. doi:[10.1186/s13058-017-0852-3](https://doi.org/10.1186/s13058-017-0852-3) (v2.x; treatment effects)
+- Wishart GC, et al. PREDICT: a new UK prognostic model that predicts survival following surgery for invasive breast cancer. *Breast Cancer Res* 2010;12:R1. doi:[10.1186/bcr2464](https://doi.org/10.1186/bcr2464) (original model)
+
+Source of the coefficients and licensing: see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+**Disclaimer.** This is a research and education tool. It is not a validated clinical device and has not been calibrated on local patients; it must not replace clinical judgement or the treating team's decisions.
+
+**Implementation note (variants).** The authors' R package has two post-v3.0 variants that differ in the radiotherapy baseline constants (3.1 and 3.2); at 5 years they can differ by about 3 percentage points in overall survival. The code in `assets/js/legacy-app.js` uses the **3.1** baseline formulation and defaults the year of diagnosis to the current year, whereas the authors' web tool fixes it at 2017 (the model was trained on 2000-2017 diagnoses). The 3.2 variant is therefore not yet the default here.
+
 ## 快速開始
 
 ```bash

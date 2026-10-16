@@ -8743,6 +8743,10 @@ function _predictBaseCumBC(t, isERpos){
 function _predictBaseCumOC(t){
     return Math.exp(-6.052919 + 1.079863 * Math.log(t) + 0.3255321 * Math.sqrt(t));
 }
+// PREDICT v3 coefficients: Grootes I, Wishart GC, Pharoah PDP. npj Breast Cancer 2024;10:6, doi:10.1038/s41523-024-00612-y.
+// Values from inst/extdata/coefficients_v3.csv of github.com/WintonCentre/predictv30r (MIT, (c) 2022 University of Cambridge; see THIRD_PARTY_NOTICES.md).
+// Treatment effects: Candido dos Reis 2017, doi:10.1186/s13058-017-0852-3; original model: Wishart 2010, doi:10.1186/bcr2464.
+// Research/education use only; not a validated clinical device.
 const PREDICT_V3_COEFFS = {
     ag1_er0: 1.7560679383953317,
     ag2_er0: 4.5552746348804867,
